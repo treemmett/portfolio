@@ -23,6 +23,41 @@ html, body{
   font-size:40px;
 }
 
+#nav{
+  position:absolute;
+  height:4em;
+  width:4em;
+  margin:auto;
+  left:0;
+  right:0;
+  bottom:5em;
+  border:2px solid #fff;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition:background-color 0.3s, border-color 0.3s;
+  cursor:pointer;
+}
+
+#nav svg{
+  width:2em;
+  height:2em;
+  stroke:#fff;
+  position:absolute;
+  transition:all 0.3s;
+}
+
+#nav:hover{
+  border-color:transparent;
+  background:#fffa;
+}
+
+#nav:active{
+  background:#fffc;
+  border-color:transparent;
+}
+
 .article{
   height:100%;
 }
