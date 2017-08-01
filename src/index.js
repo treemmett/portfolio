@@ -2,7 +2,7 @@ import './index.css';
 
 const scrollEffect = () => {
   const scroll = document.body.scrollTop || document.documentElement.scrollTop;
-  const banner = document.getElementById('banner');
+  const banner = document.getElementsByClassName('banner')[0];
 
   if(banner)
     banner.style.backgroundPosition = '50% calc(50% - '+scroll/15+'px)';
@@ -10,7 +10,8 @@ const scrollEffect = () => {
 
 window.addEventListener('load', ()=>{
   scrollEffect();
-  document.getElementById('nav').addEventListener('click', navScroll);
+  document.getElementsByClassName('anchor')[0].classList.add('act');
+  document.getElementsByClassName('anchor')[0].addEventListener('click', navScroll);
 });
 
 window.addEventListener('scroll', scrollEffect);
@@ -25,6 +26,6 @@ const navScroll = (i) => {
 
   if(start < stop){
     window.scrollBy(0, 10);
-    window.setTimeout(function(){navScroll(start)}, 800 / distance);
+    window.setTimeout(function(){navScroll(start)}, 600 / distance);
   }
 }

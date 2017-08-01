@@ -4,7 +4,7 @@ html, body{
   margin:0;
 }
 
-#banner{
+.banner{
   position:relative;
   height:100%;
   width:100%;
@@ -14,48 +14,49 @@ html, body{
   background-attachment:fixed;
   background-size:cover;
   background-repeat:no-repeat;
-  padding:5em;
-  text-shadow:0.5px 0.5px 0.25px black;
   box-sizing:border-box;
 }
 
-#banner .title{
-  font-size:40px;
-}
-
-#nav{
+.anchor{
   position:absolute;
-  height:4em;
-  width:4em;
+  height:3.5em;
+  width:3.5em;
   margin:auto;
   left:0;
   right:0;
-  bottom:5em;
-  border:2px solid #fff;
+  bottom:2em;
   border-radius:50%;
   display:flex;
   justify-content:center;
   align-items:center;
-  transition:background-color 0.3s, border-color 0.3s;
-  cursor:pointer;
+  transition:background-color 0.3s, transform 0.2s;
 }
 
-#nav svg{
+@keyframes anchorHover{
+  0%{transform:translateY(3px);}
+  50%{transform:translateY(-1px);}
+  100%{transform:translateY(3px);}
+}
+
+.anchor svg{
   width:2em;
   height:2em;
   stroke:#fff;
   position:absolute;
-  transition:all 0.3s;
+  transition:all 0.3s 3;
+  animation:anchorHover 2s infinite ease-in-out;
 }
 
-#nav:hover{
-  border-color:transparent;
-  background:#fffa;
+.anchor.act{
+  cursor:pointer;
 }
 
-#nav:active{
-  background:#fffc;
-  border-color:transparent;
+.anchor.act:hover{
+  background:#fff5;
+}
+
+.anchor.act:active{
+  background:#fff9;
 }
 
 .article{
