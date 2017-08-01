@@ -50,7 +50,6 @@ html, body{
   width:2em;
   height:2em;
   stroke:#fff;
-  position:absolute;
   transition:all 0.3s 3;
   animation:anchorHover 2s infinite ease-in-out;
 }
@@ -60,11 +59,11 @@ html, body{
 }
 
 .anchor.act:hover{
-  background:#fff5;
+  background:rgba(255,255,255,0.4);
 }
 
 .anchor.act:active{
-  background:#fff9;
+  background:rgba(255,255,255,0.6);
 }
 
 .article{
