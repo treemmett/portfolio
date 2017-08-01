@@ -15,6 +15,14 @@ html, body{
   background-size:cover;
   background-repeat:no-repeat;
   box-sizing:border-box;
+  transition:background-position 0s linear;
+  image-rendering:-webkit-optimize-contrast;
+}
+
+.title{
+  font-size:80px;
+  display:inline-block;
+  margin:40px 0 0 50px;
 }
 
 .anchor{

@@ -5,7 +5,7 @@ const scrollEffect = () => {
   const banner = document.getElementsByClassName('banner')[0];
 
   if(banner)
-    banner.style.backgroundPosition = '50% calc(50% - '+scroll/15+'px)';
+    banner.style.backgroundPositionY = -scroll * .07 +'px';
 }
 
 window.addEventListener('load', ()=>{
