@@ -8,6 +8,31 @@ html, body{
   font-family:Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.nav{
+  position:fixed;
+  padding:1em;
+  background:rgba(51,51,51,1);
+  transition:background-color 0.2s ease-out;
+  width:100%;
+  z-index:1;
+  display:inline-block;
+  box-sizing:border-box;
+}
+
+.nav.transparent{
+  background:rgba(51,51,51,0.15);
+}
+
+#menuToggle{
+  width:1.5em;
+  height:1.5em;
+  stroke:#fff;
+  display:inline-block;
+  cursor:pointer;
+  transition:transform 0.3s ease-out;
+  float:right;
+}
+
 .banner{
   position:relative;
   height:100%;
