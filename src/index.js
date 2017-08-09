@@ -1,4 +1,6 @@
-import './index.css';
+import './index.scss';
+if(process.env.NODE_ENV !== 'production')
+  require('file-loader!./index.html');
 
 const scrollEffect = () => {
   const scroll = document.body.scrollTop || document.documentElement.scrollTop;
