@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:700');
 @import url('https://fonts.googleapis.com/css?family=Lato');
 
 html, body{
@@ -17,11 +17,12 @@ html, body{
   z-index:1;
   display:inline-block;
   box-sizing:border-box;
+
+  &.transparent{
+    background:rgba(51,51,51,0.15);
+  }
 }
 
-.nav.transparent{
-  background:rgba(51,51,51,0.15);
-}
 
 #menuToggle{
   width:1.5em;
@@ -61,32 +62,32 @@ html, body{
   justify-content:center;
   align-items:center;
   transition:background-color 0.3s, transform 0.2s;
+
+  &.act{
+    cursor:pointer;
+
+    &:hover{
+      background:rgba(255,255,255,0.4);
+    }
+
+    &:active{
+      background:rgba(255,255,255,0.6);
+    }
+  }
+
+  svg{
+    width:2em;
+    height:2em;
+    stroke:#fff;
+    transition:all 0.3s 3;
+    animation:anchorHover 2s infinite ease-in-out;
+  }
 }
 
 @keyframes anchorHover{
   0%{transform:translateY(3px);}
   50%{transform:translateY(-1px);}
   100%{transform:translateY(3px);}
-}
-
-.anchor svg{
-  width:2em;
-  height:2em;
-  stroke:#fff;
-  transition:all 0.3s 3;
-  animation:anchorHover 2s infinite ease-in-out;
-}
-
-.anchor.act{
-  cursor:pointer;
-}
-
-.anchor.act:hover{
-  background:rgba(255,255,255,0.4);
-}
-
-.anchor.act:active{
-  background:rgba(255,255,255,0.6);
 }
 
 section{
@@ -125,35 +126,39 @@ section{
 @media screen and (min-width:650px) and (max-width:900px){
   .project{
     width:calc(50% - 10px);
-  }
-  .project:not(:nth-child(2n)){
-    margin-right:20px;
+
+    &:not(:nth-child(2n)){
+      margin-right:20px;
+    }
   }
 }
 
 @media screen and (min-width:900px) and (max-width:1200px){
   .project{
     width:calc(33.33% - 10px);
-  }
-  .project:not(:nth-child(3n)){
-    margin-right:15px;
+
+    &:not(:nth-child(3n)){
+      margin-right:15px;
+    }
   }
 }
 
 @media screen and (min-width:1200px) and (max-width:1500px){
   .project{
     width:calc(25% - 10px);
-  }
-  .project:not(:nth-child(4n)){
-    margin-right:calc(40px / 3);
+
+    &:not(:nth-child(4n)){
+      margin-right:calc(40px / 3);
+    }
   }
 }
 
 @media screen and (min-width:1500px){
   .project{
     width:calc(20% - 10px);
-  }
-  .project:not(:nth-child(5n)){
-    margin-right:12.5px;
+
+    &:not(:nth-child(5n)){
+      margin-right:12.5px;
+    }
   }
 }
