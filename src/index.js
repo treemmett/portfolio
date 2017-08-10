@@ -32,9 +32,31 @@ const navScroll = (i) => {
   }
 }
 
+const checkContact = (e) => {
+  const inputs = document.forms['contact'].elements;
+  let isFilled = false;
+
+  for(let i = 0; i < inputs.length; i++){
+    if(inputs[i].value.trim() !== ''){
+      isFilled = true;
+    }else{
+      isFilled = false;
+      break;
+    }
+  }
+
+  isFilled ? document.querySelector('.contact .btn').classList.remove('disabled') : document.querySelector('.contact .btn').classList.add('disabled');
+}
+
 window.addEventListener('load', ()=>{
   scrollEffect();
   document.getElementsByClassName('anchor')[0].classList.add('act');
   document.getElementsByClassName('anchor')[0].addEventListener('click', navScroll);
   window.addEventListener('scroll', scrollEffect);
+
+  const inputs = document.forms['contact'].elements;
+
+  for(let i = 0; i < inputs.length; i++){
+    inputs[i].addEventListener('input', checkContact);
+  }
 });
