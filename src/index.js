@@ -36,6 +36,23 @@ const checkContact = (e) => {
   const inputs = document.forms['contact'].elements;
   let isFilled = false;
 
+  if(e.target.name === 'contact_p'){
+    const value = e.target.value.replace(/\D/g, '');
+
+    let a = value.slice(0,3);
+    let b = value.slice(3,6);
+    let c = value.slice(6,10);
+
+    if(b){
+      a+='-';
+    }
+    if(c){
+      b+='-';
+    }
+
+    e.target.value = a+b+c;
+  }
+
   for(let i = 0; i < inputs.length; i++){
     if(inputs[i].value.trim() !== ''){
       isFilled = true;
