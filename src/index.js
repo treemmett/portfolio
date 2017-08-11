@@ -48,15 +48,55 @@ const checkContact = (e) => {
   isFilled ? document.querySelector('.contact .btn').classList.remove('disabled') : document.querySelector('.contact .btn').classList.add('disabled');
 }
 
+const submitContact = () => {
+  const inputs = document.forms['contact'].elements;
+  let form = {};
+
+  for(let i = 0; i < inputs.length; i++){
+    if(inputs[i].value.trim() === ''){
+      return;
+    }else{
+      form[inputs[i].name] = inputs[i].value.trim();
+    }
+  }
+
+  const x = new XMLHttpRequest();
+  x.open('POST', '/api/contact/', true);
+  x.onload = ()=>{
+    let response;
+    const messageElement = document.querySelector('.contact .message');
+
+    try{
+      response = JSON.parse(x.response);
+    }catch(e){
+      messageElement.classList.remove('true');
+      messageElement.classList.add('false');
+      messageElement.innerHTML = 'Failed to read response';
+      setTimeout(()=>{
+        messageElement.innerHTML = '';
+      }, 2000);
+      console.error(e);
+      return;
+    }
+
+    messageElement.classList.remove(!response.success);
+    messageElement.classList.add(response.success);
+    messageElement.innerHTML = response.message;
+    setTimeout(()=>{
+      messageElement.innerHTML = '';
+    }, 2000);
+  }
+  x.send(JSON.stringify(form));
+}
+
 window.addEventListener('load', ()=>{
   scrollEffect();
   document.getElementsByClassName('anchor')[0].classList.add('act');
   document.getElementsByClassName('anchor')[0].addEventListener('click', navScroll);
   window.addEventListener('scroll', scrollEffect);
-
   const inputs = document.forms['contact'].elements;
-
   for(let i = 0; i < inputs.length; i++){
     inputs[i].addEventListener('input', checkContact);
   }
+  document.querySelector('.contact .btn').addEventListener('click', submitContact);
 });

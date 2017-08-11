@@ -173,6 +173,19 @@ section{
     width:100%;
     max-width:30em;
 
+    .message{
+      position:absolute;
+      transform:translateY(calc(-100% - 0.5em));
+
+      &.true{
+        color:green;
+      }
+
+      &.false{
+        color:red;
+      }
+    }
+
     form{
       display:flex;
       flex-direction:column;

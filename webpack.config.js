@@ -32,6 +32,13 @@ module.exports = {
     contentBase: path.join(__dirname, 'dist'),
     compress: false,
     hot: true,
+    proxy:{
+      '/api': {
+        target: 'https://tregan.me',
+        secure: true,
+        changeOrigin: true
+      }
+    },
     stats: 'errors-only'
   },
 
