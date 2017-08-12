@@ -36,7 +36,7 @@ const checkContact = (e) => {
   const inputs = document.forms['contact'].elements;
   let isFilled = false;
 
-  if(e.target.name === 'contact_p'){
+  if(typeof e === 'object' && e.target.name === 'contact_p'){
     const value = e.target.value.replace(/\D/g, '');
 
     let a = value.slice(0,3);
@@ -89,9 +89,6 @@ const submitContact = () => {
       messageElement.classList.remove('true');
       messageElement.classList.add('false');
       messageElement.innerHTML = 'Failed to read response';
-      setTimeout(()=>{
-        messageElement.innerHTML = '';
-      }, 2000);
       console.error(e);
       return;
     }
@@ -99,21 +96,31 @@ const submitContact = () => {
     messageElement.classList.remove(!response.success);
     messageElement.classList.add(response.success);
     messageElement.innerHTML = response.message;
-    setTimeout(()=>{
-      messageElement.innerHTML = '';
-    }, 2000);
   }
   x.send(JSON.stringify(form));
 }
 
 window.addEventListener('load', ()=>{
+  
+  //Add banner effects
   scrollEffect();
   document.getElementsByClassName('anchor')[0].classList.add('act');
   document.getElementsByClassName('anchor')[0].addEventListener('click', navScroll);
   window.addEventListener('scroll', scrollEffect);
+
+  //Add events for contact form
   const inputs = document.forms['contact'].elements;
   for(let i = 0; i < inputs.length; i++){
     inputs[i].addEventListener('input', checkContact);
   }
   document.querySelector('.contact .btn').addEventListener('click', submitContact);
+
+  //Load reCAPTCHA
+  if(grecaptcha){
+    grecaptcha.render(document.getElementById('grecaptcha'), {
+      sitekey: '6Le7mywUAAAAABwwS54ZzT4Xb129TTH1pvT7OnPl',
+      callback: checkContact,
+      'expired-callback': checkContact
+    });
+  }
 });

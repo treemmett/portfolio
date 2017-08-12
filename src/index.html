@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Portfolio</title>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
   </head>
   <body>
     <div class="nav">
@@ -37,10 +38,10 @@
     </section>
     <section>
       <div class="title">Contact</div>
-      <div class="contact">
+      <form name="contact" class="contact">
         <div class="form_wrap">
-          <div class="message">Some Message Here</div>
-          <form name="contact">
+          <div class="message"></div>
+          <div class="main">
             <div class="section">
               <input name="contact_n" type="text" placeholder="Name"/>
               <input name="contact_e" type="email" placeholder="Email"/>
@@ -49,12 +50,13 @@
             <div class="section">
               <textarea name="contact_m" placeholder="Message"></textarea>
             </div>
-          </form>
+          </div>
           <div class="actions">
+            <div id="grecaptcha" data-sitekey="6Le7mywUAAAAABwwS54ZzT4Xb129TTH1pvT7OnPl"></div>
             <div class="btn disabled">Submit</div>
           </div>
         </div>
-      </div>
+      </form>
     </section>
   </body>
 </html>
