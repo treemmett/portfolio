@@ -32,95 +32,105 @@ const navScroll = (i) => {
   }
 }
 
-const checkContact = (e) => {
-  const inputs = document.forms['contact'].elements;
-  let isFilled = false;
+const contactF = {
 
-  if(typeof e === 'object' && e.target.name === 'contact_p'){
-    const value = e.target.value.replace(/\D/g, '');
+  checkInput: function(){
+    let success = true;
 
-    let a = value.slice(0,3);
-    let b = value.slice(3,6);
-    let c = value.slice(6,10);
+    for(let i = 0; i < document.forms.contact.elements.length; i++){
+      const input = document.forms.contact.elements[i];
 
-    if(b){
-      a+='-';
+      switch(input.name){
+        case 'contact_e': {
+          if(!input.value.match(/\S+\@\S+\.\S{2,}/)){
+            success = false;
+          }
+          input.value = input.value.trim();
+          break;
+        }
+
+        case 'contact_p': {
+          const val = input.value.replace(/\D/g, '');
+
+          let a = val.slice(0,3);
+          let b = val.slice(3,6);
+          let c = val.slice(6,10);
+
+          if(b){
+            a+='-';
+          }
+
+          if(c){
+            b+='-';
+          }
+
+          input.value = a+b+c;
+
+          if(val.length !== 10){
+            success = false;
+          }
+          break;
+        }
+
+        default: {
+          if(input.value.trim() === ''){
+            success = false;
+          }
+          break;
+        }
+      }
     }
-    if(c){
-      b+='-';
-    }
 
-    e.target.value = a+b+c;
-  }
-
-  for(let i = 0; i < inputs.length; i++){
-    if(inputs[i].value.trim() !== ''){
-      isFilled = true;
+    if(success){
+      document.querySelector('.contact .btn').classList.remove('disabled');
     }else{
-      isFilled = false;
-      break;
+      document.querySelector('.contact .btn').classList.add('disabled');
     }
-  }
 
-  isFilled ? document.querySelector('.contact .btn').classList.remove('disabled') : document.querySelector('.contact .btn').classList.add('disabled');
-}
+    return success;
+  },
 
-const submitContact = () => {
-  const inputs = document.forms['contact'].elements;
-  let form = {};
-
-  for(let i = 0; i < inputs.length; i++){
-    if(inputs[i].value.trim() === ''){
-      return;
-    }else{
-      form[inputs[i].name] = inputs[i].value.trim();
-    }
-  }
-
-  const x = new XMLHttpRequest();
-  x.open('POST', '/api/contact/', true);
-  x.onload = ()=>{
-    let response;
-    const messageElement = document.querySelector('.contact .message');
-
-    try{
-      response = JSON.parse(x.response);
-    }catch(e){
-      messageElement.classList.remove('true');
-      messageElement.classList.add('false');
-      messageElement.innerHTML = 'Failed to read response';
-      console.error(e);
+  submit: function(){
+    if(!contactF.checkInput()){
       return;
     }
 
-    messageElement.classList.remove(!response.success);
-    messageElement.classList.add(response.success);
-    messageElement.innerHTML = response.message;
+    let data = {};
+    let inputs = document.forms.contact.elements;
+
+    for(let i = 0; i < inputs.length; i++){
+      data[inputs[i].name] = inputs[i].value.trim();
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/contact/', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onload = function(){
+      console.log(xhr.response);
+    }
+    xhr.send(JSON.stringify(data));
   }
-  x.send(JSON.stringify(form));
 }
 
 window.addEventListener('load', ()=>{
-  
   //Add banner effects
   scrollEffect();
   document.getElementsByClassName('anchor')[0].classList.add('act');
   document.getElementsByClassName('anchor')[0].addEventListener('click', navScroll);
   window.addEventListener('scroll', scrollEffect);
 
-  //Add events for contact form
-  const inputs = document.forms['contact'].elements;
-  for(let i = 0; i < inputs.length; i++){
-    inputs[i].addEventListener('input', checkContact);
+  //Add contact events
+  document.querySelector('.contact .btn').addEventListener('click', contactF.submit);
+  for(let i = 0; i < document.forms.contact.elements.length; i++){
+    document.forms.contact.elements[i].addEventListener('input', contactF.checkInput);
   }
-  document.querySelector('.contact .btn').addEventListener('click', submitContact);
 
   //Load reCAPTCHA
   if(grecaptcha){
     grecaptcha.render(document.getElementById('grecaptcha'), {
       sitekey: '6Le7mywUAAAAABwwS54ZzT4Xb129TTH1pvT7OnPl',
-      callback: checkContact,
-      'expired-callback': checkContact
+      callback: contactF.checkInput,
+      'expired-callback': contactF.checkInput
     });
   }
 });
