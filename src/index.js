@@ -32,9 +32,9 @@ const navScroll = (i) => {
   }
 }
 
-const contactF = {
+const contactF = new class{
 
-  checkInput: function(){
+  checkInput(){
     let success = true;
 
     for(let i = 0; i < document.forms.contact.elements.length; i++){
@@ -88,9 +88,9 @@ const contactF = {
     }
 
     return success;
-  },
+  }
 
-  submit: function(){
+  submit(){
     if(!contactF.checkInput()){
       return;
     }
@@ -106,9 +106,24 @@ const contactF = {
     xhr.open('POST', '/api/contact/', true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     xhr.onload = function(){
-      console.log(xhr.response);
+      contactF.message(xhr.response ? 'Message was successfully sent' : 'An error occurred. Please try again later.');
+    }
+    xhr.onerror = function(){
+      contactF.message('An error occurred. Please try again later.');
     }
     xhr.send(JSON.stringify(data));
+  }
+
+  message(msg){
+    const wrap = document.querySelector('.form_wrap');
+    const cont = document.createElement('div');
+    cont.style.height = wrap.clientHeight+'px';
+    cont.style.boxSizing = 'border-box';
+    cont.style.paddingTop = '1em';
+    cont.style.fontSize = '2em';
+    cont.innerHTML = msg;
+    wrap.parentElement.append(cont);
+    wrap.remove();
   }
 }
 
