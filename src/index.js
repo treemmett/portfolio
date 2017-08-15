@@ -1,33 +1,37 @@
 import './index.scss';
-if(process.env.NODE_ENV !== 'production')
-  require('file-loader!./index.html');
 
-const drawCanvas = () => {
+const drawCanvasOld = () => {
   const canvas = document.querySelector('canvas');
   const c = canvas.getContext('2d');
-  const height = document.documentElement.clientHeight;
-  const width = document.documentElement.clientWidth;
-  canvas.height = height;
-  canvas.width = width;
+  const colors = ['#2F2933', '#01A2A6', '#29D9C2', '#BDF271', '#FFFFA6'];
+  let height;
+  let width;
   let allCircles = [];
 
+  let mouse = {
+    x: undefined,
+    y: undefined
+  };
+
   class Circle{
-    constructor(radius = 30){
+    constructor(radius = 30, color = 'black'){
       this.x = Math.random() * (width - radius * 2) + radius;
       this.y = Math.random() * (height - radius * 2) + radius;
       this.dx = (Math.random() - 0.5) * 2;
       this.dy = (Math.random() - 0.5) * 2;
+      this.bg = color;
+      this.realRadius = radius;
       this.radius = radius;
+      this.range = 50;
+      this.color = c.fillStyle = colors[Math.floor(Math.random() * colors.length)];
       this.draw();
     }
 
     draw(){
       c.beginPath();
-      c.strokeStyle = 'blue';
-      c.fillStyle = 'black';
       c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      c.fillStyle = this.color;
       c.fill();
-      c.stroke();
     }
 
     update(){
@@ -39,15 +43,34 @@ const drawCanvas = () => {
         this.dy = -this.dy;
       }
 
+      if(this.x + this.range > mouse.x && this.x - this.range < mouse.x && this.y + this.range > mouse.y && this.y - this.range < mouse.y){
+        if(this.radius < this.realRadius + 20){
+          this.radius += 1;
+        }
+      }else{
+        if(this.radius > this.realRadius){
+          this.radius -= 1;
+        }
+      }
+
       this.x += this.dx;
       this.y += this.dy;
       this.draw();
     }
   }
 
-  for(let i = 0; i < 200; i++){
-    allCircles.push(new Circle);
+  function init(){
+    allCircles = [];
+    height = document.documentElement.clientHeight;
+    width = document.documentElement.clientWidth;
+    canvas.height = height;
+    canvas.width = width;
+
+    for(let i = 0; i < 1000; i++){
+      allCircles.push(new Circle(Math.random() * 10 + 1));
+    }
   }
+  init();
 
   function animate(){
     requestAnimationFrame(animate);
@@ -57,8 +80,85 @@ const drawCanvas = () => {
     }
   }
   animate();
-  canvas.addEventListener('mousemove', ()=>{
-    console.log(true);
+
+  canvas.addEventListener('mousemove', (e)=>{
+    mouse.x = e.layerX;
+    mouse.y = e.layerY;
+  });
+
+  canvas.addEventListener('mouseout', ()=>{
+    mouse = {x: undefined, y: undefined}
+  });
+
+  window.addEventListener('resize', init)
+}
+
+const drawCanvas = () => {
+  const canvas = document.querySelector('canvas'),
+        c = canvas.getContext('2d');
+
+  let points = [],
+      margin = 50,
+      colors = ['#01A2A6', '#29D9C2', '#BDF271', '#FFFFA6'],
+      circles = [],
+      mouse = {x: undefined, y: undefined};
+
+  function init(){
+    canvas.height = document.documentElement.clientHeight;
+    canvas.width = document.documentElement.clientWidth;
+    c.fillStyle = '#263248';
+    c.fillRect(0, 0, canvas.width, canvas.height);
+    points = [];
+  }
+  init();
+
+  class Circle{
+    constructor(x, y){
+      this.radius = (Math.random() * 30) + 5;
+      this.x = x;
+      this.y = y;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.vX = (Math.random() - 0.5) * 5;
+      this.vY = (Math.random() - 0.5) * 5;
+      this.draw();
+    }
+
+    draw(){
+      c.beginPath();
+      c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      c.strokeStyle = this.color;
+      c.stroke();
+    }
+
+    update(){
+      this.x += this.vX;
+      this.y += this.vY;
+      this.radius -= 0.8;
+      if(this.radius > 0){
+        this.draw();
+      }
+    }
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    c.fillStyle = '#263248';
+    c.fillRect(0, 0, canvas.width, canvas.height);
+    for(let c in circles){
+      if(circles[c].radius < 0){
+        circles.splice(c, 1);
+      }else{
+        circles[c].update();
+      }
+    }
+  }
+  animate();
+
+  canvas.addEventListener('mousemove', (e)=>{
+    for(let i = 0; i < 2; i++){
+      circles.push(new Circle(e.layerX, e.layerY));
+    }
   });
 }
 
