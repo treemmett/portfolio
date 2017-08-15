@@ -11,8 +11,9 @@ module.exports = {
   entry: './src/index.js',
 
   output: {
+    filename: 'app.js',
     path: path.resolve(__dirname, '../dist'),
-    filename: 'app.js'
+    publicPath: '/'
   },
 
   module: {
@@ -44,20 +45,6 @@ module.exports = {
     ]
   },
 
-  devServer: {
-    contentBase: path.join(__dirname, '../dist'),
-    compress: false,
-    hot: true,
-    proxy:{
-      '/api': {
-        target: 'https://tregan.me',
-        secure: true,
-        changeOrigin: true
-      }
-    },
-    stats: 'errors-only'
-  },
-
   plugins: [
     new CopyWebpackPlugin([{
       from: 'assets',
@@ -79,8 +66,6 @@ module.exports = {
       template: './src/index.html'
     }),
 
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
     new webpack.optimize.UglifyJsPlugin(),
 
   ]
