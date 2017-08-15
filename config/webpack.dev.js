@@ -1,35 +1,32 @@
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack');
 var path = require('path');
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
-var isProd = process.env.NODE_ENV.trim() == 'production';
-
-var cssDev = ['style-loader', 'css-loader', 'sass-loader'];
-var cssProd = ExtractTextPlugin.extract(['css-loader', 'sass-loader']);
+process.env.NODE_ENV = 'development';
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    app: './src/index.js',
+    hotReload: './config/hot.js'
+  },
 
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'app.js'
+    path: path.resolve(__dirname, '../dist'),
+    filename: '[name].js'
   },
 
   module: {
     rules: [
       {
         test: /\.scss$/,
-        use: isProd ? cssProd : cssDev
+        use: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
   },
 
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, '../dist'),
     compress: false,
     hot: true,
     proxy:{
@@ -48,17 +45,11 @@ module.exports = {
       toType: 'dir',
     }]),
 
-    new ExtractTextPlugin({
-      filename: 'style.css',
-      disable: !isProd,
-      allChunks: true
-    }),
-
     new HtmlWebpackPlugin({
       title: 'Website Template',
       minify: {
-        collapseWhitespace: isProd,
-        removeComments: isProd,
+        collapseWhitespace: false,
+        removeComments: false,
       },
       template: './src/index.html'
     }),
