@@ -2,6 +2,66 @@ import './index.scss';
 if(process.env.NODE_ENV !== 'production')
   require('file-loader!./index.html');
 
+const drawCanvas = () => {
+  const canvas = document.querySelector('canvas');
+  const c = canvas.getContext('2d');
+  const height = document.documentElement.clientHeight;
+  const width = document.documentElement.clientWidth;
+  canvas.height = height;
+  canvas.width = width;
+  let allCircles = [];
+
+  class Circle{
+    constructor(radius = 30){
+      this.x = Math.random() * (width - radius * 2) + radius;
+      this.y = Math.random() * (height - radius * 2) + radius;
+      this.dx = (Math.random() - 0.5) * 2;
+      this.dy = (Math.random() - 0.5) * 2;
+      this.radius = radius;
+      this.draw();
+    }
+
+    draw(){
+      c.beginPath();
+      c.strokeStyle = 'blue';
+      c.fillStyle = 'black';
+      c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      c.fill();
+      c.stroke();
+    }
+
+    update(){
+      if(this.x + this.radius > width || this.x - this.radius < 0){
+        this.dx = -this.dx;
+      }
+
+      if(this.y + this.radius > height || this.y - this.radius < 0){
+        this.dy = -this.dy;
+      }
+
+      this.x += this.dx;
+      this.y += this.dy;
+      this.draw();
+    }
+  }
+
+  for(let i = 0; i < 200; i++){
+    allCircles.push(new Circle);
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    c.clearRect(0, 0, width, height);
+    for(let cir in allCircles){
+      allCircles[cir].update();
+    }
+  }
+  animate();
+  canvas.addEventListener('mousemove', ()=>{
+    console.log(true);
+  });
+}
+
 const scrollEffect = () => {
   const scroll = document.body.scrollTop || document.documentElement.scrollTop;
   const banner = document.getElementsByClassName('banner')[0];
@@ -148,4 +208,9 @@ window.addEventListener('load', ()=>{
       'expired-callback': contactF.checkInput
     });
   }
+});
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  //Draw canvas
+  drawCanvas();
 });
