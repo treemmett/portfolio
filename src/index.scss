@@ -8,6 +8,13 @@ html, body{
   font-family:Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+canvas{
+  width:100%;
+  height:100vh;
+  background:linear-gradient(#303d83, #250743);
+  background:#222;
+}
+
 section{
   padding:50px 85px;
 

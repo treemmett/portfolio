@@ -1,5 +1,91 @@
 import './index.scss';
 
+function drawCanvas(){
+  const canvas = document.querySelector('canvas');
+  const c = canvas.getContext('2d');
+  const stars = [];
+  const starFlickerMargin = 0.6;
+
+
+  function init(){
+    canvas.height = document.body.clientHeight;
+    canvas.width = document.body.clientWidth;
+  }
+  init();
+
+  class Star{
+    constructor(){
+      this.x = Math.random() * canvas.width * 2;
+      this.y = Math.random() * canvas.height * 2;
+      this.realRadius = Math.random() + 0.2;
+      this.radius = Math.random() * this.realRadius;
+      this.grow = Math.random() > 0.5;
+      this.draw();
+    }
+
+    draw(){
+      c.beginPath();
+      c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      c.fillStyle = 'white';
+      c.fill();
+    }
+
+    update(){
+      if(this.grow){
+
+        if(this.radius < this.realRadius + starFlickerMargin){
+          this.radius += 0.01;
+        }else{
+          this.grow = !this.grow;
+        }
+
+      }else{
+
+        if(this.radius > this.realRadius - starFlickerMargin && this.radius > 0.1){
+          this.radius -= 0.01;
+        }else{
+          this.grow = !this.grow;
+        }
+
+      }
+
+      this.draw();
+    }
+  }
+
+  for(let i = 0; i < 200; i++){
+    stars.push(new Star());
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    c.clearRect(0, 0, canvas.width, canvas.height);
+
+    //Draw stars
+    for(let i in stars){
+      if(stars[i].x < canvas.width && stars[i].y < canvas.height){
+        stars[i].update();
+      }
+    }
+
+    //Draw sun
+    c.beginPath();
+    c.arc(0, 0, 100, 0, Math.PI * 2, false);
+    c.fillStyle = '#feeb08';
+    c.save();
+    c.shadowBlur = 5;
+    c.shadowOffsetY = 25;
+    c.shadowOffsetX = 25;
+    c.shadowColor = '#feeb08';
+    c.restore();
+    c.fill();
+
+  }
+  animate();
+
+  window.addEventListener('resize', init);
+}
+
 const contactF = new class{
 
   checkInput(){
@@ -96,6 +182,8 @@ const contactF = new class{
 }
 
 window.addEventListener('load', ()=>{
+  //Draw canvas
+  drawCanvas();
 
   //Add contact events
   document.querySelector('.contact .btn').addEventListener('click', contactF.submit);
