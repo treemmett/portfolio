@@ -16,7 +16,7 @@ canvas{
 }
 
 section{
-  padding:50px 85px;
+  padding:3em 4em;
 
   &:last-child{
     margin-bottom:50px;
@@ -163,22 +163,8 @@ section{
       flex-wrap:wrap;
       overflow:hidden;
 
-      .g-recaptcha{
+      #grecaptcha{
         transform-origin:0 0;
-
-        @media screen and (max-width:650px){
-          &{
-            transform:scale(0.8);
-          }
-        }
-
-        @media screen and (max-width:550px){
-          transform:scale(0.75);
-        }
-
-        @media screen and (max-width:400px){
-          transform:scale(0.6);
-        }
       }
 
       .btn{

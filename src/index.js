@@ -5,6 +5,14 @@ import './index.scss';
 
 const contactF = new ContactForm(document.forms.contact);
 
+function resizeCaptcha(){
+  const recap = document.getElementById('grecaptcha');
+  const wrap = recap.parentElement;
+
+  const scale = wrap.clientWidth / recap.clientWidth < 1 ? wrap.clientWidth / recap.clientWidth : 1;
+  recap.style.transform = 'scale('+scale+')';
+}
+
 window.addEventListener('load', ()=>{
   //Draw canvas
   drawCanvas();
@@ -22,5 +30,11 @@ window.addEventListener('load', ()=>{
       callback: ()=>{contactF.checkInput()},
       'expired-callback': ()=>{contactF.checkInput()}
     });
+
+    resizeCaptcha();
   }
+});
+
+window.addEventListener('resize', ()=>{
+  resizeCaptcha();
 });
