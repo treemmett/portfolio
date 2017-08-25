@@ -8,9 +8,16 @@ const contactF = new ContactForm(document.forms.contact);
 function resizeCaptcha(){
   const recap = document.getElementById('grecaptcha');
   const wrap = recap.parentElement;
+  const btn = wrap.querySelector('.btn');
 
-  const scale = wrap.clientWidth / recap.clientWidth < 1 ? wrap.clientWidth / recap.clientWidth : 1;
-  recap.style.transform = 'scale('+scale+')';
+  const scale = wrap.clientWidth / recap.clientWidth;
+
+  if(btn.getBoundingClientRect().top !== recap.getBoundingClientRect().top && scale < 1){
+    recap.style.transform = 'scale('+scale+')';
+  }else{
+    recap.style.transform = 'scale(1)';
+  }
+
 }
 
 window.addEventListener('load', ()=>{
@@ -26,7 +33,9 @@ window.addEventListener('load', ()=>{
   //Load reCAPTCHA
   if(grecaptcha){
     grecaptcha.render(document.getElementById('grecaptcha'), {
-      sitekey: '6Le7mywUAAAAABwwS54ZzT4Xb129TTH1pvT7OnPl',
+      sitekey: '6Lea3iwUAAAAAHaZPlnEhUVb-nCOYFrzO93Ac52t',
+      size: 'invisible',
+      badge: 'inline',
       callback: ()=>{contactF.checkInput()},
       'expired-callback': ()=>{contactF.checkInput()}
     });

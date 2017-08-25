@@ -161,10 +161,11 @@ section{
       margin-top:10px;
       display:flex;
       flex-wrap:wrap;
-      overflow:hidden;
+      justify-content:flex-end;
 
       #grecaptcha{
-        transform-origin:0 0;
+        transform-origin:100% 0;
+        margin-bottom:10px;
       }
 
       .btn{
