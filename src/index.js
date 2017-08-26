@@ -36,8 +36,7 @@ window.addEventListener('load', ()=>{
       sitekey: '6Lea3iwUAAAAAHaZPlnEhUVb-nCOYFrzO93Ac52t',
       size: 'invisible',
       badge: 'inline',
-      callback: ()=>{contactF.checkInput()},
-      'expired-callback': ()=>{contactF.checkInput()}
+      callback: ()=>{contactF.submit()}
     });
 
     resizeCaptcha();

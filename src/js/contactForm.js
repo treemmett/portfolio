@@ -45,6 +45,8 @@ export default class ContactForm{
           break;
         }
 
+        case 'g-recaptcha-response':break;
+
         default: {
           if(input.value.trim() === ''){
             success = false;
@@ -65,6 +67,12 @@ export default class ContactForm{
 
   submit(){
     if(!this.checkInput()){
+      return;
+    }
+    console.log(grecaptcha);
+
+    if(!grecaptcha.getResponse()){
+      grecaptcha.execute();
       return;
     }
 
