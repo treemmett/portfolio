@@ -63,15 +63,6 @@ export function drawCanvas(){
       stars[i].update();
     }
 
-    //Draw trail
-    for(let i in starTrail){
-      if(starTrail[i].x < canvas.width && starTrail[i].y < canvas.height && starTrail[i].radius > 0){
-        starTrail[i].update();
-      }else{
-        starTrail.splice(i, 1);
-      }
-    }
-
   }
   animate();
 
