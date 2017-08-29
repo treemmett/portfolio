@@ -3,6 +3,7 @@ export function drawCanvas(){
   const c = canvas.getContext('2d');
   const stars = [];
   const shootingStars = [];
+  const flickerStars = [];
   const starFlickerMargin = 0.6;
 
   function init(){
@@ -13,10 +14,8 @@ export function drawCanvas(){
 
   class Star{
     constructor(){
-      this.realX = Math.random() * canvas.width;
-      this.realY = Math.random() * canvas.height;
-      this.x = this.realX;
-      this.y = this.realY;
+      this.x = Math.random() * canvas.width * 2;
+      this.y = Math.random() * canvas.height * 2;
 
       this.realRadius = Math.random() + 0.2;
       this.radius = Math.random() * this.realRadius;
@@ -79,6 +78,43 @@ export function drawCanvas(){
     }
   }
 
+  class FlickerStars{
+    constructor(){
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.realRadius = Math.random() * 2;
+      this.radius = 0.1;
+      this.grow = true;
+      this.growthRate = (Math.random() * 0.05) + 0.01;
+      this.draw();
+    }
+
+    draw(){
+      c.beginPath();
+      c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      c.fillStyle = 'rgba(255, 255, 255, '+this.radius+')';
+      c.fill();
+    }
+
+    update(){
+      if(this.grow){
+        if(this.radius < this.realRadius){
+          this.radius += this.growthRate;
+        }else{
+          this.grow = false;
+        }
+      }else{
+        if(this.radius > 0){
+          this.radius -= this.growthRate;
+        }
+      }
+
+      if(this.radius > 0){
+        this.draw();
+      }
+    }
+  }
+
   //Initial star renders
   for(let i = 0; i < 100; i++){
     stars.push(new Star());
@@ -102,8 +138,22 @@ export function drawCanvas(){
       }
     }
 
+    //Draw flickering stars
+    if(Math.random() < 0.15){
+      flickerStars.push(new FlickerStars());
+    }
+
+    //Update flickering stars
+    for(let i in flickerStars){
+      if(flickerStars[i].radius > 0){
+        flickerStars[i].update();
+      }else{
+        flickerStars.splice(i, 1);
+      }
+    }
+
     //Create shooting stars
-    if(Math.random() < 0.02){
+    if(Math.random() < 0.01){
       shootingStars.push(new ShootingStar());
     }
 
