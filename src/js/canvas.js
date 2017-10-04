@@ -78,6 +78,8 @@ export function drawCanvas(){
     }
   }
 
+  let count = 0;
+
   //Add first wave
   waves.push(new Wave());
 
@@ -90,9 +92,40 @@ export function drawCanvas(){
     }
 
     //Roll dice to add new wave
-    if(Math.random() < 0.01){
+    if(Math.random() < 0.02){
       waves.push(new Wave());
     }
+
+    //Paint circle
+    const poly = 70;
+    const step = 2 * Math.PI / poly;
+    const length = 2 * Math.PI;
+    const radius = Math.min(canvas.height / 4.6, canvas.width / 4.6);
+
+    let sine = [];
+    let wavelength = 1.2;
+    let rotation = count * 0.1;
+    let ungulator = 1;
+
+    for(let i = 0; i < poly; i++){
+      sine.push(Math.sin(i/wavelength + rotation) * ungulator);
+    }
+
+    c.beginPath();
+    for(let theta = 0; theta < length; theta += step){
+      let point = sine[(theta / step).toFixed(0)];
+      let x = canvas.width / 2 + (radius + point) * Math.cos(theta);
+      let y = canvas.height / 2 + (radius + point) * Math.sin(theta);
+      c.lineTo(x, y);
+    }
+    c.closePath();
+
+    const grad = c.createRadialGradient(canvas.width/2, canvas.height/2, canvas.height/2, canvas.width/2, canvas.height, 0);
+    grad.addColorStop(0, '#0497FF');
+    grad.addColorStop(1, '#00ff99');
+    c.fillStyle = grad;
+    c.fill();
+    count++;
   }
   animate();
 
