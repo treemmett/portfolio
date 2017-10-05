@@ -103,8 +103,16 @@ export function drawCanvas(){
     requestAnimationFrame(animate);
     c.clearRect(0, 0, canvas.width, canvas.height);
 
+    //Update waves
     for(let i in waves){
       waves[i].update();
+    }
+
+    //Delete old waves
+    for(let i in waves){
+      if(waves[i].finished && waves[i].points[0].alpha < 0){
+        waves.splice(i, 1);
+      }
     }
 
     //Roll dice to add new wave
