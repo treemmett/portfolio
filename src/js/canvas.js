@@ -19,6 +19,8 @@ export function drawCanvas(){
       this.points.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
+        vX: (Math.random() - 0.5) / 4,
+        vY: (Math.random() - 0.5) / 4,
         alpha: 0
       });
     }
@@ -42,10 +44,21 @@ export function drawCanvas(){
     }
 
     update(){
+      //Move point
+      for(let i in this.points){
+        this.points[i].x += this.points[i].vX;
+        this.points[i].y += this.points[i].vY;
+      }
+
       if(this.finished){
         //Decrease alpha for all point
         for(let i in this.points){
           this.points[i].alpha -= 0.01;
+        }
+
+        //Delete wave if alpha is 0
+        if(this.points[0].alpha <= 0){
+          this.delete();
         }
 
       }else if(this.points[this.points.length - 1].alpha < 1){
@@ -73,8 +86,15 @@ export function drawCanvas(){
       this.points.push({
         x: oldX + radius * Math.cos(angle),
         y: oldY + radius * Math.sin(angle),
+        vX: (Math.random() - 0.5) / 4,
+        vY: (Math.random() - 0.5) / 4,
         alpha: 0
       });
+    }
+
+    delete(){
+      const index = waves.indexOf(this);
+      waves.splice(index, 1);
     }
   }
 
