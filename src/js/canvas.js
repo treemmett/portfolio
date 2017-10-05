@@ -12,7 +12,7 @@ export function drawCanvas(){
   class Wave{
     constructor(){
       this.points = [];
-      this.noPoints = Math.random() * 2 + 2;
+      this.noPoints = Math.random() < 0.6 ? 3 : 2;
       this.finished = false;
 
       //Setup initial points
@@ -52,20 +52,27 @@ export function drawCanvas(){
         this.points[i].y += this.points[i].vY;
       }
 
+      //Remove alpha
+      if(this.finished){
+        for(let i in this.points){
+          this.points[i].alpha -= 0.015;
+        }
+        return this.draw();
+      }
+
+      //Set finished state
+      if(this.points.length >= this.noPoints && point.alpha >= 1){
+        this.finished = true;
+      }
+
       //Add alpha
       if(point.alpha < 1){
         point.alpha += 0.01;
       }else
+
       //Add new point
       if(this.points.length < this.noPoints){
         this.addPoint();
-      }
-
-      //Remove alpha
-      if(this.points.length >= this.noPoints){
-        for(let i in this.points){
-          this.points[i].alpha -= 0.01;
-        }
       }
 
       this.draw();
