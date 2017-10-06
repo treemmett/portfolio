@@ -2,6 +2,7 @@ export function drawCanvas(){
   const canvas = document.querySelector('canvas');
   const c = canvas.getContext('2d');
   let waves = [];
+  let mouse = {x: 0, y: 0};
   let animation;
 
   //Mesh variables
@@ -127,11 +128,27 @@ export function drawCanvas(){
       waves.push(new Wave());
     }
 
+    //Set animation speed
+    let speed = animationFrame * 0.1;
+
+    //Mouse effect
+    if(Math.abs(mouse.x - canvas.width / 2) < radius + 50 && Math.abs(mouse.y - canvas.height / 2) < radius + 50){
+      speed = animationFrame * 0.05;
+      waveLength = 2;
+
+      //Add to modifier
+      if(modifier < 3){
+        modifier += 1/6;
+      }
+    }else{
+      waveLength = 1;
+      modifier = 1;
+    }
+
     //Calculate mesh vectors
     let sine = [];
-    let rotation = animationFrame*0.1;
     for(let i = 0; i < polygons; i++) {
-      sine.push(Math.sin(i / waveLength + rotation) * modifier);
+      sine.push(Math.sin(i / waveLength + speed) * modifier);
     }
 
     //Create gradient
@@ -157,4 +174,8 @@ export function drawCanvas(){
   animate();
 
   window.addEventListener('resize', init);
+  canvas.addEventListener('mousemove', function(e){
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
 }
