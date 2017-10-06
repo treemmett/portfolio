@@ -2,10 +2,20 @@ export function drawCanvas(){
   const canvas = document.querySelector('canvas');
   const c = canvas.getContext('2d');
   let waves = [];
+  let animation;
+
+  //Mesh variables
+  let radius;
+  let animationFrame = 0;
+  let modifier = 1;
+  let waveLength = 1;
+  const polygons = 75;
+  const step = Math.PI * 2 / polygons;
 
   function init(){
     canvas.height = document.body.clientHeight;
     canvas.width = document.body.clientWidth;
+    radius = Math.min(canvas.width / 4.5, canvas.height / 4.5);
   }
   init();
 
@@ -94,13 +104,10 @@ export function drawCanvas(){
     }
   }
 
-  let count = 0;
-
   //Add first wave
   waves.push(new Wave());
 
   function animate(){
-    requestAnimationFrame(animate);
     c.clearRect(0, 0, canvas.width, canvas.height);
 
     //Update waves
@@ -120,36 +127,32 @@ export function drawCanvas(){
       waves.push(new Wave());
     }
 
-    //Paint circle
-    const poly = 70;
-    const step = 2 * Math.PI / poly;
-    const length = 2 * Math.PI;
-    const radius = Math.min(canvas.height / 4.6, canvas.width / 4.6);
-
+    //Calculate mesh vectors
     let sine = [];
-    let wavelength = 1.2;
-    let rotation = count * 0.1;
-    let ungulator = 1;
-
-    for(let i = 0; i < poly; i++){
-      sine.push(Math.sin(i/wavelength + rotation) * ungulator);
+    let rotation = animationFrame*0.1;
+    for(let i = 0; i < polygons; i++) {
+      sine.push(Math.sin(i / waveLength + rotation) * modifier);
     }
 
-    c.beginPath();
-    for(let theta = 0; theta < length; theta += step){
-      let point = sine[(theta / step).toFixed(0)];
-      let x = canvas.width / 2 + (radius + point) * Math.cos(theta);
-      let y = canvas.height / 2 + (radius + point) * Math.sin(theta);
-      c.lineTo(x, y);
-    }
-    c.closePath();
-
+    //Create gradient
     const grad = c.createRadialGradient(canvas.width/2, canvas.height/2, canvas.height/2, canvas.width/2, canvas.height, 0);
     grad.addColorStop(0, '#0497FF');
     grad.addColorStop(1, '#00ff99');
+
+    //Draw mesh
+    c.beginPath();
+    for(let theta = 0;  theta < Math.PI * 2;  theta += step) {
+      let point = sine[(theta/step).toFixed(0)];
+      let x = canvas.width / 2 + (radius + point) * Math.cos(theta);
+      let y = canvas.height / 2 + (radius + point) * Math.sin(theta);
+      c.lineTo(x,y);
+    }
+    c.closePath();
     c.fillStyle = grad;
-    c.fill();
-    count++;
+  	c.fill();
+
+    animationFrame++;
+    animation = requestAnimationFrame(animate);
   }
   animate();
 
