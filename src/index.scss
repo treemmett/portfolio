@@ -11,8 +11,16 @@ html, body{
 canvas{
   width:100%;
   height:100vh;
-  background:linear-gradient(#303d83, #250743);
-  background:#222;
+  
+  &#mesh{
+    position:relative;
+    background:transparent;
+  }
+
+  &#background{
+    background:#222;
+    position:absolute;
+  }
 }
 
 section{

@@ -1,4 +1,5 @@
-import {drawCanvas} from './js/canvas';
+import './js/canvas_waves';
+import './js/canvas_mesh';
 import ContactForm from './js/contactForm';
 
 import './index.scss';
@@ -17,13 +18,9 @@ function resizeCaptcha(){
   }else{
     recap.style.transform = 'scale(1)';
   }
-
 }
 
 window.addEventListener('load', ()=>{
-  //Draw canvas
-  drawCanvas();
-
   //Add contact events
   document.querySelector('.contact .btn').addEventListener('click', ()=>{contactF.submit()});
   for(let i = 0; i < document.forms.contact.elements.length; i++){
