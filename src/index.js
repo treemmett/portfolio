@@ -36,6 +36,9 @@ window.addEventListener('load', ()=>{
       callback: ()=>{contactF.submit()}
     });
 
+    //Remove shadow from recaptcha
+    document.querySelector('.grecaptcha-badge').style.boxShadow = '';
+
     resizeCaptcha();
   }
 });
