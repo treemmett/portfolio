@@ -16,12 +16,39 @@ canvas{
   &#mesh{
     position:relative;
     background:transparent;
+    z-index:1;
   }
 
   &#background{
     background:#222;
     position:fixed;
     z-index:-100;
+  }
+}
+
+.banner{
+  width:100%;
+  height:100vh;
+
+  .soc{
+    height:30px;
+    position:absolute;
+    right:0;
+    bottom:0;
+    z-index:2;
+    padding:0 5px 5px 0;
+
+    svg{
+      position:relative;
+      height:100%;
+      stroke:#fff;
+      fill:none;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      cursor:pointer;
+      margin-left:5px;
+    }
   }
 }
 
