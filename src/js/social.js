@@ -8,5 +8,6 @@ window.addEventListener('load', function(){
   document.getElementById('email').addEventListener('click', function(){
     email.select();
     document.execCommand('copy');
+    notification('Email copied to clipboard');
   });
 });
