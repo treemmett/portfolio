@@ -241,7 +241,7 @@ section{
 
 .btn{
   display:inline-block;
-  background:#66ffb3;
+  background:hsl(172, 97%, 47%);
   padding:10px 15px;
   border-radius:5px;
   color:#fff;
@@ -250,11 +250,11 @@ section{
   transition:background-color 0.2s ease;
 
   &:hover{
-    background:hsl(150, 70%, 70%);
+    background:hsl(172, 97%, 42%);
   }
 
   &:active{
-    background:hsl(150, 50%, 70%);
+    background:hsl(172, 97%, 37%);
   }
 
   &.disabled{
