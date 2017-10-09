@@ -200,9 +200,19 @@ section{
       flex-wrap:wrap;
       justify-content:flex-end;
 
-      #grecaptcha{
-        transform-origin:100% 0;
-        margin-bottom:10px;
+      .recaptcha{
+        .main{
+          font-size:10px;
+        }
+
+        .links{
+          font-size:10px;
+          text-align:center;
+
+          a{
+            margin:10px;
+          }
+        }
       }
 
       .btn{
@@ -236,6 +246,21 @@ section{
       margin-top:10px;
       min-height:200px;
     }
+  }
+
+  #grecaptcha{
+    position:fixed;
+    opacity:0;
+    left:-200%;
+  }
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+
+  &:hover{
+    text-decoration:underline;
   }
 }
 

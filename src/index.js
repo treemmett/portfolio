@@ -8,20 +8,6 @@ import './index.scss';
 
 const contactF = new ContactForm(document.forms.contact);
 
-function resizeCaptcha(){
-  const recap = document.getElementById('grecaptcha');
-  const wrap = recap.parentElement;
-  const btn = wrap.querySelector('.btn');
-
-  const scale = wrap.clientWidth / recap.clientWidth;
-
-  if(btn.getBoundingClientRect().top !== recap.getBoundingClientRect().top && scale < 1){
-    recap.style.transform = 'scale('+scale+')';
-  }else{
-    recap.style.transform = 'scale(1)';
-  }
-}
-
 window.addEventListener('load', ()=>{
   //Add contact events
   document.querySelector('.contact .btn').addEventListener('click', ()=>{contactF.submit()});
@@ -37,14 +23,5 @@ window.addEventListener('load', ()=>{
       badge: 'inline',
       callback: ()=>{contactF.submit()}
     });
-
-    //Remove shadow from recaptcha
-    document.querySelector('.grecaptcha-badge').style.boxShadow = '';
-
-    resizeCaptcha();
   }
-});
-
-window.addEventListener('resize', ()=>{
-  resizeCaptcha();
 });
