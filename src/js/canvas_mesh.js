@@ -1,36 +1,21 @@
 window.addEventListener('load', function(){
   const canvas = document.getElementById('mesh');
   const c = canvas.getContext('2d');
-  let mouse = {x: 0, y: 0};
+  let meshes = [];
   let animationFrame = 0;
-  let radius;
-  let animation;
+  let radius = 0;
 
   class Mesh{
-    constructor(){
-      this.modifier = 1;
-      this.waveLength = 1;
+    constructor(i){
+      this.modifier = i;
+      this.waveLength = i;
       this.polygons = 75;
       this.step = Math.PI * 2 / this.polygons;
     }
 
     update(){
       //Set animation speed
-      let speed = animationFrame * 0.1;
-
-      //Mouse effect
-      if(Math.abs(mouse.x - canvas.width / 2) < radius + 50 && Math.abs(mouse.y - canvas.height / 2) < radius + 50){
-        speed = animationFrame * 0.05;
-        this.waveLength = 2;
-
-        //Add to this.modifier
-        if(this.modifier < 3){
-          this.modifier += 1/6;
-        }
-      }else{
-        this.waveLength = 1;
-        this.modifier = 1;
-      }
+      let speed = animationFrame * 0.02;
 
       //Calculate mesh vectors
       this.sine = [];
@@ -55,8 +40,8 @@ window.addEventListener('load', function(){
         c.lineTo(x,y);
       }
       c.closePath();
-      c.fillStyle = grad;
-      c.fill();
+      c.strokeStyle = grad;
+      c.stroke();
     }
   }
 
@@ -67,21 +52,21 @@ window.addEventListener('load', function(){
   }
   init();
 
-  const mesh = new Mesh();
+  //Setup meshes
+  for(let i = 0; i < 4; i++){
+    meshes.push(new Mesh(i+1));
+  }
 
   function animate(){
     c.clearRect(0, 0, canvas.width, canvas.height);
 
-    mesh.update();
+    //Update meshes
+    meshes.forEach(mesh=>mesh.update());
 
     animationFrame++;
-    animation = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
   }
   animate();
 
   window.addEventListener('resize', init);
-  canvas.addEventListener('mousemove', function(e){
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
 });
