@@ -12,32 +12,33 @@ window.addEventListener('DOMContentLoaded', function(){
     email.remove();
   });
 
-  //Header effect
-  document.querySelector('.banner .header').addEventListener('mouseenter', function(){
-    //Remove existing line
+  document.querySelector('.banner .header').addEventListener('mouseenter', lineIn);
+  function lineIn(force){
+    //Add line to DOM
     const line = document.createElement('div');
     line.classList.add('line');
     line.style.marginRight = '100%';
-    document.querySelector('.banner .header').appendChild(line);
-
-    //Toggle animation
-    setTimeout(function(){
-      line.style = '';
-    }, 0);
+    this.querySelector('.under').appendChild(line);
 
     //Add exit event
-    document.querySelector('.banner .header').addEventListener('mouseleave', exit);
-    function exit(){
-      line.style.marginLeft = '100%';
-      this.removeEventListener('mouseleave', exit);
+    this.addEventListener('mouseleave', lineOut);
 
-      //Find animation time
-      const reg = /margin.* (\d+.?\d+?)s/i;
-      const time = getComputedStyle(line).transition.match(reg)[1] * 1000;
+    //Toggle animation
+    setTimeout(function(){line.style = ''}, 0);
 
-      //Set timer until line removal
-      setTimeout(function(){line.remove()}, time);
+    function lineOut(){
+      //Remove exit event
+      this.removeEventListener('mouseleave', lineOut);
+
+      //Set remove event
+      line.addEventListener('transitionend', function(e){
+        if(e.propertyName === 'margin-left'){
+          this.remove();
+        }
+      });
+
+      //Toggle animation
+      setTimeout(function(){line.style.marginLeft = '100%';}, 0);
     }
-
-  });
+  }
 });

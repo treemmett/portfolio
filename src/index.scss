@@ -39,11 +39,18 @@ canvas{
     cursor:default;
     user-select:none;
 
-    .line{
+    .under{
       height:4px;
-      background:#eee;
-      transition:margin 0.5s;
-      margin-bottom:-4px;
+      width:100%;
+      position:absolute;
+      bottom:0;
+
+      .line{
+        background:#eee;
+        height:100%;
+        margin-bottom:-4px;
+        transition:margin 0.5s;
+      }
     }
   }
 
