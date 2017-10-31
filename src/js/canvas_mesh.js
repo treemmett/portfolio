@@ -1,9 +1,46 @@
 window.addEventListener('load', function(){
   const canvas = document.getElementById('mesh');
   const c = canvas.getContext('2d');
+  c.scale(0.5, 0.5);
   let meshes = [];
   let animationFrame = 0;
   let radius = 0;
+
+  function init(){
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const backingStoreRatio = (
+      c.webkitBackingStorePixelRatio ||
+      c.mozBackingStorePixelRatio ||
+      c.msBackingStorePixelRatio ||
+      c.oBackingStorePixelRatio ||
+      c.backingStorePixelRatio || 1
+    );
+
+    //Determine scaling ratio
+    const ratio = devicePixelRatio / backingStoreRatio;
+
+    //Get device dimensions
+    const width = document.body.clientWidth;
+    const height = document.body.clientHeight;
+
+    if(devicePixelRatio !== backingStoreRatio){
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+    }else{
+      //Normal 1:1 scale
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = '';
+      canvas.style.height = '';
+    }
+
+    radius = Math.min(canvas.width / 4.5, canvas.height / 4.5);
+  }
+  init();
+
 
   class Mesh{
     constructor(i){
@@ -44,13 +81,6 @@ window.addEventListener('load', function(){
       c.stroke();
     }
   }
-
-  function init(){
-    canvas.height = document.body.clientHeight;
-    canvas.width = document.body.clientWidth;
-    radius = Math.min(canvas.width / 4.5, canvas.height / 4.5);
-  }
-  init();
 
   //Setup meshes
   for(let i = 0; i < 4; i++){

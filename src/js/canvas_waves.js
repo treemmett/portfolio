@@ -1,12 +1,40 @@
 window.addEventListener('load', function(){
   const canvas = document.getElementById('background');
   const c = canvas.getContext('2d');
+  c.scale(0.5, 0.5);
   let waves = [];
   let animation;
 
   function init(){
-    canvas.height = document.body.clientHeight;
-    canvas.width = document.body.clientWidth;
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const backingStoreRatio = (
+      c.webkitBackingStorePixelRatio ||
+      c.mozBackingStorePixelRatio ||
+      c.msBackingStorePixelRatio ||
+      c.oBackingStorePixelRatio ||
+      c.backingStorePixelRatio || 1
+    );
+
+    //Determine scaling ratio
+    const ratio = devicePixelRatio / backingStoreRatio;
+
+    //Get device dimensions
+    const width = document.body.clientWidth;
+    const height = document.body.clientHeight;
+
+    if(devicePixelRatio !== backingStoreRatio){
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+    }else{
+      //Normal 1:1 scale
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = '';
+      canvas.style.height = '';
+    }
   }
   init();
 
