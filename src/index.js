@@ -1,7 +1,7 @@
 import './js/canvas_waves';
 import './js/canvas_mesh';
 import './js/notification';
-import './js/social';
+import './js/banner';
 import ContactForm from './js/contactForm';
 
 import './index.scss';
