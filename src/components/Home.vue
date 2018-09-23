@@ -4,15 +4,33 @@
       <router-link :to="{name: 'projects'}">Projects</router-link>
       <router-link :to="{name: 'contact'}">Contact</router-link>
     </div>
+
+    <div class="projects">
+      <card/>
+      <card/>
+    </div>
+
   </div>
 </template>
 
+<script>
+import Card from './Card';
+
+export default {
+  components: {
+    Card
+  }  
+}
+</script>
+
+
 <style lang="scss">
-  @import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300');
+  @import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300|Montserrat:300,400');
   $orange: #ffb224;
 
   body{
     margin: 0;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   }
 
   .nav{
@@ -21,8 +39,9 @@
     font-family: sans-serif;
     z-index: 10;
     justify-content: flex-end;
-    padding-top: 3em;
+    margin: 3em 0;
     box-sizing: border-box;
+    font-size: 16px;
 
     a{
       text-decoration: none;
@@ -37,5 +56,9 @@
         color: $orange;
       }
     }
+  }
+
+  .projects{
+    padding: 0 2em;
   }
 </style>
