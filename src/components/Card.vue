@@ -1,12 +1,17 @@
 <template>
   <div class="card">
-    <h2>Netlist</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ornare elit elit. Phasellus vehicula mi posuere purus laoreet tempor. Quisque quis justo ac massa luctus euismod at ac urna. Cras non sollicitudin augue. Nam commodo condimentum sem eget porttitor. Ut eu porta mi, quis porta massa. Aliquam tellus nisl, vehicula ac est a, auctor feugiat ex. Nunc pharetra ut nulla laoreet suscipit. Vestibulum eleifend tincidunt urna nec rhoncus.</p>
-    <div class="badges">
-      <div>HTML</div>
-      <div>JS</div>
-      <div>ReactJS</div>
-      <div>Redux</div>
+    <div class="image">
+      <img src="https://picsum.photos/960/540"/>
+    </div>
+    <div class="content">
+      <h2>Netlist</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ornare elit elit. Phasellus vehicula mi posuere purus laoreet tempor. Quisque quis justo ac massa luctus euismod at ac urna. Cras non sollicitudin augue. Nam commodo condimentum sem eget porttitor. Ut eu porta mi, quis porta massa. Aliquam tellus nisl, vehicula ac est a, auctor feugiat ex. Nunc pharetra ut nulla laoreet suscipit. Vestibulum eleifend tincidunt urna nec rhoncus.</p>
+      <div class="badges">
+        <div>HTML</div>
+        <div>JS</div>
+        <div>ReactJS</div>
+        <div>Redux</div>
+      </div>
     </div>
   </div>
 </template>
@@ -16,20 +21,41 @@
   $orange: #ffb224;
 
   .card{
+    position: relative;
     width: 100%;
-    min-height: 9em;
+    min-height: 10em;
     border-radius: 5px;
-    padding: 2rem;
     box-sizing: border-box;
     box-shadow: 0 1px 4px 0px rgba(#000, 0.2);
     font-size: 16px;
     margin-bottom: 2em;
+    max-width: 60em;
+    overflow: hidden;
+  }
+
+  .image{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.85;
+    clip-path: polygon(0% 0%, 175px 0%, 250px 135px, 0 600px);
+
+    img{
+      position: absolute;
+      left: 0;
+    }
+  }
+
+  .content{
+    padding: 2em;
+    margin-left: 250px;
   }
 
   h2{
     font-size: 22px;
     font-weight: 400;
     color: $blue;
+    margin-top: 0;
     margin-bottom: 2rem;
   }
 

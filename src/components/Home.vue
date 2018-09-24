@@ -59,6 +59,9 @@ export default {
   }
 
   .projects{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 0 2em;
   }
 </style>
