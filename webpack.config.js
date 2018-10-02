@@ -57,6 +57,17 @@ module.exports = {
           },
           'sass-loader'
         ]
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif|svg)(\?.*)?$/,
+        use: [
+          'url-loader?name=assets/[name].[ext]',
+        ]
+      },
+      {
+        test: /\.(jpg|png|gif|svg)$/,
+        loader: 'image-webpack-loader',
+        enforce: 'pre'
       }
     ]
   },

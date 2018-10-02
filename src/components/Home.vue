@@ -15,18 +15,23 @@
 <script>
 import Card from './Card';
 
+// Load images for cards
+import netlistImg from '../assets/netlist.png';
+
 export default {
   data(){
     return {
       cards: [
         {
           title: 'Netlist',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ornare elit elit. Phasellus vehicula mi posuere purus laoreet tempor. Quisque quis justo ac massa luctus euismod at ac urna. Cras non sollicitudin augue. Nam commodo condimentum sem eget porttitor. Ut eu porta mi, quis porta massa. Aliquam tellus nisl, vehicula ac est a, auctor feugiat ex. Nunc pharetra ut nulla laoreet suscipit. Vestibulum eleifend tincidunt urna nec rhoncus.',
+          image: netlistImg,
+          description: 'Netlist is an app designed to help system administrators document and maintain servers and VM\'s. It keeps track of which location a server is in, the hardware installed, updates, and what services run on the server. It uses LDAP for authentication. Front end is built using React and Redux, back end is ran in Node.js and MongoDB',
           badges: [
             'ReactJS',
             'Redux',
-            'Vue.js',
-            'Sass'
+            'Sass',
+            'Node.js',
+            'MongoDB',
           ]
         }
       ]
