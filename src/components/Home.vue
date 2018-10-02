@@ -6,8 +6,7 @@
     </div>
 
     <div class="projects">
-      <card/>
-      <card/>
+      <card v-for="details in cards" v-bind:key="details.title" :details="details"/>
     </div>
 
   </div>
@@ -17,6 +16,22 @@
 import Card from './Card';
 
 export default {
+  data(){
+    return {
+      cards: [
+        {
+          title: 'Netlist',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ornare elit elit. Phasellus vehicula mi posuere purus laoreet tempor. Quisque quis justo ac massa luctus euismod at ac urna. Cras non sollicitudin augue. Nam commodo condimentum sem eget porttitor. Ut eu porta mi, quis porta massa. Aliquam tellus nisl, vehicula ac est a, auctor feugiat ex. Nunc pharetra ut nulla laoreet suscipit. Vestibulum eleifend tincidunt urna nec rhoncus.',
+          badges: [
+            'ReactJS',
+            'Redux',
+            'Vue.js',
+            'Sass'
+          ]
+        }
+      ]
+    }
+  },
   components: {
     Card
   }  
