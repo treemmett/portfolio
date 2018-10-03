@@ -25,7 +25,8 @@ export default {
         {
           title: 'Netlist',
           image: netlistImg,
-          description: 'Netlist is an app designed to help system administrators document and maintain servers and VM\'s. It keeps track of which location a server is in, the hardware installed, updates, and what services run on the server. It uses LDAP for authentication. Front end is built using React and Redux, back end is ran in Node.js and MongoDB',
+          link: 'https://github.com/treemmett/netlist',
+          description: 'Netlist is an app designed to help system administrators document and maintain servers and VM\'s. It keeps track of which location a server is in, the hardware installed, updates, and what services run on the server. It uses LDAP for authentication. Front end is built using React and Redux, back end is ran in Node.js and MongoDB.',
           badges: [
             'ReactJS',
             'Redux',

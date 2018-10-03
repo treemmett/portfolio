@@ -6,6 +6,7 @@
     <div class="content">
       <h2>{{details.title}}</h2>
       <p>{{details.description}}</p>
+      <a class="btn" :href="details.link" target="_blank" rel="noopener noreferrer">View Source</a>
       <div class="badges">
         <div v-for="item in details.badges" v-bind:key="item">{{item}}</div>
       </div>
@@ -68,9 +69,21 @@ export default {
   }
 
   p{
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     font-size: 14px;
     font-weight: 300;
+  }
+
+  .btn{
+    display: inline-block;
+    text-decoration: none;
+    color: $blue;
+    margin-bottom: 1em;
+    border-radius: 5px;
+
+    &:hover{
+      text-decoration: underline;
+    }
   }
 
   .badges div{
@@ -78,8 +91,8 @@ export default {
     border: 1px solid $orange;
     font-weight: 300;
     font-size: 12px;
-    padding: 4px 6px;
-    margin-right: 4px;
+    padding: 5px 6px;
+    margin-right: 6px;
     border-radius: 3px;
   }
 </style>
