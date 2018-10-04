@@ -20,6 +20,7 @@ import Card from './Card';
 
 // Load images for cards
 import netlistImg from '../assets/netlist.png';
+import xacttoolsImg from '../assets/xacttools.png';
 
 export default {
   data(){
@@ -36,6 +37,18 @@ export default {
             'Sass',
             'Node.js',
             'MongoDB',
+          ]
+        },
+        {
+          title: 'XactTools',
+          image: xacttoolsImg,
+          link: 'https://github.com/treemmett/xacttools',
+          description: 'A WebExtension designed to Xactware help tech support agents on their calls. It features various tools to automatically query and make changes to customer accounts by tying into the XactAnalysis platform.',
+          badges: [
+            'HTML',
+            'JavaScript',
+            'WebExtension',
+            'Electron'
           ]
         }
       ]
