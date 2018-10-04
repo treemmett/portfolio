@@ -20,6 +20,7 @@ import Card from './Card';
 
 // Load images for cards
 import netlistImg from '../assets/netlist.png';
+import hireboardImg from '../assets/hireboard.png';
 import xacttoolsImg from '../assets/xacttools.png';
 
 export default {
@@ -33,6 +34,20 @@ export default {
           description: 'Netlist is an app designed to help system administrators document and maintain servers and VM\'s. It keeps track of which location a server is in, the hardware installed, updates, and what services run on the server. It uses LDAP for authentication. Front end is built using React and Redux, back end is ran in Node.js and MongoDB.',
           badges: [
             'ReactJS',
+            'Redux',
+            'Sass',
+            'Node.js',
+            'MongoDB',
+          ]
+        },
+        {
+          title: 'New Hire Board',
+          image: hireboardImg,
+          link: 'https://github.com/treemmett/hireboard',
+          description: 'This app is displayed on the main display in the dōTERRA Help Desk. It\'s designed to help the IT team keep track of their weekly new hires. It uses WebSockets to update the main display in real time when there is a change on the admin side.',
+          badges: [
+            'ReactJS',
+            'WebSocket',
             'Redux',
             'Sass',
             'Node.js',
