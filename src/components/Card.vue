@@ -6,7 +6,7 @@
     <div class="content">
       <h2>{{details.title}}</h2>
       <p>{{details.description}}</p>
-      <a class="btn" :href="details.link" target="_blank" rel="noopener noreferrer">View Source</a>
+      <a :href="details.link" target="_blank" rel="noopener noreferrer">View Source</a>
       <div class="badges">
         <div v-for="item in details.badges" v-bind:key="item">{{item}}</div>
       </div>
@@ -27,7 +27,7 @@ export default {
 
 
 <style lang="scss" scoped>
-  $blue: #3c6997;
+  $blue: #427698;
   $orange: #ffb224;
 
   .card{
@@ -74,7 +74,7 @@ export default {
     font-weight: 300;
   }
 
-  .btn{
+  a{
     display: inline-block;
     text-decoration: none;
     color: $blue;

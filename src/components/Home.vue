@@ -9,6 +9,9 @@
       <card v-for="details in cards" v-bind:key="details.title" :details="details"/>
     </div>
 
+    <div class="contact">
+      <span>Ready to talk? <a href="mailto:hello@tregan.me">Say Hello</a></span>
+    </div>
   </div>
 </template>
 
@@ -52,6 +55,7 @@ export default {
   body{
     margin: 0;
     font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #555;
   }
 
   .nav{
@@ -84,5 +88,21 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 0 2em;
+    margin-bottom: 5em;
+  }
+
+  .contact{
+    text-align: center;
+    margin-bottom: 5em;
+    font-size: 20px;
+
+    a{
+      text-decoration: none;
+      color: #59a5d8;
+
+      &:hover{
+        text-decoration: underline;
+      }
+    }
   }
 </style>
