@@ -1,8 +1,6 @@
 <template>
   <div class="card">
-    <div class="image">
-      <img alt="" :src="details.image"/>
-    </div>
+    <div class="image" v-bind:style="{backgroundImage: `url(${details.image})`}"/>
     <div class="content">
       <h2>{{details.title}}</h2>
       <p>{{details.description}}</p>
@@ -45,14 +43,13 @@ export default {
 
   .image{
     position: absolute;
-    width: 100%;
+    width: 250px;
     height: 100%;
     filter: brightness(98%);
     clip-path: polygon(0% 0%, 175px 0%, 250px 135px, 0 600px);
-
-    img{
-      width: 100%;
-    }
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: auto 100%;
   }
 
   .content{
