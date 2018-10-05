@@ -13,7 +13,7 @@
   "dependencies": {
     "html-webpack-template": "^6.2.0",
     "vue": "^2.5.17",
-    "vue-router": "^3.0.1"
+    "vue-smooth-scroll": "^1.0.13"
   },
   "devDependencies": {
     "autoprefixer": "^9.1.5",

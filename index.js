@@ -1,8 +1,11 @@
-import router from './src/router';
+import Home from './src/components/Home';
 import Vue from 'vue';
+import vueScroll from 'vue-smooth-scroll';
+
+Vue.use(vueScroll);
 
 new Vue({
-  router,
   el: '#app',
-  template: '<router-view></router-view>'
+  components: {Home},
+  template: '<home/>'
 });

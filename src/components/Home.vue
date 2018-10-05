@@ -1,15 +1,15 @@
 <template>
   <div class="page">
     <div class="nav">
-      <router-link :to="{name: 'projects'}">Projects</router-link>
-      <router-link :to="{name: 'contact'}">Contact</router-link>
+      <a href="#projects" v-smooth-scroll>Projects</a>
+      <a href="#contact" v-smooth-scroll>Contact</a>
     </div>
 
-    <div class="projects">
+    <div id="projects">
       <card v-for="details in cards" v-bind:key="details.title" :details="details"/>
     </div>
 
-    <div class="contact">
+    <div id="contact">
       <span>Ready to talk? <a href="mailto:hello@tregan.me">Say Hello</a></span>
     </div>
   </div>
@@ -111,15 +111,15 @@ export default {
     }
   }
 
-  .projects{
+  #projects{
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 2em;
+    padding: 2em;
     margin-bottom: 5em;
   }
 
-  .contact{
+  #contact{
     text-align: center;
     margin-bottom: 5em;
     font-size: 20px;
