@@ -4,11 +4,14 @@ const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 
 const IS_DEV = path.basename(require.main.filename) === 'webpack-dev-server.js';
+process.env.NODE_ENV = IS_DEV ? 'development' : 'production';
 
 module.exports = {
   entry: [
     './index.js'
   ],
+
+  mode: IS_DEV ? 'development' : 'production',
 
   output: {
     filename: 'main.[hash:6].js',
@@ -19,7 +22,7 @@ module.exports = {
     extensions: ['.js', '.json', '.vue'],
     modules: [path.join(__dirname, 'node_modules')],
     alias: {
-      vue: 'vue/dist/vue.js'
+      vue: 'vue/dist/vue.common.js'
     }
   },
 
