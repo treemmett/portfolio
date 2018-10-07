@@ -1,9 +1,13 @@
 <template>
   <div class="page">
-    <div class="nav">
+    <nav>
       <a href="#projects" v-smooth-scroll>Projects</a>
       <a href="#contact" v-smooth-scroll>Contact</a>
-    </div>
+    </nav>
+
+    <header>
+      <h1>I'm Tregan Emmett, a full-stack web developer based in Salt Lake City, Utah.</h1>
+    </header>
 
     <div id="projects">
       <card v-for="details in cards" v-bind:key="details.title" :details="details"/>
@@ -86,7 +90,7 @@ export default {
     color: #555;
   }
 
-  .nav{
+  nav{
     display: flex;
     width: 100vw;
     font-family: sans-serif;
@@ -102,11 +106,32 @@ export default {
       margin-right: 4em;
       font-size: 18px;
       transition: color 0.25s ease;
-      font-family: 'Josefin Sans', Arial, Helvetica, sans-serif;
+      font-family: 'Josefin Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       font-weight: 300;
 
       &:hover{
         color: $orange;
+      }
+    }
+  }
+
+  header{
+    max-width: 60em;
+    margin: 0 auto;
+    padding: 0 2em;
+
+    h1{
+      font-size: 22px;
+      max-width: 75%;
+      margin: 0 0 1em 0;
+      font-size: 36px;
+      line-height: 60px;
+      letter-spacing: 1px;
+
+      @media screen and (max-width: 700px){
+        max-width: 100%;
+        font-size: 24px;
+        line-height: 40px;
       }
     }
   }
@@ -116,7 +141,9 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 2em;
+    margin: 0 auto;
     margin-bottom: 3em;
+    max-width: 60em;
   }
 
   #contact{

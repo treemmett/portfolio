@@ -37,7 +37,6 @@ export default {
     box-shadow: 0 1px 4px 0px rgba(#000, 0.2);
     font-size: 16px;
     margin-bottom: 2em;
-    max-width: 60em;
     overflow: hidden;
   }
 
