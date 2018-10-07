@@ -116,7 +116,7 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 2em;
-    margin-bottom: 5em;
+    margin-bottom: 3em;
   }
 
   #contact{

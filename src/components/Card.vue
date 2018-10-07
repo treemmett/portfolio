@@ -57,6 +57,16 @@ export default {
     margin-left: 250px;
   }
 
+  @media screen and (max-width: 700px){
+    .image{
+      display: none;
+    }
+
+    .content{
+      margin-left: auto;
+    }
+  }
+
   h2{
     font-size: 22px;
     font-weight: 400;
@@ -91,5 +101,6 @@ export default {
     padding: 5px 6px;
     margin-right: 6px;
     border-radius: 3px;
+    margin-top: 6px;
   }
 </style>
