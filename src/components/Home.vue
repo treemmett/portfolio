@@ -7,6 +7,7 @@
 
     <header>
       <h1>I'm Tregan Emmett, a full-stack web developer based in Salt Lake City, Utah.</h1>
+      <a :href="resume" target="_blank" rel="noopener noreferrer">Download Resume</a>
     </header>
 
     <div id="projects">
@@ -27,9 +28,13 @@ import netlistImg from '../assets/netlist.png';
 import hireboardImg from '../assets/hireboard.png';
 import xacttoolsImg from '../assets/xacttools.png';
 
+// Resume link
+import resume from '../assets/resume.pdf';
+
 export default {
   data(){
     return {
+      resume,
       cards: [
         {
           title: 'Netlist',
@@ -62,7 +67,7 @@ export default {
           title: 'XactTools',
           image: xacttoolsImg,
           link: 'https://github.com/treemmett/xacttools',
-          description: 'A WebExtension designed to Xactware help tech support agents on their calls. It features various tools to automatically query and make changes to customer accounts by tying into the XactAnalysis platform.',
+          description: 'A WebExtension designed to help Xactware tech support agents on their calls. It features various tools to automatically query and make changes to customer accounts by tying into the XactAnalysis platform.',
           badges: [
             'HTML',
             'JavaScript',
@@ -78,7 +83,6 @@ export default {
   }  
 }
 </script>
-
 
 <style lang="scss">
   @import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300|Montserrat:300,400');
@@ -96,7 +100,7 @@ export default {
     font-family: sans-serif;
     z-index: 10;
     justify-content: flex-end;
-    margin: 3em 0;
+    padding: 3em 0;
     box-sizing: border-box;
     font-size: 16px;
 
@@ -132,6 +136,20 @@ export default {
         max-width: 100%;
         font-size: 24px;
         line-height: 40px;
+      }
+    }
+
+    a{
+      text-decoration: none;
+      border: 1px solid transparent;
+      color: $orange;
+      padding: 10px;
+      border-radius: 1000px;
+      // margin-left: -10px;
+      transition: border-color 0.2s ease-out;
+      
+      &:hover{
+        border-color: $orange;
       }
     }
   }

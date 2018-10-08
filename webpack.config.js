@@ -71,6 +71,10 @@ module.exports = {
         test: /\.(jpg|png|gif|svg)$/,
         loader: 'image-webpack-loader',
         enforce: 'pre'
+      },
+      {
+        test: /\.(pdf)$/,
+        use: 'file-loader?name=[name].[ext]'
       }
     ]
   },
