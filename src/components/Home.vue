@@ -43,6 +43,7 @@ export default {
           description: 'Netlist is an app designed to help system administrators document and maintain servers and VM\'s. It keeps track of which location a server is in, the hardware installed, updates, and what services run on the server. It uses LDAP for authentication. Front end is built using React and Redux, back end is ran in Node.js and MongoDB.',
           badges: [
             'ReactJS',
+            'Vue.js',
             'Redux',
             'Sass',
             'Node.js',
@@ -145,11 +146,12 @@ export default {
       color: $orange;
       padding: 10px;
       border-radius: 1000px;
-      // margin-left: -10px;
-      transition: border-color 0.2s ease-out;
+      transition: color 0.15s ease, background-color 0.15s ease;
+      border-color: $orange;
       
       &:hover{
-        border-color: $orange;
+        background-color: $orange;
+        color: #fff;
       }
     }
   }
