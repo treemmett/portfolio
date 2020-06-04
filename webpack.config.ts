@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { ConfigurationFactory } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import autoprefixer from 'autoprefixer';
@@ -52,6 +53,21 @@ const config: ConfigurationFactory = (env, { mode }) => {
               loader: 'sass-loader',
               options: {
                 implementation: sass,
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(gif|png|jpe?g)$/i,
+          use: [
+            'file-loader',
+            {
+              loader: 'image-webpack-loader',
+              options: {
+                mozjpeg: {
+                  progressive: true,
+                  quality: 80,
+                },
               },
             },
           ],

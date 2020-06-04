@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap");
+
+body {
+  margin: 0;
+  font-family: Nunito, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.splash {
+  position: relative;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  h1 {
+    color: #fff;
+    margin: 0;
+    padding: 6rem;
+    text-align: right;
+    font-size: 3rem;
+    -webkit-text-stroke: 0.6px black;
+    font-weight: 600;
+  }
+}

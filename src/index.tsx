@@ -1,11 +1,19 @@
 import React, { FC } from 'react';
 import { render } from 'react-dom';
-import { Router } from '@reach/router';
-import Photos from './views/Photos';
+import stars from '../assets/waves.jpg';
+import styles from './styles.scss';
 
-render(
-  <Router>
-    <Photos path="/photos" />
-  </Router>,
-  document.getElementById('root')
-);
+const App: FC = () => {
+  return (
+    <div>
+      <div
+        className={styles.splash}
+        style={{ backgroundImage: `url(${stars})` }}
+      >
+        <h1>Hi, I&apos;m Tregan</h1>
+      </div>
+    </div>
+  );
+};
+
+render(<App />, document.getElementById('root'));
