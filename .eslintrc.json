@@ -1,0 +1,9 @@
+{
+  "extends": "treemmett/react",
+  "overrides": [
+    {
+      "extends": "treemmett/cypress",
+      "files": "test/**/*"
+    }
+  ]
+}

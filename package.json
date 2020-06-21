@@ -8,7 +8,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "lint": "eslint . --ext ts,tsx,js,jsx"
   },
   "dependencies": {
     "@reach/router": "^1.3.3",
@@ -29,7 +30,7 @@
     "css-loader": "^3.5.3",
     "dotenv": "^8.2.0",
     "eslint": "^7.0.0",
-    "eslint-config-zyehex": "^0.3.1",
+    "eslint-config-treemmett": "^0.4.1",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
     "image-webpack-loader": "^6.0.0",
