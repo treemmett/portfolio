@@ -5,98 +5,87 @@ import autoprefixer from 'autoprefixer';
 import { join } from 'path';
 import sass from 'sass';
 
-const config: ConfigurationFactory = (env, { mode }) => {
-  const prod = mode === 'production';
-
-  return {
-    devServer: {
-      historyApiFallback: true,
-      open: true,
-      port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
-      proxy: {
-        '/api': {
-          pathRewrite: {
-            '^/api': '',
-          },
-          target: 'http://localhost:8080',
+const config: ConfigurationFactory = () => ({
+  devServer: {
+    historyApiFallback: true,
+    open: true,
+    port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
+    proxy: {
+      '/api': {
+        pathRewrite: {
+          '^/api': '',
         },
+        target: 'http://localhost:8080',
       },
     },
-    entry: './src/index.tsx',
-    module: {
-      rules: [
-        {
-          loader: 'awesome-typescript-loader',
-          test: /\.tsx?$/,
-        },
-        {
-          test: /\.scss$/,
-          use: [
-            'style-loader',
-            {
-              loader: require.resolve('css-loader'),
-              options: {
-                modules: {
-                  localIdentName: prod
-                    ? '[hash:base64:6]'
-                    : '[path][name]__[local]',
-                },
+  },
+  entry: './src/index.tsx',
+  module: {
+    rules: [
+      {
+        loader: 'awesome-typescript-loader',
+        test: /\.tsx?$/,
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: require.resolve('css-loader'),
+          },
+          {
+            loader: require.resolve('postcss-loader'),
+            options: {
+              plugins: [autoprefixer],
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: sass,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(gif|png|jpe?g)$/i,
+        use: [
+          'file-loader',
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+                quality: 80,
               },
             },
-            {
-              loader: require.resolve('postcss-loader'),
-              options: {
-                plugins: [autoprefixer],
-              },
-            },
-            {
-              loader: 'sass-loader',
-              options: {
-                implementation: sass,
-              },
-            },
-          ],
-        },
-        {
-          test: /\.(gif|png|jpe?g)$/i,
-          use: [
-            'file-loader',
-            {
-              loader: 'image-webpack-loader',
-              options: {
-                mozjpeg: {
-                  progressive: true,
-                  quality: 80,
-                },
-              },
-            },
-          ],
-        },
-      ],
-    },
-    output: {
-      filename: 'main.[hash:6].js',
-      path: join(__dirname, '/dist'),
-      publicPath: '/',
-    },
-
-    plugins: [
-      new HtmlWebpackPlugin({
-        minify: {
-          collapseWhitespace: true,
-          removeComments: true,
-          removeRedundantAttributes: true,
-          removeScriptTypeAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-          useShortDoctype: true,
-        },
-        template: './src/index.html',
-      }),
+          },
+        ],
+      },
     ],
-    resolve: {
-      extensions: ['.ts', '.tsx', '.js'],
-    },
-  };
-};
+  },
+  output: {
+    filename: 'main.[hash:6].js',
+    path: join(__dirname, '/dist'),
+    publicPath: '/',
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true,
+      },
+      template: './src/index.html',
+    }),
+  ],
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+  },
+});
 
 export default config;
