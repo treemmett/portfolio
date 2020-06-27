@@ -10,7 +10,12 @@ const config: ConfigurationFactory = (env, { mode }) => {
 
   return {
     devServer: {
+      cert: process.env.SSL_CERT,
+      disableHostCheck: true,
+      host: '0.0.0.0',
       historyApiFallback: true,
+      https: true,
+      key: process.env.SSL_KEY,
       open: true,
       port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
       proxy: {
