@@ -7,7 +7,12 @@ import sass from 'sass';
 
 const config: ConfigurationFactory = () => ({
   devServer: {
+    cert: process.env.SSL_CERT,
+    disableHostCheck: true,
     historyApiFallback: true,
+    host: '0.0.0.0',
+    https: true,
+    key: process.env.SSL_KEY,
     open: true,
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
     proxy: {
