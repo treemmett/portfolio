@@ -2,6 +2,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
+const sass = require('sass');
 
 const IS_DEV = path.basename(require.main.filename) === 'webpack-dev-server.js';
 process.env.NODE_ENV = IS_DEV ? 'development' : 'production';
@@ -58,7 +59,12 @@ module.exports = {
               ]
             }
           },
-          'sass-loader'
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: sass
+            }
+          }
         ]
       },
       {
