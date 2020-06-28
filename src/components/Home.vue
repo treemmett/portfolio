@@ -10,7 +10,7 @@
         I'm Tregan Emmett, a full-stack web developer based in Salt Lake City,
         Utah.
       </h1>
-      <a :href="resume" target="_blank" rel="noopener noreferrer"
+      <a :href="resume" target="_blank" rel="noopener noreferrer" download="Tregan Emmett Resume.pdf"
         >Download Resume</a
       >
     </header>
@@ -30,16 +30,16 @@
 </template>
 
 <script>
-import Card from "./Card";
+import Card from './Card';
 
 // Load images for cards
-import daguerioImg from "../assets/daguerio.png";
-import netlistImg from "../assets/netlist.png";
-import hireboardImg from "../assets/hireboard.png";
-import xacttoolsImg from "../assets/xacttools.png";
+import daguerioImg from '../assets/daguerio.png';
+import netlistImg from '../assets/netlist.png';
+import hireboardImg from '../assets/hireboard.png';
+import xacttoolsImg from '../assets/xacttools.png';
 
 // Resume link
-import resume from "../assets/resume.pdf";
+import resume from '../assets/resume.pdf';
 
 export default {
   data() {
@@ -47,67 +47,67 @@ export default {
       resume,
       cards: [
         {
-          title: "Daguerio",
+          title: 'Daguerio',
           image: daguerioImg,
-          link: "https://github.com/treemmett/daguerio",
+          link: 'https://github.com/treemmett/daguerio',
           description:
-            "Backup and view your photos where you trust it. Photos can be saved to any S3 compatible store.",
+            'Backup and view your photos where you trust it. Photos can be saved to any S3 compatible store.',
           badges: [
-            "ReactJS",
-            "TypeScript",
-            "Node.js",
-            "GraphQL",
-            "PostgreSQL",
-            "AWS",
-          ],
+            'ReactJS',
+            'TypeScript',
+            'Node.js',
+            'GraphQL',
+            'PostgreSQL',
+            'AWS'
+          ]
         },
         {
-          title: "Netlist",
+          title: 'Netlist',
           image: netlistImg,
-          link: "https://github.com/treemmett/netlist",
+          link: 'https://github.com/treemmett/netlist',
           description:
             "Netlist is an app designed to help system administrators document and maintain servers and VM's. It keeps track of which location a server is in, the hardware installed, updates, and what services run on the server. It uses LDAP for authentication. Front end is built using React and Redux, back end is ran in Node.js and MongoDB.",
-          badges: ["ReactJS", "Vue.js", "Redux", "Sass", "Node.js", "MongoDB"],
+          badges: ['ReactJS', 'Vue.js', 'Redux', 'Sass', 'Node.js', 'MongoDB']
         },
         {
-          title: "New Hire Board",
+          title: 'New Hire Board',
           image: hireboardImg,
-          link: "https://github.com/treemmett/hireboard",
+          link: 'https://github.com/treemmett/hireboard',
           description:
             "This app is displayed on the main display in the dōTERRA Help Desk. It's designed to help the IT team keep track of their weekly new hires. It uses WebSockets to update the main display in real time when there is a change on the admin side.",
           badges: [
-            "ReactJS",
-            "WebSocket",
-            "Redux",
-            "Sass",
-            "Node.js",
-            "MongoDB",
-          ],
+            'ReactJS',
+            'WebSocket',
+            'Redux',
+            'Sass',
+            'Node.js',
+            'MongoDB'
+          ]
         },
         {
-          title: "XactTools",
+          title: 'XactTools',
           image: xacttoolsImg,
-          link: "https://github.com/treemmett/xacttools",
+          link: 'https://github.com/treemmett/xacttools',
           description:
-            "A WebExtension designed to help Xactware tech support agents on their calls. It features various tools to automatically query and make changes to customer accounts by tying into the XactAnalysis platform.",
-          badges: ["HTML", "JavaScript", "WebExtension", "Electron"],
-        },
-      ],
+            'A WebExtension designed to help Xactware tech support agents on their calls. It features various tools to automatically query and make changes to customer accounts by tying into the XactAnalysis platform.',
+          badges: ['HTML', 'JavaScript', 'WebExtension', 'Electron']
+        }
+      ]
     };
   },
   components: {
-    Card,
-  },
+    Card
+  }
 };
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css?family=Josefin+Sans:300|Montserrat:300,400");
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:300|Montserrat:300,400');
 $orange: #ffb224;
 
 body {
   margin: 0;
-  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, Helvetica, Arial, sans-serif;
   color: #555;
 }
@@ -128,8 +128,8 @@ nav {
     margin-right: 4em;
     font-size: 18px;
     transition: color 0.25s ease;
-    font-family: "Josefin Sans", "Montserrat", -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Josefin Sans', 'Montserrat', -apple-system, BlinkMacSystemFont,
+      'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-weight: 300;
 
     &:hover {

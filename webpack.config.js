@@ -32,6 +32,9 @@ module.exports = {
 
   devServer: {
     historyApiFallback: true,
+    https: true,
+    cert: process.env.SSL_CERT,
+    key: process.env.SSL_KEY,
     port: process.env.PORT || 3000,
     proxy: {
       '/api': {
