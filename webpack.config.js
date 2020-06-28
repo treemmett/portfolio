@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const sass = require('sass');
+const webpack = require('webpack');
 
 const IS_DEV = path.basename(require.main.filename) === 'webpack-dev-server.js';
 process.env.NODE_ENV = IS_DEV ? 'development' : 'production';
@@ -105,5 +106,9 @@ module.exports = {
     }),
 
     new VueLoaderPlugin(),
+
+    new webpack.DefinePlugin({
+      "process.env.HEAP_API_KEY": process.env.HEAP_API_KEY,
+    }),
   ]
 }
