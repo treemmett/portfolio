@@ -105,5 +105,9 @@ module.exports = {
     }),
 
     new VueLoaderPlugin(),
+
+    new webpack.DefinePlugin({
+      "process.env.HEAP_API_KEY": process.env.HEAP_API_KEY,
+    }),
   ]
 }
