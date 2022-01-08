@@ -1,0 +1,23 @@
+.post {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content 1fr min-content;
+  margin: 2rem 0;
+  grid-template-areas:
+    'title'
+    'photo'
+    'text';
+}
+
+.photo {
+  grid-area: photo;
+}
+
+.title {
+  grid-area: title;
+  margin: 0;
+}
+
+.text {
+  grid-area: text;
+}

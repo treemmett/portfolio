@@ -4,6 +4,16 @@
   "plugins": ["@typescript-eslint", "prettier"],
   "root": true,
   "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
     "prettier/prettier": "error",
     "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }],
