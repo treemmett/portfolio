@@ -19,7 +19,7 @@ function getRotation(mousePosition: number, elementStart: number, elementWidth: 
   return (product * -1).toFixed(2);
 }
 
-export const Post: FC<PostProps> = ({ height = 400, title = 'Portugal!', width = 1600 }) => {
+export const Post: FC<PostProps> = ({ height = 700, title = 'Portugal!', width = 1000 }) => {
   const ref = useRef<HTMLDivElement>();
 
   const listener = useCallback((e: MouseEvent) => {
