@@ -19,12 +19,7 @@ function getRotation(mousePosition: number, elementStart: number, elementWidth: 
   return product.toFixed(2);
 }
 
-export const Post: FC<PostProps> = ({
-  height = 200,
-  text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et porttitor purus. Donec dapibus, felis vel dictum lobortis, felis augue lobortis nunc, ac rutrum sapien tellus in quam. Quisque pharetra iaculis tortor fringilla feugiat.',
-  title = 'Portugal!',
-  width = 400,
-}) => {
+export const Post: FC<PostProps> = ({ height = 400, title = 'Portugal!', width = 1600 }) => {
   const ref = useRef<HTMLDivElement>();
 
   const listener = useCallback((e: MouseEvent) => {
@@ -51,9 +46,10 @@ export const Post: FC<PostProps> = ({
       onMouseEnter={startListener}
       onMouseLeave={removeListener}
       ref={ref}
+      style={{
+        maxWidth: `${width}px`,
+      }}
     >
-      <h2 className={styles.title}>{title}</h2>
-      <div className={styles.text}>{text}</div>
       <Image
         alt={title}
         className={styles.photo}
