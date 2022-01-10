@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { Post } from '../components/Post';
+import { Gallery } from '../components/Gallery';
 import styles from '../styles/Home.module.scss';
 
 export const Home: NextPage = () => (
@@ -15,12 +15,7 @@ export const Home: NextPage = () => (
       <h1>Tregan</h1>
     </main>
 
-    <section>
-      {new Array(10).fill(null).map((_, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <Post key={i} />
-      ))}
-    </section>
+    <Gallery />
   </div>
 );
 
