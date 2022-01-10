@@ -10,6 +10,15 @@ export interface PostProps {
   width?: number;
 }
 
+const TRANSFORM_SCALE = 20;
+
+function getRotation(mousePosition: number, elementStart: number, elementWidth: number): string {
+  const product =
+    ((mousePosition - elementStart) / elementWidth) * TRANSFORM_SCALE - TRANSFORM_SCALE / 2;
+
+  return product.toFixed(2);
+}
+
 export const Post: FC<PostProps> = ({
   height = 200,
   text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et porttitor purus. Donec dapibus, felis vel dictum lobortis, felis augue lobortis nunc, ac rutrum sapien tellus in quam. Quisque pharetra iaculis tortor fringilla feugiat.',
@@ -21,8 +30,9 @@ export const Post: FC<PostProps> = ({
   const listener = useCallback((e: MouseEvent) => {
     const { offsetLeft, offsetHeight, offsetTop, offsetWidth } = ref.current;
     const { pageX, pageY } = e;
-    const rotateX = (((pageY - offsetTop) / offsetHeight) * 20 - 10).toFixed(2);
-    const rotateY = (((pageX - offsetLeft) / offsetWidth) * 20 - 10).toFixed(2);
+    const rotateX = getRotation(pageY, offsetTop, offsetHeight);
+    const rotateY = getRotation(pageX, offsetLeft, offsetWidth);
+
     ref.current.style.setProperty('transform', `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`);
   }, []);
 
