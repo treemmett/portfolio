@@ -16,7 +16,7 @@ function getRotation(mousePosition: number, elementStart: number, elementWidth: 
   const product =
     ((mousePosition - elementStart) / elementWidth) * TRANSFORM_SCALE - TRANSFORM_SCALE / 2;
 
-  return product.toFixed(2);
+  return (product * -1).toFixed(2);
 }
 
 export const Post: FC<PostProps> = ({ height = 400, title = 'Portugal!', width = 1600 }) => {
