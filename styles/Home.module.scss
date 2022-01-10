@@ -2,10 +2,11 @@
 
 .container {
   display: grid;
+  position: relative;
   grid-template-columns: 30em 1fr;
   grid-template-rows: 1fr;
   gap: 0px 0px;
-  grid-template-areas: 'info photos';
+  grid-template-areas: 'info gallery';
   height: 100vh;
 }
 
