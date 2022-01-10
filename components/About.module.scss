@@ -2,7 +2,7 @@ $width: 25rem;
 $position: 5rem;
 
 .main {
-  background-color: #333;
+  background-color: rgba(#333, 0.85);
   color: #f3f3ff;
   padding: 5rem 2rem;
   position: absolute;
@@ -12,6 +12,7 @@ $position: 5rem;
   z-index: 10;
   left: $position;
   pointer-events: none;
+  backdrop-filter: blur(10px);
 
   h1 {
     margin: 0;
