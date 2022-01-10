@@ -18,7 +18,7 @@ export const Post: FC<PostProps> = ({
     <Image
       alt={title}
       className={styles.photo}
-      src="https://picsum.photos/200/300"
+      src="https://picsum.photos/400/200"
       width={300}
       height={200}
       layout="responsive"
