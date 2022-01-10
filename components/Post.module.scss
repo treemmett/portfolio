@@ -2,12 +2,13 @@
 
 .post {
   display: flex;
+  flex-direction: column;
   perspective: 1000px;
   transform-style: preserve-3d;
   transform: rotateX(0deg) rotateY(0deg);
   transition: transform 0.2s linear;
   flex-shrink: 0;
-  align-items: center;
+  justify-content: center;
   max-width: calc(100% - Gallery.$padding);
 
   & + & {
@@ -18,4 +19,9 @@
 .photo {
   border-radius: 8px;
   position: relative;
+}
+
+.content {
+  margin-top: 1rem;
+  font-size: 1.3rem;
 }

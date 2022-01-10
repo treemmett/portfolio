@@ -54,6 +54,7 @@ export const Post: FC<PostProps> = ({ height = 700, title = 'Portugal!', width =
         width={width}
         height={height}
       />
+      <div className={styles.content}>{title}</div>
     </div>
   );
 };
