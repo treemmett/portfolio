@@ -10,5 +10,5 @@ $padding: 2rem;
   width: 100%;
   overflow-y: auto;
   padding: $padding;
-  padding-left: calc($padding + About.$width + About.$position);
+  padding-left: calc($padding + About.$width);
 }
