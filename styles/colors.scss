@@ -1,2 +1,5 @@
 $background: #ecf8f8;
 $text: #1f271b;
+
+$textLight: $background;
+$backgroundDark: darken($text, 5%);

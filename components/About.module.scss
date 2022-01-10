@@ -1,9 +1,11 @@
+@use '../styles/colors';
+
 $width: 25rem;
 $position: 5rem;
 
 .main {
-  background-color: rgba(#333, 0.85);
-  color: #f3f3ff;
+  background-color: rgba(colors.$backgroundDark, 0.85);
+  color: colors.$textLight;
   padding: 5rem 2rem;
   position: absolute;
   font-size: 2rem;
