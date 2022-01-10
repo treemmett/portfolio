@@ -1,5 +1,11 @@
 {
-  "extends": ["next/core-web-vitals", "airbnb", "airbnb/hooks", "plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": [
+    "next/core-web-vitals",
+    "airbnb",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "prettier"],
   "root": true,
@@ -17,6 +23,7 @@
     "prettier/prettier": "error",
     "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }],
+    "react/no-unescaped-entities": "off",
     "react/react-in-jsx-scope": "off"
   }
 }

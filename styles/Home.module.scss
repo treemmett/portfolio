@@ -1,20 +1,22 @@
 @use './colors';
 
 .container {
-  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 30em 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-template-areas: 'info photos';
+  height: 100vh;
 }
 
 .main {
-  padding: 4rem 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+  background-color: #333;
+  color: #f3f3ff;
+  padding: 5rem 2rem;
+  font-size: 2rem;
+  margin-left: 5rem;
 
-.title {
-  margin: 0;
-  line-height: 1.15;
-  font-size: 4rem;
+  h1 {
+    margin: 0;
+  }
 }
