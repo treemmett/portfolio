@@ -19,7 +19,7 @@ $position: 5rem;
   backdrop-filter: blur(18px);
 
   &.backdrop {
-    background-color: rgba(colors.$backgroundDark, 80%);
+    background-color: rgba(colors.$backgroundDark, 90%);
     z-index: 1;
   }
 
@@ -28,7 +28,7 @@ $position: 5rem;
     color: colors.$text;
 
     &.backdrop {
-      background-color: rgba(colors.$background, 80%);
+      background-color: rgba(colors.$background, 90%);
     }
   }
 
