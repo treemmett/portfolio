@@ -46,9 +46,6 @@ export const Post: FC<PostProps> = ({ height = 400, title = 'Portugal!', width =
       onMouseEnter={startListener}
       onMouseLeave={removeListener}
       ref={ref}
-      style={{
-        maxWidth: `${width}px`,
-      }}
     >
       <Image
         alt={title}
@@ -56,7 +53,6 @@ export const Post: FC<PostProps> = ({ height = 400, title = 'Portugal!', width =
         src={`https://picsum.photos/${width}/${height}`}
         width={width}
         height={height}
-        layout="responsive"
       />
     </div>
   );
