@@ -3,14 +3,18 @@ import { FC, useCallback, useRef } from 'react';
 import styles from './Post.module.scss';
 
 export interface PostProps {
+  height?: number;
   title?: string;
   text?: string;
   photo?: string;
+  width?: number;
 }
 
 export const Post: FC<PostProps> = ({
+  height = 200,
   text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et porttitor purus. Donec dapibus, felis vel dictum lobortis, felis augue lobortis nunc, ac rutrum sapien tellus in quam. Quisque pharetra iaculis tortor fringilla feugiat.',
   title = 'Portugal!',
+  width = 400,
 }) => {
   const ref = useRef<HTMLDivElement>();
 
@@ -43,9 +47,9 @@ export const Post: FC<PostProps> = ({
       <Image
         alt={title}
         className={styles.photo}
-        src="https://picsum.photos/400/200"
-        width={300}
-        height={200}
+        src={`https://picsum.photos/${width}/${height}`}
+        width={width}
+        height={height}
         layout="responsive"
       />
     </div>
