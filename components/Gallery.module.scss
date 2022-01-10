@@ -1,3 +1,7 @@
+@use './About.module';
+
+$padding: 2rem;
+
 .gallery {
   grid-area: gallery;
   display: flex;
@@ -5,5 +9,6 @@
   position: relative;
   width: 100%;
   overflow-y: auto;
-  padding: 2rem;
+  padding: $padding;
+  padding-left: calc($padding + About.$width + About.$position);
 }
