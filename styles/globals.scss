@@ -9,6 +9,11 @@ body {
   margin: 0;
   font-family: 'Gowun Batang', serif;
   font-size: 16;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: colors.$backgroundDark;
+    color: colors.$textLight;
+  }
 }
 
 a {

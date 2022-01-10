@@ -4,7 +4,7 @@ $width: 25rem;
 $position: 5rem;
 
 .main {
-  background-color: rgba(colors.$backgroundDark, 0.85);
+  background-color: rgba(colors.$backgroundDark, 10%);
   color: colors.$textLight;
   padding: 5rem 2rem;
   position: absolute;
@@ -15,6 +15,11 @@ $position: 5rem;
   left: $position;
   pointer-events: none;
   backdrop-filter: blur(10px);
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(colors.$background, 10%);
+    color: colors.$text;
+  }
 
   h1 {
     margin: 0;
