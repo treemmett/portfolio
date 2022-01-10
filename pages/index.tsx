@@ -12,8 +12,8 @@ export const Home: NextPage = () => (
     </Head>
 
     <About />
-
     <Gallery />
+    <About backdrop />
   </div>
 );
 

@@ -10,6 +10,7 @@
   flex-shrink: 0;
   justify-content: center;
   max-width: calc(100% - Gallery.$padding);
+  z-index: 5;
 
   & + & {
     margin-left: Gallery.$padding;

@@ -3,22 +3,33 @@
 $width: 25rem;
 $position: 5rem;
 
-.main {
-  background-color: rgba(colors.$backgroundDark, 10%);
+.main,
+.backdrop {
+  background-color: rgba(colors.$backgroundDark, 5%);
   color: colors.$textLight;
   padding: 5rem 2rem;
-  position: absolute;
+  position: fixed;
   font-size: 2rem;
   width: $width;
   height: 100%;
   z-index: 10;
   left: $position;
+  top: 0;
   pointer-events: none;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(18px);
+
+  &.backdrop {
+    background-color: rgba(colors.$backgroundDark, 80%);
+    z-index: 1;
+  }
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(colors.$background, 10%);
+    background-color: rgba(colors.$background, 5%);
     color: colors.$text;
+
+    &.backdrop {
+      background-color: rgba(colors.$background, 80%);
+    }
   }
 
   h1 {
