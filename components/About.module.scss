@@ -11,6 +11,7 @@ $position: 5rem;
   height: 100%;
   z-index: 10;
   left: $position;
+  pointer-events: none;
 
   h1 {
     margin: 0;
