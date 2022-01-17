@@ -3,24 +3,17 @@ import { getRemValue, toPx } from '../utils/pixels';
 import styles from './Post.module.scss';
 
 export interface PostProps {
-  title?: string;
-  text?: string;
-  photo?: string;
+  height: number;
+  title: string;
+  url: string;
+  width: number;
 }
 
 const MAX_HEIGHT = 40 * getRemValue();
 const HEIGHT = 0.6;
 
-export const Post: FC<PostProps> = ({ title = 'Portugal!' }) => {
-  const [actualHeight, setActualHeight] = useState(0);
-  const [actualWidth, setActualWidth] = useState(0);
-
-  useEffect(() => {
-    setActualHeight(Math.floor(Math.random() * 1000 + 600));
-    setActualWidth(Math.floor(Math.random() * 1000 + 400));
-  }, []);
-
-  const [height, setHeight] = useState(toPx(HEIGHT));
+export const Post: FC<PostProps> = ({ height: actualHeight, title, url, width: actualWidth }) => {
+  const [height, setHeight] = useState(toPx(actualHeight));
   const [width, setWidth] = useState(toPx(actualWidth));
 
   const scaleImage = useCallback(() => {
@@ -39,12 +32,7 @@ export const Post: FC<PostProps> = ({ title = 'Portugal!' }) => {
 
   return (
     <div className={styles.post}>
-      <img
-        alt={title}
-        className={styles.photo}
-        src={`https://picsum.photos/${actualWidth}/${actualHeight}`}
-        style={{ width, height }}
-      />
+      <img alt={title} className={styles.photo} src={url} style={{ width, height }} />
     </div>
   );
 };
