@@ -4,8 +4,8 @@ $width: 25rem;
 
 .main,
 .backdrop {
-  background-color: rgba(colors.$backgroundDark, 5%);
   color: colors.$textLight;
+  background-color: rgba(colors.$backgroundDark, 70%);
   padding: 5rem 2rem;
   position: fixed;
   font-size: 2rem;
@@ -15,19 +15,30 @@ $width: 25rem;
   left: 0;
   top: 0;
   pointer-events: none;
-  backdrop-filter: blur(18px);
 
   &.backdrop {
-    background-color: rgba(colors.$backgroundDark, 90%);
+    background-color: colors.$backgroundDark;
     z-index: 1;
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(colors.$background, 5%);
-    color: colors.$text;
+    background-color: rgba(colors.$background, 70%);
+  }
+
+  @supports (backdrop-filter: blur()) {
+    background-color: rgba(colors.$backgroundDark, 5%);
+    backdrop-filter: blur(18px);
 
     &.backdrop {
-      background-color: rgba(colors.$background, 90%);
+      background-color: colors.$backgroundDark;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: rgba(colors.$background, 5%);
+
+      &.backdrop {
+        background-color: colors.$background;
+      }
     }
   }
 
