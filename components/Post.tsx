@@ -13,8 +13,8 @@ const MAX_HEIGHT = 40 * getRemValue();
 const HEIGHT = 0.6;
 
 export const Post: FC<PostProps> = ({ height: actualHeight, title, url, width: actualWidth }) => {
-  const [height, setHeight] = useState(toPx(actualHeight));
-  const [width, setWidth] = useState(toPx(actualWidth));
+  const [height, setHeight] = useState(toPx(0));
+  const [width, setWidth] = useState(toPx(0));
 
   const scaleImage = useCallback(() => {
     const scaled = window.innerHeight * HEIGHT;
