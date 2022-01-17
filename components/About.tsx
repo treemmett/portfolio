@@ -10,7 +10,7 @@ export const About: FC<AboutProps> = ({ backdrop }) =>
     <main className={styles.backdrop} />
   ) : (
     <main className={styles.main}>
-      <div>Hi, I'm</div>
-      <h1>Tregan</h1>
+      <div>Hi</div>
+      {/* <h1>Tregan</h1> */}
     </main>
   );

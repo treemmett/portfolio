@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
+import { About } from '../components/About';
 import { Post } from '../components/Post';
 import styles from '../styles/Home.module.scss';
 
@@ -28,6 +29,8 @@ export const Home: NextPage = () => (
     {images.map(({ height, width, url }) => (
       <Post height={height} key={url} title={url} width={width} url={url} />
     ))}
+    <About />
+    <About backdrop />
   </div>
 );
 
