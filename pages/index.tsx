@@ -2,7 +2,7 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import { About } from '../components/About';
 import { Post } from '../components/Post';
-import styles from '../styles/Home.module.scss';
+import styles from './home.module.scss';
 
 const images = [
   '/358-1272x1193.jpg',

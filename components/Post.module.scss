@@ -1,4 +1,4 @@
-@use '../styles/Home.module.scss';
+@use '../pages/home.module.scss';
 
 .post {
   border-radius: 8px;
@@ -10,6 +10,6 @@
 .photo {
   border-radius: 8px;
   height: 40rem;
-  margin-right: Home.$padding;
+  margin-right: home.$padding;
   box-shadow: 0 0 38px 2px rgba(0, 0, 0, 0.46);
 }
