@@ -1,5 +1,5 @@
 {
-  "name": "blog-web",
+  "name": "blog",
   "private": true,
   "scripts": {
     "dev": "next dev",
