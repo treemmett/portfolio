@@ -3,3 +3,27 @@ $text: #1f271b;
 
 $textLight: $background;
 $backgroundDark: darken($text, 5%);
+
+@mixin theme {
+  background-color: $background;
+  border-color: $text;
+  color: $text;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: $backgroundDark;
+    border-color: $textLight;
+    color: $textLight;
+  }
+}
+
+@mixin invertedTheme {
+  background-color: $backgroundDark;
+  border-color: $textLight;
+  color: $textLight;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: $background;
+    border-color: $text;
+    color: $text;
+  }
+}

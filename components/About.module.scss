@@ -4,8 +4,7 @@ $width: 25rem;
 
 .main,
 .backdrop {
-  color: colors.$textLight;
-  background-color: rgba(colors.$backgroundDark, 70%);
+  @include colors.invertedTheme;
   padding: 5rem 2rem;
   position: fixed;
   font-size: 2rem;
@@ -17,27 +16,16 @@ $width: 25rem;
   pointer-events: none;
 
   &.backdrop {
-    background-color: colors.$backgroundDark;
     z-index: 1;
   }
 
-  @media (prefers-color-scheme: dark) {
-    background-color: rgba(colors.$background, 70%);
-  }
-
   @supports (backdrop-filter: blur()) {
-    background-color: rgba(colors.$backgroundDark, 5%);
-    backdrop-filter: blur(18px);
+    &:not(.backdrop) {
+      background-color: rgba(colors.$backgroundDark, 5%);
+      backdrop-filter: blur(18px);
 
-    &.backdrop {
-      background-color: colors.$backgroundDark;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      background-color: rgba(colors.$background, 5%);
-
-      &.backdrop {
-        background-color: colors.$background;
+      @media (prefers-color-scheme: dark) {
+        background-color: rgba(colors.$background, 5%);
       }
     }
   }
