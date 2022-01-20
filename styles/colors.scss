@@ -1,29 +1,28 @@
 $background: #ecf8f8;
 $text: #1f271b;
-
-$textLight: $background;
-$backgroundDark: darken($text, 5%);
+$text-light: $background;
+$background-dark: color.adjust($text, $lightness: -5%);
 
 @mixin theme {
-  background-color: $background;
   border-color: $text;
+  background-color: $background;
   color: $text;
 
   @media (prefers-color-scheme: dark) {
-    background-color: $backgroundDark;
-    border-color: $textLight;
-    color: $textLight;
+    border-color: $text-light;
+    background-color: $background-dark;
+    color: $text-light;
   }
 }
 
-@mixin invertedTheme {
-  background-color: $backgroundDark;
-  border-color: $textLight;
-  color: $textLight;
+@mixin inverted-theme {
+  border-color: $text-light;
+  background-color: $background-dark;
+  color: $text-light;
 
   @media (prefers-color-scheme: dark) {
-    background-color: $background;
     border-color: $text;
+    background-color: $background;
     color: $text;
   }
 }

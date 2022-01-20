@@ -4,15 +4,16 @@ $width: 25rem;
 
 .main,
 .backdrop {
-  @include colors.invertedTheme;
-  padding: 5rem 2rem;
+  @include colors.inverted-theme;
+
   position: fixed;
-  font-size: 2rem;
+  z-index: 10;
+  top: 0;
+  left: 0;
   width: $width;
   height: 100%;
-  z-index: 10;
-  left: 0;
-  top: 0;
+  padding: 5rem 2rem;
+  font-size: 2rem;
   pointer-events: none;
 
   &.backdrop {
@@ -21,11 +22,11 @@ $width: 25rem;
 
   @supports (backdrop-filter: blur()) {
     &:not(.backdrop) {
-      background-color: rgba(colors.$backgroundDark, 5%);
       backdrop-filter: blur(18px);
+      background-color: rgb(colors.$background-dark / 5%);
 
       @media (prefers-color-scheme: dark) {
-        background-color: rgba(colors.$background, 5%);
+        background-color: rgb(colors.$background / 5%);
       }
     }
   }

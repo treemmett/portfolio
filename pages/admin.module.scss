@@ -1,29 +1,30 @@
 @use '../styles/colors';
 
 .container {
+  position: relative;
   display: flex;
+  width: 30rem;
   flex-direction: column;
   align-items: center;
-  position: relative;
   padding: 5rem 2rem;
-  width: 30rem;
   margin: 0 auto;
 }
 
 .picker {
   @include colors.theme;
+
+  overflow: hidden;
+  width: 100%;
   padding: 3rem;
-  border: 1px dashed;
+  border: 1px solid hsl(20deg 0% 20% / 80%);
   border-radius: 8px;
   cursor: pointer;
-  width: 100%;
-  overflow: hidden;
 
   &:not(.selected) {
     display: flex;
-    justify-content: center;
-    align-items: center;
     height: 15rem;
+    align-items: center;
+    justify-content: center;
   }
 
   &.selected {
@@ -37,6 +38,6 @@
 }
 
 .preview {
-  width: 100%;
   display: block;
+  width: 100%;
 }
