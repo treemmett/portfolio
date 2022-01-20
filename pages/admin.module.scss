@@ -1,0 +1,46 @@
+@use '../styles/colors';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 5rem 2rem;
+  // height: 100vh;
+  width: 30rem;
+  margin: 0 auto;
+}
+
+.picker {
+  padding: 3rem;
+  border: 1px dashed colors.$text;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  overflow: hidden;
+
+  &:not(.selected) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15rem;
+  }
+
+  &.selected {
+    padding: 0;
+    border: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    border-color: colors.$textLight;
+  }
+
+  input {
+    display: none;
+  }
+}
+
+.preview {
+  width: 100%;
+  display: block;
+}
