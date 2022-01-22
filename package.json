@@ -5,8 +5,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint && stylelint **/*.scss",
+    "lint": "concurrently yarn:lint:*",
+    "lint:code": "next lint",
     "lint:spelling": "cspell **/*.{css,json,js,jsx,md,scss,ts,tsx}",
+    "lint:style": "stylelint **/*.scss",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -29,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
+    "concurrently": "^7.0.0",
     "cspell": "^5.16.0",
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "19.0.4",
