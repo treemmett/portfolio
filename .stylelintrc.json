@@ -9,6 +9,7 @@
     "csstree/validator": {
       "syntaxExtensions": ["sass"]
     },
+    "color-function-notation": "legacy",
     "prettier/prettier": true
   }
 }
