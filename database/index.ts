@@ -1,5 +1,5 @@
 import { Connection, getConnectionManager } from 'typeorm';
-import { Photo } from './entities/Photo';
+import { Photo } from '../entities/Photo';
 
 /**
  * Get existing database connection, or open a new connection if closed
