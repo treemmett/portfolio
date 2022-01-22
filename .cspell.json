@@ -1,5 +1,16 @@
 {
   "version": "0.2",
   "language": "en",
-  "words": ["Batang", "commitlint", "csstree", "Gowun", "picsum", "stylelint", "Tregan", "typeorm"]
+  "words": [
+    "Batang",
+    "commitlint",
+    "componentize",
+    "csstree",
+    "Gowun",
+    "picsum",
+    "preload",
+    "stylelint",
+    "Tregan",
+    "typeorm"
+  ]
 }
