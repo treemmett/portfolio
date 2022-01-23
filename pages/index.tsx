@@ -23,11 +23,11 @@ export const Home: NextPage = () => (
   <div className={styles.container}>
     <Head>
       <title>Tregan</title>
-      <link rel="icon" href="/favicon.ico" />
+      <link href="/favicon.ico" rel="icon" />
     </Head>
 
     {images.map(({ height, width, url }) => (
-      <Post height={height} key={url} title={url} width={width} url={url} />
+      <Post height={height} key={url} title={url} url={url} width={width} />
     ))}
     <About />
     <About backdrop />

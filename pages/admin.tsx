@@ -27,7 +27,7 @@ const Admin: NextPage = () => {
         ) : (
           <div>Pick an image</div>
         )}
-        <input accept="image/*" type="file" id="image" onChange={handleFileChange} />
+        <input accept="image/*" id="image" onChange={handleFileChange} type="file" />
       </label>
     </div>
   );
