@@ -13,9 +13,9 @@ const images = [
   const [, width, height] = /-(\d+)x(\d+)/.exec(url);
 
   return {
+    height: parseInt(height, 10),
     url,
     width: parseInt(width, 10),
-    height: parseInt(height, 10),
   };
 });
 

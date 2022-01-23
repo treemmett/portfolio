@@ -32,7 +32,7 @@ export const Post: FC<PostProps> = ({ height: actualHeight, title, url, width: a
 
   return (
     <div className={styles.post}>
-      <img alt={title} className={styles.photo} src={url} style={{ width, height }} />
+      <img alt={title} className={styles.photo} src={url} style={{ height, width }} />
     </div>
   );
 };
