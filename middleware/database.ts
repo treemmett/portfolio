@@ -1,4 +1,4 @@
-import { Connection, createConnection } from 'typeorm';
+import { createConnection, getConnectionManager } from 'typeorm';
 import { Photo } from '../entities/Photo';
 
 /**
@@ -6,7 +6,7 @@ import { Photo } from '../entities/Photo';
  * @param name Defaults to 'default'
  * @returns typeorm.Connection
  */
-export async function connectToDB(name = 'default'): Promise<Connection> {
+export async function connectToDB(name = 'default'): Promise<void> {
   const {
     DB_DATABASE = 'blog',
     DB_HOST = 'localhost',
@@ -15,7 +15,16 @@ export async function connectToDB(name = 'default'): Promise<Connection> {
     DB_USER,
   } = process.env;
 
-  return createConnection({
+  if (getConnectionManager().has(name)) {
+    const conn = getConnectionManager().get(name);
+    if (!conn.isConnected) {
+      await conn.connect();
+    }
+
+    return;
+  }
+
+  await createConnection({
     database: DB_DATABASE,
     entities: [Photo],
     host: DB_HOST,

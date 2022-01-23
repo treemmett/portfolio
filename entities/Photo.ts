@@ -2,7 +2,9 @@ import { File } from 'formidable';
 import Jimp from 'jimp';
 import { Column, Entity, getRepository, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'photos' })
+const TABLE_NAME = 'photos';
+
+@Entity({ name: TABLE_NAME })
 export class Photo {
   @PrimaryGeneratedColumn()
   public id: number;
@@ -15,6 +17,10 @@ export class Photo {
 
   @Column({ nullable: false })
   public width: number;
+
+  public static repository() {
+    return getRepository<Photo>(TABLE_NAME);
+  }
 
   public static async upload(file: File): Promise<Photo> {
     if (!file) throw new Error('No photo to process');
@@ -34,6 +40,6 @@ export class Photo {
     photo.url = file.filepath;
     photo.width = image.bitmap.width;
 
-    return getRepository(Photo).save(photo);
+    return Photo.repository().save(photo);
   }
 }
