@@ -32,8 +32,8 @@ export async function connectToDB(name = 'default'): Promise<Connection> {
     name,
     password: DB_PASS,
     port: parseInt(DB_PORT, 10),
-    type: 'postgres',
     synchronize: true,
+    type: 'postgres',
     username: DB_USER,
   });
 

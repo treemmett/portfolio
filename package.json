@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "concurrently yarn:lint:*",
-    "lint:code": "next lint",
+    "lint:code": "next lint -d .",
     "lint:format": "prettier . --check",
     "lint:spelling": "cspell **/*.{css,json,js,jsx,md,scss,ts,tsx}",
     "lint:style": "stylelint **/*.scss",
