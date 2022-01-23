@@ -1,7 +1,11 @@
 import 'reflect-metadata';
 import { NextApiResponse, PageConfig } from 'next';
 import nextConnect from 'next-connect';
+import { Photo } from '../../entities/Photo';
 import { bodyParser, ParsedApiRequest } from '../../middleware/bodyParser';
+import { connectToDB } from '../../middleware/database';
+
+await connectToDB();
 
 export default nextConnect<ParsedApiRequest, NextApiResponse>({
   onError(err, req, res) {
@@ -12,9 +16,7 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
   },
 })
   .use(bodyParser)
-  .post('/api/photo', async (req, res) => {
-    res.json([req.body, req.files]);
-  });
+  .post('/api/photo', async (req, res) => res.json(await Photo.upload(req.files.file)));
 
 export const config: PageConfig = {
   api: {

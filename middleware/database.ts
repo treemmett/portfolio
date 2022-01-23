@@ -1,4 +1,4 @@
-import { Connection, getConnectionManager } from 'typeorm';
+import { Connection, createConnection } from 'typeorm';
 import { Photo } from '../entities/Photo';
 
 /**
@@ -7,16 +7,6 @@ import { Photo } from '../entities/Photo';
  * @returns typeorm.Connection
  */
 export async function connectToDB(name = 'default'): Promise<Connection> {
-  const manager = getConnectionManager();
-
-  if (manager.has(name)) {
-    const conn = manager.get(name);
-    if (!conn.isConnected) {
-      return conn.connect();
-    }
-    return conn;
-  }
-
   const {
     DB_DATABASE = 'blog',
     DB_HOST = 'localhost',
@@ -25,7 +15,7 @@ export async function connectToDB(name = 'default'): Promise<Connection> {
     DB_USER,
   } = process.env;
 
-  const connection = manager.create({
+  return createConnection({
     database: DB_DATABASE,
     entities: [Photo],
     host: DB_HOST,
@@ -36,6 +26,4 @@ export async function connectToDB(name = 'default'): Promise<Connection> {
     type: 'postgres',
     username: DB_USER,
   });
-
-  return connection.connect();
 }
