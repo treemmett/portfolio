@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import nextConnect from 'next-connect';
 import { NextApiResponse, PageConfig } from 'next';
+import nextConnect from 'next-connect';
 import { bodyParser, ParsedApiRequest } from '../../middleware/bodyParser';
 
 export default nextConnect<ParsedApiRequest, NextApiResponse>({

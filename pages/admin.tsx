@@ -1,6 +1,6 @@
+import cx from 'classnames';
 import { NextPage } from 'next';
 import { ChangeEventHandler, useCallback, useState } from 'react';
-import cx from 'classnames';
 import styles from './admin.module.scss';
 
 const Admin: NextPage = () => {

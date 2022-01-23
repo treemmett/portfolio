@@ -1,5 +1,5 @@
-import { ChangeEventHandler, FC, useEffect, useState } from 'react';
 import cx from 'classnames';
+import { ChangeEventHandler, FC, useEffect, useState } from 'react';
 import styles from './Input.module.scss';
 
 export interface InputProps {

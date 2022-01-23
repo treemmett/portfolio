@@ -21,6 +21,7 @@
       }
     ],
     "@next/next/no-img-element": "off",
+    "import/order": ["error", { "alphabetize": { "order": "asc" } }],
     "import/prefer-default-export": "off",
     "prettier/prettier": "error",
     "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
@@ -30,5 +31,3 @@
     "sort-keys": ["error", "asc", { "natural": true }]
   }
 }
-
-/* eslint-disable @next/next/no-img-element */
