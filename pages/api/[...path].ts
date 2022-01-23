@@ -1,14 +1,23 @@
 import 'reflect-metadata';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiResponse, PageConfig } from 'next';
 import nextConnect from 'next-connect';
+import { bodyParser, ParsedApiRequest } from '../../middleware/bodyParser';
 
-export default nextConnect<NextApiRequest, NextApiResponse>({
+export default nextConnect<ParsedApiRequest, NextApiResponse>({
   onError(err, req, res) {
-    res.status(500).json({ error: 'Something broke' });
+    res.status(500).json({ error: 'Something broke', err: err.toString() });
   },
   onNoMatch(req, res) {
     res.status(404).json({ error: 'Route not found' });
   },
 })
-  .post('/api/test', (req, res) => res.end('hi'))
-  .post('/api/test/one', (req, res) => res.end('one'));
+  .use(bodyParser)
+  .post('/api/photo', async (req, res) => {
+    res.json([req.body, req.files]);
+  });
+
+export const config: PageConfig = {
+  api: {
+    bodyParser: false,
+  },
+};
