@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@types/formidable": "^2.0.3",
+    "@types/uuid": "^8.3.4",
+    "aws-sdk": "^2.1062.0",
     "body-parser": "^1.19.1",
     "class-transformer": "^0.5.1",
     "classnames": "^2.3.1",
@@ -25,7 +27,8 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.41"
+    "typeorm": "^0.2.41",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
