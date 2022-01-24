@@ -22,6 +22,10 @@ export class Photo {
     return getRepository<Photo>(TABLE_NAME);
   }
 
+  public static getAll(): Promise<Photo[]> {
+    return Photo.repository().find();
+  }
+
   public static async upload(file: File): Promise<Photo> {
     if (!file) throw new Error('No photo to process');
 

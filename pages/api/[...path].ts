@@ -16,6 +16,7 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
   },
 })
   .use(bodyParser)
+  .get('/api/photo', async (req, res) => res.json(await Photo.getAll()))
   .post('/api/photo', async (req, res) => res.json(await Photo.upload(req.files.file)));
 
 export const config: PageConfig = {
