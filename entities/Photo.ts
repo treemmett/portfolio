@@ -1,3 +1,4 @@
+import { plainToClass } from 'class-transformer';
 import { File } from 'formidable';
 import Jimp from 'jimp';
 import { Column, Entity, getRepository, PrimaryGeneratedColumn } from 'typeorm';
@@ -39,10 +40,11 @@ export class Photo {
       });
     });
 
-    const photo = new Photo();
-    photo.height = image.bitmap.height;
-    photo.url = file.filepath;
-    photo.width = image.bitmap.width;
+    const photo = plainToClass(Photo, {
+      height: image.bitmap.height,
+      url: file.filepath,
+      width: image.bitmap.width,
+    });
 
     return Photo.repository().save(photo);
   }
