@@ -28,3 +28,8 @@ $background-dark: color.adjust($text, $lightness: -5%);
     color: $text;
   }
 }
+
+@mixin border {
+  border: 1px solid $text;
+  border-radius: 1rem / 1.2rem;
+}

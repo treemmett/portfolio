@@ -1,5 +1,4 @@
 @use '../styles/colors';
-@use '../styles/shared';
 
 .container {
   position: relative;
@@ -12,8 +11,8 @@
 }
 
 .picker {
+  @include colors.border;
   @include colors.theme;
-  @include shared.border-radius;
 
   overflow: hidden;
   width: 100%;
