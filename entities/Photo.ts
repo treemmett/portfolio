@@ -1,7 +1,6 @@
 import { createReadStream } from 'fs';
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
-import { File } from 'formidable';
 import Jimp from 'jimp';
 import { Column, Entity, getRepository, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
@@ -29,11 +28,11 @@ export class Photo {
     return Photo.repository().find();
   }
 
-  public static async upload(file: File): Promise<Photo> {
-    if (!file) throw new Error('No photo to process');
+  public static async upload(filePath: string): Promise<Photo> {
+    if (!filePath) throw new Error('No photo to process');
 
     const image: Jimp = await new Promise((res, rej) => {
-      Jimp.read(file.filepath, (err, img) => {
+      Jimp.read(filePath, (err, img) => {
         if (err) {
           rej(err);
         } else {
@@ -54,7 +53,7 @@ export class Photo {
 
     await space
       .upload({
-        Body: createReadStream(file.filepath),
+        Body: createReadStream(filePath),
         Bucket: S3_BUCKET,
         Key: id,
       })
