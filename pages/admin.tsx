@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { NextPage } from 'next';
 import { ChangeEventHandler, useCallback, useState } from 'react';
+import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import styles from './admin.module.scss';
 
@@ -31,6 +32,7 @@ const Admin: NextPage = () => {
         <input accept="image/*" id="image" onChange={handleFileChange} type="file" />
       </label>
       <Input className={styles.input} label="Title" />
+      <Button className={styles.input}>Post</Button>
     </div>
   );
 };

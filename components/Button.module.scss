@@ -1,0 +1,21 @@
+@use 'sass:color';
+@use '../styles/shared';
+
+.button {
+  @include shared.border;
+
+  position: relative;
+  padding: 0.8rem 1rem;
+  border-width: 0;
+  background-color: shared.$primary;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-out;
+
+  &:active {
+    background-color: color.adjust(shared.$primary, $lightness: -10%);
+  }
+}

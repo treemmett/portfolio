@@ -6,7 +6,7 @@ export default class Doc extends Document {
       <Html>
         <Head>
           <link
-            href="https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Gowun+Batang:400,500&display=swap"
             rel="stylesheet"
           />
         </Head>

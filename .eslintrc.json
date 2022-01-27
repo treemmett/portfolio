@@ -24,6 +24,7 @@
     "import/order": ["error", { "alphabetize": { "order": "asc" } }],
     "import/prefer-default-export": "off",
     "prettier/prettier": "error",
+    "react/button-has-type": "off",
     "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }],
     "react/jsx-sort-props": ["error", { "shorthandLast": true }],
