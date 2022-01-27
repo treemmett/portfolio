@@ -1,4 +1,4 @@
-@use '../styles/colors';
+@use '../styles/shared';
 
 .container {
   position: relative;
@@ -8,11 +8,15 @@
   align-items: center;
   padding: 5rem 2rem;
   margin: 0 auto;
+
+  > * {
+    margin-bottom: 0.5rem;
+  }
 }
 
 .picker {
-  @include colors.border;
-  @include colors.theme;
+  @include shared.border;
+  @include shared.theme;
 
   overflow: hidden;
   width: 100%;

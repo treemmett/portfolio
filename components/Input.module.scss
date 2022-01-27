@@ -1,12 +1,12 @@
-@use '../styles/colors';
+@use '../styles/shared';
 
 .wrapper {
   position: relative;
 }
 
 .input {
-  @include colors.border;
-  @include colors.theme;
+  @include shared.border;
+  @include shared.theme;
 
   width: 100%;
   padding: 0.75rem 1rem;
@@ -19,7 +19,7 @@
 
 .label {
   height: 1rem;
-  margin: 0.5rem 0;
+  margin-bottom: 0.5rem;
   pointer-events: none;
   user-select: none;
 }

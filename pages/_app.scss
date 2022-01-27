@@ -1,8 +1,8 @@
-@use '../styles/colors';
+@use '../styles/shared';
 
 html,
 body {
-  @include colors.theme;
+  @include shared.theme;
 
   padding: 0;
   margin: 0;
