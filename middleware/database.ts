@@ -1,4 +1,4 @@
-import { createConnection, getConnectionManager } from 'typeorm';
+import { Connection, createConnection, getConnectionManager } from 'typeorm';
 import { Photo } from '../entities/Photo';
 
 /**
@@ -6,7 +6,7 @@ import { Photo } from '../entities/Photo';
  * @param name Defaults to 'default'
  * @returns typeorm.Connection
  */
-export async function connectToDB(name = 'default'): Promise<void> {
+export async function connectToDB(test?: boolean, name = 'default'): Promise<Connection> {
   const {
     DB_DATABASE = 'blog',
     DB_HOST = 'localhost',
@@ -15,24 +15,24 @@ export async function connectToDB(name = 'default'): Promise<void> {
     DB_USER,
   } = process.env;
 
-  if (getConnectionManager().has(name)) {
-    const conn = getConnectionManager().get(name);
-    if (!conn.isConnected) {
-      await conn.connect();
-    }
+  const conn = getConnectionManager().has(name)
+    ? getConnectionManager().get(name)
+    : await createConnection({
+        database: test ? `${DB_DATABASE}_TEST` : DB_DATABASE,
+        dropSchema: test,
+        entities: [Photo],
+        host: DB_HOST,
+        name,
+        password: DB_PASS,
+        port: parseInt(DB_PORT, 10),
+        synchronize: true,
+        type: 'postgres',
+        username: DB_USER,
+      });
 
-    return;
+  if (!conn.isConnected) {
+    await conn.connect();
   }
 
-  await createConnection({
-    database: DB_DATABASE,
-    entities: [Photo],
-    host: DB_HOST,
-    name,
-    password: DB_PASS,
-    port: parseInt(DB_PORT, 10),
-    synchronize: true,
-    type: 'postgres',
-    username: DB_USER,
-  });
+  return conn;
 }
