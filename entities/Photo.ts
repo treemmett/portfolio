@@ -2,8 +2,9 @@ import { createReadStream } from 'fs';
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
-import { Column, Entity, getRepository, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
+import { Post } from './Post';
 
 const TABLE_NAME = 'photos';
 
@@ -13,6 +14,9 @@ const { S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = process.env;
 export class Photo {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
+
+  @OneToMany(() => Post, (p) => p.photos)
+  public post: Post;
 
   @Column({ nullable: false })
   public height: number;

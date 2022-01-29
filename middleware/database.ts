@@ -1,5 +1,6 @@
 import { Connection, createConnection, getConnectionManager } from 'typeorm';
 import { Photo } from '../entities/Photo';
+import { Post } from '../entities/Post';
 
 /**
  * Get existing database connection, or open a new connection if closed
@@ -20,7 +21,7 @@ export async function connectToDB(test?: boolean, name = 'default'): Promise<Con
     : await createConnection({
         database: test ? `${DB_DATABASE}_TEST` : DB_DATABASE,
         dropSchema: test,
-        entities: [Photo],
+        entities: [Photo, Post],
         host: DB_HOST,
         name,
         password: DB_PASS,
