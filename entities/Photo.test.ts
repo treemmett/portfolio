@@ -46,3 +46,17 @@ describe('photo uploads', () => {
     expect(photo.id).toBeDefined();
   });
 });
+
+describe('photo getters', () => {
+  it('should return a list of photos', async () => {
+    const photos = await Promise.all([Photo.upload(PHOTO_PATH), Photo.upload(PHOTO_PATH)]);
+    const list = await Photo.getAll();
+
+    list.forEach((p) => {
+      expect(p).toBeInstanceOf(Photo);
+    });
+    expect(list.length).toBeGreaterThanOrEqual(2);
+    expect(photos.map((p) => p.id)).toContain(photos[0].id);
+    expect(photos.map((p) => p.id)).toContain(photos[1].id);
+  });
+});
