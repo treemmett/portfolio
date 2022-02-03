@@ -1,30 +1,5 @@
-import { resolve } from 'path';
-import { Connection } from 'typeorm';
-import { connectToDB } from '../middleware/database';
+import { PHOTO_PATH } from '../tests/fixtures';
 import { Photo } from './Photo';
-
-jest.mock('aws-sdk', () => ({
-  Credentials: jest.fn(),
-  Endpoint: jest.fn(),
-  S3: jest.fn(() => ({
-    deleteObject: jest.fn().mockReturnThis(),
-    promise: jest.fn(),
-    upload: jest.fn().mockReturnThis(),
-  })),
-}));
-
-let conn: Connection;
-
-const PHOTO_PATH = resolve(__dirname, '../tests/fixtures/358-1272x1193.jpg');
-
-beforeAll(async () => {
-  conn = await connectToDB(true);
-});
-
-afterAll(async () => {
-  await conn.dropDatabase();
-  await conn.close();
-});
 
 describe('photo uploads', () => {
   it('should require a file', async () => {
