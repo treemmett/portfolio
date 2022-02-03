@@ -2,7 +2,7 @@ import { createReadStream } from 'fs';
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
-import { Column, Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, getRepository, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { Post } from './Post';
 
@@ -15,7 +15,7 @@ export class Photo {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @OneToMany(() => Post, (p) => p.photos)
+  @ManyToOne(() => Post, (p) => p.photos)
   public post: Post;
 
   @Column({ nullable: false })
