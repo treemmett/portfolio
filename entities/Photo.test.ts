@@ -1,5 +1,5 @@
 import { PHOTO_PATH } from '../tests/fixtures';
-import { Photo } from './Photo';
+import { Photo, PhotoType } from './Photo';
 
 describe('photo uploads', () => {
   it('should require a file', async () => {
@@ -33,5 +33,27 @@ describe('photo getters', () => {
     expect(list.length).toBeGreaterThanOrEqual(2);
     expect(photos.map((p) => p.id)).toContain(photos[0].id);
     expect(photos.map((p) => p.id)).toContain(photos[1].id);
+  });
+});
+
+describe('photo types', () => {
+  it('should set the default photo type', async () => {
+    const p = await Photo.upload(PHOTO_PATH);
+    expect(p.type).toBe(PhotoType.ORIGINAL);
+  });
+
+  it('should set the original photo type', async () => {
+    const p = await Photo.upload(PHOTO_PATH, PhotoType.ORIGINAL);
+    expect(p.type).toBe(PhotoType.ORIGINAL);
+  });
+
+  it('should set the blurred photo type', async () => {
+    const p = await Photo.upload(PHOTO_PATH, PhotoType.BLURRED);
+    expect(p.type).toBe(PhotoType.BLURRED);
+  });
+
+  it('should set the scaled photo type', async () => {
+    const p = await Photo.upload(PHOTO_PATH, PhotoType.SCALED);
+    expect(p.type).toBe(PhotoType.SCALED);
   });
 });

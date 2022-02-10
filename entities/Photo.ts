@@ -6,9 +6,14 @@ import { Column, Entity, getRepository, ManyToOne, PrimaryGeneratedColumn } from
 import { v4 } from 'uuid';
 import { Post } from './Post';
 
+const { S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = process.env;
 const TABLE_NAME = 'photos';
 
-const { S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = process.env;
+export enum PhotoType {
+  BLURRED,
+  ORIGINAL,
+  SCALED,
+}
 
 @Entity({ name: TABLE_NAME })
 export class Photo {
@@ -21,6 +26,9 @@ export class Photo {
   @Column({ nullable: false })
   public height: number;
 
+  @Column({ enum: PhotoType, type: 'enum' })
+  public type: PhotoType;
+
   @Column({ nullable: false })
   public width: number;
 
@@ -32,7 +40,10 @@ export class Photo {
     return Photo.repository().find();
   }
 
-  public static async upload(filePath: string): Promise<Photo> {
+  public static async upload(
+    filePath: string,
+    type: PhotoType = PhotoType.ORIGINAL
+  ): Promise<Photo> {
     if (!filePath) throw new Error('No photo to process');
 
     const image: Jimp = await new Promise((res, rej) => {
@@ -66,6 +77,7 @@ export class Photo {
     const photo = plainToClass(Photo, {
       height: image.bitmap.height,
       id,
+      type,
       width: image.bitmap.width,
     });
 

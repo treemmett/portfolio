@@ -21,8 +21,10 @@
       }
     ],
     "@next/next/no-img-element": "off",
+    "@typescript-eslint/no-shadow": "error",
     "import/order": ["error", { "alphabetize": { "order": "asc" } }],
     "import/prefer-default-export": "off",
+    "no-shadow": "off",
     "prettier/prettier": "error",
     "react/button-has-type": "off",
     "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
