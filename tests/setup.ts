@@ -1,7 +1,14 @@
+import { Connection } from 'typeorm';
 import { connectToDB } from '../middleware/database';
 
+let conn: Connection;
+
 beforeAll(async () => {
-  await connectToDB({ synchronize: false, test: true });
+  conn = await connectToDB({ synchronize: false, test: true });
+});
+
+afterAll(async () => {
+  await conn.close();
 });
 
 jest.mock('aws-sdk', () => ({
