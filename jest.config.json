@@ -1,3 +1,5 @@
 {
-  "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"]
+  "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
+  "globalSetup": "./tests/globalSetup.ts",
+  "globalTeardown": "./tests/globalTeardown.ts"
 }
