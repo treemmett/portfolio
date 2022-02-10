@@ -1,10 +1,10 @@
-@use '../styles/colors';
+@use '../styles/shared';
 
 $width: 25rem;
 
 .main,
 .backdrop {
-  @include colors.inverted-theme;
+  @include shared.inverted-theme;
 
   position: fixed;
   z-index: 10;
@@ -23,10 +23,10 @@ $width: 25rem;
   @supports (backdrop-filter: blur()) {
     &:not(.backdrop) {
       backdrop-filter: blur(18px);
-      background-color: rgba(colors.$background-dark, 5%);
+      background-color: rgba(shared.$background-dark, 5%);
 
       @media (prefers-color-scheme: dark) {
-        background-color: rgba(colors.$background, 5%);
+        background-color: rgba(shared.$background, 5%);
       }
     }
   }
