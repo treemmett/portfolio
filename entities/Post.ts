@@ -4,7 +4,7 @@ import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
 import { Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
-import { Photo } from './Photo';
+import { Photo, PhotoType } from './Photo';
 
 const TABLE_NAME = 'posts';
 
@@ -21,8 +21,6 @@ export class Post {
   }
 
   public static async upload(filePath: string): Promise<Post> {
-    const path = join(tmpdir(), v4());
-
     const image: Jimp = await new Promise((res, rej) => {
       Jimp.read(filePath, (err, img) => {
         if (err) {
@@ -33,20 +31,31 @@ export class Post {
       });
     });
 
-    await Promise.all([
-      image.clone().scaleToFit(1000, 1000).writeAsync(`${path}_1000`),
-      image.clone().scaleToFit(500, 500).writeAsync(`${path}_500`),
-      image.clone().scaleToFit(1000, 1000).blur(15).writeAsync(`${path}_b_1000`),
-      image.clone().scaleToFit(500, 500).blur(15).writeAsync(`${path}_b_500`),
-    ]);
+    const photos = await Promise.all(
+      [
+        { type: PhotoType.ORIGINAL },
+        { size: 1000, type: PhotoType.SCALED },
+        { size: 500, type: PhotoType.SCALED },
+        { size: 1000, type: PhotoType.BLURRED },
+        { size: 500, type: PhotoType.BLURRED },
+      ].map(async ({ type, size }) => {
+        const img = image.clone();
 
-    const post = plainToClass(Post, {
-      photos: await Promise.all(
-        [filePath, `${path}_1000`, `${path}_500`, `${path}_b_1000`, `${path}_b_500`].map((p) =>
-          Photo.upload(p)
-        )
-      ),
-    });
+        if (type !== PhotoType.ORIGINAL) {
+          img.scaleToFit(size, size);
+
+          if (type === PhotoType.BLURRED) {
+            img.blur(15);
+          }
+        }
+
+        const path = join(tmpdir(), v4());
+        await img.writeAsync(path);
+        return Photo.upload(path, type);
+      })
+    );
+
+    const post = plainToClass(Post, { photos });
 
     await Post.repository().save(post);
     return post;
