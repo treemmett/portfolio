@@ -3,6 +3,8 @@ import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
 import {
+  AfterInsert,
+  AfterLoad,
   Column,
   CreateDateColumn,
   Entity,
@@ -43,13 +45,18 @@ export class Photo {
   @Column({ nullable: false })
   public width: number;
 
+  @AfterLoad()
+  @AfterInsert()
+  public afterLoad() {
+    this.url = `${process.env.CDN_URL}/${this.id}`;
+  }
+
   public static repository() {
     return getRepository<Photo>(TABLE_NAME);
   }
 
   public static async getAll(): Promise<Photo[]> {
-    const photos = await Photo.repository().find();
-    return photos.map((p) => ({ ...p, url: `${process.env.CDN_URL}/${p.id}` }));
+    return Photo.repository().find();
   }
 
   public static async upload(
@@ -91,7 +98,6 @@ export class Photo {
       height: image.bitmap.height,
       id,
       type,
-      url: `${process.env.CDN_URL}/${id}`,
       width: image.bitmap.width,
     });
 
