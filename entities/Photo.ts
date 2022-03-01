@@ -17,6 +17,10 @@ export enum PhotoType {
 
 @Entity({ name: TABLE_NAME })
 export class Photo {
+  public constructor() {
+    this.url = `${process.env.CDN_URL}/${this.id}`;
+  }
+
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -29,6 +33,8 @@ export class Photo {
   @Column({ enum: PhotoType, type: 'enum' })
   public type: PhotoType;
 
+  public url: string;
+
   @Column({ nullable: false })
   public width: number;
 
@@ -36,8 +42,9 @@ export class Photo {
     return getRepository<Photo>(TABLE_NAME);
   }
 
-  public static getAll(): Promise<Photo[]> {
-    return Photo.repository().find();
+  public static async getAll(): Promise<Photo[]> {
+    const photos = await Photo.repository().find();
+    return photos.map((p) => ({ ...p, url: `${process.env.CDN_URL}/${p.id}` }));
   }
 
   public static async upload(
@@ -68,6 +75,7 @@ export class Photo {
 
     await space
       .upload({
+        ACL: 'public-read',
         Body: createReadStream(filePath),
         Bucket: S3_BUCKET,
         Key: id,
