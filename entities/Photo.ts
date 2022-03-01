@@ -65,16 +65,7 @@ export class Photo {
   ): Promise<Photo> {
     if (!filePath) throw new Error('No photo to process');
 
-    const image: Jimp = await new Promise((res, rej) => {
-      Jimp.read(filePath, (err, img) => {
-        if (err) {
-          rej(err);
-        } else {
-          res(img);
-        }
-      });
-    });
-
+    const image = await Jimp.read(filePath);
     const id = v4();
 
     const space = new S3({

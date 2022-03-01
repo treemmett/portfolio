@@ -43,15 +43,7 @@ export class Post {
   }
 
   public static async upload(filePath: string): Promise<Post> {
-    const image: Jimp = await new Promise((res, rej) => {
-      Jimp.read(filePath, (err, img) => {
-        if (err) {
-          rej(err);
-        } else {
-          res(img);
-        }
-      });
-    });
+    const image = await Jimp.read(filePath);
 
     const photos = await Promise.all(
       [
