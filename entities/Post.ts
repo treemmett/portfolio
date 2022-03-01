@@ -2,7 +2,14 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
-import { Entity, getRepository, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  CreateDateColumn,
+  Entity,
+  getRepository,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { v4 } from 'uuid';
 import { Photo, PhotoType } from './Photo';
 
@@ -12,6 +19,12 @@ const TABLE_NAME = 'posts';
 export class Post {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
+
+  @CreateDateColumn()
+  public created: Date;
+
+  @UpdateDateColumn()
+  public updated: Date;
 
   @OneToMany(() => Photo, (p) => p.post)
   public photos: Photo[];
