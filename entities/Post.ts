@@ -33,6 +33,14 @@ export class Post {
     return getRepository<Post>(TABLE_NAME);
   }
 
+  public static async getAll() {
+    return getRepository<Post>(TABLE_NAME)
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.photos', 'photo')
+      .where('photo.type != :type', { type: PhotoType.ORIGINAL })
+      .getMany();
+  }
+
   public static async upload(filePath: string): Promise<Post> {
     const image: Jimp = await new Promise((res, rej) => {
       Jimp.read(filePath, (err, img) => {

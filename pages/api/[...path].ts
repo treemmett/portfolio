@@ -18,6 +18,7 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
 })
   .use(bodyParser)
   .get('/api/photo', async (req, res) => res.json(await Photo.getAll()))
+  .get('/api/post', async (req, res) => res.json(await Post.getAll()))
   .post('/api/photo', async (req, res) => res.json(await Photo.upload(req.files.file.filepath)))
   .post('/api/post', async (req, res) => res.json(await Post.upload(req.files.file.filepath)));
 
