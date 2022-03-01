@@ -25,10 +25,6 @@ export enum PhotoType {
 
 @Entity({ name: TABLE_NAME })
 export class Photo {
-  public constructor() {
-    this.url = `${process.env.CDN_URL}/${this.id}`;
-  }
-
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -100,6 +96,7 @@ export class Photo {
       height: image.bitmap.height,
       id,
       type,
+      url: `${process.env.CDN_URL}/${id}`,
       width: image.bitmap.width,
     });
 
