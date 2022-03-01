@@ -2,23 +2,23 @@ import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { About } from '../components/About';
 import { Post } from '../components/Post';
-import { Photo } from '../entities/Photo';
+import { Post as PostEntity } from '../entities/Post';
 import { connectToDB } from '../middleware/database';
 import styles from './home.module.scss';
 
 export interface IndexProps {
-  photos: Photo[];
+  posts: PostEntity[];
 }
 
-export const Home: NextPage<IndexProps> = ({ photos }) => (
+export const Home: NextPage<IndexProps> = ({ posts }) => (
   <div className={styles.container}>
     <Head>
       <title>Tregan</title>
       <link href="/favicon.ico" rel="icon" />
     </Head>
 
-    {photos.map(({ height, width, url }) => (
-      <Post height={height} key={url} title={url} url={url} width={width} />
+    {posts.map((post) => (
+      <Post key={post.id} post={post} />
     ))}
     <About />
     <About backdrop />
@@ -30,11 +30,11 @@ export default Home;
 export const getServerSideProps: GetServerSideProps<IndexProps> = async () => {
   await connectToDB();
 
-  const p = await Photo.getAll();
+  const p = await PostEntity.getAll();
 
   return {
     props: {
-      photos: JSON.parse(JSON.stringify(p)),
+      posts: JSON.parse(JSON.stringify(p)),
     },
   };
 };
