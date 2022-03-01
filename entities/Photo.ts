@@ -2,7 +2,15 @@ import { createReadStream } from 'fs';
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
-import { Column, Entity, getRepository, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  getRepository,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { v4 } from 'uuid';
 import { Post } from './Post';
 
@@ -24,6 +32,9 @@ export class Photo {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
+  @CreateDateColumn()
+  public created: Date;
+
   @ManyToOne(() => Post, (p) => p.photos)
   public post: Post;
 
@@ -32,6 +43,9 @@ export class Photo {
 
   @Column({ enum: PhotoType, type: 'enum' })
   public type: PhotoType;
+
+  @UpdateDateColumn()
+  public updated: Date;
 
   public url: string;
 
