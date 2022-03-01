@@ -1,32 +1,23 @@
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { About } from '../components/About';
 import { Post } from '../components/Post';
+import { Photo } from '../entities/Photo';
+import { connectToDB } from '../middleware/database';
 import styles from './home.module.scss';
 
-const images = [
-  '/358-1272x1193.jpg',
-  '/502-974x410.jpg',
-  '/1058-1530x1277.jpg',
-  '/1077-840x1021.jpg',
-].map((url) => {
-  const [, width, height] = /-(\d+)x(\d+)/.exec(url);
+export interface IndexProps {
+  photos: Photo[];
+}
 
-  return {
-    height: parseInt(height, 10),
-    url,
-    width: parseInt(width, 10),
-  };
-});
-
-export const Home: NextPage = () => (
+export const Home: NextPage<IndexProps> = ({ photos }) => (
   <div className={styles.container}>
     <Head>
       <title>Tregan</title>
       <link href="/favicon.ico" rel="icon" />
     </Head>
 
-    {images.map(({ height, width, url }) => (
+    {photos.map(({ height, width, url }) => (
       <Post height={height} key={url} title={url} url={url} width={width} />
     ))}
     <About />
@@ -35,3 +26,15 @@ export const Home: NextPage = () => (
 );
 
 export default Home;
+
+export const getServerSideProps: GetServerSideProps<IndexProps> = async () => {
+  await connectToDB();
+
+  const p = await Photo.getAll();
+
+  return {
+    props: {
+      photos: JSON.parse(JSON.stringify(p)),
+    },
+  };
+};
