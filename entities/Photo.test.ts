@@ -1,5 +1,6 @@
 import { PHOTO_PATH } from '../tests/fixtures';
-import { Photo, PhotoType } from './Photo';
+import { Photo } from './Photo';
+import { PhotoType } from './PhotoType';
 
 describe('photo uploads', () => {
   it('should require a file', async () => {
