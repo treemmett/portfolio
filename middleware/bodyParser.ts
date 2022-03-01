@@ -10,7 +10,7 @@ export interface ParsedApiRequest extends NextApiRequest {
 }
 
 export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, res, next) => {
-  switch (req.headers['content-type'].split(';')[0]) {
+  switch (req.headers['content-type']?.split(';')[0]) {
     case 'application/json':
       json()(req, res, next);
       break;
