@@ -11,7 +11,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 } from 'uuid';
-import { Photo, PhotoType } from './Photo';
+import { Photo } from './Photo';
+import { PhotoType } from './PhotoType';
 
 const TABLE_NAME = 'posts';
 

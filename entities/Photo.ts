@@ -12,16 +12,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 } from 'uuid';
+import { PhotoType } from './PhotoType';
 import { Post } from './Post';
 
 const { S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = process.env;
 const TABLE_NAME = 'photos';
-
-export enum PhotoType {
-  BLURRED,
-  ORIGINAL,
-  SCALED,
-}
 
 @Entity({ name: TABLE_NAME })
 export class Photo {
