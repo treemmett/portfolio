@@ -2,8 +2,10 @@ import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { About } from '../components/About';
 import { Post } from '../components/Post';
-import { Post as PostEntity } from '../entities/Post';
 import { connectToDB } from '../middleware/database';
+// db driver needs to import entities before consumers
+// eslint-disable-next-line import/order
+import { Post as PostEntity } from '../entities/Post';
 import styles from './home.module.scss';
 
 export interface IndexProps {
