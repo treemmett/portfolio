@@ -17,7 +17,7 @@ import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
 import { Post } from './Post';
 
-const { S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = process.env;
+const { CDN_URL, S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = process.env;
 const TABLE_NAME = 'photos';
 
 @Entity({ name: TABLE_NAME })
@@ -48,7 +48,7 @@ export class Photo {
   @AfterLoad()
   @AfterInsert()
   public afterLoad() {
-    this.url = `${process.env.CDN_URL}/${this.id}`;
+    this.url = CDN_URL ? `${CDN_URL}/${this.id}` : `${S3_URL}/${S3_BUCKET}/${this.id}`;
   }
 
   public static repository() {
