@@ -74,6 +74,8 @@ export class Photo {
         secretAccessKey: S3_KEY_SECRET,
       }),
       endpoint: new Endpoint(S3_URL),
+      s3ForcePathStyle: true,
+      signatureVersion: 'v4',
     });
 
     await space
