@@ -83,6 +83,7 @@ export class Photo {
         ACL: 'public-read',
         Body: createReadStream(filePath),
         Bucket: S3_BUCKET,
+        ContentType: image.getMIME(),
         Key: id,
       })
       .promise();
