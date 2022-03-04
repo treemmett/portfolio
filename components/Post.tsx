@@ -1,4 +1,5 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import cx from 'classnames';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
 import { getRemValue, toPx } from '../utils/pixels';
@@ -10,6 +11,12 @@ export interface PostProps {
 
 const MAX_HEIGHT = 40 * getRemValue();
 const HEIGHT = 0.6;
+
+enum LoadingStages {
+  DEFAULT = 0,
+  BLUR_LOADING = 1,
+  BLUR_LOADED = 2,
+}
 
 export const Post: FC<PostProps> = ({ post }) => {
   const [height, setHeight] = useState(toPx(0));
@@ -29,17 +36,33 @@ export const Post: FC<PostProps> = ({ post }) => {
     return () => window.removeEventListener('resize', scaleImage);
   }, [scaleImage]);
 
-  const scaledImages = post.photos.filter((p) => p.type === PhotoType.SCALED);
+  const [stage, setStage] = useState<LoadingStages>(LoadingStages.DEFAULT);
+  const blurredImages = useMemo(
+    () => post.photos.filter((p) => p.type === PhotoType.BLURRED),
+    [post]
+  );
+  useEffect(() => {
+    setTimeout(setStage, 1000, LoadingStages.BLUR_LOADING);
+  }, []);
 
   return (
-    <div className={styles.post}>
-      <img
-        alt="My Post"
-        className={styles.photo}
-        sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
-        srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
-        style={{ height, width }}
+    <div className={styles.post} style={{ height, width }}>
+      <div
+        className={cx(styles.placeholder, styles.photo, {
+          [styles.loaded]: stage >= LoadingStages.BLUR_LOADED,
+        })}
+        style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})`, height, width }}
       />
+      {stage >= LoadingStages.BLUR_LOADING && (
+        <img
+          alt="My Post"
+          className={styles.photo}
+          onLoad={() => setStage(LoadingStages.BLUR_LOADED)}
+          sizes={`(max-width: 600px) ${Math.min(...blurredImages.map((p) => p.width))}px, 800px`}
+          srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
+          style={{ height, width }}
+        />
+      )}
     </div>
   );
 };

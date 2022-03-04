@@ -5,10 +5,10 @@ export default class Doc extends Document {
     return (
       <Html>
         <Head>
-          <link
+          {/* <link
             href="https://fonts.googleapis.com/css2?family=Gowun+Batang:400,500&display=swap"
             rel="stylesheet"
-          />
+          /> */}
         </Head>
         <body>
           <Main />

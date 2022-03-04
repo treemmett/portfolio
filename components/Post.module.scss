@@ -5,11 +5,24 @@
   z-index: 10;
   flex: 0 auto;
   border-radius: 8px;
+  box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
 }
 
 .photo {
   height: 40rem;
   margin-right: home.$padding;
-  border-radius: 8px;
-  box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
+  border-radius: inherit;
+}
+
+.placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: inherit;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+
+  &.loaded {
+    opacity: 0;
+  }
 }
