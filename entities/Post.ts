@@ -3,6 +3,7 @@ import { join } from 'path';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
 import {
+  Column,
   CreateDateColumn,
   Entity,
   getRepository,
@@ -29,6 +30,15 @@ export class Post {
 
   @OneToMany(() => Photo, (p) => p.post)
   public photos: Photo[];
+
+  @Column({ type: 'smallint' })
+  public red: number;
+
+  @Column({ type: 'smallint' })
+  public green: number;
+
+  @Column({ type: 'smallint' })
+  public blue: number;
 
   public static repository() {
     return getRepository<Post>(TABLE_NAME);
@@ -69,7 +79,15 @@ export class Post {
       })
     );
 
-    const post = plainToClass(Post, { photos });
+    // get average color
+    const { r, g, b } = Jimp.intToRGBA(
+      image
+        .clone()
+        .blur(100)
+        .getPixelColor(image.bitmap.width / 2, image.bitmap.height / 2)
+    );
+
+    const post = plainToClass(Post, { blue: b, green: g, photos, red: r });
 
     await Post.repository().save(post);
     return post;
