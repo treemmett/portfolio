@@ -3,6 +3,7 @@ import { NextApiResponse, PageConfig } from 'next';
 import nextConnect from 'next-connect';
 import { Photo } from '../../entities/Photo';
 import { Post } from '../../entities/Post';
+import { User } from '../../entities/User';
 import { bodyParser, ParsedApiRequest } from '../../middleware/bodyParser';
 import { connectToDB } from '../../middleware/database';
 
@@ -17,6 +18,7 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
   },
 })
   .use(bodyParser)
+  .post('/api/login', async (req, res) => res.json(await User.authorize(req.body.code)))
   .get('/api/photo', async (req, res) => res.json(await Photo.getAll()))
   .get('/api/post', async (req, res) => res.json(await Post.getAll()))
   .post('/api/photo', async (req, res) => res.json(await Photo.upload(req.files.file.filepath)))
