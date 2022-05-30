@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { sign } from 'jsonwebtoken';
 import { APIError, ErrorCode } from '../utils/errors';
 
 export class User {
@@ -24,7 +25,7 @@ export class User {
       }
     }
 
-    const userResponse = await axios.get('https://api.github.com/user', {
+    const { status, data } = await axios.get('https://api.github.com/user', {
       headers: {
         Accept: 'application/json',
         Authorization: `token ${authResponse.data.access_token}`,
@@ -32,11 +33,16 @@ export class User {
       validateStatus: () => true,
     });
 
+    if (status !== 200) {
+      throw new APIError(ErrorCode.never);
+    }
+
+    const token = sign({ username: data.login }, process.env.JWT_SECRET, {
+      expiresIn: '1day',
+    });
+
     return {
-      authResponse: authResponse.data,
-      authStatus: authResponse.status,
-      userResponse: userResponse.data,
-      userStatus: userResponse.status,
+      token,
     };
   }
 }
