@@ -2,6 +2,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
   Column,
   CreateDateColumn,
@@ -18,25 +19,33 @@ import { PhotoType } from './PhotoType';
 const TABLE_NAME = 'posts';
 
 @Entity({ name: TABLE_NAME })
+@ObjectType()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => ID)
   public id: string;
 
   @CreateDateColumn()
+  @Field()
   public created: Date;
 
   @UpdateDateColumn()
+  @Field()
   public updated: Date;
 
   @OneToMany(() => Photo, (p) => p.post)
+  @Field(() => [Photo])
   public photos: Photo[];
 
   @Column({ type: 'smallint' })
+  @Field(() => Int)
   public red: number;
 
   @Column({ type: 'smallint' })
+  @Field(() => Int)
   public green: number;
 
+  @Field(() => Int)
   @Column({ type: 'smallint' })
   public blue: number;
 

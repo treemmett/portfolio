@@ -2,6 +2,7 @@ import { createReadStream } from 'fs';
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
+import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
   AfterInsert,
   AfterLoad,
@@ -21,28 +22,37 @@ const { CDN_URL, S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = process.env;
 const TABLE_NAME = 'photos';
 
 @Entity({ name: TABLE_NAME })
+@ObjectType()
 export class Photo {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => ID)
   public id: string;
 
   @CreateDateColumn()
+  @Field()
   public created: Date;
 
   @ManyToOne(() => Post, (p) => p.photos)
+  @Field(() => Post)
   public post: Post;
 
   @Column({ nullable: false })
+  @Field(() => Int)
   public height: number;
 
   @Column({ enum: PhotoType, type: 'enum' })
+  @Field(() => PhotoType)
   public type: PhotoType;
 
   @UpdateDateColumn()
+  @Field()
   public updated: Date;
 
+  @Field()
   public url: string;
 
   @Column({ nullable: false })
+  @Field(() => Int)
   public width: number;
 
   @AfterLoad()

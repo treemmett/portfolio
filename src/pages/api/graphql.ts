@@ -1,35 +1,13 @@
-import { gql, ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-micro';
-
-const books = [
-  {
-    id: 0,
-    name: 'test',
-  },
-];
-
-const typeDefs = gql`
-  type Book {
-    id: ID!
-    name: String
-  }
-  type Query {
-    getBooks: [Book]
-  }
-`;
-
-const resolvers = {
-  Query: {
-    getBooks() {
-      return books;
-    },
-  },
-};
+import { buildSchema } from 'type-graphql';
+import { PhotoResolver } from '../../controllers/PostResolver';
 
 const server = new ApolloServer({
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-  resolvers,
-  typeDefs,
+  schema: await buildSchema({
+    resolvers: [PhotoResolver],
+  }),
 });
 
 await server.start();
