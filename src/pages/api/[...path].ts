@@ -6,13 +6,12 @@ import { Post } from '../../entities/Post';
 import { User } from '../../entities/User';
 import { bodyParser, ParsedApiRequest } from '../../middleware/bodyParser';
 import { connectToDB } from '../../middleware/database';
+import { errorHandler } from '../../utils/errors';
 
 await connectToDB();
 
 export default nextConnect<ParsedApiRequest, NextApiResponse>({
-  onError(err, req, res) {
-    res.status(500).json({ err: err.toString(), error: 'Something broke', stack: err.stack });
-  },
+  onError: errorHandler,
   onNoMatch(req, res) {
     res.status(404).json({ error: 'Route not found' });
   },
