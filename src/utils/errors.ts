@@ -5,7 +5,7 @@ export enum ErrorCode {
   /**
    * Something went terribly, terribly wrong
    */
-  never,
+  never = 1,
   /**
    * GitHub OAuth authorization flow was rejected
    */
