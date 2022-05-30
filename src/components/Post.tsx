@@ -36,6 +36,15 @@ export const Post: FC<PostProps> = ({ post }) => {
     setTimeout(() => setShouldLoadBlur(true), 1000);
   }, []);
 
+  /**
+   * This effect adds the width/height transition after the post has been
+   * rendered, preventing an animation on the initial load
+   */
+  const [unsetTransition, setUnsetTransition] = useState(true);
+  useEffect(() => {
+    setUnsetTransition([height, width].every((dimension) => dimension === '0px'));
+  }, [height, width]);
+
   const blurredImages = useMemo(
     () => post.photos.filter((p) => p.type === PhotoType.BLURRED),
     [post]
@@ -46,10 +55,10 @@ export const Post: FC<PostProps> = ({ post }) => {
   );
 
   return (
-    <div className={styles.post} style={{ height, width }}>
+    <div className={styles.post} style={{ height, transition: unsetTransition && 'unset', width }}>
       <div
         className={cx(styles.placeholder, styles.photo)}
-        style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})`, height, width }}
+        style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
       />
       {shouldLoadBlur && (
         <img
@@ -58,7 +67,6 @@ export const Post: FC<PostProps> = ({ post }) => {
           onLoad={() => setTimeout(() => setShouldLoadScaled(true), 1000)}
           sizes={`(max-width: 600px) ${Math.min(...blurredImages.map((p) => p.width))}px, 800px`}
           srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
-          style={{ height, width }}
         />
       )}
       {shouldLoadScaled && (
@@ -67,7 +75,6 @@ export const Post: FC<PostProps> = ({ post }) => {
           className={styles.photo}
           sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
           srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
-          style={{ height, width }}
         />
       )}
     </div>
