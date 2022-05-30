@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
+import { ErrorCode } from '../utils/errors';
 
 const Login: NextPage = () => {
   const [denied, setDenied] = useState(false);
@@ -24,8 +25,14 @@ const Login: NextPage = () => {
         method: 'post',
       })
         .then((r) => r.json())
-        .then(console.log)
-        .catch(console.log);
+        .then((data) => {
+          // invalid auth code, try again
+          if (data.error === ErrorCode.invalid_auth_code) {
+            window.location.replace(
+              `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
+            );
+          }
+        });
     }
   }, []);
 
