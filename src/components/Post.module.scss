@@ -9,6 +9,10 @@
 }
 
 .photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
   height: 40rem;
   margin-right: home.$padding;
   border-radius: inherit;

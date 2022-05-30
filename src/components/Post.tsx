@@ -12,12 +12,6 @@ export interface PostProps {
 const MAX_HEIGHT = 40 * getRemValue();
 const HEIGHT = 0.6;
 
-enum LoadingStages {
-  DEFAULT = 0,
-  BLUR_LOADING = 1,
-  BLUR_LOADED = 2,
-}
-
 export const Post: FC<PostProps> = ({ post }) => {
   const [height, setHeight] = useState(toPx(0));
   const [width, setWidth] = useState(toPx(0));
@@ -36,30 +30,43 @@ export const Post: FC<PostProps> = ({ post }) => {
     return () => window.removeEventListener('resize', scaleImage);
   }, [scaleImage]);
 
-  const [stage, setStage] = useState<LoadingStages>(LoadingStages.DEFAULT);
+  const [shouldLoadBlur, setShouldLoadBlur] = useState(false);
+  const [shouldLoadScaled, setShouldLoadScaled] = useState(false);
+  useEffect(() => {
+    setTimeout(() => setShouldLoadBlur(true), 1000);
+  }, []);
+
   const blurredImages = useMemo(
     () => post.photos.filter((p) => p.type === PhotoType.BLURRED),
     [post]
   );
-  useEffect(() => {
-    setTimeout(setStage, 1000, LoadingStages.BLUR_LOADING);
-  }, []);
+  const scaledImages = useMemo(
+    () => post.photos.filter((p) => p.type === PhotoType.SCALED),
+    [post]
+  );
 
   return (
     <div className={styles.post} style={{ height, width }}>
       <div
-        className={cx(styles.placeholder, styles.photo, {
-          [styles.loaded]: stage >= LoadingStages.BLUR_LOADED,
-        })}
+        className={cx(styles.placeholder, styles.photo)}
         style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})`, height, width }}
       />
-      {stage >= LoadingStages.BLUR_LOADING && (
+      {shouldLoadBlur && (
         <img
           alt="My Post"
           className={styles.photo}
-          onLoad={() => setStage(LoadingStages.BLUR_LOADED)}
+          onLoad={() => setTimeout(() => setShouldLoadScaled(true), 1000)}
           sizes={`(max-width: 600px) ${Math.min(...blurredImages.map((p) => p.width))}px, 800px`}
           srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
+          style={{ height, width }}
+        />
+      )}
+      {shouldLoadScaled && (
+        <img
+          alt="My Post"
+          className={styles.photo}
+          sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
+          srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
           style={{ height, width }}
         />
       )}
