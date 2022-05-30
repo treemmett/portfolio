@@ -2,6 +2,7 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-co
 import { ApolloServer } from 'apollo-server-micro';
 import { buildSchema } from 'type-graphql';
 import { PhotoResolver } from '../../controllers/PostResolver';
+import { connectToDB } from '../../middleware/database';
 
 const server = new ApolloServer({
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
@@ -10,10 +11,9 @@ const server = new ApolloServer({
   }),
 });
 
-await server.start();
-const handler = await server.createHandler({ path: '/api/graphql' });
+await Promise.all([server.start(), connectToDB()]);
 
-export default handler;
+export default await server.createHandler({ path: '/api/graphql' });
 
 export const config = {
   api: {
