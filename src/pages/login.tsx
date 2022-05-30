@@ -1,11 +1,19 @@
 import { NextPage } from 'next';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Login: NextPage = () => {
+  const [denied, setDenied] = useState(false);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
 
-    if (!params.get('code')) {
+    if (params.get('error')) {
+      const githubError = params.get('error');
+
+      if (githubError === 'access_denied') {
+        setDenied(true);
+      }
+    } else if (!params.get('code')) {
       window.location.replace(
         `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
       );
@@ -20,6 +28,13 @@ const Login: NextPage = () => {
         .catch(console.log);
     }
   }, []);
+
+  if (denied)
+    return (
+      <div>
+        Authorization with GitHub was denied. Try again, or don't try again. I really don't care.
+      </div>
+    );
 
   return <div>Logging in...</div>;
 };
