@@ -2,7 +2,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
-import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType, Query, Resolver } from 'type-graphql';
 import {
   Column,
   CreateDateColumn,
@@ -100,5 +100,13 @@ export class Post {
 
     await Post.repository().save(post);
     return post;
+  }
+}
+
+@Resolver(Post)
+export class PostResolver {
+  @Query(() => [Post])
+  posts() {
+    return Post.getAll();
   }
 }

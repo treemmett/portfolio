@@ -33,6 +33,8 @@
     "react/no-unescaped-entities": "off",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
-    "sort-keys": ["error", "asc", { "natural": true }]
+    "sort-keys": ["error", "asc", { "natural": true }],
+    "max-classes-per-file": "off",
+    "class-methods-use-this": "off"
   }
 }

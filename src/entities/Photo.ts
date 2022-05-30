@@ -2,7 +2,7 @@ import { createReadStream } from 'fs';
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
-import { Field, ID, Int, ObjectType } from 'type-graphql';
+import { Field, ID, Int, ObjectType, Resolver } from 'type-graphql';
 import {
   AfterInsert,
   AfterLoad,
@@ -120,3 +120,6 @@ export class Photo {
     }
   }
 }
+
+@Resolver(Photo)
+export class PhotoResolver {}
