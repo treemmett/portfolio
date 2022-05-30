@@ -32,6 +32,8 @@ export const Post: FC<PostProps> = ({ post }) => {
 
   const [shouldLoadBlur, setShouldLoadBlur] = useState(false);
   const [shouldLoadScaled, setShouldLoadScaled] = useState(false);
+  const [phaseBlur, setPhaseBlur] = useState(true);
+  const [phaseScale, setPhaseScale] = useState(true);
   useEffect(() => {
     setTimeout(() => setShouldLoadBlur(true), 1000);
   }, []);
@@ -63,8 +65,11 @@ export const Post: FC<PostProps> = ({ post }) => {
       {shouldLoadBlur && (
         <img
           alt="My Post"
-          className={styles.photo}
-          onLoad={() => setTimeout(() => setShouldLoadScaled(true), 1000)}
+          className={cx(styles.photo, { [styles.phase]: phaseBlur })}
+          onLoad={() => {
+            setPhaseBlur(false);
+            setShouldLoadScaled(true);
+          }}
           sizes={`(max-width: 600px) ${Math.min(...blurredImages.map((p) => p.width))}px, 800px`}
           srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
         />
@@ -72,7 +77,8 @@ export const Post: FC<PostProps> = ({ post }) => {
       {shouldLoadScaled && (
         <img
           alt="My Post"
-          className={styles.photo}
+          className={cx(styles.photo, { [styles.phase]: phaseScale })}
+          onLoad={() => setPhaseScale(false)}
           sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
           srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
         />

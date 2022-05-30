@@ -18,6 +18,14 @@
   height: 100%;
   margin-right: home.$padding;
   border-radius: inherit;
+  filter: blur(0);
+  opacity: 1;
+  transition: filter 1s ease, opacity 1s ease;
+
+  &.phase {
+    filter: blur(5px);
+    opacity: 0;
+  }
 }
 
 .placeholder {
