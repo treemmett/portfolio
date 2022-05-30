@@ -1,20 +1,9 @@
-import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
-import { ApolloServer } from 'apollo-server-micro';
-import { buildSchema } from 'type-graphql';
-import { PhotoResolver } from '../../entities/Photo';
-import { PostResolver } from '../../entities/Post';
 import { connectToDB } from '../../middleware/database';
+import { apolloServer } from '../../middleware/graphql';
 
-const server = new ApolloServer({
-  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-  schema: await buildSchema({
-    resolvers: [PhotoResolver, PostResolver],
-  }),
-});
+await Promise.all([apolloServer.start(), connectToDB()]);
 
-await Promise.all([server.start(), connectToDB()]);
-
-export default await server.createHandler({ path: '/api/graphql' });
+export default await apolloServer.createHandler({ path: '/api/graphql' });
 
 export const config = {
   api: {
