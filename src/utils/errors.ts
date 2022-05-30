@@ -7,9 +7,13 @@ export enum ErrorCode {
    */
   never,
   /**
-   * GitHub OAuth authorization rejected
+   * GitHub OAuth authorization flow was rejected
    */
   invalid_auth_code,
+  /**
+   * GitHub OAuth client credentials are incorrect
+   */
+  invalid_auth_secret,
 }
 
 export class APIError extends Error {
