@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { CSRF_STORAGE_KEY, isAuthenticated } from '../utils/authentication';
+import { apiClient } from '../utils/clients';
 import { Config } from '../utils/config';
 import { ErrorCode } from '../utils/errors';
 
@@ -36,27 +37,23 @@ const Login: NextPage = () => {
       return;
     }
 
-    fetch('/api/login', {
-      body: JSON.stringify({ code: params.get('code') }),
-      headers: { 'Content-Type': 'application/json' },
-      method: 'post',
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.error) {
-          // invalid auth code, try again
-          if (data.error === ErrorCode.invalid_auth_code) {
-            window.location.replace(
-              `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
-            );
-          } else {
-            setState(LOGIN_STATES.error);
-          }
-          return;
-        }
+    setState(LOGIN_STATES.authorizing);
 
-        localStorage.setItem(CSRF_STORAGE_KEY, JSON.stringify(data));
+    apiClient
+      .post('/api/login', { code: params.get('code') })
+      .then((response) => {
+        localStorage.setItem(CSRF_STORAGE_KEY, JSON.stringify(response.data));
         setState(LOGIN_STATES.success);
+      })
+      .catch((err) => {
+        setState(LOGIN_STATES.error);
+        if (err.response?.data?.error === ErrorCode.invalid_auth_code) {
+          window.location.replace(
+            `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
+          );
+        } else {
+          setState(LOGIN_STATES.error);
+        }
       });
   }, []);
 

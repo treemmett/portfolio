@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import { ChangeEventHandler, FormEventHandler, useCallback, useState } from 'react';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
+import { apiClient } from '../utils/clients';
 import styles from './admin.module.scss';
 
 enum UploadState {
@@ -37,28 +38,14 @@ const Admin: NextPage = () => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
 
-        const response = await fetch('/api/post', {
-          body: new FormData(form),
-          method: 'post',
-        });
+        await apiClient.post('/api/post', new FormData(form));
 
-        if (response.status === 200 || response.status === 201) {
-          alert('Upload successful');
-          form.reset();
-          setImageData('');
-          return;
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-          console.error(data.error);
-        }
-
-        alert(['Upload failed', data.message].join(' - '));
+        alert('Upload successful');
+        form.reset();
+        setImageData('');
       } catch (err) {
-        console.error(err);
-        alert('Upload failed');
+        console.error(err?.response?.data?.error || err);
+        alert(['Upload failed', err?.response?.data?.message].join(' - '));
       } finally {
         setState(UploadState.default);
       }

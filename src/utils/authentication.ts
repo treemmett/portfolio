@@ -1,14 +1,20 @@
 export const CSRF_STORAGE_KEY = '_a.';
 
-export function isAuthenticated(): boolean {
+export function getCsrfToken(): null | { token: string; expiration: Date } {
   try {
     const storageValue = localStorage.getItem(CSRF_STORAGE_KEY);
     const { token, expiration } = JSON.parse(storageValue);
-    if (!token || !expiration) return false;
+    if (!token || !expiration) return null;
 
-    return new Date() < new Date(expiration);
-  } catch (err) {
-    console.error('Failure in authentication check', err);
-    return false;
+    return { expiration: new Date(expiration), token };
+  } catch {
+    return null;
   }
+}
+
+export function isAuthenticated(): boolean {
+  const token = getCsrfToken();
+  if (!token) return false;
+
+  return new Date() < token.expiration;
 }
