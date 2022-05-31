@@ -1,5 +1,10 @@
 {
   "name": "blog",
+  "author": {
+    "email": "tregan@tregan.me",
+    "name": "Tregan",
+    "url": "https://tregan.me"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",
