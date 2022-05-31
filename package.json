@@ -82,5 +82,8 @@
     "stylelint-csstree-validator": "^2.0.0",
     "stylelint-prettier": "^2.0.0",
     "typescript": "^4.5.4"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }
