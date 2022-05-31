@@ -32,6 +32,8 @@ const Login: NextPage = () => {
               `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
             );
           }
+
+          localStorage.set('csrf-token', data.token);
         });
     }
   }, []);

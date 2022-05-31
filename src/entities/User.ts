@@ -1,5 +1,7 @@
+import { createHash } from 'crypto';
 import axios from 'axios';
 import { sign } from 'jsonwebtoken';
+import { v4 as uuid } from 'uuid';
 import { APIError, ErrorCode } from '../utils/errors';
 
 export class User {
@@ -37,12 +39,19 @@ export class User {
       throw new APIError(ErrorCode.never);
     }
 
-    const token = sign({ username: data.login }, process.env.JWT_SECRET, {
-      expiresIn: '1day',
-    });
+    const csrfToken = uuid();
+
+    const accessToken = sign(
+      { jti: createHash('sha256').update(csrfToken).digest('hex'), sub: data.login },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1day',
+      }
+    );
 
     return {
-      token,
+      accessToken,
+      csrfToken,
     };
   }
 }

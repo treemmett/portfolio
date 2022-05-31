@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { serialize } from 'cookie';
 import { NextApiResponse, PageConfig } from 'next';
 import nextConnect from 'next-connect';
 import { Photo } from '../../entities/Photo';
@@ -17,7 +18,14 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
   },
 })
   .use(bodyParser)
-  .post('/api/login', async (req, res) => res.json(await User.authorize(req.body.code)))
+  .post('/api/login', async (req, res) => {
+    const { accessToken, csrfToken } = await User.authorize(req.body.code);
+    res.setHeader(
+      'Set-Cookie',
+      serialize('token', accessToken, { httpOnly: true, sameSite: 'lax', secure: true })
+    );
+    res.send({ token: csrfToken });
+  })
   .get('/api/photo', async (req, res) => res.json(await Photo.getAll()))
   .get('/api/post', async (req, res) => res.json(await Post.getAll()))
   .post('/api/photo', async (req, res) => res.json(await Photo.upload(req.files.file.filepath)))
