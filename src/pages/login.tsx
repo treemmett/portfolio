@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { CSRF_STORAGE_KEY, isAuthenticated } from '../utils/authentication';
+import { Config } from '../utils/config';
 import { ErrorCode } from '../utils/errors';
 
 enum LOGIN_STATES {
@@ -29,7 +30,7 @@ const Login: NextPage = () => {
 
     if (!params.get('code')) {
       window.location.replace(
-        `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
+        `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
       );
 
       return;
@@ -46,7 +47,7 @@ const Login: NextPage = () => {
           // invalid auth code, try again
           if (data.error === ErrorCode.invalid_auth_code) {
             window.location.replace(
-              `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
+              `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
             );
           } else {
             setState(LOGIN_STATES.error);

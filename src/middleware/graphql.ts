@@ -4,6 +4,7 @@ import { buildSchema, registerEnumType } from 'type-graphql';
 import { PhotoType } from '../entities/PhotoType';
 import { PhotoResolver } from '../resolvers/PhotoResolver';
 import { PostResolver } from '../resolvers/PostResolver';
+import { Config } from '../utils/config';
 
 // TODO should this live here?
 registerEnumType(PhotoType, {
@@ -11,7 +12,7 @@ registerEnumType(PhotoType, {
 });
 
 export const apolloServer = new ApolloServer({
-  csrfPrevention: process.env.NODE_ENV === 'production',
+  csrfPrevention: Config.NODE_ENV === 'production',
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   schema: await buildSchema({
     resolvers: [PhotoResolver, PostResolver],

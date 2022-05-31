@@ -15,10 +15,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 } from 'uuid';
+import { Config } from '../utils/config';
 import { PhotoType } from './PhotoType';
 import { Post } from './Post';
 
-const { CDN_URL, S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = process.env;
+const { CDN_URL, S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = Config;
 const TABLE_NAME = 'photos';
 
 @Entity({ name: TABLE_NAME })

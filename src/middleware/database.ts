@@ -1,6 +1,7 @@
 import { Connection, createConnection, getConnectionManager } from 'typeorm';
 import { Photo } from '../entities/Photo';
 import { Post } from '../entities/Post';
+import { Config } from '../utils/config';
 
 export interface DatabaseOptions {
   drop?: boolean;
@@ -20,13 +21,7 @@ export async function connectToDB({
   synchronize = true,
   test = false,
 }: DatabaseOptions = {}): Promise<Connection> {
-  const {
-    DB_DATABASE = 'blog',
-    DB_HOST = 'localhost',
-    DB_PASS,
-    DB_PORT = '5432',
-    DB_USER,
-  } = process.env;
+  const { DB_DATABASE, DB_HOST, DB_PASS, DB_PORT, DB_USER } = Config;
 
   const conn = getConnectionManager().has(name)
     ? getConnectionManager().get(name)

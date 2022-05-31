@@ -2,6 +2,7 @@ import { createHash } from 'crypto';
 import axios from 'axios';
 import { sign } from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
+import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
 
 export class User {
@@ -11,8 +12,8 @@ export class User {
     const authResponse = await axios.post(
       'https://github.com/login/oauth/access_token',
       {
-        client_id: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        client_id: Config.NEXT_PUBLIC_GITHUB_CLIENT_ID,
+        client_secret: Config.GITHUB_CLIENT_SECRET,
         code,
       },
       { headers: { Accept: 'application/json' }, validateStatus: () => true }
@@ -52,7 +53,7 @@ export class User {
         jti: createHash('sha256').update(csrfToken).digest('hex'),
         sub: data.login,
       },
-      process.env.JWT_SECRET
+      Config.JWT_SECRET
     );
 
     return {
