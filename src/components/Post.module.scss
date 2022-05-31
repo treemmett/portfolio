@@ -3,7 +3,8 @@
 .post {
   position: relative;
   z-index: 10;
-  flex: 0 auto;
+  flex: 0 0 auto;
+  margin-right: home.$padding;
   border-radius: 8px;
   box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
   transition: width 0.15s ease, height 0.15s ease;
@@ -16,7 +17,6 @@
   display: block;
   width: 100%;
   height: 100%;
-  margin-right: home.$padding;
   border-radius: inherit;
   filter: blur(0);
   opacity: 1;
