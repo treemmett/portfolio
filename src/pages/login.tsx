@@ -60,14 +60,21 @@ const Login: NextPage = () => {
       });
   }, []);
 
-  if (state === LOGIN_STATES.denied)
-    return (
-      <div>
-        Authorization with GitHub was denied. Try again, or don't try again. I really don't care.
-      </div>
-    );
+  switch (state) {
+    case LOGIN_STATES.denied:
+      return (
+        <div>
+          Authorization with GitHub was denied. Try again, or don't try again. I really don't care.
+        </div>
+      );
 
-  return <div>Logging in...</div>;
+    case LOGIN_STATES.error:
+      return <div>An error occurred while logging in.</div>;
+
+    case LOGIN_STATES.default:
+    default:
+      return <div>Logging in...</div>;
+  }
 };
 
 export default Login;
