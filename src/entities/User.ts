@@ -43,17 +43,22 @@ export class User {
 
     const csrfToken = uuid();
 
+    const expiration = new Date();
+    expiration.setDate(expiration.getDate() + 1);
+
     const accessToken = sign(
-      { jti: createHash('sha256').update(csrfToken).digest('hex'), sub: data.login },
-      process.env.JWT_SECRET,
       {
-        expiresIn: '1day',
-      }
+        exp: Math.floor(expiration.getTime() / 1000),
+        jti: createHash('sha256').update(csrfToken).digest('hex'),
+        sub: data.login,
+      },
+      process.env.JWT_SECRET
     );
 
     return {
       accessToken,
       csrfToken,
+      expiration,
     };
   }
 }
