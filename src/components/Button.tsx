@@ -4,11 +4,12 @@ import styles from './Button.module.scss';
 
 export interface ButtonProps {
   className?: string;
+  disabled?: boolean;
   type?: 'button' | 'submit';
 }
 
-export const Button: FC<ButtonProps> = ({ children, className, type = 'button' }) => (
-  <button className={cx(styles.button, className)} type={type}>
+export const Button: FC<ButtonProps> = ({ children, className, disabled, type = 'button' }) => (
+  <button className={cx(styles.button, className)} disabled={disabled} type={type}>
     {children}
   </button>
 );

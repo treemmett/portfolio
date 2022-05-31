@@ -18,4 +18,9 @@
   &:active {
     background-color: color.adjust(shared.$primary, $lightness: -10%);
   }
+
+  &:disabled {
+    background-color: color.grayscale(shared.$primary);
+    cursor: default;
+  }
 }
