@@ -5,6 +5,8 @@ import { v4 as uuid } from 'uuid';
 import { APIError, ErrorCode } from '../utils/errors';
 
 export class User {
+  public name: string;
+
   public static async authorize(code: string) {
     const authResponse = await axios.post(
       'https://github.com/login/oauth/access_token',
