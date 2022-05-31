@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
+import { CSRF_STORAGE_KEY } from '../utils/authentication';
 import { ErrorCode } from '../utils/errors';
 
 const Login: NextPage = () => {
@@ -31,9 +32,10 @@ const Login: NextPage = () => {
             window.location.replace(
               `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`
             );
+            return;
           }
 
-          localStorage.setItem('csrf-token', data.token);
+          localStorage.setItem(CSRF_STORAGE_KEY, JSON.stringify(data));
         });
     }
   }, []);
