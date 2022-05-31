@@ -5,6 +5,11 @@ import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import styles from './admin.module.scss';
 
+enum UploadState {
+  default,
+  uploading,
+}
+
 const Admin: NextPage = () => {
   const [imageData, setImageData] = useState('');
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
@@ -21,35 +26,45 @@ const Admin: NextPage = () => {
     reader.readAsDataURL(file);
   }, []);
 
-  const uploadPost: FormEventHandler<HTMLFormElement> = useCallback(async (e) => {
-    try {
-      e.preventDefault();
-      const form = e.target as HTMLFormElement;
+  const [state, setState] = useState(UploadState.default);
+  const uploadPost: FormEventHandler<HTMLFormElement> = useCallback(
+    async (e) => {
+      try {
+        // don't duplicate requests
+        if (state === UploadState.uploading) return;
 
-      const response = await fetch('/api/post', {
-        body: new FormData(form),
-        method: 'post',
-      });
+        setState(UploadState.uploading);
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
 
-      if (response.status === 200 || response.status === 201) {
-        alert('Upload successful');
-        form.reset();
-        setImageData('');
-        return;
+        const response = await fetch('/api/post', {
+          body: new FormData(form),
+          method: 'post',
+        });
+
+        if (response.status === 200 || response.status === 201) {
+          alert('Upload successful');
+          form.reset();
+          setImageData('');
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+          console.error(data.error);
+        }
+
+        alert(['Upload failed', data.message].join(' - '));
+      } catch (err) {
+        console.error(err);
+        alert('Upload failed');
+      } finally {
+        setState(UploadState.default);
       }
-
-      const data = await response.json();
-
-      if (data.error) {
-        console.error(data.error);
-      }
-
-      alert(['Upload failed', data.message].join(' - '));
-    } catch (err) {
-      console.error(err);
-      alert('Upload failed');
-    }
-  }, []);
+    },
+    [state]
+  );
 
   return (
     <form className={styles.container} onSubmit={uploadPost}>
@@ -62,8 +77,8 @@ const Admin: NextPage = () => {
         <input accept="image/*" id="image" name="file" onChange={handleFileChange} type="file" />
       </label>
       <Input className={styles.input} label="Title" />
-      <Button className={styles.input} type="submit">
-        Post
+      <Button className={styles.input} disabled={state === UploadState.uploading} type="submit">
+        {state === UploadState.uploading ? 'Uploading...' : 'Post'}
       </Button>
     </form>
   );
