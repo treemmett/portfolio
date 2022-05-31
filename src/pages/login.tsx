@@ -33,7 +33,7 @@ const Login: NextPage = () => {
             );
           }
 
-          localStorage.set('csrf-token', data.token);
+          localStorage.setItem('csrf-token', data.token);
         });
     }
   }, []);
