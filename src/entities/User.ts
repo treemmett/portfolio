@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
 import axios from 'axios';
-import { sign } from 'jsonwebtoken';
+import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
@@ -50,7 +50,7 @@ export class User {
     const accessToken = sign(
       {
         exp: Math.floor(expiration.getTime() / 1000),
-        jti: createHash('sha256').update(csrfToken).digest('hex'),
+        jti: createHash('sha256').update(csrfToken).digest('base64'),
         sub: data.login,
       },
       Config.JWT_SECRET
@@ -61,5 +61,59 @@ export class User {
       csrfToken,
       expiration,
     };
+  }
+
+  public static authenticateRequest(accessToken: string, csrfToken: string | string[]): User | null;
+  public static authenticateRequest(
+    accessToken: string,
+    csrfToken: string | string[],
+    orFail: false
+  ): User | null;
+  public static authenticateRequest(
+    accessToken: string,
+    csrfToken: string | string[],
+    orFail: true
+  ): User;
+  public static authenticateRequest(
+    accessToken: string,
+    csrfToken: string | string[],
+    orFail?: boolean
+  ): User | null {
+    const csrf = Array.isArray(csrfToken) ? csrfToken[0] : csrfToken;
+
+    if (!accessToken || !csrf) {
+      if (orFail) {
+        throw new APIError(ErrorCode.unauthorized, 401, 'Unauthenticated request');
+      }
+
+      return null;
+    }
+
+    let sub: string;
+    let jti: string;
+    try {
+      ({ sub, jti } = verify(accessToken, Config.JWT_SECRET) as JwtPayload);
+    } catch {
+      if (orFail) {
+        throw new APIError(ErrorCode.bad_access_token, 401, 'Invalid session');
+      }
+
+      return null;
+    }
+
+    const csrfHash = createHash('sha256').update(csrf).digest('base64');
+
+    // confirm csrf token;
+    if (csrfHash !== jti) {
+      if (orFail) {
+        throw new APIError(ErrorCode.csrf_forgery, 401, 'Invalid session');
+      }
+
+      return null;
+    }
+
+    const u = new User();
+    u.name = sub;
+    return u;
   }
 }

@@ -9,7 +9,7 @@ apiClient.interceptors.request.use((req) => {
 
   const csrfToken = getCsrfToken();
   if (csrfToken) {
-    req.headers['X-XSRF-TOKEN'] = csrfToken.token;
+    req.headers['X-CSRF-TOKEN'] = csrfToken.token;
   }
 
   return req;

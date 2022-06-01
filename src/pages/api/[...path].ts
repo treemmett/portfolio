@@ -7,6 +7,7 @@ import { Post } from '../../entities/Post';
 import { User } from '../../entities/User';
 import { bodyParser, ParsedApiRequest } from '../../middleware/bodyParser';
 import { connectToDB } from '../../middleware/database';
+import { authenticate } from '../../utils/authentication';
 import { errorHandler } from '../../utils/errors';
 
 await connectToDB();
@@ -26,6 +27,7 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
     );
     res.send({ expiration, token: csrfToken });
   })
+  .use(authenticate)
   .get('/api/photo', async (req, res) => res.json(await Photo.getAll()))
   .get('/api/post', async (req, res) => res.json(await Post.getAll()))
   .post('/api/photo', async (req, res) => res.json(await Photo.upload(req.files.file.filepath)))
