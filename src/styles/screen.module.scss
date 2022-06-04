@@ -1,0 +1,9 @@
+@use './screen';
+
+/* stylelint-disable */
+:export {
+  smMin: screen.$sm-min;
+  mdMin: screen.$md-min;
+  lgMin: screen.$lg-min;
+  xlMin: screen.$xl-min;
+}
