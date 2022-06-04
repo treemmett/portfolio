@@ -23,7 +23,11 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
     const { accessToken, csrfToken, expiration } = await User.authorize(req.body.code);
     res.setHeader(
       'Set-Cookie',
-      serialize('token', accessToken, { httpOnly: true, sameSite: 'lax', secure: true })
+      serialize('token', accessToken, {
+        expires: expiration,
+        httpOnly: true,
+        path: '/',
+      })
     );
     res.send({ expiration, token: csrfToken });
   })
