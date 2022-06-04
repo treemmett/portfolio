@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
-import { getRemValue, toPx } from '../utils/pixels';
+import { getRemValue, mdMin, toPx } from '../utils/pixels';
 import styles from './Post.module.scss';
 
 export interface PostProps {
@@ -12,15 +12,28 @@ export interface PostProps {
 const MAX_HEIGHT = 40 * getRemValue();
 const HEIGHT = 0.6;
 
+const MAX_WIDTH = 20 * getRemValue();
+const WIDTH = 0.9;
+
 export const Post: FC<PostProps> = ({ post }) => {
   const [height, setHeight] = useState(toPx(0));
   const [width, setWidth] = useState(toPx(0));
 
   const scaleImage = useCallback(() => {
-    const scaled = window.innerHeight * HEIGHT;
-    const h = scaled > MAX_HEIGHT ? MAX_HEIGHT : scaled;
-    setWidth(toPx((h * post.photos[0].width) / post.photos[0].height));
-    setHeight(toPx(h));
+    const isMobile = window.innerWidth <= mdMin;
+    const [photo] = post.photos;
+
+    if (isMobile) {
+      const scaled = window.innerWidth * WIDTH;
+      const w = scaled > MAX_WIDTH ? MAX_WIDTH : scaled;
+      setWidth(toPx(w));
+      setHeight(toPx((w * photo.height) / photo.width));
+    } else {
+      const scaled = window.innerHeight * HEIGHT;
+      const h = scaled > MAX_HEIGHT ? MAX_HEIGHT : scaled;
+      setWidth(toPx((h * photo.width) / photo.height));
+      setHeight(toPx(h));
+    }
   }, [post]);
 
   useEffect(() => {
