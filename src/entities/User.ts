@@ -1,7 +1,5 @@
-import { createHash } from 'crypto';
 import axios from 'axios';
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
-import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
 
@@ -46,46 +44,43 @@ export class User {
       throw new APIError(ErrorCode.unauthorized_user, 403, 'Unauthorized');
     }
 
-    const csrfToken = uuid();
-
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + 1);
 
-    const accessToken = sign(
+    const accessTokenParts = sign(
       {
         exp: Math.floor(expiration.getTime() / 1000),
-        jti: createHash('sha256').update(csrfToken).digest('base64'),
         sub: data.login,
       },
       Config.JWT_SECRET
-    );
+    ).split('.');
+
+    const signature = accessTokenParts.pop();
 
     return {
-      accessToken,
-      csrfToken,
+      accessToken: accessTokenParts.join('.'),
       expiration,
+      signature,
     };
   }
 
-  public static authenticateRequest(accessToken: string, csrfToken: string | string[]): User | null;
+  public static authenticateRequest(accessToken: string, signature: string): User | null;
   public static authenticateRequest(
     accessToken: string,
-    csrfToken: string | string[],
+    signature: string,
     orFail: false
   ): User | null;
+  public static authenticateRequest(accessToken: string, signature: string, orFail: true): User;
   public static authenticateRequest(
     accessToken: string,
-    csrfToken: string | string[],
-    orFail: true
-  ): User;
-  public static authenticateRequest(
-    accessToken: string,
-    csrfToken: string | string[],
+    signature: string,
     orFail?: boolean
   ): User | null {
-    const csrf = Array.isArray(csrfToken) ? csrfToken[0] : csrfToken;
+    const match = /^Bearer (\S+)/i.exec(accessToken);
 
-    if (!accessToken || !csrf) {
+    const token = match ? match[1] : accessToken;
+
+    if (!token || !signature) {
       if (orFail) {
         throw new APIError(ErrorCode.unauthorized, 401, 'Unauthenticated request');
       }
@@ -94,23 +89,11 @@ export class User {
     }
 
     let sub: string;
-    let jti: string;
     try {
-      ({ sub, jti } = verify(accessToken, Config.JWT_SECRET) as JwtPayload);
+      ({ sub } = verify([token, signature].join('.'), Config.JWT_SECRET) as JwtPayload);
     } catch {
       if (orFail) {
         throw new APIError(ErrorCode.bad_access_token, 401, 'Invalid session');
-      }
-
-      return null;
-    }
-
-    const csrfHash = createHash('sha256').update(csrf).digest('base64');
-
-    // confirm csrf token;
-    if (csrfHash !== jti) {
-      if (orFail) {
-        throw new APIError(ErrorCode.csrf_forgery, 401, 'Invalid session');
       }
 
       return null;

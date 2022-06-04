@@ -26,10 +26,6 @@ export enum ErrorCode {
    * Invalid access token
    */
   bad_access_token,
-  /**
-   * CSRF check failed
-   */
-  csrf_forgery,
 }
 
 export class APIError extends Error {

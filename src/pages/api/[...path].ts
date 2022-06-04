@@ -20,16 +20,16 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
 })
   .use(bodyParser)
   .post('/api/login', async (req, res) => {
-    const { accessToken, csrfToken, expiration } = await User.authorize(req.body.code);
+    const { accessToken, expiration, signature } = await User.authorize(req.body.code);
     res.setHeader(
       'Set-Cookie',
-      serialize('token', accessToken, {
+      serialize('xsrf-token', signature, {
         expires: expiration,
         httpOnly: true,
         path: '/',
       })
     );
-    res.send({ expiration, token: csrfToken });
+    res.send({ expiration, token: accessToken });
   })
   .use(authenticate)
   .get('/api/photo', async (req, res) => res.json(await Photo.getAll()))

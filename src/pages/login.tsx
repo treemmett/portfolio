@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
-import { CSRF_STORAGE_KEY, isAuthenticated } from '../utils/authentication';
+import { ACCESS_TOKEN_STORAGE_KEY, isAuthenticated } from '../utils/authentication';
 import { apiClient } from '../utils/clients';
 import { Config } from '../utils/config';
 import { ErrorCode } from '../utils/errors';
@@ -42,7 +42,7 @@ const Login: NextPage = () => {
     apiClient
       .post('/api/login', { code: params.get('code') })
       .then((response) => {
-        localStorage.setItem(CSRF_STORAGE_KEY, JSON.stringify(response.data));
+        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, JSON.stringify(response.data));
         setState(LOGIN_STATES.success);
       })
       .catch((err) => {

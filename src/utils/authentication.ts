@@ -2,11 +2,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Middleware } from 'next-connect';
 import { User } from '../entities/User';
 
-export const CSRF_STORAGE_KEY = '_a.';
+export const ACCESS_TOKEN_STORAGE_KEY = '_a.';
 
-export function getCsrfToken(): null | { token: string; expiration: Date } {
+export function getAuthToken(): null | { token: string; expiration: Date } {
   try {
-    const storageValue = localStorage.getItem(CSRF_STORAGE_KEY);
+    const storageValue = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
     const { token, expiration } = JSON.parse(storageValue);
     if (!token || !expiration) return null;
 
@@ -17,7 +17,7 @@ export function getCsrfToken(): null | { token: string; expiration: Date } {
 }
 
 export function isAuthenticated(): boolean {
-  const token = getCsrfToken();
+  const token = getAuthToken();
   if (!token) return false;
 
   return new Date() < token.expiration;
@@ -25,9 +25,9 @@ export function isAuthenticated(): boolean {
 
 export const authenticate: Middleware<NextApiRequest, NextApiResponse> = (req, res, next) => {
   if (req.method?.toLowerCase() !== 'get') {
-    const csrfToken = req.headers['x-csrf-token'];
-    const accessToken = req.cookies.token;
-    User.authenticateRequest(accessToken, csrfToken, true);
+    const signature = req.cookies['xsrf-token'];
+
+    User.authenticateRequest(req.headers.authorization, signature, true);
   }
 
   next();

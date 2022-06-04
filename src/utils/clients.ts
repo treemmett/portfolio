@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { getCsrfToken } from './authentication';
+import { getAuthToken } from './authentication';
 
 export const apiClient = Axios.create({
   withCredentials: true,
@@ -7,9 +7,9 @@ export const apiClient = Axios.create({
 apiClient.interceptors.request.use((req) => {
   if (!req.headers) req.headers = {};
 
-  const csrfToken = getCsrfToken();
-  if (csrfToken) {
-    req.headers['X-CSRF-TOKEN'] = csrfToken.token;
+  const access = getAuthToken();
+  if (access) {
+    req.headers.authorization = `Bearer ${access.token}`;
   }
 
   return req;
