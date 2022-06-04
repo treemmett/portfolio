@@ -1,4 +1,5 @@
 @use '../components/About.module';
+@use '../styles/screen';
 
 $padding: 4rem;
 
@@ -6,7 +7,12 @@ $padding: 4rem;
   position: relative;
   display: flex;
   height: 100vh;
+  flex-direction: column;
   align-items: center;
   padding: $padding;
-  padding-left: calc($padding + About.$width);
+
+  @include screen.md {
+    flex-direction: row;
+    padding-left: calc($padding + About.$width);
+  }
 }
