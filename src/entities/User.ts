@@ -42,6 +42,10 @@ export class User {
       throw new APIError(ErrorCode.never);
     }
 
+    if (!Config.AUTHORIZED_USERS.split(',').includes(data.login)) {
+      throw new APIError(ErrorCode.unauthorized_user, 403, 'Unauthorized');
+    }
+
     const csrfToken = uuid();
 
     const expiration = new Date();
