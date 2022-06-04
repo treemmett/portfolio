@@ -58,6 +58,9 @@ const Login: NextPage = () => {
   }, []);
 
   switch (state) {
+    case LOGIN_STATES.success:
+      return <div>Logged In.</div>;
+
     case LOGIN_STATES.denied:
       return (
         <div>
