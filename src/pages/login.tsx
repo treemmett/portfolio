@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
-import { ACCESS_TOKEN_STORAGE_KEY } from '../utils/auth';
+import { useDataStore } from '../components/DataStore';
 import { apiClient } from '../utils/clients';
 import { Config } from '../utils/config';
 import { ErrorCode } from '../utils/errors';
@@ -10,22 +10,21 @@ enum LOGIN_STATES {
   authorizing,
   denied,
   error,
-  success,
 }
 
 const Login: NextPage = () => {
   const [state, setState] = useState(LOGIN_STATES.default);
+  const { login, session } = useDataStore();
 
   useEffect(() => {
+    if (session) {
+      return;
+    }
+
     const params = new URLSearchParams(window.location.search);
 
     if (params.get('error')) {
       setState(params.get('error') === 'access_denied' ? LOGIN_STATES.denied : LOGIN_STATES.error);
-      return;
-    }
-
-    if (localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY)) {
-      setState(LOGIN_STATES.success);
       return;
     }
 
@@ -41,9 +40,8 @@ const Login: NextPage = () => {
 
     apiClient
       .post('/api/login', { code: params.get('code') })
-      .then((response) => {
-        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, response.data);
-        setState(LOGIN_STATES.success);
+      .then(({ data }) => {
+        login(data);
       })
       .catch((err) => {
         setState(LOGIN_STATES.error);
@@ -55,12 +53,13 @@ const Login: NextPage = () => {
           setState(LOGIN_STATES.error);
         }
       });
-  }, []);
+  }, [login, session]);
+
+  if (session) {
+    return <div>Logged in as {session.username}</div>;
+  }
 
   switch (state) {
-    case LOGIN_STATES.success:
-      return <div>Logged In.</div>;
-
     case LOGIN_STATES.denied:
       return (
         <div>

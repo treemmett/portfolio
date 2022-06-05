@@ -6,8 +6,6 @@ import { AuthorizationScopes, Jwt } from '../entities/Jwt';
 import { Config } from './config';
 import { APIError, ErrorCode } from './errors';
 
-export const ACCESS_TOKEN_STORAGE_KEY = '_a.';
-
 export const authenticateRequest: Middleware<NextApiRequest, NextApiResponse> = (
   req,
   res,
