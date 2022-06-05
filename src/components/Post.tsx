@@ -62,9 +62,24 @@ export const Post: FC<PostProps> = ({ post }) => {
   const [shouldLoadScaled, setShouldLoadScaled] = useState(false);
   const [phaseBlur, setPhaseBlur] = useState(true);
   const [phaseScale, setPhaseScale] = useState(true);
+
+  const intersectionCallback: IntersectionObserverCallback = useCallback(
+    ([{ intersectionRatio }]) => {
+      if (intersectionRatio > 0) {
+        setShouldLoadBlur(true);
+      }
+    },
+    []
+  );
+  const observer = useMemo(
+    () => new IntersectionObserver(intersectionCallback),
+    [intersectionCallback]
+  );
   useEffect(() => {
-    setTimeout(() => setShouldLoadBlur(true), 1000);
-  }, []);
+    const { current } = ref;
+    observer.observe(current);
+    return () => observer.unobserve(current);
+  }, [observer, ref]);
 
   /**
    * This effect adds the width/height transition after the post has been
