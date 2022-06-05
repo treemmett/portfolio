@@ -18,7 +18,6 @@ export const Home: NextPage = () => {
     <div className={styles.container}>
       <Head>
         <title>{Config.NEXT_PUBLIC_NAME}</title>
-        <link href="/favicon.ico" rel="icon" />
       </Head>
 
       {posts.map((post) => (
