@@ -45,7 +45,7 @@ export const authenticateRequest: Middleware<NextApiRequest, NextApiResponse> = 
   }
 
   try {
-    verify([match[1], signature].join('.'), Config.JWT_SECRET);
+    verify(match[1] + signature, Config.JWT_SECRET);
   } catch {
     throw new APIError(ErrorCode.bad_access_token, 401, 'Invalid session');
   }
@@ -101,8 +101,8 @@ export async function authorizeGitHub(code: string) {
   };
 
   const accessTokenParts = sign(jwt, Config.JWT_SECRET).split('.');
-
   const signature = accessTokenParts.pop();
+  accessTokenParts.push('');
 
   return {
     accessToken: accessTokenParts.join('.'),
