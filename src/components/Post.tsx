@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import Link from 'next/link';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
@@ -16,7 +17,7 @@ const MAX_WIDTH = 20 * getRemValue();
 const WIDTH = 0.9;
 
 export const Post: FC<PostProps> = ({ post }) => {
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLAnchorElement>();
   const [height, setHeight] = useState(toPx(0));
   const [width, setWidth] = useState(toPx(0));
 
@@ -97,36 +98,39 @@ export const Post: FC<PostProps> = ({ post }) => {
   );
 
   return (
-    <div
-      className={styles.post}
-      ref={ref}
-      style={{ height, transition: unsetTransition && 'unset', width }}
-    >
-      <div
-        className={cx(styles.placeholder, styles.photo)}
-        style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
-      />
-      {shouldLoadBlur && (
-        <img
-          alt="My Post"
-          className={cx(styles.photo, { [styles.phase]: phaseBlur })}
-          onLoad={() => {
-            setPhaseBlur(false);
-            setShouldLoadScaled(true);
-          }}
-          sizes={`(max-width: 600px) ${Math.min(...blurredImages.map((p) => p.width))}px, 800px`}
-          srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
+    <Link href={{ query: { post: post.id } }} passHref>
+      <a
+        className={styles.post}
+        href="#foo"
+        ref={ref}
+        style={{ height, transition: unsetTransition && 'unset', width }}
+      >
+        <div
+          className={cx(styles.placeholder, styles.photo)}
+          style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
         />
-      )}
-      {shouldLoadScaled && (
-        <img
-          alt="My Post"
-          className={cx(styles.photo, { [styles.phase]: phaseScale })}
-          onLoad={() => setPhaseScale(false)}
-          sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
-          srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
-        />
-      )}
-    </div>
+        {shouldLoadBlur && (
+          <img
+            alt="My Post"
+            className={cx(styles.photo, { [styles.phase]: phaseBlur })}
+            onLoad={() => {
+              setPhaseBlur(false);
+              setShouldLoadScaled(true);
+            }}
+            sizes={`(max-width: 600px) ${Math.min(...blurredImages.map((p) => p.width))}px, 800px`}
+            srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
+          />
+        )}
+        {shouldLoadScaled && (
+          <img
+            alt="My Post"
+            className={cx(styles.photo, { [styles.phase]: phaseScale })}
+            onLoad={() => setPhaseScale(false)}
+            sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
+            srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
+          />
+        )}
+      </a>
+    </Link>
   );
 };
