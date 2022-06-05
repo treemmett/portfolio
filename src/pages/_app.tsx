@@ -1,8 +1,13 @@
 import { AppProps } from 'next/app';
 import { FC } from 'react';
+import { DataStoreProvider } from '../components/DataStore';
 import './_app.scss';
 
-// eslint-disable-next-line react/jsx-props-no-spreading
-const MyApp: FC<AppProps> = ({ Component, pageProps }) => <Component {...pageProps} />;
+const MyApp: FC<AppProps> = ({ Component, pageProps }) => (
+  <DataStoreProvider>
+    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+    <Component {...pageProps} />
+  </DataStoreProvider>
+);
 
 export default MyApp;
