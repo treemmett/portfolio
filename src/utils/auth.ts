@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Middleware } from 'next-connect';
 import { AuthorizationScopes, Jwt } from '../entities/Jwt';
-import { User } from '../entities/User';
 import { Config } from './config';
 import { APIError, ErrorCode } from './errors';
 
@@ -28,11 +27,27 @@ export function isAuthenticated(): boolean {
   return new Date() < token.expiration;
 }
 
-export const authenticate: Middleware<NextApiRequest, NextApiResponse> = (req, res, next) => {
-  if (req.method?.toLowerCase() !== 'get') {
-    const signature = req.cookies['xsrf-token'];
+export const authenticateRequest: Middleware<NextApiRequest, NextApiResponse> = (
+  req,
+  res,
+  next
+) => {
+  if (req.method?.toLowerCase() === 'get') {
+    next();
+    return;
+  }
 
-    User.authenticateRequest(req.headers.authorization, signature, true);
+  const signature = req.cookies['xsrf-token'];
+  const match = /^Bearer (\S+)/i.exec(req.headers.authorization);
+
+  if (!match || !signature) {
+    throw new APIError(ErrorCode.unauthorized, 401, 'Unauthenticated request');
+  }
+
+  try {
+    verify([match[1], signature].join('.'), Config.JWT_SECRET);
+  } catch {
+    throw new APIError(ErrorCode.bad_access_token, 401, 'Invalid session');
   }
 
   next();
