@@ -28,7 +28,7 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
         path: '/',
       })
     );
-    res.send({ expiration, token: accessToken });
+    res.send(accessToken);
   })
   .use(authenticateRequest)
   .get('/api/photo', async (req, res) => res.json(await Photo.getAll()))

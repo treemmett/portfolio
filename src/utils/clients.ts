@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { getAuthToken } from './auth';
+import { ACCESS_TOKEN_STORAGE_KEY } from './auth';
 
 export const apiClient = Axios.create({
   withCredentials: true,
@@ -7,9 +7,9 @@ export const apiClient = Axios.create({
 apiClient.interceptors.request.use((req) => {
   if (!req.headers) req.headers = {};
 
-  const access = getAuthToken();
-  if (access) {
-    req.headers.authorization = `Bearer ${access.token}`;
+  const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+  if (token) {
+    req.headers.authorization = `Bearer ${token}`;
   }
 
   return req;

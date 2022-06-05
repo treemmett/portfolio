@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
-import { ACCESS_TOKEN_STORAGE_KEY, isAuthenticated } from '../utils/auth';
+import { ACCESS_TOKEN_STORAGE_KEY } from '../utils/auth';
 import { apiClient } from '../utils/clients';
 import { Config } from '../utils/config';
 import { ErrorCode } from '../utils/errors';
@@ -24,7 +24,7 @@ const Login: NextPage = () => {
       return;
     }
 
-    if (isAuthenticated()) {
+    if (localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY)) {
       setState(LOGIN_STATES.success);
       return;
     }
@@ -42,7 +42,7 @@ const Login: NextPage = () => {
     apiClient
       .post('/api/login', { code: params.get('code') })
       .then((response) => {
-        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, JSON.stringify(response.data));
+        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, response.data);
         setState(LOGIN_STATES.success);
       })
       .catch((err) => {
