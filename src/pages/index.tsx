@@ -1,42 +1,38 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
 import Head from 'next/head';
+import { useCallback, useEffect, useState } from 'react';
 import { About } from '../components/About';
 import { Post } from '../components/Post';
-import { connectToDB } from '../middleware/database';
-// db driver needs to import entities before consumers
-// eslint-disable-next-line import/order
 import { Post as PostEntity } from '../entities/Post';
+import { apiClient } from '../utils/clients';
 import styles from './home.module.scss';
 
-export interface IndexProps {
-  posts: PostEntity[];
-}
+export const Home: NextPage = () => {
+  const [posts, setPosts] = useState<PostEntity[]>([]);
 
-export const Home: NextPage<IndexProps> = ({ posts }) => (
-  <div className={styles.container}>
-    <Head>
-      <title>Tregan</title>
-      <link href="/favicon.ico" rel="icon" />
-    </Head>
+  const loadPosts = useCallback(async () => {
+    const { data } = await apiClient.get('/api/post');
+    setPosts(data);
+  }, []);
 
-    {posts.map((post) => (
-      <Post key={post.id} post={post} />
-    ))}
-    <About />
-    <About backdrop />
-  </div>
-);
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
+
+  return (
+    <div className={styles.container}>
+      <Head>
+        <title>Tregan</title>
+        <link href="/favicon.ico" rel="icon" />
+      </Head>
+
+      {posts.map((post) => (
+        <Post key={post.id} post={post} />
+      ))}
+      <About />
+      <About backdrop />
+    </div>
+  );
+};
 
 export default Home;
-
-export const getServerSideProps: GetServerSideProps<IndexProps> = async () => {
-  await connectToDB();
-
-  const p = await PostEntity.getAll();
-
-  return {
-    props: {
-      posts: JSON.parse(JSON.stringify(p)),
-    },
-  };
-};
