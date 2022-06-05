@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { About } from '../components/About';
 import { useDataStore } from '../components/DataStore';
 import { Post } from '../components/Post';
+import { Config } from '../utils/config';
 import styles from './home.module.scss';
 
 export const Home: NextPage = () => {
@@ -16,7 +17,7 @@ export const Home: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Tregan</title>
+        <title>{Config.NEXT_PUBLIC_NAME}</title>
         <link href="/favicon.ico" rel="icon" />
       </Head>
 

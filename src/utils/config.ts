@@ -1,5 +1,5 @@
 export class Config {
-  public static AUTHORIZED_USERS = process.env.AUTHORIZED_USERS || 'treemmett';
+  public static AUTHORIZED_USERS = process.env.AUTHORIZED_USERS || '';
 
   public static CDN_URL?: string = process.env.CDN_URL;
 
@@ -23,7 +23,7 @@ export class Config {
   public static NEXT_PUBLIC_GITHUB_CLIENT_ID =
     process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || 'd82ea0a4e4fd1625b0b8';
 
-  public static NEXT_PUBLIC_NAME = process.env.NEXT_PUBLIC_NAME || 'Tregan';
+  public static NEXT_PUBLIC_NAME = process.env.NEXT_PUBLIC_NAME || 'Hello World';
 
   public static NODE_ENV = process.env.NODE_ENV || 'development';
 
