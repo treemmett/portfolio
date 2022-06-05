@@ -1,4 +1,4 @@
-import { PHOTO_PATH } from '../tests/fixtures';
+import { PHOTO_PATH } from '../../tests/fixtures';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
 

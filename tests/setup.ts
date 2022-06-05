@@ -1,5 +1,5 @@
 import { Connection } from 'typeorm';
-import { connectToDB } from '../middleware/database';
+import { connectToDB } from '../src/middleware/database';
 
 let conn: Connection;
 
