@@ -63,17 +63,14 @@ export const Post: FC<PostProps> = ({ post }) => {
   const [phaseBlur, setPhaseBlur] = useState(true);
   const [phaseScale, setPhaseScale] = useState(true);
 
-  const intersectionCallback: IntersectionObserverCallback = useCallback(
-    ([{ intersectionRatio }]) => {
-      if (intersectionRatio > 0) {
-        setShouldLoadBlur(true);
-      }
-    },
-    []
-  );
   const observer = useMemo(
-    () => new IntersectionObserver(intersectionCallback),
-    [intersectionCallback]
+    () =>
+      new IntersectionObserver(([{ intersectionRatio }]) => {
+        if (intersectionRatio > 0) {
+          setShouldLoadBlur(true);
+        }
+      }),
+    []
   );
   useEffect(() => {
     const { current } = ref;
