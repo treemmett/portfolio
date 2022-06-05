@@ -1,19 +1,13 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { About } from '../components/About';
+import { useDataStore } from '../components/DataStore';
 import { Post } from '../components/Post';
-import { Post as PostEntity } from '../entities/Post';
-import { apiClient } from '../utils/clients';
 import styles from './home.module.scss';
 
 export const Home: NextPage = () => {
-  const [posts, setPosts] = useState<PostEntity[]>([]);
-
-  const loadPosts = useCallback(async () => {
-    const { data } = await apiClient.get('/api/post');
-    setPosts(data);
-  }, []);
+  const { posts, loadPosts } = useDataStore();
 
   useEffect(() => {
     loadPosts();
