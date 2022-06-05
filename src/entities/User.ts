@@ -2,7 +2,7 @@ import axios from 'axios';
 import { sign, verify } from 'jsonwebtoken';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
-import { Jwt } from './Jwt';
+import { AuthorizationScopes, Jwt } from './Jwt';
 
 export class User {
   public name: string;
@@ -50,6 +50,7 @@ export class User {
 
     const jwt: Jwt = {
       exp: Math.floor(expiration.getTime() / 1000),
+      scp: [AuthorizationScopes.post],
       sub: data.login,
     };
 
