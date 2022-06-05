@@ -1,7 +1,7 @@
 @use '../components/About.module';
 @use '../styles/screen';
 
-$padding: 4rem;
+$padding: 6rem;
 
 .container {
   position: relative;
@@ -14,7 +14,7 @@ $padding: 4rem;
 
   @include screen.md {
     flex-direction: row;
-    padding-top: 0;
+    padding-top: $padding;
     padding-left: calc($padding + About.$width);
   }
 }
