@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
+import { Jwt } from './Jwt';
 
 export class User {
   public name: string;
@@ -47,13 +48,12 @@ export class User {
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + 1);
 
-    const accessTokenParts = sign(
-      {
-        exp: Math.floor(expiration.getTime() / 1000),
-        sub: data.login,
-      },
-      Config.JWT_SECRET
-    ).split('.');
+    const jwt: Jwt = {
+      exp: Math.floor(expiration.getTime() / 1000),
+      sub: data.login,
+    };
+
+    const accessTokenParts = sign(jwt, Config.JWT_SECRET).split('.');
 
     const signature = accessTokenParts.pop();
 
@@ -90,7 +90,7 @@ export class User {
 
     let sub: string;
     try {
-      ({ sub } = verify([token, signature].join('.'), Config.JWT_SECRET) as JwtPayload);
+      ({ sub } = verify([token, signature].join('.'), Config.JWT_SECRET) as Jwt);
     } catch {
       if (orFail) {
         throw new APIError(ErrorCode.bad_access_token, 401, 'Invalid session');
