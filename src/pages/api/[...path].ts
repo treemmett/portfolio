@@ -4,10 +4,9 @@ import { NextApiResponse, PageConfig } from 'next';
 import nextConnect from 'next-connect';
 import { Photo } from '../../entities/Photo';
 import { Post } from '../../entities/Post';
-import { User } from '../../entities/User';
 import { bodyParser, ParsedApiRequest } from '../../middleware/bodyParser';
 import { connectToDB } from '../../middleware/database';
-import { authenticate } from '../../utils/auth';
+import { authenticate, authorizeGitHub } from '../../utils/auth';
 import { errorHandler } from '../../utils/errors';
 
 await connectToDB();
@@ -20,7 +19,7 @@ export default nextConnect<ParsedApiRequest, NextApiResponse>({
 })
   .use(bodyParser)
   .post('/api/login', async (req, res) => {
-    const { accessToken, expiration, signature } = await User.authorize(req.body.code);
+    const { accessToken, expiration, signature } = await authorizeGitHub(req.body.code);
     res.setHeader(
       'Set-Cookie',
       serialize('xsrf-token', signature, {
