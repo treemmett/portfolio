@@ -23,6 +23,8 @@ export class Config {
   public static NEXT_PUBLIC_GITHUB_CLIENT_ID =
     process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || 'd82ea0a4e4fd1625b0b8';
 
+  public static NEXT_PUBLIC_NAME = process.env.NEXT_PUBLIC_NAME || 'Tregan';
+
   public static NODE_ENV = process.env.NODE_ENV || 'development';
 
   public static S3_BUCKET = process.env.S3_BUCKET || 'blog';
