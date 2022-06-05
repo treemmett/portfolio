@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { getAuthToken } from './authentication';
+import { getAuthToken } from './auth';
 
 export const apiClient = Axios.create({
   withCredentials: true,

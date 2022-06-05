@@ -7,7 +7,7 @@ import { Post } from '../../entities/Post';
 import { User } from '../../entities/User';
 import { bodyParser, ParsedApiRequest } from '../../middleware/bodyParser';
 import { connectToDB } from '../../middleware/database';
-import { authenticate } from '../../utils/authentication';
+import { authenticate } from '../../utils/auth';
 import { errorHandler } from '../../utils/errors';
 
 await connectToDB();

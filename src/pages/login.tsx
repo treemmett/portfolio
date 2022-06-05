@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
-import { ACCESS_TOKEN_STORAGE_KEY, isAuthenticated } from '../utils/authentication';
+import { ACCESS_TOKEN_STORAGE_KEY, isAuthenticated } from '../utils/auth';
 import { apiClient } from '../utils/clients';
 import { Config } from '../utils/config';
 import { ErrorCode } from '../utils/errors';
