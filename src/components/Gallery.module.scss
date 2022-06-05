@@ -1,0 +1,21 @@
+@use '../components/About.module';
+@use '../pages/home.module';
+@use '../styles/screen';
+
+.container {
+  position: relative;
+  display: flex;
+  overflow: auto;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  padding: home.$padding;
+  padding-top: calc(home.$padding + About.$height + About.$padding-top);
+
+  @include screen.md {
+    flex-direction: row;
+    padding-top: home.$padding;
+    padding-left: calc(home.$padding + About.$width);
+  }
+}

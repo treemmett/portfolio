@@ -1,32 +1,20 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { useEffect } from 'react';
 import { About } from '../components/About';
-import { useDataStore } from '../components/DataStore';
-import { Post } from '../components/Post';
+import { Gallery } from '../components/Gallery';
 import { Config } from '../utils/config';
 import styles from './home.module.scss';
 
-export const Home: NextPage = () => {
-  const { posts, loadPosts } = useDataStore();
+export const Home: NextPage = () => (
+  <div className={styles.container}>
+    <Head>
+      <title>{Config.NEXT_PUBLIC_NAME}</title>
+    </Head>
 
-  useEffect(() => {
-    loadPosts();
-  }, [loadPosts]);
-
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>{Config.NEXT_PUBLIC_NAME}</title>
-      </Head>
-
-      {posts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))}
-      <About />
-      <About backdrop />
-    </div>
-  );
-};
+    <Gallery />
+    <About />
+    <About backdrop />
+  </div>
+);
 
 export default Home;
