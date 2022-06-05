@@ -8,11 +8,10 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import type { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
 import { apiClient } from '../utils/clients';
-
-export const ACCESS_TOKEN_STORAGE_KEY = '_a.';
 
 export interface DataStoreContext {
   posts: Post[];

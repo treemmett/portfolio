@@ -7,3 +7,5 @@ export interface Jwt {
   scp: AuthorizationScopes[];
   sub: string;
 }
+
+export const ACCESS_TOKEN_STORAGE_KEY = '_a.';
