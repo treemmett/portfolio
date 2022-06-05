@@ -3,6 +3,8 @@ export class Config {
 
   public static CDN_URL?: string = process.env.CDN_URL;
 
+  public static DB_CERT?: string = process.env.DB_CERT;
+
   public static DB_DATABASE = process.env.DB_DATABASE || 'blog';
 
   public static DB_HOST = process.env.DB_HOST || 'localhost';

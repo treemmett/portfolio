@@ -21,7 +21,7 @@ export async function connectToDB({
   synchronize = true,
   test = false,
 }: DatabaseOptions = {}): Promise<Connection> {
-  const { DB_DATABASE, DB_HOST, DB_PASS, DB_PORT, DB_USER } = Config;
+  const { DB_CERT, DB_DATABASE, DB_HOST, DB_PASS, DB_PORT, DB_USER } = Config;
 
   const conn = getConnectionManager().has(name)
     ? getConnectionManager().get(name)
@@ -33,6 +33,7 @@ export async function connectToDB({
         name,
         password: DB_PASS,
         port: parseInt(DB_PORT, 10),
+        ssl: DB_CERT ? { ca: DB_CERT.replaceAll('\\n', '\n') } : undefined,
         synchronize,
         type: 'postgres',
         username: DB_USER,
