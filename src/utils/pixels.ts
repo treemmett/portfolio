@@ -23,20 +23,48 @@ export const mdMin = pxToNumber(screen.mdMin);
 export const lgMin = pxToNumber(screen.lgMin);
 export const xlMin = pxToNumber(screen.xlMin);
 
-export function scaleDimensions(w: number, h: number, scale: { h: number }): [w: number, h: number];
-export function scaleDimensions(w: number, h: number, scale: { w: number }): [w: number, h: number];
 export function scaleDimensions(
   w: number,
   h: number,
-  scale: { h?: number; w?: number }
+  scale: { h: number },
+  constrainToElement?: HTMLElement
+): [w: number, h: number];
+export function scaleDimensions(
+  w: number,
+  h: number,
+  scale: { w: number },
+  constrainToElement?: HTMLElement
+): [w: number, h: number];
+export function scaleDimensions(
+  w: number,
+  h: number,
+  scale: { h?: number; w?: number },
+  constrainToElement?: HTMLElement
 ): [w: number, h: number] {
+  let width = w;
+  let height = h;
+
   if (scale.h) {
-    return [(scale.h * w) / h, scale.h];
+    width = (scale.h * w) / h;
+    height = scale.h;
   }
 
   if (scale.w) {
-    return [scale.w, (scale.w * h) / w];
+    width = scale.w;
+    height = (scale.w * h) / w;
   }
 
-  return [w, h];
+  if (constrainToElement) {
+    const { clientHeight, clientWidth } = constrainToElement;
+    const { paddingBottom, paddingLeft, paddingRight, paddingTop } =
+      getComputedStyle(constrainToElement);
+
+    const maximumHeight = clientHeight - parseFloat(paddingBottom) - parseFloat(paddingTop);
+    if (height > maximumHeight) return scaleDimensions(width, height, { h: maximumHeight });
+
+    const maximumWidth = clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight);
+    if (width > maximumWidth) return scaleDimensions(width, height, { w: maximumWidth });
+  }
+
+  return [width, height];
 }

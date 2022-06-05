@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
 import { getRemValue, mdMin, scaleDimensions, toPx } from '../utils/pixels';
@@ -16,6 +16,7 @@ const MAX_WIDTH = 20 * getRemValue();
 const WIDTH = 0.9;
 
 export const Post: FC<PostProps> = ({ post }) => {
+  const ref = useRef<HTMLDivElement>();
   const [height, setHeight] = useState(toPx(0));
   const [width, setWidth] = useState(toPx(0));
 
@@ -25,16 +26,26 @@ export const Post: FC<PostProps> = ({ post }) => {
 
     if (isMobile) {
       const scaled = window.innerWidth * WIDTH;
-      const [scaledW, scaledH] = scaleDimensions(photo.width, photo.height, {
-        w: scaled > MAX_WIDTH ? MAX_WIDTH : scaled,
-      });
+      const [scaledW, scaledH] = scaleDimensions(
+        photo.width,
+        photo.height,
+        {
+          w: scaled > MAX_WIDTH ? MAX_WIDTH : scaled,
+        },
+        ref.current?.parentElement
+      );
       setWidth(toPx(scaledW));
       setHeight(toPx(scaledH));
     } else {
       const scaled = window.innerHeight * HEIGHT;
-      const [scaledW, scaledH] = scaleDimensions(photo.width, photo.height, {
-        h: scaled > MAX_HEIGHT ? MAX_HEIGHT : scaled,
-      });
+      const [scaledW, scaledH] = scaleDimensions(
+        photo.width,
+        photo.height,
+        {
+          h: scaled > MAX_HEIGHT ? MAX_HEIGHT : scaled,
+        },
+        ref.current?.parentElement
+      );
       setWidth(toPx(scaledW));
       setHeight(toPx(scaledH));
     }
@@ -74,7 +85,11 @@ export const Post: FC<PostProps> = ({ post }) => {
   );
 
   return (
-    <div className={styles.post} style={{ height, transition: unsetTransition && 'unset', width }}>
+    <div
+      className={styles.post}
+      ref={ref}
+      style={{ height, transition: unsetTransition && 'unset', width }}
+    >
       <div
         className={cx(styles.placeholder, styles.photo)}
         style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
