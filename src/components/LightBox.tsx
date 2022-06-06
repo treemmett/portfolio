@@ -80,7 +80,11 @@ export const LightBox: FC = () => {
       {photo && (
         <img
           alt="My Post"
-          className={cx(styles.photo)}
+          className={cx(styles.photo, {
+            [styles.animating]: [AnimationFrame.to_gallery, AnimationFrame.to_light_box].includes(
+              frame
+            ),
+          })}
           src={photo.url}
           style={{
             height: toPx(height),

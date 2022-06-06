@@ -26,4 +26,8 @@ $padding: 6rem;
   max-width: calc(100% - $padding);
   max-height: calc(100% - $padding);
   transform: translate(-50%, -50%);
+
+  &.animating {
+    transition: width 1s ease, height 1s ease;
+  }
 }
