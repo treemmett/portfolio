@@ -87,7 +87,10 @@ export const Post: FC<PostProps> = ({ post }) => {
    */
   const [unsetTransition, setUnsetTransition] = useState(true);
   useEffect(() => {
-    setUnsetTransition([height, width].every((dimension) => dimension === '0px'));
+    const loaded = [height, width].every((dimension) => dimension !== '0px');
+    if (loaded) {
+      setUnsetTransition(true);
+    }
   }, [height, width]);
 
   const blurredImages = useMemo(
