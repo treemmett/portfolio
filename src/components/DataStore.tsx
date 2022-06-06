@@ -2,6 +2,7 @@ import {
   createContext,
   Dispatch,
   FC,
+  MutableRefObject,
   SetStateAction,
   useCallback,
   useContext,
@@ -15,9 +16,11 @@ import { apiClient } from '../utils/clients';
 
 export interface DataStoreContext {
   posts: Post[];
+  lightBox?: MutableRefObject<HTMLAnchorElement>;
   loadPosts: () => void;
   login: (accessToken: string) => void;
   session?: Session;
+  setLightBox: (lightBox: DataStoreContext['lightBox']) => void;
   setPosts: Dispatch<SetStateAction<Post[]>>;
 }
 
@@ -28,6 +31,7 @@ export const dataStoreContext = createContext<DataStoreContext>({
   session: global.localStorage?.getItem(ACCESS_TOKEN_STORAGE_KEY)
     ? new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY))
     : undefined,
+  setLightBox: () => null,
   setPosts: () => null,
 });
 
@@ -50,9 +54,11 @@ export const DataStoreProvider: FC = ({ children }) => {
     setSession(new Session(accessToken));
   }, []);
 
+  const [lightBox, setLightBox] = useState<MutableRefObject<HTMLAnchorElement>>();
+
   const contextValue = useMemo<DataStoreContext>(
-    () => ({ loadPosts, login, posts, session, setPosts }),
-    [loadPosts, login, posts, session]
+    () => ({ lightBox, loadPosts, login, posts, session, setLightBox, setPosts }),
+    [lightBox, loadPosts, login, posts, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;

@@ -1,9 +1,11 @@
 import cx from 'classnames';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
 import { getRemValue, mdMin, scaleDimensions, toPx } from '../utils/pixels';
+import { useDataStore } from './DataStore';
 import styles from './Post.module.scss';
 
 export interface PostProps {
@@ -96,6 +98,14 @@ export const Post: FC<PostProps> = ({ post }) => {
     () => post.photos.filter((p) => p.type === PhotoType.SCALED),
     [post]
   );
+
+  const { query } = useRouter();
+  const { setLightBox } = useDataStore();
+  useEffect(() => {
+    if (query.post === post.id) {
+      setLightBox(ref);
+    }
+  }, [post.id, query.post, setLightBox]);
 
   return (
     <Link href={{ query: { post: post.id } }} passHref>
