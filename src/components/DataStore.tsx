@@ -7,6 +7,7 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -32,9 +33,6 @@ export const dataStoreContext = createContext<DataStoreContext>({
   loadPosts: () => null,
   login: () => null,
   posts: [],
-  session: global.localStorage?.getItem(ACCESS_TOKEN_STORAGE_KEY)
-    ? new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY))
-    : undefined,
   setLightBox: () => null,
   setPosts: () => null,
 });
@@ -42,11 +40,13 @@ export const dataStoreContext = createContext<DataStoreContext>({
 export const useDataStore = () => useContext(dataStoreContext);
 
 export const DataStoreProvider: FC = ({ children }) => {
-  const [session, setSession] = useState<Session>(
-    global.localStorage?.getItem(ACCESS_TOKEN_STORAGE_KEY)
-      ? new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY))
-      : undefined
-  );
+  const [session, setSession] = useState<Session>();
+  useEffect(() => {
+    const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+    if (token) {
+      setSession(new Session(token));
+    }
+  }, []);
   const apiClient = useMemo(() => {
     const client = Axios.create({
       withCredentials: true,
