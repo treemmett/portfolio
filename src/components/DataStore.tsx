@@ -19,10 +19,11 @@ import { Config } from '../utils/config';
 
 export interface DataStoreContext {
   apiClient: AxiosInstance;
+  destroySession: () => void;
   posts: Post[];
   lightBox?: MutableRefObject<HTMLAnchorElement>;
   loadPosts: () => void;
-  login: (accessToken?: string) => void;
+  login: () => void;
   session?: Session;
   setLightBox: (lightBox?: DataStoreContext['lightBox']) => void;
   setPosts: Dispatch<SetStateAction<Post[]>>;
@@ -30,6 +31,7 @@ export interface DataStoreContext {
 
 export const dataStoreContext = createContext<DataStoreContext>({
   apiClient: Axios,
+  destroySession: () => null,
   loadPosts: () => null,
   login: () => null,
   posts: [],
@@ -99,9 +101,24 @@ export const DataStoreProvider: FC = ({ children }) => {
     oauth.addEventListener('message', messageHandler);
   }, [apiClient, session?.expiration]);
 
+  const destroySession = useCallback(() => {
+    localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+    setSession(undefined);
+  }, []);
+
   const contextValue = useMemo<DataStoreContext>(
-    () => ({ apiClient, lightBox, loadPosts, login, posts, session, setLightBox, setPosts }),
-    [apiClient, lightBox, loadPosts, login, posts, session]
+    () => ({
+      apiClient,
+      destroySession,
+      lightBox,
+      loadPosts,
+      login,
+      posts,
+      session,
+      setLightBox,
+      setPosts,
+    }),
+    [apiClient, destroySession, lightBox, loadPosts, login, posts, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;

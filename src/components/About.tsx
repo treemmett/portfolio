@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
 import { ReactComponent as LinkedIn } from '../icons/linkedin.svg';
+import { ReactComponent as Logout } from '../icons/logout.svg';
 import { ReactComponent as User } from '../icons/user.svg';
 import { Config } from '../utils/config';
 import styles from './About.module.scss';
@@ -13,7 +14,7 @@ export interface AboutProps {
 }
 
 export const About: FC<AboutProps> = ({ backdrop }) => {
-  const { login, session } = useDataStore();
+  const { destroySession, login, session } = useDataStore();
 
   return backdrop ? (
     <main className={styles.backdrop} />
@@ -30,9 +31,15 @@ export const About: FC<AboutProps> = ({ backdrop }) => {
         <Button>
           <LinkedIn />
         </Button>
-        <Button onClick={() => login()}>
-          <User />
-        </Button>
+        {session ? (
+          <Button onClick={destroySession}>
+            <Logout />
+          </Button>
+        ) : (
+          <Button onClick={login}>
+            <User />
+          </Button>
+        )}
       </div>
     </main>
   );
