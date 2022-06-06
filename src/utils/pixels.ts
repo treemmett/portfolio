@@ -60,10 +60,12 @@ export function scaleDimensions(
       getComputedStyle(constrainToElement);
 
     const maximumHeight = clientHeight - parseFloat(paddingBottom) - parseFloat(paddingTop);
-    if (height > maximumHeight) return scaleDimensions(width, height, { h: maximumHeight });
+    if (height > maximumHeight)
+      return scaleDimensions(width, height, { h: maximumHeight }, constrainToElement);
 
     const maximumWidth = clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight);
-    if (width > maximumWidth) return scaleDimensions(width, height, { w: maximumWidth });
+    if (width > maximumWidth)
+      return scaleDimensions(width, height, { w: maximumWidth }, constrainToElement);
   }
 
   return [width, height];

@@ -59,9 +59,9 @@ export const LightBox: FC = () => {
     );
     setWidth(w);
     setHeight(h);
-    setLeft(window.innerWidth / 2 - width / 2);
-    setTop(window.innerHeight / 2 - height / 2);
-  }, [photo, galleryRef, width, height]);
+    setLeft(window.innerWidth / 2 - w / 2);
+    setTop(window.innerHeight / 2 - h / 2);
+  }, [photo, galleryRef]);
   useEffect(() => {
     window.addEventListener('resize', scaleImage);
     return () => window.removeEventListener('resize', scaleImage);
