@@ -83,7 +83,7 @@ export const LightBox: FC = () => {
 
       if (frame === AnimationFrame.to_gallery) {
         setFrame(AnimationFrame.off);
-        push({ query: {} });
+        push({ query: {} }, null, { scroll: false });
       }
     },
     [frame, push]
@@ -115,7 +115,7 @@ export const LightBox: FC = () => {
     }
 
     return () => window.removeEventListener('resize', scaleImage);
-  }, [frame, lightBox, setLightBox, width, height, photo, scaleImage, push, scaleToGallery]);
+  }, [frame, lightBox, setLightBox, width, height, photo, scaleImage, scaleToGallery]);
 
   return (
     <div
