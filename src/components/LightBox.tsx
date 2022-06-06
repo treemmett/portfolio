@@ -1,8 +1,8 @@
 import cx from 'classnames';
 import { useRouter } from 'next/router';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
-import { toPx } from '../utils/pixels';
+import { scaleDimensions, toPx } from '../utils/pixels';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 
@@ -21,7 +21,7 @@ enum AnimationFrame {
 
 export const LightBox: FC = () => {
   const { query, push } = useRouter();
-  const { lightBox, posts } = useDataStore();
+  const { lightBox, posts, setLightBox } = useDataStore();
 
   const photo = useMemo(
     () =>
@@ -34,6 +34,7 @@ export const LightBox: FC = () => {
     [query.post, posts]
   );
 
+  const galleryRef = useRef();
   const [frame, setFrame] = useState(AnimationFrame.off);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -44,7 +45,28 @@ export const LightBox: FC = () => {
       setWidth(rect.width);
       setHeight(rect.height);
     }
-  }, [query.post, lightBox]);
+
+    if (!query.post) {
+      setWidth(0);
+      setHeight(0);
+      setLightBox();
+    }
+  }, [query.post, lightBox, setLightBox]);
+
+  useEffect(() => {
+    if (!photo) return;
+
+    if (frame === AnimationFrame.on_gallery) {
+      const [w, h] = scaleDimensions(
+        photo.width,
+        photo.height,
+        { w: photo.width },
+        galleryRef.current
+      );
+      setWidth(w);
+      setHeight(h);
+    }
+  }, [photo, frame]);
 
   return (
     <div
@@ -52,6 +74,7 @@ export const LightBox: FC = () => {
       onClick={(e) => {
         if (e.currentTarget === e.target) push({ query: {} });
       }}
+      ref={galleryRef}
       role="presentation"
     >
       {photo && (
@@ -59,7 +82,10 @@ export const LightBox: FC = () => {
           alt="My Post"
           className={cx(styles.photo)}
           src={photo.url}
-          style={{ height: toPx(height), width: toPx(width) }}
+          style={{
+            height: toPx(height),
+            width: toPx(width),
+          }}
         />
       )}
     </div>

@@ -20,7 +20,7 @@ export interface DataStoreContext {
   loadPosts: () => void;
   login: (accessToken: string) => void;
   session?: Session;
-  setLightBox: (lightBox: DataStoreContext['lightBox']) => void;
+  setLightBox: (lightBox?: DataStoreContext['lightBox']) => void;
   setPosts: Dispatch<SetStateAction<Post[]>>;
 }
 
