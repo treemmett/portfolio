@@ -1,25 +1,36 @@
 @use 'sass:color';
 @use '../styles/shared';
 
+@mixin color($background-color: shared.$background) {
+  background-color: $background-color;
+
+  &:active {
+    background-color: color.adjust($background-color, $lightness: -10%);
+  }
+
+  &:disabled {
+    background-color: color.grayscale($background-color);
+  }
+}
+
 .button {
   @include shared.border;
+  @include color;
 
   position: relative;
   padding: 0.8rem 1rem;
   border-width: 0;
-  background-color: shared.$primary;
   color: #fff;
   cursor: pointer;
   font-family: inherit;
   font-size: 1rem;
   transition: background-color 0.2s ease-out;
 
-  &:active {
-    background-color: color.adjust(shared.$primary, $lightness: -10%);
+  &.primary {
+    @include color(shared.$primary);
   }
 
   &:disabled {
-    background-color: color.grayscale(shared.$primary);
     cursor: default;
   }
 }

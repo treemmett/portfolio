@@ -64,7 +64,12 @@ const Admin: NextPage = () => {
         <input accept="image/*" id="image" name="file" onChange={handleFileChange} type="file" />
       </label>
       <Input className={styles.input} label="Title" />
-      <Button className={styles.input} disabled={state === UploadState.uploading} submit>
+      <Button
+        className={styles.input}
+        disabled={state === UploadState.uploading}
+        type="primary"
+        submit
+      >
         {state === UploadState.uploading ? 'Uploading...' : 'Post'}
       </Button>
     </form>
