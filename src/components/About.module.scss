@@ -2,7 +2,7 @@
 @use '../styles/shared';
 
 $width: 25rem;
-$height: 7rem;
+$height: 8rem;
 $padding-top: 2rem;
 
 .main,
@@ -17,7 +17,7 @@ $padding-top: 2rem;
   height: $height;
   padding: 2rem;
   font-family: 'Bad Script', cursive;
-  font-size: 2rem;
+  font-size: 1.5rem;
   pointer-events: none;
 
   @include screen.md {
@@ -25,6 +25,7 @@ $padding-top: 2rem;
     width: $width;
     height: 100%;
     padding: 5rem 2rem;
+    font-size: 2rem;
   }
 
   &.backdrop {
