@@ -1,13 +1,27 @@
 import cx from 'classnames';
 import { useRouter } from 'next/router';
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
+import { toPx } from '../utils/pixels';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 
+enum AnimationFrame {
+  /** no photo is opened, and light box is off */
+  off,
+  /** photo is scaled to the gallery  */
+  on_gallery,
+  /** photo is transitioning to the light box */
+  to_light_box,
+  /** photo is on display in light box */
+  on_light_box,
+  /** photo is transitioning to the light box */
+  to_gallery,
+}
+
 export const LightBox: FC = () => {
   const { query, push } = useRouter();
-  const { posts } = useDataStore();
+  const { lightBox, posts } = useDataStore();
 
   const photo = useMemo(
     () =>
@@ -20,6 +34,18 @@ export const LightBox: FC = () => {
     [query.post, posts]
   );
 
+  const [frame, setFrame] = useState(AnimationFrame.off);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  useEffect(() => {
+    if (query.post && lightBox?.current) {
+      const rect = lightBox.current.getBoundingClientRect();
+      setFrame(AnimationFrame.on_gallery);
+      setWidth(rect.width);
+      setHeight(rect.height);
+    }
+  }, [query.post, lightBox]);
+
   return (
     <div
       className={cx(styles['light-box'], { [styles.open]: !!photo })}
@@ -28,7 +54,14 @@ export const LightBox: FC = () => {
       }}
       role="presentation"
     >
-      {photo && <img alt="My Post" className={styles.photo} src={photo.url} />}
+      {photo && (
+        <img
+          alt="My Post"
+          className={cx(styles.photo)}
+          src={photo.url}
+          style={{ height: toPx(height), width: toPx(width) }}
+        />
+      )}
     </div>
   );
 };
