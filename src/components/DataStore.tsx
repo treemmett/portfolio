@@ -13,13 +13,15 @@ import {
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import type { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
+import { OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
+import { Config } from '../utils/config';
 
 export interface DataStoreContext {
   apiClient: AxiosInstance;
   posts: Post[];
   lightBox?: MutableRefObject<HTMLAnchorElement>;
   loadPosts: () => void;
-  login: (accessToken: string) => void;
+  login: (accessToken?: string) => void;
   session?: Session;
   setLightBox: (lightBox?: DataStoreContext['lightBox']) => void;
   setPosts: Dispatch<SetStateAction<Post[]>>;
@@ -69,10 +71,29 @@ export const DataStoreProvider: FC = ({ children }) => {
     setPosts(data);
   }, [apiClient, setPosts]);
 
-  const login = useCallback((accessToken: string) => {
-    localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
-    setSession(new Session(accessToken));
-  }, []);
+  const login = useCallback(() => {
+    if (session?.expiration > new Date()) return;
+
+    const oauth = window.open(
+      `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
+      'oauth',
+      `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
+    );
+
+    const messageHandler = async (event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>) => {
+      if (event.data.type === 'OAUTH_ERROR') {
+        throw new Error(event.data.payload);
+      }
+
+      if (event.data.type === 'OAUTH_CODE') {
+        const loginResponse = await apiClient.post('/api/login', { code: event.data.payload });
+        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
+        setSession(new Session(loginResponse.data));
+      }
+    };
+
+    oauth.addEventListener('message', messageHandler);
+  }, [apiClient, session?.expiration]);
 
   const contextValue = useMemo<DataStoreContext>(
     () => ({ apiClient, lightBox, loadPosts, login, posts, session, setLightBox, setPosts }),

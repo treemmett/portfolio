@@ -6,13 +6,16 @@ import { ReactComponent as User } from '../icons/user.svg';
 import { Config } from '../utils/config';
 import styles from './About.module.scss';
 import { Button } from './Button';
+import { useDataStore } from './DataStore';
 
 export interface AboutProps {
   backdrop?: boolean;
 }
 
-export const About: FC<AboutProps> = ({ backdrop }) =>
-  backdrop ? (
+export const About: FC<AboutProps> = ({ backdrop }) => {
+  const { login } = useDataStore();
+
+  return backdrop ? (
     <main className={styles.backdrop} />
   ) : (
     <main className={styles.main}>
@@ -27,9 +30,10 @@ export const About: FC<AboutProps> = ({ backdrop }) =>
         <Button>
           <LinkedIn />
         </Button>
-        <Button>
+        <Button onClick={() => login()}>
           <User />
         </Button>
       </div>
     </main>
   );
+};
