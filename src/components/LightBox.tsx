@@ -46,9 +46,14 @@ export const LightBox: FC = () => {
     }
 
     if (!query.post) {
+      setWidth(0);
+      setHeight(0);
+      setLeft(0);
+      setTop(0);
+      setLightBox();
       setFrame(AnimationFrame.off);
     }
-  }, [query.post]);
+  }, [query.post, setLightBox]);
 
   const scaleImage = useCallback(() => {
     const [w, h] = scaleDimensions(
@@ -78,14 +83,6 @@ export const LightBox: FC = () => {
       if (frame === AnimationFrame.to_light_box) {
         window.addEventListener('resize', scaleImage);
         scaleImage();
-      }
-
-      if (frame === AnimationFrame.off) {
-        setWidth(0);
-        setHeight(0);
-        setLeft(0);
-        setTop(0);
-        setLightBox();
       }
     }
 
