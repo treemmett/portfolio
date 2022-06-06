@@ -6,7 +6,7 @@ import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 
 export const LightBox: FC = () => {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { posts } = useDataStore();
 
   const photo = useMemo(
@@ -15,7 +15,13 @@ export const LightBox: FC = () => {
   );
 
   return (
-    <div className={cx(styles['light-box'], { [styles.open]: !!photo })}>
+    <div
+      className={cx(styles['light-box'], { [styles.open]: !!photo })}
+      onClick={(e) => {
+        if (e.currentTarget === e.target) push({ query: {} });
+      }}
+      role="presentation"
+    >
       {photo && <img alt="My Post" className={styles.photo} src={photo.url} />}
     </div>
   );
