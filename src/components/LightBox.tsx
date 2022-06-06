@@ -36,10 +36,10 @@ export const LightBox: FC = () => {
 
   const galleryRef = useRef();
   const [frame, setFrame] = useState(AnimationFrame.off);
-  const [width, setWidth] = useState<string>();
-  const [height, setHeight] = useState<string>();
-  const [top, setTop] = useState<string>();
-  const [left, setLeft] = useState<string>();
+  const [width, setWidth] = useState<number>();
+  const [height, setHeight] = useState<number>();
+  const [top, setTop] = useState<number>();
+  const [left, setLeft] = useState<number>();
   useEffect(() => {
     if (query.post) {
       setFrame(AnimationFrame.on_gallery);
@@ -53,17 +53,17 @@ export const LightBox: FC = () => {
   useEffect(() => {
     if (frame === AnimationFrame.on_gallery && lightBox?.current) {
       const rect = lightBox.current.getBoundingClientRect();
-      setWidth(toPx(rect.width));
-      setHeight(toPx(rect.height));
-      setLeft(toPx(rect.left));
-      setTop(toPx(rect.top));
+      setWidth(rect.width);
+      setHeight(rect.height);
+      setLeft(rect.left);
+      setTop(rect.top);
     }
 
     if (frame === AnimationFrame.off) {
-      setWidth(toPx(0));
-      setHeight(toPx(0));
-      setLeft(toPx(0));
-      setTop(toPx(0));
+      setWidth(0);
+      setHeight(0);
+      setLeft(0);
+      setTop(0);
       setLightBox();
     }
   }, [frame, lightBox, setLightBox]);
@@ -86,7 +86,7 @@ export const LightBox: FC = () => {
             ),
           })}
           src={photo.url}
-          style={{ height, left, top, width }}
+          style={{ height: toPx(height), left: toPx(left), top: toPx(top), width: toPx(width) }}
         />
       )}
     </div>
