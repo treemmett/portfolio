@@ -41,24 +41,32 @@ export const LightBox: FC = () => {
   const [top, setTop] = useState<string>();
   const [left, setLeft] = useState<string>();
   useEffect(() => {
-    if (query.post && lightBox?.current) {
-      const rect = lightBox.current.getBoundingClientRect();
+    if (query.post) {
       setFrame(AnimationFrame.on_gallery);
+    }
+
+    if (!query.post) {
+      setFrame(AnimationFrame.off);
+    }
+  }, [query.post]);
+
+  useEffect(() => {
+    if (frame === AnimationFrame.on_gallery && lightBox?.current) {
+      const rect = lightBox.current.getBoundingClientRect();
       setWidth(toPx(rect.width));
       setHeight(toPx(rect.height));
       setLeft(toPx(rect.left));
       setTop(toPx(rect.top));
     }
 
-    if (!query.post) {
+    if (frame === AnimationFrame.off) {
       setWidth(toPx(0));
       setHeight(toPx(0));
       setLeft(toPx(0));
       setTop(toPx(0));
       setLightBox();
-      setFrame(AnimationFrame.off);
     }
-  }, [query.post, lightBox, setLightBox]);
+  }, [frame, lightBox, setLightBox]);
 
   return (
     <div
