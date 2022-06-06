@@ -23,6 +23,13 @@ export class Config {
   public static NEXT_PUBLIC_GITHUB_CLIENT_ID =
     process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || 'd82ea0a4e4fd1625b0b8';
 
+  public static NEXT_PUBLIC_GITHUB_USERNAME?: string = process.env.NEXT_PUBLIC_GITHUB_USERNAME;
+
+  public static NEXT_PUBLIC_INSTAGRAM_USERNAME?: string =
+    process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME;
+
+  public static NEXT_PUBLIC_LINKEDIN_USERNAME?: string = process.env.NEXT_PUBLIC_LINKEDIN_USERNAME;
+
   public static NEXT_PUBLIC_NAME = process.env.NEXT_PUBLIC_NAME || 'Hello World';
 
   public static NODE_ENV = process.env.NODE_ENV || 'development';

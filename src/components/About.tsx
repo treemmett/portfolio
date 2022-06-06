@@ -7,6 +7,7 @@ import { ReactComponent as User } from '../icons/user.svg';
 import { Config } from '../utils/config';
 import { toPx } from '../utils/pixels';
 import styles from './About.module.scss';
+import { Anchor } from './Anchor';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
 
@@ -43,15 +44,21 @@ export const About: FC = () => {
       <main className={styles.main} ref={ref}>
         <h2>{session ? 'Welcome back' : `Hi, I'm ${Config.NEXT_PUBLIC_NAME}`}</h2>
         <div className={styles.social}>
-          <Button>
+          <Anchor href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`} button>
             <GitHub />
-          </Button>
-          <Button>
+          </Anchor>
+          <Anchor
+            href={`https://www.instagram.com/${Config.NEXT_PUBLIC_INSTAGRAM_USERNAME}/`}
+            button
+          >
             <Instagram />
-          </Button>
-          <Button>
+          </Anchor>
+          <Anchor
+            href={`https://www.linkedin.com/in/${Config.NEXT_PUBLIC_LINKEDIN_USERNAME}/`}
+            button
+          >
             <LinkedIn />
-          </Button>
+          </Anchor>
           {session ? (
             <Button onClick={destroySession}>
               <Logout />
