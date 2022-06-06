@@ -38,17 +38,23 @@ export const LightBox: FC = () => {
   const [frame, setFrame] = useState(AnimationFrame.off);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const [top, setTop] = useState(0);
+  const [left, setLeft] = useState(0);
   useEffect(() => {
     if (query.post && lightBox?.current) {
       const rect = lightBox.current.getBoundingClientRect();
       setFrame(AnimationFrame.on_gallery);
       setWidth(rect.width);
       setHeight(rect.height);
+      setLeft(rect.left);
+      setTop(rect.top);
     }
 
     if (!query.post) {
       setWidth(0);
       setHeight(0);
+      setLeft(0);
+      setTop(0);
       setLightBox();
     }
   }, [query.post, lightBox, setLightBox]);
@@ -88,6 +94,8 @@ export const LightBox: FC = () => {
           src={photo.url}
           style={{
             height: toPx(height),
+            left: toPx(left),
+            top: toPx(top),
             width: toPx(width),
           }}
         />
