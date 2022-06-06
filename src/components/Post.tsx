@@ -119,30 +119,40 @@ export const Post: FC<PostProps> = ({ post }) => {
         style={{ height, transition: unsetTransition && 'unset', width }}
       >
         <div
-          className={cx(styles.placeholder, styles.photo)}
-          style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
-        />
-        {shouldLoadBlur && (
-          <img
-            alt="My Post"
-            className={cx(styles.photo, { [styles.phase]: phaseBlur })}
-            onLoad={() => {
-              setPhaseBlur(false);
-              setShouldLoadScaled(true);
-            }}
-            sizes={`(max-width: 600px) ${Math.min(...blurredImages.map((p) => p.width))}px, 800px`}
-            srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
+          className={styles['image-wrapper']}
+          style={{ height, transition: unsetTransition && 'unset', width }}
+        >
+          <div
+            className={cx(styles.placeholder, styles.photo)}
+            style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
           />
-        )}
-        {shouldLoadScaled && (
-          <img
-            alt="My Post"
-            className={cx(styles.photo, { [styles.phase]: phaseScale })}
-            onLoad={() => setPhaseScale(false)}
-            sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
-            srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
-          />
-        )}
+          {shouldLoadBlur && (
+            <img
+              alt="My Post"
+              className={cx(styles.photo, { [styles.phase]: phaseBlur })}
+              onLoad={() => {
+                setPhaseBlur(false);
+                setShouldLoadScaled(true);
+              }}
+              sizes={`(max-width: 600px) ${Math.min(
+                ...blurredImages.map((p) => p.width)
+              )}px, 800px`}
+              srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
+            />
+          )}
+          {shouldLoadScaled && (
+            <img
+              alt="My Post"
+              className={cx(styles.photo, { [styles.phase]: phaseScale })}
+              onLoad={() => setPhaseScale(false)}
+              sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
+              srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
+            />
+          )}
+        </div>
+        <div className={styles.under}>
+          <span className={styles.date}>{new Date(post.created).toLocaleDateString()}</span>
+        </div>
       </a>
     </Link>
   );

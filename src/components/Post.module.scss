@@ -6,10 +6,7 @@
   z-index: 10;
   flex: 0 0 auto;
   margin-bottom: home.$padding;
-  border-radius: 8px;
-  box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
   opacity: 1;
-  transition: width 0.15s ease, height 0.15s ease;
 
   &.displayed {
     opacity: 0;
@@ -19,6 +16,12 @@
     margin-right: home.$padding;
     margin-bottom: 0;
   }
+}
+
+.image-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
+  transition: width 0.15s ease, height 0.15s ease;
 }
 
 .photo {
@@ -49,5 +52,14 @@
 
   &.loaded {
     opacity: 0;
+  }
+}
+
+.under {
+  display: flex;
+  font-family: 'Bad Script', cursive;
+
+  .date {
+    margin-left: auto;
   }
 }
