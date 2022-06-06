@@ -8,7 +8,12 @@
   margin-bottom: home.$padding;
   border-radius: 8px;
   box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
+  opacity: 1;
   transition: width 0.15s ease, height 0.15s ease;
+
+  &.displayed {
+    opacity: 0;
+  }
 
   @include screen.md {
     margin-right: home.$padding;

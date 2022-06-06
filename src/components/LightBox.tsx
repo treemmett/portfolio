@@ -102,9 +102,7 @@ export const LightBox: FC = () => {
         <img
           alt="My Post"
           className={cx(styles.photo, {
-            [styles.center]: [AnimationFrame.to_light_box, AnimationFrame.on_light_box].includes(
-              frame
-            ),
+            [styles['on-gallery']]: [AnimationFrame.off, AnimationFrame.to_gallery].includes(frame),
             [styles.animating]: [AnimationFrame.to_gallery, AnimationFrame.to_light_box].includes(
               frame
             ),

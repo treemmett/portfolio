@@ -110,7 +110,7 @@ export const Post: FC<PostProps> = ({ post }) => {
   return (
     <Link href={{ query: { post: post.id } }} passHref>
       <a
-        className={styles.post}
+        className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
         href="#foo"
         ref={ref}
         style={{ height, transition: unsetTransition && 'unset', width }}
