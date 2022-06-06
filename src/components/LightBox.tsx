@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
-import { toPx } from '../utils/pixels';
+import { scaleDimensions, toPx } from '../utils/pixels';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 
@@ -51,7 +51,9 @@ export const LightBox: FC = () => {
   }, [query.post]);
 
   useEffect(() => {
-    if (frame === AnimationFrame.on_gallery && lightBox?.current) {
+    if (!photo || !lightBox?.current) return;
+
+    if (frame === AnimationFrame.on_gallery) {
       const rect = lightBox.current.getBoundingClientRect();
       setWidth(rect.width);
       setHeight(rect.height);
@@ -62,8 +64,16 @@ export const LightBox: FC = () => {
     }
 
     if (frame === AnimationFrame.to_light_box) {
+      const [w, h] = scaleDimensions(
+        photo.width,
+        photo.height,
+        { h: photo.height },
+        galleryRef.current
+      );
       setLeft(window.innerWidth / 2 - width / 2);
       setTop(window.innerHeight / 2 - height / 2);
+      setWidth(w);
+      setHeight(h);
     }
 
     if (frame === AnimationFrame.off) {
@@ -73,7 +83,7 @@ export const LightBox: FC = () => {
       setTop(0);
       setLightBox();
     }
-  }, [frame, lightBox, setLightBox, width, height]);
+  }, [frame, lightBox, setLightBox, width, height, photo]);
 
   return (
     <div
