@@ -14,7 +14,7 @@ import {
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import type { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
-import { OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
+import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
 import { Config } from '../utils/config';
 
 export interface DataStoreContext {
@@ -81,6 +81,10 @@ export const DataStoreProvider: FC = ({ children }) => {
     );
 
     const messageHandler = async (event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>) => {
+      oauth.postMessage({
+        type: 'OAUTH_CLOSE',
+      } as OAuthCloseMessage);
+
       if (event.data.type === 'OAUTH_ERROR') {
         throw new Error(event.data.payload);
       }

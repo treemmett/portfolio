@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export interface OAuthSuccessMessage {
   type: 'OAUTH_CODE';
@@ -10,6 +10,10 @@ export interface OAuthSuccessMessage {
 export interface OAuthErrorMessage {
   type: 'OAUTH_ERROR';
   payload: string;
+}
+
+export interface OAuthCloseMessage {
+  type: 'OAUTH_CLOSE';
 }
 
 const Login: NextPage = () => {
@@ -31,9 +35,17 @@ const Login: NextPage = () => {
         type: 'OAUTH_CODE',
       } as OAuthSuccessMessage);
     }
-
-    window.close();
   }, [query.code, query.error]);
+
+  const successHandler = useCallback((e: MessageEvent<OAuthCloseMessage>) => {
+    if (e.data.type === 'OAUTH_CLOSE') window.close();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('message', successHandler);
+
+    return () => window.removeEventListener('message', successHandler);
+  }, [successHandler]);
 
   return null;
 };
