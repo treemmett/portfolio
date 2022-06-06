@@ -2,7 +2,6 @@
 @use '../styles/shared';
 
 $width: 25rem;
-$height: 8rem;
 $padding-top: 2rem;
 
 .main,
@@ -14,7 +13,6 @@ $padding-top: 2rem;
   top: $padding-top;
   left: 0;
   width: 100%;
-  height: $height;
   padding: 2rem;
   font-family: 'Bad Script', cursive;
   font-size: 1.5rem;

@@ -10,7 +10,7 @@
   flex-direction: column;
   align-items: center;
   padding: home.$padding;
-  padding-top: calc(home.$padding + About.$height + About.$padding-top);
+  padding-top: calc((home.$padding + About.$padding-top) * 2.5);
 
   @include screen.md {
     flex-direction: row;
