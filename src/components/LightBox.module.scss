@@ -23,14 +23,8 @@ $padding: 6rem;
   position: fixed;
   border-radius: 8px;
   box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
-  opacity: 1;
-  transition: opacity 0.3s ease;
-
-  &.on-gallery {
-    opacity: 0;
-  }
 
   &.animating {
-    transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease, opacity 0.3s ease;
+    transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease;
   }
 }

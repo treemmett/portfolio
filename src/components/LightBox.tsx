@@ -1,6 +1,14 @@
 import cx from 'classnames';
 import { useRouter } from 'next/router';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  FC,
+  TransitionEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import { scaleDimensions, toPx } from '../utils/pixels';
 import { useDataStore } from './DataStore';
@@ -68,15 +76,31 @@ export const LightBox: FC = () => {
     setTop(window.innerHeight / 2 - h / 2);
   }, [photo, galleryRef]);
 
+  const handleTransitionEnd: TransitionEventHandler = useCallback(
+    (e) => {
+      // to prevent duplicate calls, only respond on `width`
+      if (e.propertyName !== 'width') return;
+
+      if (frame === AnimationFrame.to_gallery) {
+        setFrame(AnimationFrame.off);
+        push({ query: {} });
+      }
+    },
+    [frame, push]
+  );
+
+  const scaleToGallery = useCallback(() => {
+    const rect = lightBox.current.getBoundingClientRect();
+    setWidth(rect.width);
+    setHeight(rect.height);
+    setLeft(rect.left);
+    setTop(rect.top);
+  }, [lightBox]);
+
   useEffect(() => {
     if (photo && lightBox?.current) {
       if (frame === AnimationFrame.on_gallery) {
-        const rect = lightBox.current.getBoundingClientRect();
-        setWidth(rect.width);
-        setHeight(rect.height);
-        setLeft(rect.left);
-        setTop(rect.top);
-
+        scaleToGallery();
         setTimeout(setFrame, 50, AnimationFrame.to_light_box);
       }
 
@@ -84,17 +108,24 @@ export const LightBox: FC = () => {
         window.addEventListener('resize', scaleImage);
         scaleImage();
       }
+
+      if (frame === AnimationFrame.to_gallery) {
+        scaleToGallery();
+      }
     }
 
     return () => window.removeEventListener('resize', scaleImage);
-  }, [frame, lightBox, setLightBox, width, height, photo, scaleImage]);
+  }, [frame, lightBox, setLightBox, width, height, photo, scaleImage, push, scaleToGallery]);
 
   return (
     <div
-      className={cx(styles['light-box'], { [styles.open]: !!photo })}
+      className={cx(styles['light-box'], {
+        [styles.open]: ![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame),
+      })}
       onClick={(e) => {
-        if (e.currentTarget === e.target) push({ query: {} });
+        if (e.currentTarget === e.target) setFrame(AnimationFrame.to_gallery);
       }}
+      onTransitionEnd={handleTransitionEnd}
       ref={galleryRef}
       role="presentation"
     >
@@ -102,7 +133,6 @@ export const LightBox: FC = () => {
         <img
           alt="My Post"
           className={cx(styles.photo, {
-            [styles['on-gallery']]: [AnimationFrame.off, AnimationFrame.to_gallery].includes(frame),
             [styles.animating]: [AnimationFrame.to_gallery, AnimationFrame.to_light_box].includes(
               frame
             ),
