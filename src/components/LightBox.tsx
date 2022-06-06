@@ -62,35 +62,34 @@ export const LightBox: FC = () => {
     setLeft(window.innerWidth / 2 - w / 2);
     setTop(window.innerHeight / 2 - h / 2);
   }, [photo, galleryRef]);
+
   useEffect(() => {
-    window.addEventListener('resize', scaleImage);
+    if (photo && lightBox?.current) {
+      if (frame === AnimationFrame.on_gallery) {
+        const rect = lightBox.current.getBoundingClientRect();
+        setWidth(rect.width);
+        setHeight(rect.height);
+        setLeft(rect.left);
+        setTop(rect.top);
+
+        setTimeout(setFrame, 50, AnimationFrame.to_light_box);
+      }
+
+      if (frame === AnimationFrame.to_light_box) {
+        window.addEventListener('resize', scaleImage);
+        scaleImage();
+      }
+
+      if (frame === AnimationFrame.off) {
+        setWidth(0);
+        setHeight(0);
+        setLeft(0);
+        setTop(0);
+        setLightBox();
+      }
+    }
+
     return () => window.removeEventListener('resize', scaleImage);
-  }, [scaleImage]);
-
-  useEffect(() => {
-    if (!photo || !lightBox?.current) return;
-
-    if (frame === AnimationFrame.on_gallery) {
-      const rect = lightBox.current.getBoundingClientRect();
-      setWidth(rect.width);
-      setHeight(rect.height);
-      setLeft(rect.left);
-      setTop(rect.top);
-
-      setTimeout(setFrame, 50, AnimationFrame.to_light_box);
-    }
-
-    if (frame === AnimationFrame.to_light_box) {
-      scaleImage();
-    }
-
-    if (frame === AnimationFrame.off) {
-      setWidth(0);
-      setHeight(0);
-      setLeft(0);
-      setTop(0);
-      setLightBox();
-    }
   }, [frame, lightBox, setLightBox, width, height, photo, scaleImage]);
 
   return (
