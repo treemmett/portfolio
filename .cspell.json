@@ -13,6 +13,7 @@
     "preconnect",
     "preload",
     "stylelint",
+    "svgr",
     "treemmett",
     "Tregan",
     "typeorm"
