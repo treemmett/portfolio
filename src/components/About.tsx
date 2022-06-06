@@ -9,38 +9,35 @@ import styles from './About.module.scss';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
 
-export interface AboutProps {
-  backdrop?: boolean;
-}
-
-export const About: FC<AboutProps> = ({ backdrop }) => {
+export const About: FC = () => {
   const { destroySession, login, session } = useDataStore();
 
-  return backdrop ? (
-    <main className={styles.backdrop} />
-  ) : (
-    <main className={styles.main}>
-      <h2>{session ? 'Welcome back' : `Hi, I'm ${Config.NEXT_PUBLIC_NAME}`}</h2>
-      <div className={styles.social}>
-        <Button>
-          <GitHub />
-        </Button>
-        <Button>
-          <Instagram />
-        </Button>
-        <Button>
-          <LinkedIn />
-        </Button>
-        {session ? (
-          <Button onClick={destroySession}>
-            <Logout />
+  return (
+    <>
+      <main className={styles.main}>
+        <h2>{session ? 'Welcome back' : `Hi, I'm ${Config.NEXT_PUBLIC_NAME}`}</h2>
+        <div className={styles.social}>
+          <Button>
+            <GitHub />
           </Button>
-        ) : (
-          <Button onClick={login}>
-            <User />
+          <Button>
+            <Instagram />
           </Button>
-        )}
-      </div>
-    </main>
+          <Button>
+            <LinkedIn />
+          </Button>
+          {session ? (
+            <Button onClick={destroySession}>
+              <Logout />
+            </Button>
+          ) : (
+            <Button onClick={login}>
+              <User />
+            </Button>
+          )}
+        </div>
+      </main>
+      <main className={styles.backdrop} />
+    </>
   );
 };

@@ -15,8 +15,6 @@ export const Home: NextPage = () => (
     <Gallery />
 
     <About />
-    <About backdrop />
-
     <LightBox />
   </div>
 );
