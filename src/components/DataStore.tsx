@@ -1,3 +1,4 @@
+import Axios, { AxiosInstance } from 'axios';
 import {
   createContext,
   Dispatch,
@@ -12,9 +13,9 @@ import {
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import type { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
-import { apiClient } from '../utils/clients';
 
 export interface DataStoreContext {
+  apiClient: AxiosInstance;
   posts: Post[];
   lightBox?: MutableRefObject<HTMLAnchorElement>;
   loadPosts: () => void;
@@ -25,6 +26,7 @@ export interface DataStoreContext {
 }
 
 export const dataStoreContext = createContext<DataStoreContext>({
+  apiClient: Axios,
   loadPosts: () => null,
   login: () => null,
   posts: [],
@@ -38,27 +40,43 @@ export const dataStoreContext = createContext<DataStoreContext>({
 export const useDataStore = () => useContext(dataStoreContext);
 
 export const DataStoreProvider: FC = ({ children }) => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const loadPosts = useCallback(async () => {
-    const { data } = await apiClient.get('/api/post');
-    setPosts(data);
-  }, [setPosts]);
-
   const [session, setSession] = useState<Session>(
     global.localStorage?.getItem(ACCESS_TOKEN_STORAGE_KEY)
       ? new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY))
       : undefined
   );
+  const apiClient = useMemo(() => {
+    const client = Axios.create({
+      withCredentials: true,
+    });
+    client.interceptors.request.use((req) => {
+      if (!req.headers) req.headers = {};
+
+      if (session?.accessToken && session?.expiration > new Date()) {
+        req.headers.authorization = `Bearer ${session.accessToken}`;
+      }
+
+      return req;
+    });
+    return client;
+  }, [session]);
+
+  const [lightBox, setLightBox] = useState<MutableRefObject<HTMLAnchorElement>>();
+
+  const [posts, setPosts] = useState<Post[]>([]);
+  const loadPosts = useCallback(async () => {
+    const { data } = await apiClient.get('/api/post');
+    setPosts(data);
+  }, [apiClient, setPosts]);
+
   const login = useCallback((accessToken: string) => {
     localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
     setSession(new Session(accessToken));
   }, []);
 
-  const [lightBox, setLightBox] = useState<MutableRefObject<HTMLAnchorElement>>();
-
   const contextValue = useMemo<DataStoreContext>(
-    () => ({ lightBox, loadPosts, login, posts, session, setLightBox, setPosts }),
-    [lightBox, loadPosts, login, posts, session]
+    () => ({ apiClient, lightBox, loadPosts, login, posts, session, setLightBox, setPosts }),
+    [apiClient, lightBox, loadPosts, login, posts, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;

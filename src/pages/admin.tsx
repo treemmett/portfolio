@@ -2,8 +2,8 @@ import cx from 'classnames';
 import { NextPage } from 'next';
 import { ChangeEventHandler, FormEventHandler, useCallback, useState } from 'react';
 import { Button } from '../components/Button';
+import { useDataStore } from '../components/DataStore';
 import { Input } from '../components/Input';
-import { apiClient } from '../utils/clients';
 import styles from './admin.module.scss';
 
 enum UploadState {
@@ -12,6 +12,7 @@ enum UploadState {
 }
 
 const Admin: NextPage = () => {
+  const { apiClient } = useDataStore();
   const [imageData, setImageData] = useState('');
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     const file = e.currentTarget.files[0];
@@ -50,7 +51,7 @@ const Admin: NextPage = () => {
         setState(UploadState.default);
       }
     },
-    [state]
+    [apiClient, state]
   );
 
   return (

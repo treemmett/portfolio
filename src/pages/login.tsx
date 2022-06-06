@@ -1,7 +1,6 @@
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { useDataStore } from '../components/DataStore';
-import { apiClient } from '../utils/clients';
 import { Config } from '../utils/config';
 import { ErrorCode } from '../utils/errors';
 
@@ -14,7 +13,7 @@ enum LOGIN_STATES {
 
 const Login: NextPage = () => {
   const [state, setState] = useState(LOGIN_STATES.default);
-  const { login, session } = useDataStore();
+  const { apiClient, login, session } = useDataStore();
 
   useEffect(() => {
     if (session) {
@@ -53,7 +52,7 @@ const Login: NextPage = () => {
           setState(LOGIN_STATES.error);
         }
       });
-  }, [login, session]);
+  }, [apiClient, login, session]);
 
   if (session) {
     return <div>Logged in as {session.username}</div>;
