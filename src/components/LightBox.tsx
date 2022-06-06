@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
-import { scaleDimensions, toPx } from '../utils/pixels';
+import { toPx } from '../utils/pixels';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 
@@ -36,43 +36,29 @@ export const LightBox: FC = () => {
 
   const galleryRef = useRef();
   const [frame, setFrame] = useState(AnimationFrame.off);
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
-  const [top, setTop] = useState(0);
-  const [left, setLeft] = useState(0);
+  const [width, setWidth] = useState<string>();
+  const [height, setHeight] = useState<string>();
+  const [top, setTop] = useState<string>();
+  const [left, setLeft] = useState<string>();
   useEffect(() => {
     if (query.post && lightBox?.current) {
       const rect = lightBox.current.getBoundingClientRect();
       setFrame(AnimationFrame.on_gallery);
-      setWidth(rect.width);
-      setHeight(rect.height);
-      setLeft(rect.left);
-      setTop(rect.top);
+      setWidth(toPx(rect.width));
+      setHeight(toPx(rect.height));
+      setLeft(toPx(rect.left));
+      setTop(toPx(rect.top));
     }
 
     if (!query.post) {
-      setWidth(0);
-      setHeight(0);
-      setLeft(0);
-      setTop(0);
+      setWidth(toPx(0));
+      setHeight(toPx(0));
+      setLeft(toPx(0));
+      setTop(toPx(0));
       setLightBox();
+      setFrame(AnimationFrame.off);
     }
   }, [query.post, lightBox, setLightBox]);
-
-  useEffect(() => {
-    if (!photo) return;
-
-    if (frame === AnimationFrame.on_gallery) {
-      const [w, h] = scaleDimensions(
-        photo.width,
-        photo.height,
-        { w: photo.width },
-        galleryRef.current
-      );
-      setWidth(w);
-      setHeight(h);
-    }
-  }, [photo, frame]);
 
   return (
     <div
@@ -92,12 +78,7 @@ export const LightBox: FC = () => {
             ),
           })}
           src={photo.url}
-          style={{
-            height: toPx(height),
-            left: toPx(left),
-            top: toPx(top),
-            width: toPx(width),
-          }}
+          style={{ height, left, top, width }}
         />
       )}
     </div>
