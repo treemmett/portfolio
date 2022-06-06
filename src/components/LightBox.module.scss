@@ -21,8 +21,6 @@ $padding: 6rem;
 
 .photo {
   position: fixed;
-  top: 50%;
-  left: 50%;
 
   &.animating {
     transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease;

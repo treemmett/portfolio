@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import { useRouter } from 'next/router';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import { scaleDimensions, toPx } from '../utils/pixels';
 import { useDataStore } from './DataStore';
@@ -50,6 +50,23 @@ export const LightBox: FC = () => {
     }
   }, [query.post]);
 
+  const scaleImage = useCallback(() => {
+    const [w, h] = scaleDimensions(
+      photo.width,
+      photo.height,
+      { h: photo.height },
+      galleryRef.current
+    );
+    setWidth(w);
+    setHeight(h);
+    setLeft(window.innerWidth / 2 - width / 2);
+    setTop(window.innerHeight / 2 - height / 2);
+  }, [photo, galleryRef, width, height]);
+  useEffect(() => {
+    window.addEventListener('resize', scaleImage);
+    return () => window.removeEventListener('resize', scaleImage);
+  }, [scaleImage]);
+
   useEffect(() => {
     if (!photo || !lightBox?.current) return;
 
@@ -64,16 +81,7 @@ export const LightBox: FC = () => {
     }
 
     if (frame === AnimationFrame.to_light_box) {
-      const [w, h] = scaleDimensions(
-        photo.width,
-        photo.height,
-        { h: photo.height },
-        galleryRef.current
-      );
-      setLeft(window.innerWidth / 2 - width / 2);
-      setTop(window.innerHeight / 2 - height / 2);
-      setWidth(w);
-      setHeight(h);
+      scaleImage();
     }
 
     if (frame === AnimationFrame.off) {
@@ -83,7 +91,7 @@ export const LightBox: FC = () => {
       setTop(0);
       setLightBox();
     }
-  }, [frame, lightBox, setLightBox, width, height, photo]);
+  }, [frame, lightBox, setLightBox, width, height, photo, scaleImage]);
 
   return (
     <div
