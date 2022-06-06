@@ -18,12 +18,13 @@ $padding-top: 2rem;
   padding: 2rem;
   font-family: 'Bad Script', cursive;
   font-size: 1.5rem;
-  pointer-events: none;
 
   @include screen.md {
     top: 0;
+    display: flex;
     width: $width;
     height: 100%;
+    flex-direction: column;
     padding: 5rem 2rem;
     font-size: 2rem;
   }
@@ -45,5 +46,14 @@ $padding-top: 2rem;
 
   h2 {
     margin: 0;
+  }
+}
+
+.social {
+  display: flex;
+  justify-content: space-around;
+
+  @include screen.md {
+    margin-top: auto;
   }
 }

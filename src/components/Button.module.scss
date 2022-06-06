@@ -4,6 +4,12 @@
 @mixin color($background-color: shared.$background) {
   background-color: $background-color;
 
+  @media (hover: hover) {
+    &:hover {
+      background-color: color.adjust($background-color, $lightness: -5%);
+    }
+  }
+
   &:active {
     background-color: color.adjust($background-color, $lightness: -10%);
   }
@@ -20,13 +26,13 @@
   position: relative;
   padding: 0.8rem 1rem;
   border-width: 0;
-  color: #fff;
   cursor: pointer;
   font-family: inherit;
   font-size: 1rem;
   transition: background-color 0.2s ease-out;
 
   &.primary {
+    color: #fff;
     @include color(shared.$primary);
   }
 
