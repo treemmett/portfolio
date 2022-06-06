@@ -13,13 +13,13 @@ export interface AboutProps {
 }
 
 export const About: FC<AboutProps> = ({ backdrop }) => {
-  const { login } = useDataStore();
+  const { login, session } = useDataStore();
 
   return backdrop ? (
     <main className={styles.backdrop} />
   ) : (
     <main className={styles.main}>
-      <h2>Hi, I'm {Config.NEXT_PUBLIC_NAME}</h2>
+      <h2>{session ? 'Welcome back' : `Hi, I'm ${Config.NEXT_PUBLIC_NAME}`}</h2>
       <div className={styles.social}>
         <Button>
           <GitHub />
