@@ -57,6 +57,13 @@ export const LightBox: FC = () => {
       setHeight(rect.height);
       setLeft(rect.left);
       setTop(rect.top);
+
+      setTimeout(setFrame, 50, AnimationFrame.to_light_box);
+    }
+
+    if (frame === AnimationFrame.to_light_box) {
+      setLeft(window.innerWidth / 2 - width / 2);
+      setTop(window.innerHeight / 2 - height / 2);
     }
 
     if (frame === AnimationFrame.off) {
@@ -66,7 +73,7 @@ export const LightBox: FC = () => {
       setTop(0);
       setLightBox();
     }
-  }, [frame, lightBox, setLightBox]);
+  }, [frame, lightBox, setLightBox, width, height]);
 
   return (
     <div
@@ -81,6 +88,9 @@ export const LightBox: FC = () => {
         <img
           alt="My Post"
           className={cx(styles.photo, {
+            [styles.center]: [AnimationFrame.to_light_box, AnimationFrame.on_light_box].includes(
+              frame
+            ),
             [styles.animating]: [AnimationFrame.to_gallery, AnimationFrame.to_light_box].includes(
               frame
             ),

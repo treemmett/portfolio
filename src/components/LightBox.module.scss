@@ -25,6 +25,6 @@ $padding: 6rem;
   left: 50%;
 
   &.animating {
-    transition: width 1s ease, height 1s ease;
+    transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease;
   }
 }
