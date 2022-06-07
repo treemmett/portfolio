@@ -25,6 +25,12 @@ export class Session {
     return new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY));
   }
 
+  public hasPermission(scope: AuthorizationScopes): boolean {
+    if (!this.isValid()) return false;
+
+    return this.scope.includes(scope);
+  }
+
   public isValid(): boolean {
     return new Date() < this.expiration;
   }
