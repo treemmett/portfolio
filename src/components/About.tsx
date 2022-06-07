@@ -42,7 +42,7 @@ export const About: FC = () => {
   return (
     <>
       <main className={styles.main} ref={ref}>
-        <h2>{session ? 'Welcome back' : `Hi, I'm ${Config.NEXT_PUBLIC_NAME}`}</h2>
+        <h2>{session.isValid() ? 'Welcome back' : `Hi, I'm ${Config.NEXT_PUBLIC_NAME}`}</h2>
         <div className={styles.social}>
           <Anchor href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`} button>
             <GitHub />
@@ -59,7 +59,7 @@ export const About: FC = () => {
           >
             <LinkedIn />
           </Anchor>
-          {session ? (
+          {session.isValid() ? (
             <Button onClick={destroySession}>
               <Logout />
             </Button>

@@ -24,4 +24,8 @@ export class Session {
 
     return new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY));
   }
+
+  public isValid(): boolean {
+    return new Date() < this.expiration;
+  }
 }
