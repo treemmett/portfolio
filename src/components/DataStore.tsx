@@ -7,7 +7,6 @@ import {
   SetStateAction,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -24,7 +23,7 @@ export interface DataStoreContext {
   lightBox?: MutableRefObject<HTMLAnchorElement>;
   loadPosts: () => void;
   login: () => void;
-  session?: Session;
+  session: Session;
   setLightBox: (lightBox?: DataStoreContext['lightBox']) => void;
   setPosts: Dispatch<SetStateAction<Post[]>>;
 }
@@ -35,6 +34,7 @@ export const dataStoreContext = createContext<DataStoreContext>({
   loadPosts: () => null,
   login: () => null,
   posts: [],
+  session: new Session(),
   setLightBox: () => null,
   setPosts: () => null,
 });
@@ -42,13 +42,7 @@ export const dataStoreContext = createContext<DataStoreContext>({
 export const useDataStore = () => useContext(dataStoreContext);
 
 export const DataStoreProvider: FC = ({ children }) => {
-  const [session, setSession] = useState<Session>();
-  useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
-    if (token) {
-      setSession(new Session(token));
-    }
-  }, []);
+  const [session, setSession] = useState(Session.restore());
   const apiClient = useMemo(() => {
     const client = Axios.create({
       withCredentials: true,
