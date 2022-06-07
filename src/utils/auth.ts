@@ -71,7 +71,7 @@ export async function authorizeGitHub(code: string) {
   }
 
   const expiration = new Date();
-  expiration.setDate(expiration.getDate() + 1);
+  expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
 
   const jwt: Jwt = {
     exp: Math.floor(expiration.getTime() / 1000),
