@@ -7,6 +7,7 @@ import {
   SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -42,7 +43,10 @@ export const dataStoreContext = createContext<DataStoreContext>({
 export const useDataStore = () => useContext(dataStoreContext);
 
 export const DataStoreProvider: FC = ({ children }) => {
-  const [session, setSession] = useState(Session.restore());
+  const [session, setSession] = useState(new Session());
+  useEffect(() => {
+    setSession(Session.restore());
+  }, []);
   const apiClient = useMemo(() => {
     const client = Axios.create({
       withCredentials: true,
@@ -50,7 +54,7 @@ export const DataStoreProvider: FC = ({ children }) => {
     client.interceptors.request.use((req) => {
       if (!req.headers) req.headers = {};
 
-      if (session?.accessToken && session?.expiration > new Date()) {
+      if (session.isValid()) {
         req.headers.authorization = `Bearer ${session.accessToken}`;
       }
 
