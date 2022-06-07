@@ -1,7 +1,8 @@
 import screen from '../styles/screen.module.scss';
+import { isBrowser } from './isBrowser';
 
 export function getRemValue(): number {
-  if (typeof window !== 'undefined') {
+  if (isBrowser()) {
     return parseFloat(getComputedStyle(document.documentElement).fontSize);
   }
 
