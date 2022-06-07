@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { FC, MouseEventHandler } from 'react';
 import styles from './Button.module.scss';
 
-export type ButtonTypes = 'default' | 'primary';
+export type ButtonTypes = 'default' | 'primary' | 'fab';
 
 export interface ButtonProps {
   className?: string;
@@ -22,7 +22,10 @@ export const Button: FC<ButtonProps> = ({
   type,
 }) => (
   <button
-    className={cx(styles.button, className, { [styles.primary]: type === 'primary' })}
+    className={cx(styles.button, className, {
+      [styles.fab]: type === 'fab',
+      [styles.primary]: type === 'primary',
+    })}
     disabled={disabled}
     onClick={onClick}
     type={submit ? 'submit' : 'button'}

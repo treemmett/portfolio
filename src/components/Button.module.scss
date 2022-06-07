@@ -31,9 +31,19 @@
   font-size: 1rem;
   transition: background-color 0.2s ease-out;
 
-  &.primary {
+  &.primary,
+  &.fab {
     color: #fff;
     @include color(shared.$primary);
+  }
+
+  &.fab {
+    position: fixed;
+    z-index: 10;
+    right: 0;
+    bottom: 0;
+    padding: 1.5rem;
+    margin: 2rem;
   }
 
   &:disabled {
