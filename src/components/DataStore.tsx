@@ -67,7 +67,8 @@ export const DataStoreProvider: FC = ({ children }) => {
 
   const [posts, setPosts] = useState<Post[]>([]);
   const loadPosts = useCallback(async () => {
-    const { data } = await apiClient.get('/api/post');
+    const { data } = await apiClient.get<Post[]>('/api/post');
+    data.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
     setPosts(data);
   }, [apiClient, setPosts]);
 
