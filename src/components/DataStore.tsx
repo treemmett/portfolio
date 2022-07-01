@@ -101,7 +101,7 @@ export const DataStoreProvider: FC = ({ children }) => {
 
   const destroySession = useCallback(() => {
     localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-    setSession(undefined);
+    setSession(new Session());
   }, []);
 
   const contextValue = useMemo<DataStoreContext>(
