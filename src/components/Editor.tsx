@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { useRouter } from 'next/router';
 import { ChangeEventHandler, FC, FormEventHandler, useCallback, useState } from 'react';
+import type { Post } from '../entities/Post';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import styles from './Editor.module.scss';
@@ -14,7 +15,7 @@ enum UploadState {
 
 export const Editor: FC = () => {
   const router = useRouter();
-  const { apiClient } = useDataStore();
+  const { addPost, apiClient } = useDataStore();
   const [imageData, setImageData] = useState('');
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     const file = e.currentTarget.files[0];
@@ -41,10 +42,11 @@ export const Editor: FC = () => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
 
-        await apiClient.post('/api/post', new FormData(form));
+        const { data } = await apiClient.post<Post>('/api/post', new FormData(form));
 
         form.reset();
         setImageData('');
+        addPost(data);
         router.push({ query: { newPost: undefined } });
       } catch (err) {
         console.error(err?.response?.data?.error || err);
@@ -53,7 +55,7 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [apiClient, router, state]
+    [addPost, apiClient, router, state]
   );
 
   return (

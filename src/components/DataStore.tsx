@@ -18,6 +18,7 @@ import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pa
 import { Config } from '../utils/config';
 
 export interface DataStoreContext {
+  addPost: (post: Post) => void;
   apiClient: AxiosInstance;
   destroySession: () => void;
   posts: Post[];
@@ -30,6 +31,7 @@ export interface DataStoreContext {
 }
 
 export const dataStoreContext = createContext<DataStoreContext>({
+  addPost: () => null,
   apiClient: Axios,
   destroySession: () => null,
   loadPosts: () => null,
@@ -66,6 +68,14 @@ export const DataStoreProvider: FC = ({ children }) => {
   const [lightBox, setLightBox] = useState<MutableRefObject<HTMLAnchorElement>>();
 
   const [posts, setPosts] = useState<Post[]>([]);
+  const addPost = useCallback(
+    (post: Post) => {
+      const p = [post, ...posts];
+      p.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+      setPosts(p);
+    },
+    [posts]
+  );
   const loadPosts = useCallback(async () => {
     const { data } = await apiClient.get<Post[]>('/api/post');
     data.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
@@ -107,6 +117,7 @@ export const DataStoreProvider: FC = ({ children }) => {
 
   const contextValue = useMemo<DataStoreContext>(
     () => ({
+      addPost,
       apiClient,
       destroySession,
       lightBox,
@@ -117,7 +128,7 @@ export const DataStoreProvider: FC = ({ children }) => {
       setLightBox,
       setPosts,
     }),
-    [apiClient, destroySession, lightBox, loadPosts, login, posts, session]
+    [addPost, apiClient, destroySession, lightBox, loadPosts, login, posts, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;
