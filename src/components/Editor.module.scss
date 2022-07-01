@@ -1,0 +1,59 @@
+@use '../styles/shared';
+
+.container {
+  position: relative;
+  display: flex;
+  width: 30rem;
+  flex-direction: column;
+  align-items: center;
+  padding: 5rem 2rem;
+  margin: 0 auto;
+
+  > * {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.form {
+  @include shared.theme;
+  @include shared.border;
+
+  padding: 1rem;
+}
+
+.picker {
+  @include shared.border;
+  @include shared.theme;
+
+  overflow: hidden;
+  width: 100%;
+  padding: 3rem;
+  border: 1px solid hsla(20deg, 0%, 20%, 80%);
+  cursor: pointer;
+
+  &:not(.selected) {
+    display: flex;
+    height: 15rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.selected {
+    padding: 0;
+    border: none;
+  }
+
+  input {
+    display: none;
+  }
+}
+
+.preview {
+  display: block;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  margin-top: 1rem;
+}
