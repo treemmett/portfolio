@@ -44,27 +44,33 @@ export const About: FC = () => {
       <main className={styles.main} ref={ref}>
         <h2>{session.isValid() ? 'Welcome back' : `Hi, I'm ${Config.NEXT_PUBLIC_NAME}`}</h2>
         <div className={styles.social}>
-          <Anchor href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`} button>
+          <Anchor
+            className={styles.button}
+            href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`}
+            button
+          >
             <GitHub />
           </Anchor>
           <Anchor
+            className={styles.button}
             href={`https://www.instagram.com/${Config.NEXT_PUBLIC_INSTAGRAM_USERNAME}/`}
             button
           >
             <Instagram />
           </Anchor>
           <Anchor
+            className={styles.button}
             href={`https://www.linkedin.com/in/${Config.NEXT_PUBLIC_LINKEDIN_USERNAME}/`}
             button
           >
             <LinkedIn />
           </Anchor>
           {session.isValid() ? (
-            <Button onClick={destroySession}>
+            <Button className={styles.button} onClick={destroySession}>
               <Logout />
             </Button>
           ) : (
-            <Button onClick={login}>
+            <Button className={styles.button} onClick={login}>
               <User />
             </Button>
           )}
