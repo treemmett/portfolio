@@ -1,17 +1,17 @@
 @use 'sass:color';
 @use '../styles/shared';
 
-@mixin color($background-color: shared.$background) {
+@mixin color($background-color: shared.$background, $scale: 1) {
   background-color: $background-color;
 
   @media (hover: hover) {
     &:hover {
-      background-color: color.adjust($background-color, $lightness: -5%);
+      background-color: color.adjust($background-color, $lightness: -5% * $scale);
     }
   }
 
   &:active {
-    background-color: color.adjust($background-color, $lightness: -10%);
+    background-color: color.adjust($background-color, $lightness: -10% * $scale);
   }
 
   &:disabled {
@@ -26,10 +26,17 @@
   position: relative;
   padding: 0.8rem 1rem;
   border-width: 0;
+  color: shared.$text;
   cursor: pointer;
   font-family: inherit;
   font-size: 1rem;
   transition: background-color 0.2s ease-out;
+
+  @media (prefers-color-scheme: dark) {
+    @include color(shared.$background-dark, -2);
+
+    color: shared.$text-light;
+  }
 
   &.primary,
   &.fab {
