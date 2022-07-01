@@ -13,6 +13,7 @@ import { PhotoType } from '../entities/PhotoType';
 import { scaleDimensions, toPx } from '../utils/pixels';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
+import { Modal } from './Modal';
 
 enum AnimationFrame {
   /** no photo is opened, and light box is off */
@@ -42,7 +43,7 @@ export const LightBox: FC = () => {
     [query.post, posts]
   );
 
-  const galleryRef = useRef();
+  const galleryRef = useRef<HTMLDivElement>();
   const [frame, setFrame] = useState(AnimationFrame.off);
   const [width, setWidth] = useState<number>();
   const [height, setHeight] = useState<number>();
@@ -118,15 +119,10 @@ export const LightBox: FC = () => {
   }, [frame, lightBox, setLightBox, width, height, photo, scaleImage, scaleToGallery]);
 
   return (
-    <div
-      className={cx(styles['light-box'], {
-        [styles.open]: ![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame),
-      })}
-      onClick={(e) => {
-        if (e.currentTarget === e.target) setFrame(AnimationFrame.to_gallery);
-      }}
+    <Modal
+      onClose={() => setFrame(AnimationFrame.to_gallery)}
+      open={![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame)}
       ref={galleryRef}
-      role="presentation"
     >
       {photo && (
         <img
@@ -141,6 +137,6 @@ export const LightBox: FC = () => {
           style={{ height: toPx(height), left: toPx(left), top: toPx(top), width: toPx(width) }}
         />
       )}
-    </div>
+    </Modal>
   );
 };
