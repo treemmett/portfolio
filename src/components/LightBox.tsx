@@ -125,7 +125,6 @@ export const LightBox: FC = () => {
       onClick={(e) => {
         if (e.currentTarget === e.target) setFrame(AnimationFrame.to_gallery);
       }}
-      onTransitionEnd={handleTransitionEnd}
       ref={galleryRef}
       role="presentation"
     >
@@ -137,6 +136,7 @@ export const LightBox: FC = () => {
               frame
             ),
           })}
+          onTransitionEnd={handleTransitionEnd}
           src={photo.url}
           style={{ height: toPx(height), left: toPx(left), top: toPx(top), width: toPx(width) }}
         />
