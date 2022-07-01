@@ -120,6 +120,7 @@ export const LightBox: FC = () => {
 
   return (
     <Modal
+      handleChildren={false}
       onClose={() => setFrame(AnimationFrame.to_gallery)}
       open={![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame)}
       ref={galleryRef}

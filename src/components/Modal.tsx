@@ -4,14 +4,22 @@ import styles from './Modal.module.scss';
 
 export interface ModalProps {
   className?: string;
-  /** Callback when the user clicks on modal wrapper */
+  /**
+   * Automatically hide children when `open` is falsely
+   * Useless if you need to animate or apply logic while closing
+   * @default true
+   */
+  handleChildren?: boolean;
+  /**
+   * Callback when the user clicks on modal wrapper
+   */
   onClose?: () => void;
   /** Modal is open */
   open?: boolean;
 }
 
 export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
-  ({ className, children, onClose = () => null, open = false }, ref) => (
+  ({ className, children, handleChildren = true, onClose = () => null, open = false }, ref) => (
     <div
       className={cx(styles['light-box'], className, {
         [styles.open]: open,
@@ -22,7 +30,7 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
       ref={ref}
       role="presentation"
     >
-      {children}
+      {(open || !handleChildren) && children}
     </div>
   )
 );

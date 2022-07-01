@@ -61,35 +61,33 @@ export const Editor: FC = () => {
       onClose={() => router.push({ query: { newPost: undefined } })}
       open={router.query.newPost?.length > 0}
     >
-      {router.query.newPost?.length > 0 && (
-        <div className={styles.container}>
-          <form className={styles.form} onSubmit={uploadPost}>
-            <label className={cx(styles.picker, { [styles.selected]: imageData })} htmlFor="image">
-              {imageData ? (
-                <img alt="selection preview" className={styles.preview} src={imageData} />
-              ) : (
-                <div>Pick an image</div>
-              )}
-              <input
-                accept="image/*"
-                id="image"
-                name="file"
-                onChange={handleFileChange}
-                type="file"
-              />
-            </label>
-            <Input className={styles.input} label="Title" />
-            <Button
-              className={styles.input}
-              disabled={state === UploadState.uploading}
-              type="primary"
-              submit
-            >
-              {state === UploadState.uploading ? 'Uploading...' : 'Post'}
-            </Button>
-          </form>
-        </div>
-      )}
+      <div className={styles.container}>
+        <form className={styles.form} onSubmit={uploadPost}>
+          <label className={cx(styles.picker, { [styles.selected]: imageData })} htmlFor="image">
+            {imageData ? (
+              <img alt="selection preview" className={styles.preview} src={imageData} />
+            ) : (
+              <div>Pick an image</div>
+            )}
+            <input
+              accept="image/*"
+              id="image"
+              name="file"
+              onChange={handleFileChange}
+              type="file"
+            />
+          </label>
+          <Input className={styles.input} label="Title" />
+          <Button
+            className={styles.input}
+            disabled={state === UploadState.uploading}
+            type="primary"
+            submit
+          >
+            {state === UploadState.uploading ? 'Uploading...' : 'Post'}
+          </Button>
+        </form>
+      </div>
     </Modal>
   );
 };
