@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { forwardRef, PropsWithChildren } from 'react';
 import styles from './Modal.module.scss';
 
-export interface ModalProps {
+export interface ModalProps extends PropsWithChildren {
   className?: string;
   /**
    * Automatically hide children when `open` is falsely
@@ -18,7 +18,7 @@ export interface ModalProps {
   open?: boolean;
 }
 
-export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
+export const Modal = forwardRef<HTMLDivElement, ModalProps>(
   ({ className, children, handleChildren = true, onClose = () => null, open = false }, ref) => (
     <div
       className={cx(styles['light-box'], className, {

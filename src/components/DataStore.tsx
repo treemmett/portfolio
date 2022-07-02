@@ -4,6 +4,7 @@ import {
   Dispatch,
   FC,
   MutableRefObject,
+  PropsWithChildren,
   SetStateAction,
   useCallback,
   useContext,
@@ -44,7 +45,7 @@ export const dataStoreContext = createContext<DataStoreContext>({
 
 export const useDataStore = () => useContext(dataStoreContext);
 
-export const DataStoreProvider: FC = ({ children }) => {
+export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
   const [session, setSession] = useState(new Session());
   useEffect(() => {
     setSession(Session.restore());

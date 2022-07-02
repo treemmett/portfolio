@@ -1,10 +1,10 @@
 import cx from 'classnames';
-import { FC, MouseEventHandler } from 'react';
+import { FC, MouseEventHandler, PropsWithChildren } from 'react';
 import styles from './Button.module.scss';
 
 export type ButtonTypes = 'default' | 'primary' | 'fab';
 
-export interface ButtonProps {
+export interface ButtonProps extends PropsWithChildren {
   className?: string;
   disabled?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;

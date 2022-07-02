@@ -1,9 +1,9 @@
 import cx from 'classnames';
-import { FC } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import { ButtonTypes } from './Button';
 import styles from './Button.module.scss';
 
-export interface AnchorProps {
+export interface AnchorProps extends PropsWithChildren {
   className?: string;
   /** emulate button design */
   button?: boolean;
