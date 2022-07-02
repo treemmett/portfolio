@@ -1,3 +1,4 @@
+import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
 import { FC } from 'react';
 import { DataStoreProvider } from '../components/DataStore';
@@ -10,4 +11,4 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => (
   </DataStoreProvider>
 );
 
-export default MyApp;
+export default appWithTranslation(MyApp);
