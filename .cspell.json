@@ -1,6 +1,7 @@
 {
   "version": "0.2",
   "language": "en",
+  "ignorePaths": ["public/locales"],
   "words": [
     "Batang",
     "commitlint",
@@ -12,6 +13,7 @@
     "picsum",
     "preconnect",
     "preload",
+    "Salut",
     "stylelint",
     "svgr",
     "treemmett",
