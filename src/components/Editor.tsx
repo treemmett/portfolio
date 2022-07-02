@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { ChangeEventHandler, FC, FormEventHandler, useCallback, useState } from 'react';
 import type { Post } from '../entities/Post';
@@ -14,6 +15,7 @@ enum UploadState {
 }
 
 export const Editor: FC = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { addPost, apiClient } = useDataStore();
   const [imageData, setImageData] = useState('');
@@ -50,12 +52,12 @@ export const Editor: FC = () => {
         router.push({ query: { newPost: undefined } });
       } catch (err) {
         console.error(err?.response?.data?.error || err);
-        alert(['Upload failed', err?.response?.data?.message].join(' - '));
+        alert([t('Upload failed'), err?.response?.data?.message].join(' - '));
       } finally {
         setState(UploadState.default);
       }
     },
-    [addPost, apiClient, router, state]
+    [addPost, apiClient, router, state, t]
   );
 
   return (
@@ -69,7 +71,7 @@ export const Editor: FC = () => {
             {imageData ? (
               <img alt="selection preview" className={styles.preview} src={imageData} />
             ) : (
-              <div>Pick an image</div>
+              <div>{t('Pick an image')}</div>
             )}
             <input
               accept="image/*"
@@ -79,14 +81,14 @@ export const Editor: FC = () => {
               type="file"
             />
           </label>
-          <Input className={styles.input} label="Title" />
+          <Input className={styles.input} label={t('Title')} />
           <Button
             className={styles.input}
             disabled={state === UploadState.uploading}
             type="primary"
             submit
           >
-            {state === UploadState.uploading ? 'Uploading...' : 'Post'}
+            {state === UploadState.uploading ? t('Uploading...') : t('Post')}
           </Button>
         </form>
       </div>

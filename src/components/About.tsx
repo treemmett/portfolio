@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
@@ -39,10 +40,14 @@ export const About: FC = () => {
     copyDimensions();
   });
 
+  const { t } = useTranslation();
+
   return (
     <>
       <main className={styles.main} ref={ref}>
-        <h2>{session.isValid() ? 'Welcome back' : `Hi, I'm ${Config.NEXT_PUBLIC_NAME}`}</h2>
+        <h2>
+          {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
+        </h2>
         <div className={styles.social}>
           <Anchor
             className={styles.button}
