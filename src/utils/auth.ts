@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import axios from 'axios';
 import { sign, verify } from 'jsonwebtoken';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -11,7 +12,9 @@ export const authenticateRequest: Middleware<NextApiRequest, NextApiResponse> = 
   res,
   next
 ) => {
-  if (req.method?.toLowerCase() === 'get') {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+
+  if (req.method?.toLowerCase() === 'get' || url.pathname === '/api/login') {
     next();
     return;
   }
