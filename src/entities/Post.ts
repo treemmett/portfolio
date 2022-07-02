@@ -101,4 +101,13 @@ export class Post {
     await Post.repository().save(post);
     return post;
   }
+
+  public static async get(id: string): Promise<Post> {
+    return getRepository<Post>(TABLE_NAME)
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.photos', 'photo')
+      .where('photo.type != :type', { type: PhotoType.ORIGINAL })
+      .andWhere('post.id = :id', { id })
+      .getOne();
+  }
 }
