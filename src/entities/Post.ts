@@ -110,4 +110,8 @@ export class Post {
       .andWhere('post.id = :id', { id })
       .getOne();
   }
+
+  public async delete(): Promise<void> {
+    await getRepository<Post>(TABLE_NAME).delete(this);
+  }
 }
