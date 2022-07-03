@@ -1,8 +1,6 @@
-import type * as Nock from 'nock';
+import nock from 'nock';
 
 if (process.env.MOCK === 'true') {
-  const nock: typeof Nock = require('nock');
-
   nock('https://github.com')
     .post('/login/oauth/access_token')
     .reply(200, (uri, body: Record<string, string>) => ({ access_token: body.code }))
