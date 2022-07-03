@@ -15,7 +15,6 @@ export interface PostProps {
 const MAX_HEIGHT = 40 * getRemValue();
 const HEIGHT = 0.6;
 
-const MAX_WIDTH = 20 * getRemValue();
 const WIDTH = 0.9;
 
 export const Post: FC<PostProps> = ({ post }) => {
@@ -33,7 +32,7 @@ export const Post: FC<PostProps> = ({ post }) => {
         photo.width,
         photo.height,
         {
-          w: scaled > MAX_WIDTH ? MAX_WIDTH : scaled,
+          w: scaled,
         },
         ref.current?.parentElement,
         getRemValue()
