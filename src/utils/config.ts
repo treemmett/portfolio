@@ -15,13 +15,11 @@ export class Config {
 
   public static DB_USER?: string = process.env.DB_USER;
 
-  public static GITHUB_CLIENT_SECRET =
-    process.env.GITHUB_CLIENT_SECRET || 'e99aafe5c56d915c5b07d38e2aaa393bf6764218';
+  public static GITHUB_CLIENT_SECRET?: string = process.env.GITHUB_CLIENT_SECRET;
 
   public static JWT_SECRET = process.env.JWT_SECRET || 'hello';
 
-  public static NEXT_PUBLIC_GITHUB_CLIENT_ID =
-    process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || 'd82ea0a4e4fd1625b0b8';
+  public static NEXT_PUBLIC_GITHUB_CLIENT_ID?: string = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
 
   public static NEXT_PUBLIC_GITHUB_USERNAME?: string = process.env.NEXT_PUBLIC_GITHUB_USERNAME;
 

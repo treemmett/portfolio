@@ -49,36 +49,43 @@ export const About: FC = () => {
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
         </h2>
         <div className={styles.social}>
-          <Anchor
-            className={styles.button}
-            href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`}
-            button
-          >
-            <GitHub />
-          </Anchor>
-          <Anchor
-            className={styles.button}
-            href={`https://www.instagram.com/${Config.NEXT_PUBLIC_INSTAGRAM_USERNAME}/`}
-            button
-          >
-            <Instagram />
-          </Anchor>
-          <Anchor
-            className={styles.button}
-            href={`https://www.linkedin.com/in/${Config.NEXT_PUBLIC_LINKEDIN_USERNAME}/`}
-            button
-          >
-            <LinkedIn />
-          </Anchor>
-          {session.isValid() ? (
-            <Button className={styles.button} onClick={destroySession} testId="logout">
-              <Logout />
-            </Button>
-          ) : (
-            <Button className={styles.button} onClick={login} testId="login">
-              <User />
-            </Button>
+          {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
+            <Anchor
+              className={styles.button}
+              href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`}
+              button
+            >
+              <GitHub />
+            </Anchor>
           )}
+          {Config.NEXT_PUBLIC_INSTAGRAM_USERNAME && (
+            <Anchor
+              className={styles.button}
+              href={`https://www.instagram.com/${Config.NEXT_PUBLIC_INSTAGRAM_USERNAME}/`}
+              button
+            >
+              <Instagram />
+            </Anchor>
+          )}
+          {Config.NEXT_PUBLIC_LINKEDIN_USERNAME && (
+            <Anchor
+              className={styles.button}
+              href={`https://www.linkedin.com/in/${Config.NEXT_PUBLIC_LINKEDIN_USERNAME}/`}
+              button
+            >
+              <LinkedIn />
+            </Anchor>
+          )}
+          {Config.NEXT_PUBLIC_GITHUB_CLIENT_ID &&
+            (session.isValid() ? (
+              <Button className={styles.button} onClick={destroySession} testId="logout">
+                <Logout />
+              </Button>
+            ) : (
+              <Button className={styles.button} onClick={login} testId="login">
+                <User />
+              </Button>
+            ))}
         </div>
       </main>
       <main className={styles.backdrop} style={{ height: toPx(height), width: toPx(width) }} />
