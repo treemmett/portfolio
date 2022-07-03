@@ -20,15 +20,19 @@ const Login: NextPage = () => {
   const { query } = useRouter();
 
   useEffect(() => {
+    if (!window.opener) {
+      window.close();
+    }
+
     if (query.error) {
-      window.postMessage({
+      window.opener.postMessage({
         payload: query.error,
         type: 'OAUTH_ERROR',
       } as OAuthErrorMessage);
     }
 
     if (query.code) {
-      window.postMessage({
+      window.opener.postMessage({
         payload: query.code,
         type: 'OAUTH_CODE',
       } as OAuthSuccessMessage);

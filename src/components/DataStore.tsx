@@ -86,20 +86,16 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
   const login = useCallback(() => {
     if (session?.expiration > new Date()) return;
 
-    const oauth = window.open(
-      `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
-      'oauth',
-      `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
-    );
-
     const messageHandler = async (event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>) => {
       if (event.origin !== window.location.origin) {
         throw new Error('Message failed cross-origin check');
       }
 
-      oauth.postMessage({
+      event.source.postMessage({
         type: 'OAUTH_CLOSE',
       } as OAuthCloseMessage);
+
+      window.removeEventListener('message', messageHandler);
 
       if (event.data.type === 'OAUTH_ERROR') {
         throw new Error(event.data.payload);
@@ -112,7 +108,13 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
       }
     };
 
-    oauth.addEventListener('message', messageHandler);
+    window.addEventListener('message', messageHandler);
+
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
+      'oauth',
+      `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
+    );
   }, [apiClient, session?.expiration]);
 
   const destroySession = useCallback(() => {
