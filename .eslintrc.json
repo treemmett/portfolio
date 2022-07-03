@@ -47,7 +47,11 @@
     },
     {
       "files": ["cypress.config.ts", "cypress/**/*.ts"],
-      "rules": { "import/no-extraneous-dependencies": ["error", { "devDependencies": true }] }
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+        "global-require": "off"
+      }
     }
   ]
 }

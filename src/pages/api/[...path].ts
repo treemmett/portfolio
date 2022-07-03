@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import '../../../cypress/mock';
 import { serialize } from 'cookie';
 import { PageConfig } from 'next';
 import { Photo } from '../../entities/Photo';
