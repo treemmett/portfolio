@@ -10,6 +10,7 @@ export interface ButtonProps extends PropsWithChildren {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   /** button is of submit type */
   submit?: boolean;
+  testId?: string;
   type?: ButtonTypes;
 }
 
@@ -19,6 +20,7 @@ export const Button: FC<ButtonProps> = ({
   disabled,
   onClick,
   submit,
+  testId,
   type,
 }) => (
   <button
@@ -26,6 +28,7 @@ export const Button: FC<ButtonProps> = ({
       [styles.fab]: type === 'fab',
       [styles.primary]: type === 'primary',
     })}
+    data-testid={testId}
     disabled={disabled}
     onClick={onClick}
     type={submit ? 'submit' : 'button'}

@@ -71,11 +71,11 @@ export const About: FC = () => {
             <LinkedIn />
           </Anchor>
           {session.isValid() ? (
-            <Button className={styles.button} onClick={destroySession}>
+            <Button className={styles.button} onClick={destroySession} testId="logout">
               <Logout />
             </Button>
           ) : (
-            <Button className={styles.button} onClick={login}>
+            <Button className={styles.button} onClick={login} testId="login">
               <User />
             </Button>
           )}
