@@ -1,7 +1,7 @@
 @use 'sass:color';
 @use '../styles/shared';
 
-@mixin color($background-color: shared.$background, $scale: 1) {
+@mixin color($background-color: shared.$background-dark, $scale: 1) {
   background-color: $background-color;
 
   @media (hover: hover) {
@@ -26,16 +26,16 @@
   position: relative;
   padding: 0.8rem 1rem;
   border-width: 0;
-  color: shared.$text;
+  color: shared.$text-light;
   cursor: pointer;
   font-family: inherit;
   font-size: 1rem;
   transition: background-color 0.2s ease-out;
 
   @media (prefers-color-scheme: dark) {
-    @include color(shared.$background-dark, -2);
+    @include color(shared.$background);
 
-    color: shared.$text-light;
+    color: shared.$text;
   }
 
   &.primary,
