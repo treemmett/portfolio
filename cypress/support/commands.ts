@@ -35,3 +35,25 @@
 //     }
 //   }
 // }
+
+declare namespace Cypress {
+  interface Chainable {
+    login(email: string): Chainable;
+  }
+}
+
+Cypress.Commands.add('login', (username: string) => {
+  cy.visit('/');
+
+  cy.intercept({ hostname: 'github.com', pathname: '/login/oauth/authorize' }, (req) =>
+    req.redirect(`http://localhost:3000/login?code=${username}`)
+  );
+
+  cy.intercept('/api/login').as('login');
+
+  cy.get('[data-testid=login]').click();
+
+  cy.wait(3000);
+
+  cy.wait('@login');
+});
