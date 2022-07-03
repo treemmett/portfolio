@@ -69,8 +69,10 @@ export async function authorizeGitHub(code: string) {
     throw new APIError(ErrorCode.never);
   }
 
-  if (!Config.AUTHORIZED_USERS.split(',').includes(data.login)) {
-    throw new APIError(ErrorCode.unauthorized_user, 403, 'Unauthorized');
+  const scopes: AuthorizationScopes[] = [];
+
+  if (Config.AUTHORIZED_USERS.split(',').includes(data.login)) {
+    scopes.push(AuthorizationScopes.post);
   }
 
   const expiration = new Date();
@@ -78,7 +80,7 @@ export async function authorizeGitHub(code: string) {
 
   const jwt: Jwt = {
     exp: Math.floor(expiration.getTime() / 1000),
-    scp: [AuthorizationScopes.post],
+    scp: scopes,
     sub: data.login,
   };
 

@@ -19,10 +19,6 @@ export enum ErrorCode {
    */
   unauthorized,
   /**
-   * GitHub authentication was successful, but the user isn't authorized
-   */
-  unauthorized_user,
-  /**
    * Invalid access token
    */
   bad_access_token,
