@@ -28,19 +28,22 @@ export function scaleDimensions(
   w: number,
   h: number,
   scale: { h: number },
-  constrainToElement?: HTMLElement
+  constrainToElement?: HTMLElement,
+  padding?: number
 ): [w: number, h: number];
 export function scaleDimensions(
   w: number,
   h: number,
   scale: { w: number },
-  constrainToElement?: HTMLElement
+  constrainToElement?: HTMLElement,
+  padding?: number
 ): [w: number, h: number];
 export function scaleDimensions(
   w: number,
   h: number,
   scale: { h?: number; w?: number },
-  constrainToElement?: HTMLElement
+  constrainToElement?: HTMLElement,
+  padding = 0
 ): [w: number, h: number] {
   let width = w;
   let height = h;
@@ -60,11 +63,12 @@ export function scaleDimensions(
     const { paddingBottom, paddingLeft, paddingRight, paddingTop } =
       getComputedStyle(constrainToElement);
 
-    const maximumHeight = clientHeight - parseFloat(paddingBottom) - parseFloat(paddingTop);
+    const maximumHeight =
+      clientHeight - parseFloat(paddingBottom) - parseFloat(paddingTop) - padding;
     if (height > maximumHeight)
       return scaleDimensions(width, height, { h: maximumHeight }, constrainToElement);
 
-    const maximumWidth = clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight);
+    const maximumWidth = clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight) - padding;
     if (width > maximumWidth)
       return scaleDimensions(width, height, { w: maximumWidth }, constrainToElement);
   }

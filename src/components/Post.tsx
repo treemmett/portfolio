@@ -35,7 +35,8 @@ export const Post: FC<PostProps> = ({ post }) => {
         {
           w: scaled > MAX_WIDTH ? MAX_WIDTH : scaled,
         },
-        ref.current?.parentElement
+        ref.current?.parentElement,
+        getRemValue()
       );
       setWidth(toPx(scaledW));
       setHeight(toPx(scaledH));
@@ -47,7 +48,8 @@ export const Post: FC<PostProps> = ({ post }) => {
         {
           h: scaled > MAX_HEIGHT ? MAX_HEIGHT : scaled,
         },
-        ref.current?.parentElement
+        ref.current?.parentElement,
+        getRemValue() * 2
       );
       setWidth(toPx(scaledW));
       setHeight(toPx(scaledH));
