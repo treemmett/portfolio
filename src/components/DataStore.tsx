@@ -93,6 +93,10 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
     );
 
     const messageHandler = async (event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>) => {
+      if (event.origin !== window.location.origin) {
+        throw new Error('Message failed cross-origin check');
+      }
+
       oauth.postMessage({
         type: 'OAUTH_CLOSE',
       } as OAuthCloseMessage);

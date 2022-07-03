@@ -20,8 +20,6 @@ const Login: NextPage = () => {
   const { query } = useRouter();
 
   useEffect(() => {
-    if (!window.name) return;
-
     if (query.error) {
       window.postMessage({
         payload: query.error,
@@ -38,6 +36,10 @@ const Login: NextPage = () => {
   }, [query.code, query.error]);
 
   const successHandler = useCallback((e: MessageEvent<OAuthCloseMessage>) => {
+    if (e.origin !== window.location.origin) {
+      throw new Error('Message failed cross-origin check');
+    }
+
     if (e.data.type === 'OAUTH_CLOSE') window.close();
   }, []);
 
