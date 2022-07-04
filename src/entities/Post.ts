@@ -61,25 +61,20 @@ export class Post {
   public static async upload(filePath: string): Promise<Post> {
     const image = await Jimp.read(filePath);
 
-    const photos = await Promise.all(
-      [
-        { type: PhotoType.ORIGINAL },
-        { size: 1000, type: PhotoType.SCALED },
-        { size: 1000, type: PhotoType.BLURRED },
-      ].map(async ({ type, size }) => {
-        const img = image.clone();
+    const tasks: Promise<Photo>[] = [Photo.upload(image, PhotoType.ORIGINAL)];
 
-        if (type !== PhotoType.ORIGINAL) {
-          img.scaleToFit(size, size);
+    // scale and blur images to the given dimensions
+    [1000].map(async (size) => {
+      const scaledImage = image.clone();
+      scaledImage.scaleToFit(size, size);
+      tasks.push(Photo.upload(scaledImage, PhotoType.SCALED));
 
-          if (type === PhotoType.BLURRED) {
-            img.blur(15);
-          }
-        }
+      const blurredImage = scaledImage.clone();
+      blurredImage.blur(15);
+      tasks.push(Photo.upload(blurredImage, PhotoType.BLURRED));
+    });
 
-        return Photo.upload(image, type);
-      })
-    );
+    const photos = await Promise.all(tasks);
 
     // get average color
     const { r, g, b } = Jimp.intToRGBA(
