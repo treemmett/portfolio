@@ -1,4 +1,3 @@
-import { createReadStream } from 'fs';
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
@@ -70,13 +69,7 @@ export class Photo {
     return Photo.repository().find();
   }
 
-  public static async upload(
-    filePath: string,
-    type: PhotoType = PhotoType.ORIGINAL
-  ): Promise<Photo> {
-    if (!filePath) throw new Error('No photo to process');
-
-    const image = await Jimp.read(filePath);
+  public static async upload(image: Jimp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
     const id = v4();
 
     const space = new S3({
@@ -89,12 +82,14 @@ export class Photo {
       signatureVersion: 'v4',
     });
 
+    const mime = image.getMIME();
+
     await space
       .upload({
         ACL: 'public-read',
-        Body: createReadStream(filePath),
+        Body: await image.getBufferAsync(mime),
         Bucket: S3_BUCKET,
-        ContentType: image.getMIME(),
+        ContentType: mime,
         Key: id,
       })
       .promise();

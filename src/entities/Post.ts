@@ -1,5 +1,3 @@
-import { tmpdir } from 'os';
-import { join } from 'path';
 import { plainToClass } from 'class-transformer';
 import Jimp from 'jimp';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
@@ -12,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { v4 } from 'uuid';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
 
@@ -82,9 +79,7 @@ export class Post {
           }
         }
 
-        const path = join(tmpdir(), v4());
-        await img.writeAsync(path);
-        return Photo.upload(path, type);
+        return Photo.upload(image, type);
       })
     );
 
