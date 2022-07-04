@@ -65,9 +65,7 @@ export class Post {
       [
         { type: PhotoType.ORIGINAL },
         { size: 1000, type: PhotoType.SCALED },
-        { size: 500, type: PhotoType.SCALED },
         { size: 1000, type: PhotoType.BLURRED },
-        { size: 500, type: PhotoType.BLURRED },
       ].map(async ({ type, size }) => {
         const img = image.clone();
 
