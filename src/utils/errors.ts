@@ -41,7 +41,7 @@ export class APIError extends Error {
 export const errorHandler: ErrorHandler<NextApiRequest, NextApiResponse> = (err, req, res) => {
   if (err instanceof APIError) {
     res.status(err.status).send({
-      error: err.error,
+      error: ErrorCode[err.error],
       message: err.message,
       stack: err.stack,
     });
