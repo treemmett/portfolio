@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { ChangeEventHandler, FC, FormEventHandler, useCallback, useState } from 'react';
+import { ChangeEventHandler, FC, FormEventHandler, useCallback, useRef, useState } from 'react';
 import type { Post } from '../entities/Post';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
@@ -33,23 +33,32 @@ export const Editor: FC = () => {
     reader.readAsDataURL(file);
   }, []);
 
+  const formRef = useRef<HTMLFormElement>();
+  const closeEditor = useCallback(() => {
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+
+    router.push({ query: { newPost: undefined } });
+    setImageData('');
+  }, [router]);
+
   const [state, setState] = useState(UploadState.default);
   const uploadPost: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       try {
+        e.preventDefault();
+
         // don't duplicate requests
         if (state === UploadState.uploading) return;
 
         setState(UploadState.uploading);
-        e.preventDefault();
         const form = e.target as HTMLFormElement;
 
         const { data } = await apiClient.post<Post>('/api/post', new FormData(form));
 
-        form.reset();
-        setImageData('');
         addPost(data);
-        router.push({ query: { newPost: undefined } });
+        closeEditor();
       } catch (err) {
         console.error(err?.response?.data?.error || err);
         alert([t('Upload failed'), err?.response?.data?.message].join(' - '));
@@ -57,16 +66,13 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [addPost, apiClient, router, state, t]
+    [addPost, apiClient, closeEditor, state, t]
   );
 
   return (
-    <Modal
-      onClose={() => router.push({ query: { newPost: undefined } })}
-      open={router.query.newPost?.length > 0}
-    >
+    <Modal onClose={closeEditor} open={router.query.newPost?.length > 0}>
       <div className={styles.container}>
-        <form className={styles.form} onSubmit={uploadPost}>
+        <form className={styles.form} onSubmit={uploadPost} ref={formRef}>
           <label className={cx(styles.picker, { [styles.selected]: imageData })} htmlFor="image">
             {imageData ? (
               <img alt="selection preview" className={styles.preview} src={imageData} />
