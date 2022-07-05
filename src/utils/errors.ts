@@ -22,6 +22,10 @@ export enum ErrorCode {
    * Invalid access token
    */
   bad_access_token,
+  /**
+   * Mime type isn't supported
+   */
+  unsupported_mime,
 }
 
 export class APIError extends Error {

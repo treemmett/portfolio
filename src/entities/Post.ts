@@ -1,4 +1,6 @@
+import { readFile } from 'fs/promises';
 import { plainToClass } from 'class-transformer';
+import { fileTypeFromBuffer } from 'file-type';
 import Jimp from 'jimp';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
@@ -10,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { APIError, ErrorCode } from '../utils/errors';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
 
@@ -59,7 +62,28 @@ export class Post {
   }
 
   public static async upload(filePath: string): Promise<Post> {
-    const image = await Jimp.read(filePath);
+    const imageBuffer = await readFile(filePath);
+
+    const fileType = await fileTypeFromBuffer(imageBuffer);
+
+    let image: Jimp;
+
+    switch (fileType.mime) {
+      case 'image/bmp':
+      case 'image/gif':
+      case 'image/jpeg':
+      case 'image/png':
+      case 'image/tiff':
+        image = await Jimp.read(imageBuffer);
+        break;
+
+      default:
+        throw new APIError(
+          ErrorCode.unsupported_mime,
+          400,
+          `Image type '${fileType.mime}' isn't supported`
+        );
+    }
 
     const tasks: Promise<Photo>[] = [Photo.upload(image, PhotoType.ORIGINAL)];
 
