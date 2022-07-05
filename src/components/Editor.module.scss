@@ -3,10 +3,9 @@
 .container {
   position: relative;
   display: flex;
-  width: 30rem;
+  max-width: 30rem;
   flex-direction: column;
   align-items: center;
-  padding: 5rem 2rem;
   margin: 0 auto;
 
   > * {
