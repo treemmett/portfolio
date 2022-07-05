@@ -53,6 +53,7 @@ export const About: FC = () => {
             <Anchor
               className={styles.button}
               href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`}
+              label="Follow me on GitHub"
               button
             >
               <GitHub />
@@ -62,6 +63,7 @@ export const About: FC = () => {
             <Anchor
               className={styles.button}
               href={`https://www.instagram.com/${Config.NEXT_PUBLIC_INSTAGRAM_USERNAME}/`}
+              label="Follow me on Instagram"
               button
             >
               <Instagram />
@@ -71,6 +73,7 @@ export const About: FC = () => {
             <Anchor
               className={styles.button}
               href={`https://www.linkedin.com/in/${Config.NEXT_PUBLIC_LINKEDIN_USERNAME}/`}
+              label="Connect on LinkedIn"
               button
             >
               <LinkedIn />
@@ -78,11 +81,21 @@ export const About: FC = () => {
           )}
           {Config.NEXT_PUBLIC_GITHUB_CLIENT_ID &&
             (session.isValid() ? (
-              <Button className={styles.button} onClick={destroySession} testId="logout">
+              <Button
+                className={styles.button}
+                label="Logout"
+                onClick={destroySession}
+                testId="logout"
+              >
                 <Logout />
               </Button>
             ) : (
-              <Button className={styles.button} onClick={login} testId="login">
+              <Button
+                className={styles.button}
+                label="Login with GitHub"
+                onClick={login}
+                testId="login"
+              >
                 <User />
               </Button>
             ))}
