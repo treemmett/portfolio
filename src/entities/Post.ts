@@ -1,6 +1,7 @@
 import { readFile } from 'fs/promises';
 import { plainToClass } from 'class-transformer';
 import { fileTypeFromBuffer } from 'file-type';
+import convert from 'heic-convert';
 import Jimp from 'jimp';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
@@ -80,9 +81,19 @@ export class Post {
       case 'image/gif':
       case 'image/jpeg':
       case 'image/png':
-      case 'image/tiff':
+      case 'image/tiff': {
         image = await Jimp.read(imageBuffer);
         break;
+      }
+
+      case 'image/heic':
+      case 'image/heic-sequence':
+      case 'image/heif':
+      case 'image/heif-sequence': {
+        const heicBuffer = await convert({ buffer: imageBuffer, format: 'JPEG', quality: 1 });
+        image = await Jimp.read(Buffer.from(heicBuffer));
+        break;
+      }
 
       default:
         throw new APIError(
