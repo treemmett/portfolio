@@ -1,7 +1,8 @@
+const withBundleAnalyzer = require('@next/bundle-analyzer');
 const { i18n } = require('./next-i18next.config');
 
 /** @type {import('next').NextConfig} */
-module.exports = {
+const nextConfig = {
   i18n,
   images: {
     domains: ['picsum.photos'],
@@ -29,3 +30,5 @@ module.exports = {
     return config;
   },
 };
+
+module.exports = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(nextConfig);

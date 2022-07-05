@@ -17,9 +17,11 @@
     "lint:style": "stylelint **/*.scss",
     "prepare": "husky install",
     "test": "jest",
-    "test:e2e": "MOCK=true start-server-and-test 'yarn dev' http://localhost:3000 'yarn cypress open'"
+    "test:e2e": "MOCK=true start-server-and-test 'yarn dev' http://localhost:3000 'yarn cypress open'",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^12.2.0",
     "@types/cookie": "^0.5.1",
     "@types/formidable": "^2.0.3",
     "@types/jsonwebtoken": "^8.5.8",
