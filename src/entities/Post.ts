@@ -62,7 +62,14 @@ export class Post {
   }
 
   public static async upload(filePath: string): Promise<Post> {
+    if (!filePath) {
+      throw new APIError(ErrorCode.no_file_received, 400, 'No file uploaded');
+    }
+
     const imageBuffer = await readFile(filePath);
+    if (!imageBuffer.length) {
+      throw new APIError(ErrorCode.no_file_received, 400, 'No file uploaded');
+    }
 
     const fileType = await fileTypeFromBuffer(imageBuffer);
 

@@ -26,6 +26,10 @@ export enum ErrorCode {
    * Mime type isn't supported
    */
   unsupported_mime,
+  /**
+   * File wasn't uploaded, or was lost to the I/O gods
+   */
+  no_file_received,
 }
 
 export class APIError extends Error {
