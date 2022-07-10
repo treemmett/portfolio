@@ -1,6 +1,6 @@
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
-import Jimp from 'jimp';
+import { Sharp } from 'sharp';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
   AfterInsert,
@@ -60,7 +60,7 @@ export class Photo extends BaseEntity {
     this.url = CDN_URL ? `${CDN_URL}/${this.id}` : `${S3_URL}/${S3_BUCKET}/${this.id}`;
   }
 
-  public static async upload(image: Jimp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
+  public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
     const id = v4();
 
     const space = new S3({
@@ -73,23 +73,23 @@ export class Photo extends BaseEntity {
       signatureVersion: 'v4',
     });
 
-    const mime = image.getMIME();
-
     await space
       .upload({
         ACL: 'public-read',
-        Body: await image.getBufferAsync(mime),
+        Body: await image.webp().toBuffer(),
         Bucket: S3_BUCKET,
-        ContentType: mime,
+        ContentType: 'image/webp',
         Key: id,
       })
       .promise();
 
+    const metadata = await image.metadata();
+
     const photo = plainToClass(Photo, {
-      height: image.bitmap.height,
+      height: metadata.height,
       id,
       type,
-      width: image.bitmap.width,
+      width: metadata.width,
     });
 
     // catch future errors to remove uploaded file

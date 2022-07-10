@@ -1,8 +1,6 @@
 import { readFile } from 'fs/promises';
 import { plainToClass } from 'class-transformer';
-import { fileTypeFromBuffer } from 'file-type';
-import convert from 'heic-convert';
-import Jimp from 'jimp';
+import sharp from 'sharp';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
@@ -58,59 +56,26 @@ export class Post extends BaseEntity {
       throw new APIError(ErrorCode.no_file_received, 400, 'No file uploaded');
     }
 
-    const fileType = await fileTypeFromBuffer(imageBuffer);
-
-    let image: Jimp;
-
-    switch (fileType.mime) {
-      case 'image/bmp':
-      case 'image/gif':
-      case 'image/jpeg':
-      case 'image/png':
-      case 'image/tiff': {
-        image = await Jimp.read(imageBuffer);
-        break;
-      }
-
-      case 'image/heic':
-      case 'image/heic-sequence':
-      case 'image/heif':
-      case 'image/heif-sequence': {
-        const heicBuffer = await convert({ buffer: imageBuffer, format: 'JPEG', quality: 1 });
-        image = await Jimp.read(Buffer.from(heicBuffer));
-        break;
-      }
-
-      default:
-        throw new APIError(
-          ErrorCode.unsupported_mime,
-          400,
-          `Image type '${fileType.mime}' isn't supported`
-        );
-    }
+    const image = sharp(imageBuffer);
 
     const tasks: Promise<Photo>[] = [Photo.upload(image, PhotoType.ORIGINAL)];
 
     // scale and blur images to the given dimensions
     [1000].map(async (size) => {
       const scaledImage = image.clone();
-      scaledImage.scaleToFit(size, size);
+      scaledImage.resize(size, size, { fit: 'inside' });
       tasks.push(Photo.upload(scaledImage, PhotoType.SCALED));
 
       const blurredImage = scaledImage.clone();
-      blurredImage.blur(15);
+      blurredImage.blur();
       tasks.push(Photo.upload(blurredImage, PhotoType.BLURRED));
     });
 
     const photos = await Promise.all(tasks);
 
     // get average color
-    const { r, g, b } = Jimp.intToRGBA(
-      image
-        .clone()
-        .blur(100)
-        .getPixelColor(image.bitmap.width / 2, image.bitmap.height / 2)
-    );
+    const { channels } = await image.stats();
+    const [r, g, b] = channels.map((c) => Math.floor(c.mean));
 
     const post = plainToClass(Post, { blue: b, green: g, photos, red: r });
 
