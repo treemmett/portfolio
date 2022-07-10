@@ -5,10 +5,10 @@ import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
   AfterInsert,
   AfterLoad,
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -19,11 +19,10 @@ import { PhotoType } from './PhotoType';
 import { Post } from './Post';
 
 const { CDN_URL, S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = Config;
-const TABLE_NAME = 'photos';
 
-@Entity({ name: TABLE_NAME })
+@Entity({ name: 'photos' })
 @ObjectType()
-export class Photo {
+export class Photo extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   public id: string;
@@ -61,14 +60,6 @@ export class Photo {
     this.url = CDN_URL ? `${CDN_URL}/${this.id}` : `${S3_URL}/${S3_BUCKET}/${this.id}`;
   }
 
-  public static repository() {
-    return getRepository<Photo>(TABLE_NAME);
-  }
-
-  public static async getAll(): Promise<Photo[]> {
-    return Photo.repository().find();
-  }
-
   public static async upload(image: Jimp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
     const id = v4();
 
@@ -103,7 +94,7 @@ export class Photo {
 
     // catch future errors to remove uploaded file
     try {
-      return await Photo.repository().save(photo);
+      return await photo.save();
     } catch (err) {
       await space
         .deleteObject({
