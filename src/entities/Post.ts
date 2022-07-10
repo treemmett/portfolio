@@ -5,10 +5,10 @@ import convert from 'heic-convert';
 import Jimp from 'jimp';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -17,11 +17,9 @@ import { APIError, ErrorCode } from '../utils/errors';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
 
-const TABLE_NAME = 'posts';
-
-@Entity({ name: TABLE_NAME })
+@Entity({ name: 'posts' })
 @ObjectType()
-export class Post {
+export class Post extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   public id: string;
@@ -49,18 +47,6 @@ export class Post {
   @Field(() => Int)
   @Column({ type: 'smallint' })
   public blue: number;
-
-  public static repository() {
-    return getRepository<Post>(TABLE_NAME);
-  }
-
-  public static async getAll() {
-    return getRepository<Post>(TABLE_NAME)
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.photos', 'photo')
-      .where('photo.type != :type', { type: PhotoType.ORIGINAL })
-      .getMany();
-  }
 
   public static async upload(filePath: string): Promise<Post> {
     if (!filePath) {
@@ -128,20 +114,6 @@ export class Post {
 
     const post = plainToClass(Post, { blue: b, green: g, photos, red: r });
 
-    await Post.repository().save(post);
-    return post;
-  }
-
-  public static async get(id: string): Promise<Post> {
-    return getRepository<Post>(TABLE_NAME)
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.photos', 'photo')
-      .where('photo.type != :type', { type: PhotoType.ORIGINAL })
-      .andWhere('post.id = :id', { id })
-      .getOne();
-  }
-
-  public async delete(): Promise<void> {
-    await getRepository<Post>(TABLE_NAME).delete(this);
+    return post.save();
   }
 }

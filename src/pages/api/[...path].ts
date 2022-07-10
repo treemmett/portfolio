@@ -23,7 +23,13 @@ export default nextConnect
   })
   .get('/api/post', async (req, res) => {
     const id = toString(req.query.id);
-    res.send(await (id ? Post.get(id) : Post.getAll()));
+    if (id) {
+      const post = await Post.findOne(id, { relations: ['photos'] });
+      res.send(post);
+    } else {
+      const posts = await Post.find({ relations: ['photos'] });
+      res.send(posts);
+    }
   })
   .post('/api/post', async (req, res) => res.json(await Post.upload(req.files.file.filepath)));
 
