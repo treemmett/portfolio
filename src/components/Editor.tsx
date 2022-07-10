@@ -39,7 +39,7 @@ export const Editor: FC = () => {
       formRef.current.reset();
     }
 
-    router.push({ query: { newPost: undefined } });
+    router.push({ query: { newPost: undefined } }, undefined, { shallow: true });
     setImageData('');
   }, [router]);
 

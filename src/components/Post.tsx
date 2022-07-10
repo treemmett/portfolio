@@ -112,7 +112,7 @@ export const Post: FC<PostProps> = ({ post }) => {
   }, [post.id, query.post, setLightBox]);
 
   return (
-    <Link href={{ query: { post: post.id } }} scroll={false} passHref>
+    <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
       <a
         className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
         href="#foo"

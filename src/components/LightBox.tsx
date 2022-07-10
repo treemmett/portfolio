@@ -84,7 +84,7 @@ export const LightBox: FC = () => {
 
       if (frame === AnimationFrame.to_gallery) {
         setFrame(AnimationFrame.off);
-        push({ query: {} }, null, { scroll: false });
+        push({ query: {} }, null, { scroll: false, shallow: true });
       }
     },
     [frame, push]

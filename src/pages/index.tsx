@@ -29,7 +29,11 @@ export const Home: NextPage = () => {
       <About />
 
       {session.hasPermission(AuthorizationScopes.post) && (
-        <Button onClick={() => push({ query: { newPost: true } })} testId="new post" type="fab">
+        <Button
+          onClick={() => push({ query: { newPost: true } }, undefined, { shallow: true })}
+          testId="new post"
+          type="fab"
+        >
           {t('New Post')}
         </Button>
       )}
