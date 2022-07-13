@@ -39,6 +39,12 @@ export class Photo extends BaseEntity {
   @Field(() => Int)
   public height: number;
 
+  /**
+   * base64 data uri of the scaled down thumbnail
+   */
+  @Column()
+  public thumbnailURL: string;
+
   @Column({ enum: PhotoType, type: 'enum' })
   @Field(() => PhotoType)
   public type: PhotoType;
@@ -73,21 +79,30 @@ export class Photo extends BaseEntity {
       signatureVersion: 'v4',
     });
 
+    const mime = 'image/webp';
+
     await space
       .upload({
         ACL: 'public-read',
         Body: await image.webp().toBuffer(),
         Bucket: S3_BUCKET,
-        ContentType: 'image/webp',
+        ContentType: mime,
         Key: id,
       })
       .promise();
 
-    const metadata = await image.metadata();
+    const thumbnail = image.clone();
+    thumbnail.resize(20, 20, { fit: 'inside' });
+
+    const [metadata, thumbnailBuffer] = await Promise.all([
+      image.metadata(),
+      thumbnail.webp().toBuffer(),
+    ]);
 
     const photo = plainToClass(Photo, {
       height: metadata.height,
       id,
+      thumbnailURL: `data:${mime};base64,${thumbnailBuffer.toString('base64')}`,
       type,
       width: metadata.width,
     });
