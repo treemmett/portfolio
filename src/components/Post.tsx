@@ -102,8 +102,10 @@ export const Post: FC<PostProps> = ({ post }) => {
             style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
           />
           <Image
+            blurDataURL={image.thumbnailURL}
             className={styles.photo}
             height={image.height}
+            placeholder="blur"
             src={image.url}
             width={image.width}
           />
