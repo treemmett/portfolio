@@ -1,3 +1,4 @@
+import { describe, expect } from '@jest/globals';
 import { PHOTO_PATH } from '../../tests/fixtures';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';

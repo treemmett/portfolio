@@ -47,7 +47,7 @@
       }
     },
     {
-      "files": ["cypress.config.ts", "cypress/**/*.ts"],
+      "files": ["cypress.config.ts", "cypress/**/*.ts", "**/*.test.ts"],
       "rules": {
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-var-requires": "off",
