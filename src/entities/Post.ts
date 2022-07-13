@@ -1,5 +1,5 @@
 import { readFile } from 'fs/promises';
-import { plainToClass } from 'class-transformer';
+import { plainToClass, plainToInstance, Type } from 'class-transformer';
 import sharp from 'sharp';
 import {
   BaseEntity,
@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
 import { s3 } from '../utils/s3';
@@ -32,6 +33,7 @@ export class Post extends BaseEntity {
   public updated: Date;
 
   @OneToMany(() => Photo, (p) => p.post)
+  @Type(() => Photo)
   public photos: Photo[];
 
   @Column({ type: 'smallint' })
@@ -74,7 +76,7 @@ export class Post extends BaseEntity {
     const { channels } = await image.stats();
     const [r, g, b] = channels.map((c) => Math.floor(c.mean));
 
-    const post = plainToClass(Post, { blue: b, green: g, photos, red: r });
+    const post = plainToClass(Post, { blue: b, green: g, id: uuid(), photos, red: r });
 
     await Post.writePostsIndex([post]);
 
@@ -91,5 +93,18 @@ export class Post extends BaseEntity {
         Key: POSTS_FILE_KEY,
       })
       .promise();
+  }
+
+  public static async getAll(): Promise<Post[]> {
+    const { Body } = await s3
+      .getObject({
+        Bucket: S3_BUCKET,
+        Key: POSTS_FILE_KEY,
+      })
+      .promise();
+
+    const json = Body.toString();
+
+    return JSON.parse(json).map((value) => plainToInstance(Post, value));
   }
 }

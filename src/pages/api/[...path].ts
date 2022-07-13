@@ -27,7 +27,7 @@ export default nextConnect
       const post = await Post.findOne(id, { relations: ['photos'] });
       res.send(post);
     } else {
-      const posts = await Post.find({ relations: ['photos'] });
+      const posts = await Post.getAll();
       res.send(posts);
     }
   })
