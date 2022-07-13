@@ -10,9 +10,15 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
+import { s3 } from '../utils/s3';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
+
+const { S3_BUCKET } = Config;
+
+const POSTS_FILE_KEY = 'posts.json';
 
 @Entity({ name: 'posts' })
 export class Post extends BaseEntity {
@@ -70,6 +76,20 @@ export class Post extends BaseEntity {
 
     const post = plainToClass(Post, { blue: b, green: g, photos, red: r });
 
+    await Post.writePostsIndex([post]);
+
     return post.save();
+  }
+
+  private static async writePostsIndex(posts: Post[]): Promise<void> {
+    await s3
+      .upload({
+        ACL: 'public-read',
+        Body: JSON.stringify(posts),
+        Bucket: S3_BUCKET,
+        ContentType: 'application/json',
+        Key: POSTS_FILE_KEY,
+      })
+      .promise();
   }
 }
