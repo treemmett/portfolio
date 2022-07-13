@@ -3,18 +3,6 @@ export class Config {
 
   public static CDN_URL?: string = process.env.CDN_URL;
 
-  public static DB_CERT?: string = process.env.DB_CERT;
-
-  public static DB_DATABASE = process.env.DB_DATABASE || 'blog';
-
-  public static DB_HOST = process.env.DB_HOST || 'localhost';
-
-  public static DB_PASS?: string = process.env.DB_PASS;
-
-  public static DB_PORT = process.env.DB_PORT || '5432';
-
-  public static DB_USER?: string = process.env.DB_USER;
-
   public static GITHUB_CLIENT_SECRET?: string = process.env.GITHUB_CLIENT_SECRET;
 
   public static JWT_SECRET = process.env.JWT_SECRET || 'hello';

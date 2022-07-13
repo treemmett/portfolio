@@ -3,9 +3,6 @@ import NC from 'next-connect';
 import { authenticateRequest } from '../utils/auth';
 import { errorHandler } from '../utils/errors';
 import { bodyParser, ParsedApiRequest } from './bodyParser';
-import { connectToDB } from './database';
-
-await connectToDB();
 
 export const nextConnect = NC<ParsedApiRequest, NextApiResponse>({
   onError: errorHandler,

@@ -1,16 +1,3 @@
-import { Connection } from 'typeorm';
-import { connectToDB } from '../src/middleware/database';
-
-let conn: Connection;
-
-beforeAll(async () => {
-  conn = await connectToDB({ synchronize: false, test: true });
-});
-
-afterAll(async () => {
-  await conn.close();
-});
-
 jest.mock('aws-sdk', () => ({
   Credentials: jest.fn(),
   Endpoint: jest.fn(),
@@ -20,3 +7,5 @@ jest.mock('aws-sdk', () => ({
     upload: jest.fn().mockReturnThis(),
   })),
 }));
+
+export {};

@@ -1,15 +1,6 @@
 import { readFile } from 'fs/promises';
 import { plainToClass, plainToInstance, Type } from 'class-transformer';
 import sharp from 'sharp';
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
@@ -21,28 +12,20 @@ const { S3_BUCKET } = Config;
 
 const POSTS_FILE_KEY = 'posts.json';
 
-@Entity({ name: 'posts' })
-export class Post extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+export class Post {
   public id: string;
 
-  @CreateDateColumn()
   public created: Date;
 
-  @UpdateDateColumn()
   public updated: Date;
 
-  @OneToMany(() => Photo, (p) => p.post)
   @Type(() => Photo)
   public photos: Photo[];
 
-  @Column({ type: 'smallint' })
   public red: number;
 
-  @Column({ type: 'smallint' })
   public green: number;
 
-  @Column({ type: 'smallint' })
   public blue: number;
 
   public static async upload(filePath: string): Promise<Post> {
@@ -88,7 +71,7 @@ export class Post extends BaseEntity {
 
     await Post.writePostsIndex([post]);
 
-    return post.save();
+    return post;
   }
 
   private static async writePostsIndex(posts: Post[]): Promise<void> {
