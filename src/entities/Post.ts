@@ -1,7 +1,6 @@
 import { readFile } from 'fs/promises';
 import { plainToClass } from 'class-transformer';
 import sharp from 'sharp';
-import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
@@ -16,33 +15,25 @@ import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
 
 @Entity({ name: 'posts' })
-@ObjectType()
 export class Post extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  @Field(() => ID)
   public id: string;
 
   @CreateDateColumn()
-  @Field()
   public created: Date;
 
   @UpdateDateColumn()
-  @Field()
   public updated: Date;
 
   @OneToMany(() => Photo, (p) => p.post)
-  @Field(() => [Photo])
   public photos: Photo[];
 
   @Column({ type: 'smallint' })
-  @Field(() => Int)
   public red: number;
 
   @Column({ type: 'smallint' })
-  @Field(() => Int)
   public green: number;
 
-  @Field(() => Int)
   @Column({ type: 'smallint' })
   public blue: number;
 

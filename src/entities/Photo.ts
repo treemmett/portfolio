@@ -1,7 +1,6 @@
 import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import { Sharp } from 'sharp';
-import { Field, ID, Int, ObjectType } from 'type-graphql';
 import {
   AfterInsert,
   AfterLoad,
@@ -21,22 +20,17 @@ import { Post } from './Post';
 const { CDN_URL, S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = Config;
 
 @Entity({ name: 'photos' })
-@ObjectType()
 export class Photo extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  @Field(() => ID)
   public id: string;
 
   @CreateDateColumn()
-  @Field()
   public created: Date;
 
   @ManyToOne(() => Post, (p) => p.photos)
-  @Field(() => Post)
   public post: Post;
 
   @Column({ nullable: false })
-  @Field(() => Int)
   public height: number;
 
   /**
@@ -46,18 +40,14 @@ export class Photo extends BaseEntity {
   public thumbnailURL: string;
 
   @Column({ enum: PhotoType, type: 'enum' })
-  @Field(() => PhotoType)
   public type: PhotoType;
 
   @UpdateDateColumn()
-  @Field()
   public updated: Date;
 
-  @Field()
   public url: string;
 
   @Column({ nullable: false })
-  @Field(() => Int)
   public width: number;
 
   @AfterLoad()
