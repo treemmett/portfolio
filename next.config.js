@@ -3,9 +3,20 @@ const { i18n } = require('./next-i18next.config');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    images: {
+      allowFutureImage: true,
+      remotePatterns: [
+        {
+          hostname: '127.0.0.1',
+          port: '9000',
+        },
+      ],
+    },
+  },
   i18n,
   images: {
-    domains: ['picsum.photos'],
+    domains: ['127.0.0.1', 'tregan.me', 'cdn.tregan.me'],
   },
   reactStrictMode: true,
   /**

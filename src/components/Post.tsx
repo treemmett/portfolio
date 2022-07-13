@@ -1,7 +1,8 @@
 import cx from 'classnames';
+import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
 import { getRemValue, mdMin, scaleDimensions, toPx } from '../utils/pixels';
@@ -62,26 +63,6 @@ export const Post: FC<PostProps> = ({ post }) => {
     return () => window.removeEventListener('resize', scaleImage);
   }, [scaleImage]);
 
-  const [shouldLoadBlur, setShouldLoadBlur] = useState(false);
-  const [shouldLoadScaled, setShouldLoadScaled] = useState(false);
-  const [phaseBlur, setPhaseBlur] = useState(true);
-  const [phaseScale, setPhaseScale] = useState(true);
-
-  const observer = useMemo(
-    () =>
-      new IntersectionObserver(([{ intersectionRatio }]) => {
-        if (intersectionRatio > 0) {
-          setShouldLoadBlur(true);
-        }
-      }),
-    []
-  );
-  useEffect(() => {
-    const { current } = ref;
-    observer.observe(current);
-    return () => observer.unobserve(current);
-  }, [observer, ref]);
-
   /**
    * This effect adds the width/height transition after the post has been
    * rendered, preventing an animation on the initial load
@@ -94,15 +75,6 @@ export const Post: FC<PostProps> = ({ post }) => {
     }
   }, [height, width]);
 
-  const blurredImages = useMemo(
-    () => post.photos.filter((p) => p.type === PhotoType.BLURRED),
-    [post]
-  );
-  const scaledImages = useMemo(
-    () => post.photos.filter((p) => p.type === PhotoType.SCALED),
-    [post]
-  );
-
   const { query } = useRouter();
   const { setLightBox } = useDataStore();
   useEffect(() => {
@@ -110,6 +82,8 @@ export const Post: FC<PostProps> = ({ post }) => {
       setLightBox(ref);
     }
   }, [post.id, query.post, setLightBox]);
+
+  const image = post.photos.find((p) => p.type === PhotoType.ORIGINAL);
 
   return (
     <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
@@ -127,29 +101,12 @@ export const Post: FC<PostProps> = ({ post }) => {
             className={cx(styles.placeholder, styles.photo)}
             style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
           />
-          {shouldLoadBlur && (
-            <img
-              alt="My Post"
-              className={cx(styles.photo, { [styles.phase]: phaseBlur })}
-              onLoad={() => {
-                setPhaseBlur(false);
-                setShouldLoadScaled(true);
-              }}
-              sizes={`(max-width: 600px) ${Math.min(
-                ...blurredImages.map((p) => p.width)
-              )}px, 800px`}
-              srcSet={blurredImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
-            />
-          )}
-          {shouldLoadScaled && (
-            <img
-              alt="My Post"
-              className={cx(styles.photo, { [styles.phase]: phaseScale })}
-              onLoad={() => setPhaseScale(false)}
-              sizes={`(max-width: 600px) ${Math.min(...scaledImages.map((p) => p.width))}px, 800px`}
-              srcSet={scaledImages.map((p) => `${p.url} ${p.width}w`).join(', ')}
-            />
-          )}
+          <Image
+            className={styles.photo}
+            height={image.height}
+            src={image.url}
+            width={image.width}
+          />
         </div>
         <div className={styles.under}>
           <span className={styles.date}>{new Date(post.created).toLocaleDateString()}</span>
