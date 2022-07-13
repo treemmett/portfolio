@@ -5,7 +5,7 @@ import { Post } from '../entities/Post';
 export class PostResolver {
   @Query(() => [Post])
   posts() {
-    return Post.getAll();
+    return Post.find();
   }
 
   @Mutation(() => Post)
