@@ -31,8 +31,14 @@ $padding-top: 2rem;
     z-index: 1;
   }
 
+  h2 {
+    margin: 0;
+  }
+}
+
+.main {
   @supports (backdrop-filter: blur()) {
-    &:not(.backdrop) {
+    &:not(.default) {
       backdrop-filter: blur(18px);
       background-color: rgba(shared.$background-dark, 5%);
 
@@ -40,10 +46,6 @@ $padding-top: 2rem;
         background-color: rgba(shared.$background, 5%);
       }
     }
-  }
-
-  h2 {
-    margin: 0;
   }
 }
 

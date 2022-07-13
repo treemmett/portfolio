@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as GitHub } from '../icons/github.svg';
@@ -44,7 +45,7 @@ export const About: FC = () => {
 
   return (
     <>
-      <main className={styles.main} ref={ref}>
+      <main className={cx(styles.main, { [styles.default]: !height && !width })} ref={ref}>
         <h2>
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
         </h2>
