@@ -4,6 +4,7 @@
     "airbnb",
     "airbnb/hooks",
     "plugin:@typescript-eslint/recommended",
+    "next",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
