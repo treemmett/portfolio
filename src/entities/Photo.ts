@@ -1,4 +1,3 @@
-import { Credentials, Endpoint, S3 } from 'aws-sdk';
 import { plainToClass } from 'class-transformer';
 import { Sharp } from 'sharp';
 import {
@@ -14,10 +13,11 @@ import {
 } from 'typeorm';
 import { v4 } from 'uuid';
 import { Config } from '../utils/config';
+import { s3 } from '../utils/s3';
 import { PhotoType } from './PhotoType';
 import { Post } from './Post';
 
-const { CDN_URL, S3_BUCKET, S3_KEY, S3_KEY_SECRET, S3_URL } = Config;
+const { CDN_URL, S3_BUCKET, S3_URL } = Config;
 
 @Entity({ name: 'photos' })
 export class Photo extends BaseEntity {
@@ -59,19 +59,9 @@ export class Photo extends BaseEntity {
   public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
     const id = v4();
 
-    const space = new S3({
-      credentials: new Credentials({
-        accessKeyId: S3_KEY,
-        secretAccessKey: S3_KEY_SECRET,
-      }),
-      endpoint: new Endpoint(S3_URL),
-      s3ForcePathStyle: true,
-      signatureVersion: 'v4',
-    });
-
     const mime = 'image/webp';
 
-    await space
+    await s3
       .upload({
         ACL: 'public-read',
         Body: await image.webp().toBuffer(),
@@ -101,7 +91,7 @@ export class Photo extends BaseEntity {
     try {
       return await photo.save();
     } catch (err) {
-      await space
+      await s3
         .deleteObject({
           Bucket: S3_BUCKET,
           Key: id,
