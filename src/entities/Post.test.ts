@@ -25,18 +25,4 @@ describe('post uploading', () => {
     );
     expect(post.photos.filter((p) => p.type === PhotoType.ORIGINAL)).toHaveLength(1);
   });
-
-  it('should upload the two scaled photos', () => {
-    expect(post.photos).toEqual(
-      expect.arrayContaining([expect.objectContaining({ type: PhotoType.SCALED })])
-    );
-    expect(post.photos.filter((p) => p.type === PhotoType.SCALED)).toHaveLength(2);
-  });
-
-  it('should upload the two blurred photos', () => {
-    expect(post.photos).toEqual(
-      expect.arrayContaining([expect.objectContaining({ type: PhotoType.BLURRED })])
-    );
-    expect(post.photos.filter((p) => p.type === PhotoType.BLURRED)).toHaveLength(2);
-  });
 });

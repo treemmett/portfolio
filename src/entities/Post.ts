@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { readFile } from 'fs/promises';
 import { plainToClass, plainToInstance, Type } from 'class-transformer';
 import sharp from 'sharp';
