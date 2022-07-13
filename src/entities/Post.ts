@@ -76,7 +76,15 @@ export class Post extends BaseEntity {
     const { channels } = await image.stats();
     const [r, g, b] = channels.map((c) => Math.floor(c.mean));
 
-    const post = plainToClass(Post, { blue: b, green: g, id: uuid(), photos, red: r });
+    const post = plainToClass(Post, {
+      blue: b,
+      created: new Date(),
+      green: g,
+      id: uuid(),
+      photos,
+      red: r,
+      updated: new Date(),
+    });
 
     await Post.writePostsIndex([post]);
 

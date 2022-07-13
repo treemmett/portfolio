@@ -80,10 +80,12 @@ export class Photo extends BaseEntity {
     ]);
 
     const photo = plainToClass(Photo, {
+      created: new Date(),
       height: metadata.height,
       id,
       thumbnailURL: `data:${mime};base64,${thumbnailBuffer.toString('base64')}`,
       type,
+      updated: new Date(),
       width: metadata.width,
     });
 
