@@ -108,6 +108,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
             height={image.height}
             placeholder="blur"
             priority={priority}
+            sizes="60vh,80vw"
             src={image.url}
             width={image.width}
           />
