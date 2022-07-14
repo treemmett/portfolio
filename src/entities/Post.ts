@@ -95,15 +95,23 @@ export class Post {
   }
 
   public static async getAll(): Promise<Post[]> {
-    const { Body } = await s3
-      .getObject({
-        Bucket: S3_BUCKET,
-        Key: POSTS_FILE_KEY,
-      })
-      .promise();
+    try {
+      const { Body } = await s3
+        .getObject({
+          Bucket: S3_BUCKET,
+          Key: POSTS_FILE_KEY,
+        })
+        .promise();
 
-    const json = Body.toString();
+      const json = Body.toString();
 
-    return JSON.parse(json).map((value) => plainToInstance(Post, value));
+      return JSON.parse(json).map((value) => plainToInstance(Post, value));
+    } catch (err) {
+      if (err.code === 'NoSuchKey') {
+        return [];
+      }
+
+      throw err;
+    }
   }
 }
