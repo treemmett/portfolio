@@ -4,6 +4,7 @@
 .post {
   position: relative;
   z-index: 10;
+  width: 100%;
   flex: 0 0 auto;
   margin-bottom: home.$padding;
   opacity: 1;
@@ -13,7 +14,7 @@
   }
 
   @include screen.md {
-    margin-right: home.$padding;
+    margin-right: home.$padding - 1rem;
     margin-bottom: 0;
   }
 }
@@ -25,12 +26,9 @@
 }
 
 .photo {
-  position: absolute;
-  top: 0;
-  left: 0;
   display: block;
-  width: 100%;
-  height: 100%;
+  max-width: 100%;
+  height: auto;
   border-radius: inherit;
   filter: blur(0);
   opacity: 1;
@@ -38,19 +36,6 @@
 
   &.phase {
     filter: blur(5px);
-    opacity: 0;
-  }
-}
-
-.placeholder {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: inherit;
-  opacity: 1;
-  transition: opacity 0.4s ease;
-
-  &.loaded {
     opacity: 0;
   }
 }

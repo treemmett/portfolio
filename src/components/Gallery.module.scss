@@ -15,6 +15,6 @@
   @include screen.md {
     flex-direction: row;
     padding: home.$padding;
-    padding-left: calc(home.$padding + About.$width);
+    padding-left: calc(home.$padding + About.$width - 1rem);
   }
 }
