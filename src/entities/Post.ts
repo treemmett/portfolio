@@ -70,9 +70,16 @@ export class Post {
       updated: new Date(),
     });
 
-    await Post.writePostsIndex([post]);
+    await Post.addPostToIndex(post);
 
     return post;
+  }
+
+  private static async addPostToIndex(post: Post): Promise<void> {
+    const posts = await this.getAll();
+    posts.unshift(post);
+    posts.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+    await this.writePostsIndex(posts);
   }
 
   private static async writePostsIndex(posts: Post[]): Promise<void> {
