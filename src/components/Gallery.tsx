@@ -9,8 +9,8 @@ export interface GalleryProps {
 
 export const Gallery: FC<GalleryProps> = ({ posts }) => (
   <div className={styles.container}>
-    {posts.map((post) => (
-      <Post key={post.id} post={post} />
+    {posts.map((post, i) => (
+      <Post key={post.id} post={post} priority={i <= 1} />
     ))}
   </div>
 );

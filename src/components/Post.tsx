@@ -11,6 +11,7 @@ import styles from './Post.module.scss';
 
 export interface PostProps {
   post: PostEntity;
+  priority?: boolean;
 }
 
 const MAX_HEIGHT = 40 * getRemValue();
@@ -18,7 +19,7 @@ const HEIGHT = 0.6;
 
 const WIDTH = 0.9;
 
-export const Post: FC<PostProps> = ({ post }) => {
+export const Post: FC<PostProps> = ({ post, priority }) => {
   const ref = useRef<HTMLAnchorElement>();
   const [height, setHeight] = useState(toPx(0));
   const [width, setWidth] = useState(toPx(0));
@@ -106,6 +107,7 @@ export const Post: FC<PostProps> = ({ post }) => {
             className={styles.photo}
             height={image.height}
             placeholder="blur"
+            priority={priority}
             src={image.url}
             width={image.width}
           />
