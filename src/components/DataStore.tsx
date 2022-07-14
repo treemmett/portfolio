@@ -18,7 +18,7 @@ import { Config } from '../utils/config';
 export interface DataStoreContext {
   apiClient: AxiosInstance;
   destroySession: () => void;
-  lightBox?: MutableRefObject<HTMLAnchorElement>;
+  lightBox?: MutableRefObject<HTMLElement>;
   login: () => void;
   session: Session;
   setLightBox: (lightBox?: DataStoreContext['lightBox']) => void;
@@ -55,7 +55,7 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
     return client;
   }, [session]);
 
-  const [lightBox, setLightBox] = useState<MutableRefObject<HTMLAnchorElement>>();
+  const [lightBox, setLightBox] = useState<MutableRefObject<HTMLElement>>();
 
   const login = useCallback(() => {
     if (session?.expiration > new Date()) return;

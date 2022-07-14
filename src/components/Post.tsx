@@ -14,7 +14,7 @@ export interface PostProps {
 }
 
 export const Post: FC<PostProps> = ({ post, priority }) => {
-  const ref = useRef<HTMLAnchorElement>();
+  const ref = useRef<HTMLDivElement>();
 
   const { query } = useRouter();
   const { setLightBox } = useDataStore();
@@ -28,13 +28,10 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
 
   return (
     <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
-      <a
-        className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
-        href="#foo"
-        ref={ref}
-      >
+      <a className={cx(styles.post, { [styles.displayed]: query.post === post.id })} href="#foo">
         <div
           className={styles['image-wrapper']}
+          ref={ref}
           style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
         >
           <Image
