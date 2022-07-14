@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react';
 import { PhotoType } from '../entities/PhotoType';
+import { Post } from '../entities/Post';
 import { scaleDimensions, toPx } from '../utils/pixels';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
@@ -28,9 +29,13 @@ enum AnimationFrame {
   to_gallery,
 }
 
-export const LightBox: FC = () => {
+export interface LightBoxProps {
+  posts: Post[];
+}
+
+export const LightBox: FC<LightBoxProps> = ({ posts }) => {
   const { query, push } = useRouter();
-  const { lightBox, posts, setLightBox } = useDataStore();
+  const { lightBox, setLightBox } = useDataStore();
 
   const photo = useMemo(
     () =>

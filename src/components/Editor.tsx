@@ -17,7 +17,7 @@ enum UploadState {
 export const Editor: FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { addPost, apiClient } = useDataStore();
+  const { apiClient } = useDataStore();
   const [imageData, setImageData] = useState('');
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     const file = e.currentTarget.files[0];
@@ -55,9 +55,8 @@ export const Editor: FC = () => {
         setState(UploadState.uploading);
         const form = e.target as HTMLFormElement;
 
-        const { data } = await apiClient.post<Post>('/api/post', new FormData(form));
+        await apiClient.post<Post>('/api/post', new FormData(form));
 
-        addPost(data);
         closeEditor();
       } catch (err) {
         console.error(err?.response?.data?.error || err);
@@ -66,7 +65,7 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [addPost, apiClient, closeEditor, state, t]
+    [apiClient, closeEditor, state, t]
   );
 
   return (

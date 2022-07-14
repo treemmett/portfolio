@@ -1,11 +1,9 @@
 import Axios, { AxiosInstance } from 'axios';
 import {
   createContext,
-  Dispatch,
   FC,
   MutableRefObject,
   PropsWithChildren,
-  SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -13,34 +11,25 @@ import {
   useState,
 } from 'react';
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
-import type { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
 import { Config } from '../utils/config';
 
 export interface DataStoreContext {
-  addPost: (post: Post) => void;
   apiClient: AxiosInstance;
   destroySession: () => void;
-  posts: Post[];
   lightBox?: MutableRefObject<HTMLAnchorElement>;
-  loadPosts: () => void;
   login: () => void;
   session: Session;
   setLightBox: (lightBox?: DataStoreContext['lightBox']) => void;
-  setPosts: Dispatch<SetStateAction<Post[]>>;
 }
 
 export const dataStoreContext = createContext<DataStoreContext>({
-  addPost: () => null,
   apiClient: Axios,
   destroySession: () => null,
-  loadPosts: () => null,
   login: () => null,
-  posts: [],
   session: new Session(),
   setLightBox: () => null,
-  setPosts: () => null,
 });
 
 export const useDataStore = () => useContext(dataStoreContext);
@@ -67,21 +56,6 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [session]);
 
   const [lightBox, setLightBox] = useState<MutableRefObject<HTMLAnchorElement>>();
-
-  const [posts, setPosts] = useState<Post[]>([]);
-  const addPost = useCallback(
-    (post: Post) => {
-      const p = [post, ...posts];
-      p.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-      setPosts(p);
-    },
-    [posts]
-  );
-  const loadPosts = useCallback(async () => {
-    const { data } = await apiClient.get<Post[]>('/api/post');
-    data.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-    setPosts(data);
-  }, [apiClient, setPosts]);
 
   const login = useCallback(() => {
     if (session?.expiration > new Date()) return;
@@ -124,18 +98,14 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const contextValue = useMemo<DataStoreContext>(
     () => ({
-      addPost,
       apiClient,
       destroySession,
       lightBox,
-      loadPosts,
       login,
-      posts,
       session,
       setLightBox,
-      setPosts,
     }),
-    [addPost, apiClient, destroySession, lightBox, loadPosts, login, posts, session]
+    [apiClient, destroySession, lightBox, login, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;

@@ -1,20 +1,16 @@
-import { FC, useEffect } from 'react';
-import { useDataStore } from './DataStore';
+import { FC } from 'react';
+import type { Post as PostEntity } from '../entities/Post';
 import styles from './Gallery.module.scss';
 import { Post } from './Post';
 
-export const Gallery: FC = () => {
-  const { posts, loadPosts } = useDataStore();
+export interface GalleryProps {
+  posts: PostEntity[];
+}
 
-  useEffect(() => {
-    loadPosts();
-  }, [loadPosts]);
-
-  return (
-    <div className={styles.container}>
-      {posts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))}
-    </div>
-  );
-};
+export const Gallery: FC<GalleryProps> = ({ posts }) => (
+  <div className={styles.container}>
+    {posts.map((post) => (
+      <Post key={post.id} post={post} />
+    ))}
+  </div>
+);

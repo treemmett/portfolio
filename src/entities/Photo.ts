@@ -4,7 +4,6 @@ import { v4 } from 'uuid';
 import { Config } from '../utils/config';
 import { s3 } from '../utils/s3';
 import { PhotoType } from './PhotoType';
-import { Post } from './Post';
 
 const { CDN_URL, S3_BUCKET, S3_URL } = Config;
 
@@ -12,8 +11,6 @@ export class Photo {
   public id: string;
 
   public created: Date;
-
-  public post: Post;
 
   public height: number;
 
@@ -64,6 +61,7 @@ export class Photo {
       thumbnailURL: `data:${mime};base64,${thumbnailBuffer.toString('base64')}`,
       type,
       updated: new Date(),
+      url: CDN_URL ? `${CDN_URL}/${id}` : `${S3_URL}/${S3_BUCKET}/${id}`,
       width: metadata.width,
     });
 

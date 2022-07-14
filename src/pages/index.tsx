@@ -1,3 +1,4 @@
+import { instanceToPlain } from 'class-transformer';
 import { GetStaticProps, NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -10,10 +11,15 @@ import { Editor } from '../components/Editor';
 import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
 import { AuthorizationScopes } from '../entities/Jwt';
+import { Post } from '../entities/Post';
 import { Config } from '../utils/config';
 import styles from './home.module.scss';
 
-export const Home: NextPage = () => {
+export interface HomeProps {
+  posts: Post[];
+}
+
+export const Home: NextPage<HomeProps> = ({ posts }) => {
   const { session } = useDataStore();
   const { push } = useRouter();
   const { t } = useTranslation();
@@ -24,7 +30,7 @@ export const Home: NextPage = () => {
         <title>{Config.NEXT_PUBLIC_NAME}</title>
       </Head>
 
-      <Gallery />
+      <Gallery posts={posts} />
 
       <About />
 
@@ -38,17 +44,22 @@ export const Home: NextPage = () => {
         </Button>
       )}
 
-      <LightBox />
+      <LightBox posts={posts} />
 
       <Editor />
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-});
+export const getStaticProps: GetStaticProps<HomeProps> = async ({ locale }) => {
+  const posts = await Post.getAll();
+
+  return {
+    props: {
+      posts: instanceToPlain(posts) as Post[],
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
+};
 
 export default Home;
