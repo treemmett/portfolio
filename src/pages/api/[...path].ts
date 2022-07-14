@@ -23,7 +23,11 @@ export default nextConnect
     const posts = await Post.getAll();
     res.send(posts);
   })
-  .post('/api/post', async (req, res) => res.json(await Post.upload(req.files.file.filepath)));
+  .post('/api/post', async (req, res) => {
+    const post = await Post.upload(req.files.file.filepath);
+    await res.revalidate('/');
+    res.json(post);
+  });
 
 export const config: PageConfig = {
   api: {
