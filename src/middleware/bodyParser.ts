@@ -2,6 +2,7 @@ import { json, text } from 'body-parser';
 import formidable, { File } from 'formidable';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Middleware } from 'next-connect';
+import { APIError, ErrorCode } from '../utils/errors';
 
 type Files = { [file: string]: File };
 
@@ -10,22 +11,33 @@ export interface ParsedApiRequest extends NextApiRequest {
 }
 
 export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, res, next) => {
-  switch (req.headers['content-type']?.split(';')[0]) {
-    case 'application/json':
-      json()(req, res, next);
-      break;
+  if (req.url !== '/post') {
+    next();
+    return;
+  }
 
-    case 'multipart/form-data':
-      formidable().parse(req, (err, fields, files) => {
-        if (err) return next(err);
+  try {
+    switch (req.headers['content-type']?.split(';')[0]) {
+      case 'application/json':
+        json()(req, res, next);
+        break;
 
-        req.body = fields;
-        req.files = files as Files;
-        return next();
-      });
-      break;
+      case 'multipart/form-data':
+        formidable().parse(req, (err, fields, files) => {
+          if (err) return next(err);
 
-    default:
-      text()(req, res, next);
+          req.body = fields;
+          req.files = files as Files;
+          return next();
+        });
+        break;
+
+      default: {
+        const t = text();
+        t(req, res, next);
+      }
+    }
+  } catch (err) {
+    throw new APIError(ErrorCode.never, err);
   }
 };
