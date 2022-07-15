@@ -1,6 +1,5 @@
 import { instanceToPlain } from 'class-transformer';
 import { GetStaticProps, NextPage } from 'next';
-import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -12,6 +11,7 @@ import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { Post } from '../entities/Post';
+import { ReactComponent as Plus } from '../icons/plusSquare.svg';
 import { Config } from '../utils/config';
 import styles from './home.module.scss';
 
@@ -22,7 +22,6 @@ export interface HomeProps {
 export const Home: NextPage<HomeProps> = ({ posts }) => {
   const { session } = useDataStore();
   const { push } = useRouter();
-  const { t } = useTranslation();
 
   return (
     <div className={styles.container}>
@@ -36,11 +35,11 @@ export const Home: NextPage<HomeProps> = ({ posts }) => {
 
       {session.hasPermission(AuthorizationScopes.post) && (
         <Button
+          className={styles.button}
           onClick={() => push({ query: { newPost: true } }, undefined, { shallow: true })}
           testId="new post"
-          type="fab"
         >
-          {t('New Post')}
+          <Plus />
         </Button>
       )}
 

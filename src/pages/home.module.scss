@@ -6,4 +6,11 @@ $padding: 6rem;
 .container {
   position: relative;
   width: 100vw;
+
+  .button {
+    position: fixed;
+    z-index: 10;
+    right: 2rem;
+    bottom: 2rem;
+  }
 }

@@ -38,19 +38,9 @@
     color: shared.$text;
   }
 
-  &.primary,
-  &.fab {
+  &.primary {
     color: #fff;
     @include color(shared.$primary);
-  }
-
-  &.fab {
-    position: fixed;
-    z-index: 10;
-    right: 0;
-    bottom: 0;
-    padding: 1.5rem;
-    margin: 2rem;
   }
 
   &:disabled {
