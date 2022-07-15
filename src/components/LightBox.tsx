@@ -11,7 +11,6 @@ import {
 } from 'react';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { PhotoType } from '../entities/PhotoType';
-import { Post } from '../entities/Post';
 import { ReactComponent as Trash } from '../icons/trash.svg';
 import { scaleDimensions, toPx } from '../utils/pixels';
 import { toString } from '../utils/queryParam';
@@ -33,13 +32,9 @@ enum AnimationFrame {
   to_gallery,
 }
 
-export interface LightBoxProps {
-  posts: Post[];
-}
-
-export const LightBox: FC<LightBoxProps> = ({ posts }) => {
+export const LightBox: FC = () => {
   const { query, push } = useRouter();
-  const { deletePost, lightBox, session, setLightBox } = useDataStore();
+  const { deletePost, lightBox, posts, session, setLightBox } = useDataStore();
 
   const photo = useMemo(
     () =>

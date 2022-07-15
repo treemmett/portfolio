@@ -15,11 +15,7 @@ import { ReactComponent as Plus } from '../icons/plusSquare.svg';
 import { Config } from '../utils/config';
 import styles from './home.module.scss';
 
-export interface HomeProps {
-  posts: Post[];
-}
-
-export const Home: NextPage<HomeProps> = ({ posts }) => {
+export const Home: NextPage = () => {
   const { session } = useDataStore();
   const { push } = useRouter();
 
@@ -29,7 +25,7 @@ export const Home: NextPage<HomeProps> = ({ posts }) => {
         <title>{Config.NEXT_PUBLIC_NAME}</title>
       </Head>
 
-      <Gallery posts={posts} />
+      <Gallery />
 
       <About />
 
@@ -43,14 +39,14 @@ export const Home: NextPage<HomeProps> = ({ posts }) => {
         </Button>
       )}
 
-      <LightBox posts={posts} />
+      <LightBox />
 
       <Editor />
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps<HomeProps> = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const posts = await Post.getAll();
 
   return {

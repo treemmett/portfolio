@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react';
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
+import { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
 import { Config } from '../utils/config';
@@ -20,8 +21,13 @@ export interface DataStoreContext {
   destroySession: () => void;
   lightBox?: MutableRefObject<HTMLElement>;
   login(): void;
+  posts: Post[];
   session: Session;
   setLightBox(lightBox?: DataStoreContext['lightBox']): void;
+}
+
+export interface DataStoreProviderProps extends PropsWithChildren {
+  defaultPosts?: Post[];
 }
 
 export const dataStoreContext = createContext<DataStoreContext>({
@@ -29,13 +35,14 @@ export const dataStoreContext = createContext<DataStoreContext>({
   deletePost: () => Promise.resolve(),
   destroySession: () => null,
   login: () => null,
+  posts: [],
   session: new Session(),
   setLightBox: () => null,
 });
 
 export const useDataStore = () => useContext(dataStoreContext);
 
-export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
+export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaultPosts }) => {
   const [session, setSession] = useState(new Session());
   useEffect(() => {
     setSession(Session.restore());
@@ -58,6 +65,8 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [session]);
 
   const [lightBox, setLightBox] = useState<MutableRefObject<HTMLElement>>();
+
+  const [posts] = useState<Post[]>(defaultPosts || []);
 
   const contextValue = useMemo<DataStoreContext>(
     () => ({
@@ -105,10 +114,11 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
           `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
         );
       },
+      posts,
       session,
       setLightBox,
     }),
-    [apiClient, lightBox, session]
+    [apiClient, lightBox, posts, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;
