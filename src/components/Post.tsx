@@ -28,6 +28,9 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
 
   return (
     <div className={styles['post-wrapper']}>
+      <div className={styles.top}>
+        <span className={styles.title}>{post.title}</span>
+      </div>
       <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
         <a className={cx(styles.post, { [styles.displayed]: query.post === post.id })} href="#foo">
           <div

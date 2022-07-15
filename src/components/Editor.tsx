@@ -81,7 +81,7 @@ export const Editor: FC = () => {
               type="file"
             />
           </label>
-          <Input className={styles.input} label={t('Title')} />
+          <Input className={styles.input} label={t('Title')} name="title" />
           <Button
             className={styles.input}
             disabled={state === UploadState.uploading}

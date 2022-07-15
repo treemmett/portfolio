@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { readFile } from 'fs/promises';
 import { Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsDate, IsInt, IsUUID, Max, Min, ValidateNested } from 'class-validator';
+import { IsDate, IsInt, IsUUID, Length, Max, Min, ValidateNested } from 'class-validator';
 import sharp from 'sharp';
 import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
@@ -46,7 +46,10 @@ export class Post {
   @Max(255)
   public blue: number;
 
-  public static async upload(filePath: string): Promise<Post> {
+  @Length(0, 200)
+  public title: string;
+
+  public static async upload(filePath: string, title: string): Promise<Post> {
     if (!filePath) {
       throw new APIError(ErrorCode.no_file_received, 400, 'No file uploaded');
     }
@@ -86,6 +89,7 @@ export class Post {
         id: uuid(),
         photos,
         red: r,
+        title,
         updated: new Date(),
       },
       { validator: { forbidUnknownValues: true } }

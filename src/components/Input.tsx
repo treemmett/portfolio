@@ -9,6 +9,7 @@ export interface InputProps {
   collapseLabel?: boolean;
   id?: string;
   label?: string;
+  name?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   value?: string;
 }
@@ -17,14 +18,22 @@ function randomId() {
   return `input-${Math.random().toString().substring(2, 8)}`;
 }
 
-export const Input: FC<InputProps> = ({ className, collapseLabel, id, label, onChange, value }) => {
+export const Input: FC<InputProps> = ({
+  className,
+  collapseLabel,
+  id,
+  label,
+  name,
+  onChange,
+  value,
+}) => {
   const [realId, setRealId] = useState(id);
   useEffect(() => setRealId(id || randomId()), [id]);
 
   return (
     <label className={cx(styles.wrapper, className)} htmlFor={realId}>
       {(!collapseLabel || label) && <div className={styles.label}>{label}</div>}
-      <input className={styles.input} id={realId} onChange={onChange} value={value} />
+      <input className={styles.input} id={realId} name={name} onChange={onChange} value={value} />
     </label>
   );
 };

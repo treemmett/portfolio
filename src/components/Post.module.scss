@@ -50,9 +50,11 @@
   }
 }
 
+.top,
 .under {
   display: flex;
   font-family: 'Bad Script', cursive;
+  font-size: 1.25rem;
 
   .date {
     margin-left: auto;

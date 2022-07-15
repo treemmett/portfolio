@@ -4,7 +4,7 @@ import { nextConnect } from '../../middleware/nextConnect';
 
 export default nextConnect
   .post(async (req, res) => {
-    const post = await Post.upload(req.files.file.filepath);
+    const post = await Post.upload(req.files.file.filepath, req.body.title);
     await res.revalidate('/');
     res.json(post);
   })
