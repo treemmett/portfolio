@@ -1,4 +1,5 @@
 export enum AuthorizationScopes {
+  delete = 'delete',
   post = 'post',
 }
 

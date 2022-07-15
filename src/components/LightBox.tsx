@@ -9,9 +9,12 @@ import {
   useRef,
   useState,
 } from 'react';
+import { AuthorizationScopes } from '../entities/Jwt';
 import { PhotoType } from '../entities/PhotoType';
 import { Post } from '../entities/Post';
+import { ReactComponent as Trash } from '../icons/trash.svg';
 import { scaleDimensions, toPx } from '../utils/pixels';
+import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
@@ -35,7 +38,7 @@ export interface LightBoxProps {
 
 export const LightBox: FC<LightBoxProps> = ({ posts }) => {
   const { query, push } = useRouter();
-  const { lightBox, setLightBox } = useDataStore();
+  const { lightBox, session, setLightBox } = useDataStore();
 
   const photo = useMemo(
     () =>
@@ -123,13 +126,24 @@ export const LightBox: FC<LightBoxProps> = ({ posts }) => {
     return () => window.removeEventListener('resize', scaleImage);
   }, [frame, lightBox, setLightBox, width, height, photo, scaleImage, scaleToGallery]);
 
+  const open = ![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame);
+
   return (
     <Modal
       handleChildren={false}
       onClose={() => setFrame(AnimationFrame.to_gallery)}
-      open={![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame)}
+      open={open}
       ref={galleryRef}
     >
+      {open && (
+        <div className={styles.actions}>
+          {session.hasPermission(AuthorizationScopes.delete) && (
+            <Button>
+              <Trash />
+            </Button>
+          )}
+        </div>
+      )}
       {photo && (
         <img
           alt="My Post"

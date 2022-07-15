@@ -72,7 +72,7 @@ export async function authorizeGitHub(code: string) {
   const scopes: AuthorizationScopes[] = [];
 
   if (Config.AUTHORIZED_USERS.split(',').includes(data.login)) {
-    scopes.push(AuthorizationScopes.post);
+    scopes.push(AuthorizationScopes.delete, AuthorizationScopes.post);
   }
 
   const expiration = new Date();

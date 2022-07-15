@@ -7,3 +7,9 @@
     transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease;
   }
 }
+
+.actions {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+}
