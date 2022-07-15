@@ -82,6 +82,12 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
       apiClient,
       async deletePost(id) {
         await apiClient.delete(`/post/${encodeURIComponent(id)}`);
+        const newPosts = [...posts];
+        const index = newPosts.findIndex((p) => p.id === id);
+        if (~index) {
+          newPosts.splice(index, 1);
+          setPosts(newPosts);
+        }
       },
       destroySession() {
         localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
