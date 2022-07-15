@@ -107,7 +107,7 @@ export class Post {
 
       return JSON.parse(json).map((value) => plainToInstance(Post, value));
     } catch (err) {
-      if (err.code === 'NoSuchKey') {
+      if (err?.code === 'NoSuchKey') {
         return [];
       }
 
