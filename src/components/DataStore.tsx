@@ -16,6 +16,7 @@ import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pa
 import { Config } from '../utils/config';
 
 export interface DataStoreContext {
+  addPost(form: FormData): Promise<void>;
   apiClient: AxiosInstance;
   deletePost(id: string): Promise<void>;
   destroySession: () => void;
@@ -31,6 +32,7 @@ export interface DataStoreProviderProps extends PropsWithChildren {
 }
 
 export const dataStoreContext = createContext<DataStoreContext>({
+  addPost: () => Promise.resolve(),
   apiClient: Axios,
   deletePost: () => Promise.resolve(),
   destroySession: () => null,
@@ -66,10 +68,17 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
 
   const [lightBox, setLightBox] = useState<MutableRefObject<HTMLElement>>();
 
-  const [posts] = useState<Post[]>(defaultPosts || []);
+  const [posts, setPosts] = useState<Post[]>(defaultPosts || []);
 
   const contextValue = useMemo<DataStoreContext>(
     () => ({
+      async addPost(formData) {
+        const { data } = await apiClient.post<Post>('/post', formData);
+        const p = [data, ...posts].sort(
+          (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
+        );
+        setPosts(p);
+      },
       apiClient,
       async deletePost(id) {
         await apiClient.delete(`/post/${encodeURIComponent(id)}`);
