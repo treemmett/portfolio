@@ -126,8 +126,9 @@ export const LightBox: FC = () => {
 
   const deletePostAction = useCallback(async () => {
     await deletePost(toString(query.post));
-    setFrame(AnimationFrame.to_gallery);
-  }, [deletePost, query.post]);
+    setFrame(AnimationFrame.off);
+    push({ query: {} }, null, { scroll: false, shallow: true });
+  }, [deletePost, query.post, push]);
 
   return (
     <Modal
