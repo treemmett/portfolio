@@ -30,6 +30,10 @@ export enum ErrorCode {
    * File wasn't uploaded, or was lost to the I/O gods
    */
   no_file_received,
+  /**
+   * post not found
+   */
+  post_not_found,
 }
 
 export class APIError extends Error {

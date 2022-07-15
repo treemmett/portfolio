@@ -114,4 +114,18 @@ export class Post {
       throw err;
     }
   }
+
+  public static async delete(id: string): Promise<void> {
+    const posts = await this.getAll();
+
+    const index = posts.findIndex((p) => p.id === id);
+
+    if (!~index) {
+      throw new APIError(ErrorCode.post_not_found, 404, 'Post not found');
+    }
+
+    posts.splice(index, 1);
+
+    await this.writePostsIndex(posts);
+  }
 }
