@@ -1,0 +1,6 @@
+{
+  "*": ["prettier -l", "cspell"],
+  "*.(css|scss)": "stylelint",
+  "*.(ts|tsx)": "tsc --noEmit",
+  "*.(ts|tsx|js|jsx)": "eslint"
+}
