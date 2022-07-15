@@ -82,6 +82,13 @@ export const Editor: FC = () => {
             />
           </label>
           <Input className={styles.input} label={t('Title')} name="title" />
+          <Input
+            className={styles.input}
+            defaultValue={new Date().toISOString().split('T')[0]}
+            label={t('Date')}
+            name="date"
+            type="date"
+          />
           <Button
             className={styles.input}
             disabled={state === UploadState.uploading}

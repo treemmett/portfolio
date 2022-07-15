@@ -1,4 +1,5 @@
 {
+  "Date": "Date",
   "intro": "Hi, I'm {{name}}",
   "Pick an image": "Pick an image",
   "Post": "Post",

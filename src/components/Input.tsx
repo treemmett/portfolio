@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { ChangeEventHandler, FC, useEffect, useState } from 'react';
+import { ChangeEventHandler, FC, HTMLInputTypeAttribute, useEffect, useState } from 'react';
 import styles from './Input.module.scss';
 
 export interface InputProps {
@@ -7,10 +7,12 @@ export interface InputProps {
   className?: string;
   /** remove spacing reserved for label */
   collapseLabel?: boolean;
+  defaultValue?: string;
   id?: string;
   label?: string;
   name?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  type?: HTMLInputTypeAttribute;
   value?: string;
 }
 
@@ -21,10 +23,12 @@ function randomId() {
 export const Input: FC<InputProps> = ({
   className,
   collapseLabel,
+  defaultValue,
   id,
   label,
   name,
   onChange,
+  type,
   value,
 }) => {
   const [realId, setRealId] = useState(id);
@@ -33,7 +37,15 @@ export const Input: FC<InputProps> = ({
   return (
     <label className={cx(styles.wrapper, className)} htmlFor={realId}>
       {(!collapseLabel || label) && <div className={styles.label}>{label}</div>}
-      <input className={styles.input} id={realId} name={name} onChange={onChange} value={value} />
+      <input
+        className={styles.input}
+        defaultValue={defaultValue}
+        id={realId}
+        name={name}
+        onChange={onChange}
+        type={type}
+        value={value}
+      />
     </label>
   );
 };

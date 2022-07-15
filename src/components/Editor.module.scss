@@ -17,6 +17,7 @@
   @include shared.theme;
   @include shared.border;
 
+  width: 100%;
   padding: 1rem;
 }
 
@@ -32,7 +33,7 @@
 
   &:not(.selected) {
     display: flex;
-    height: 15rem;
+    height: 18rem;
     align-items: center;
     justify-content: center;
   }

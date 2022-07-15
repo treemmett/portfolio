@@ -49,7 +49,7 @@ export class Post {
   @Length(0, 200)
   public title: string;
 
-  public static async upload(filePath: string, title: string): Promise<Post> {
+  public static async upload(filePath: string, title: string, date?: Date): Promise<Post> {
     if (!filePath) {
       throw new APIError(ErrorCode.no_file_received, 400, 'No file uploaded');
     }
@@ -84,7 +84,7 @@ export class Post {
       Post,
       {
         blue: b,
-        created: new Date(),
+        created: new Date(date),
         green: g,
         id: uuid(),
         photos,
