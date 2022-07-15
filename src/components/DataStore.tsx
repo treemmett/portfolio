@@ -43,6 +43,7 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
   }, []);
   const apiClient = useMemo(() => {
     const client = Axios.create({
+      baseURL: '/api',
       withCredentials: true,
     });
     client.interceptors.request.use((req) => {
@@ -78,7 +79,7 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
       }
 
       if (event.data.type === 'OAUTH_CODE') {
-        const loginResponse = await apiClient.post('/api/login', { code: event.data.payload });
+        const loginResponse = await apiClient.post('/login', { code: event.data.payload });
         localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
         setSession(new Session(loginResponse.data));
       }
@@ -102,7 +103,7 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
     () => ({
       apiClient,
       async deletePost(id) {
-        await apiClient.delete(`/api/post/${encodeURIComponent(id)}`);
+        await apiClient.delete(`/post/${encodeURIComponent(id)}`);
       },
       destroySession,
       lightBox,

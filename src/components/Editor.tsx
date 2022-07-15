@@ -55,7 +55,7 @@ export const Editor: FC = () => {
         setState(UploadState.uploading);
         const form = e.target as HTMLFormElement;
 
-        await apiClient.post<Post>('/api/post', new FormData(form));
+        await apiClient.post<Post>('/post', new FormData(form));
 
         closeEditor();
       } catch (err) {
