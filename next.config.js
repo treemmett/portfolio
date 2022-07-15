@@ -20,6 +20,7 @@ const nextConfig = {
   images: {
     domains: [!IS_VERCEL && '127.0.0.1', 'tregan.me', 'cdn.tregan.me'].filter(Boolean),
   },
+  productionBrowserSourceMaps: true,
   reactStrictMode: true,
   /**
    *
