@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 import { readFile } from 'fs/promises';
-import { plainToClass, plainToInstance, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
+import { transformAndValidate } from 'class-transformer-validator';
+import { IsDate, IsInt, IsUUID, Max, Min, ValidateNested } from 'class-validator';
 import sharp from 'sharp';
 import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
@@ -14,19 +16,34 @@ const { S3_BUCKET } = Config;
 const POSTS_FILE_KEY = 'posts.json';
 
 export class Post {
+  @IsUUID()
   public id: string;
 
+  @IsDate()
+  @Type(() => Date)
   public created: Date;
 
+  @IsDate()
+  @Type(() => Date)
   public updated: Date;
 
   @Type(() => Photo)
+  @ValidateNested({ each: true })
   public photos: Photo[];
 
+  @IsInt()
+  @Min(0)
+  @Max(255)
   public red: number;
 
+  @IsInt()
+  @Min(0)
+  @Max(255)
   public green: number;
 
+  @IsInt()
+  @Min(0)
+  @Max(255)
   public blue: number;
 
   public static async upload(filePath: string): Promise<Post> {
@@ -60,15 +77,19 @@ export class Post {
     const { channels } = await image.stats();
     const [r, g, b] = channels.map((c) => Math.floor(c.mean));
 
-    const post = plainToClass(Post, {
-      blue: b,
-      created: new Date(),
-      green: g,
-      id: uuid(),
-      photos,
-      red: r,
-      updated: new Date(),
-    });
+    const post = await transformAndValidate(
+      Post,
+      {
+        blue: b,
+        created: new Date(),
+        green: g,
+        id: uuid(),
+        photos,
+        red: r,
+        updated: new Date(),
+      },
+      { validator: { forbidUnknownValues: true } }
+    );
 
     await Post.addPostToIndex(post);
 
@@ -105,7 +126,9 @@ export class Post {
 
       const json = Body.toString();
 
-      return JSON.parse(json).map((value) => plainToInstance(Post, value));
+      return (await transformAndValidate(Post, json, {
+        validator: { forbidUnknownValues: true },
+      })) as Post[];
     } catch (err) {
       if (err?.code === 'NoSuchKey') {
         return [];

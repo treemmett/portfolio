@@ -1,4 +1,3 @@
-import { instanceToPlain } from 'class-transformer';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
@@ -51,7 +50,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 
   return {
     props: {
-      posts: instanceToPlain(posts) as Post[],
+      posts: JSON.parse(JSON.stringify(posts)),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   };
