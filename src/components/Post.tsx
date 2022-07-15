@@ -27,29 +27,31 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
   const image = post.photos.find((p) => p.type === PhotoType.ORIGINAL);
 
   return (
-    <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
-      <a className={cx(styles.post, { [styles.displayed]: query.post === post.id })} href="#foo">
-        <div
-          className={styles['image-wrapper']}
-          ref={ref}
-          style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
-        >
-          <Image
-            alt="some post"
-            blurDataURL={image.thumbnailURL}
-            className={styles.photo}
-            height={image.height}
-            placeholder="blur"
-            priority={priority}
-            sizes="60vh,80vw"
-            src={image.url}
-            width={image.width}
-          />
-        </div>
-        <div className={styles.under}>
-          <span className={styles.date}>{new Date(post.created).toLocaleDateString()}</span>
-        </div>
-      </a>
-    </Link>
+    <div className={styles['post-wrapper']}>
+      <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
+        <a className={cx(styles.post, { [styles.displayed]: query.post === post.id })} href="#foo">
+          <div
+            className={styles['image-wrapper']}
+            ref={ref}
+            style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
+          >
+            <Image
+              alt="some post"
+              blurDataURL={image.thumbnailURL}
+              className={styles.photo}
+              height={image.height}
+              placeholder="blur"
+              priority={priority}
+              sizes="60vh,80vw"
+              src={image.url}
+              width={image.width}
+            />
+          </div>
+          <div className={styles.under}>
+            <span className={styles.date}>{new Date(post.created).toLocaleDateString()}</span>
+          </div>
+        </a>
+      </Link>
+    </div>
   );
 };

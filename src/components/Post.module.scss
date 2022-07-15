@@ -1,11 +1,20 @@
 @use '../pages/home.module';
 @use '../styles/screen';
 
+.post-wrapper {
+  position: relative;
+  width: calc(100% - 1rem);
+  flex: 0 0 auto;
+
+  @include screen.md {
+    padding-right: home.$padding - 1rem;
+  }
+}
+
 .post {
   position: relative;
   z-index: 10;
   width: 100%;
-  flex: 0 0 auto;
   margin-bottom: home.$padding;
   opacity: 1;
 
