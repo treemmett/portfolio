@@ -17,6 +17,7 @@ import { Config } from '../utils/config';
 
 export interface DataStoreContext {
   apiClient: AxiosInstance;
+  deletePost(id: string): Promise<void>;
   destroySession: () => void;
   lightBox?: MutableRefObject<HTMLElement>;
   login: () => void;
@@ -26,6 +27,7 @@ export interface DataStoreContext {
 
 export const dataStoreContext = createContext<DataStoreContext>({
   apiClient: Axios,
+  deletePost: () => Promise.resolve(),
   destroySession: () => null,
   login: () => null,
   session: new Session(),
@@ -99,6 +101,9 @@ export const DataStoreProvider: FC<PropsWithChildren> = ({ children }) => {
   const contextValue = useMemo<DataStoreContext>(
     () => ({
       apiClient,
+      async deletePost(id) {
+        await apiClient.delete(`/api/post/${encodeURIComponent(id)}`);
+      },
       destroySession,
       lightBox,
       login,

@@ -14,6 +14,7 @@ import { PhotoType } from '../entities/PhotoType';
 import { Post } from '../entities/Post';
 import { ReactComponent as Trash } from '../icons/trash.svg';
 import { scaleDimensions, toPx } from '../utils/pixels';
+import { toString } from '../utils/queryParam';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
@@ -38,7 +39,7 @@ export interface LightBoxProps {
 
 export const LightBox: FC<LightBoxProps> = ({ posts }) => {
   const { query, push } = useRouter();
-  const { lightBox, session, setLightBox } = useDataStore();
+  const { deletePost, lightBox, session, setLightBox } = useDataStore();
 
   const photo = useMemo(
     () =>
@@ -128,6 +129,11 @@ export const LightBox: FC<LightBoxProps> = ({ posts }) => {
 
   const open = ![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame);
 
+  const deletePostAction = useCallback(async () => {
+    await deletePost(toString(query.post));
+    setFrame(AnimationFrame.to_gallery);
+  }, [deletePost, query.post]);
+
   return (
     <Modal
       handleChildren={false}
@@ -138,7 +144,7 @@ export const LightBox: FC<LightBoxProps> = ({ posts }) => {
       {open && (
         <div className={styles.actions}>
           {session.hasPermission(AuthorizationScopes.delete) && (
-            <Button>
+            <Button onClick={deletePostAction}>
               <Trash />
             </Button>
           )}

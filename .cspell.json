@@ -21,7 +21,8 @@
     "testid",
     "treemmett",
     "Tregan",
-    "typeorm"
+    "typeorm",
+    "vercel"
   ],
   "overrides": [
     {
