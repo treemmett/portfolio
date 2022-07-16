@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import '../../cypress/mock';
 import { NextApiResponse } from 'next';
 import NC from 'next-connect';
 import { authenticateRequest } from '../utils/auth';

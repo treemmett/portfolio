@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { readFile } from 'fs/promises';
 import { Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
