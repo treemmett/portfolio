@@ -50,11 +50,11 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
               width={image.width}
             />
           </div>
-          <div className={styles.under}>
-            <span className={styles.date}>{new Date(post.created).toLocaleDateString()}</span>
-          </div>
         </a>
       </Link>
+      <div className={styles.under}>
+        <span className={styles.date}>{new Date(post.created).toLocaleDateString()}</span>
+      </div>
     </div>
   );
 };
