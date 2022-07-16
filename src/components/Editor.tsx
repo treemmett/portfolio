@@ -11,6 +11,7 @@ import {
   useState,
 } from 'react';
 import { ReactComponent as Plus } from '../icons/plusSquare.svg';
+import { toString } from '../utils/queryParam';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import styles from './Editor.module.scss';
@@ -25,7 +26,8 @@ enum UploadState {
 export const Editor: FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { addPost, posts } = useDataStore();
+  const { addPost, posts, updatePost } = useDataStore();
+  const editId = toString(router.query.edit);
 
   const [imageData, setImageData] = useState('');
   const [title, setTitle] = useState('');
@@ -61,15 +63,21 @@ export const Editor: FC = () => {
   }, [router]);
 
   const [state, setState] = useState(UploadState.default);
+
   const uploadPost: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       try {
         e.preventDefault();
-
         // don't duplicate requests
         if (state === UploadState.uploading) return;
         setState(UploadState.uploading);
-        await addPost(new FormData(e.currentTarget));
+
+        if (editId) {
+          await updatePost(editId, { created: new Date(date), location, title });
+        } else {
+          await addPost(new FormData(e.currentTarget));
+        }
+
         closeEditor();
       } catch (err) {
         console.error(err?.response?.data?.error || err);
@@ -78,12 +86,12 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [addPost, closeEditor, state, t]
+    [addPost, closeEditor, date, editId, location, state, t, title, updatePost]
   );
 
   useEffect(() => {
-    if (router.query.edit) {
-      const post = posts.find((p) => p.id === router.query.edit);
+    if (editId) {
+      const post = posts.find((p) => p.id === editId);
 
       if (post) {
         setImageData(post.photos[0].url);
@@ -92,12 +100,12 @@ export const Editor: FC = () => {
         setDate(new Date(post.created).toISOString().split('T')[0]);
       }
     }
-  }, [posts, router.query.edit]);
+  }, [posts, editId]);
 
-  const [open, setOpen] = useState(!!(router.query.newPost?.length > 0 || router.query.edit));
+  const [open, setOpen] = useState(!!(router.query.newPost?.length > 0 || editId));
   useEffect(() => {
-    setOpen(!!(router.query.newPost?.length > 0 || router.query.edit));
-  }, [router.query.newPost, router.query.edit]);
+    setOpen(!!(router.query.newPost?.length > 0 || editId));
+  }, [router.query.newPost, editId]);
 
   return (
     <>
@@ -155,7 +163,7 @@ export const Editor: FC = () => {
               type="primary"
               submit
             >
-              {state === UploadState.uploading ? t('Uploading...') : t('Post')}
+              {state === UploadState.uploading ? t('Uploading...') : t(editId ? 'Save' : 'Post')}
             </Button>
           </form>
         </div>

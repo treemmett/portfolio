@@ -130,6 +130,42 @@ export class Post {
       .promise();
   }
 
+  public static async update(
+    id: string,
+    data: Partial<Pick<Post, 'created' | 'location' | 'title'>>
+  ): Promise<Post> {
+    const posts = await this.getAll();
+
+    const index = posts.findIndex((p) => p.id === id);
+
+    if (!~index) {
+      throw new APIError(ErrorCode.post_not_found, 404, 'Post not found');
+    }
+
+    const [post] = posts.splice(index, 1);
+
+    if (!post) {
+      throw new APIError(ErrorCode.post_not_found, 404, 'Post not found');
+    }
+
+    if (data.created) {
+      post.created = new Date(data.created);
+    }
+
+    if (data.location) {
+      post.location = data.location;
+    }
+
+    if (data.title) {
+      post.title = data.title;
+    }
+
+    post.updated = new Date();
+    posts.unshift(post);
+    await this.writePostsIndex(posts);
+    return post;
+  }
+
   public static async getAll(): Promise<Post[]> {
     try {
       const { Body } = await s3

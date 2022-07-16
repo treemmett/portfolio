@@ -11,7 +11,7 @@ export interface ParsedApiRequest extends NextApiRequest {
 }
 
 export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, res, next) => {
-  if (req.url !== '/api/post') {
+  if (!req.url.startsWith('/api/post')) {
     next();
     return;
   }

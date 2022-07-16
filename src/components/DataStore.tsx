@@ -25,6 +25,10 @@ export interface DataStoreContext {
   posts: Post[];
   session: Session;
   setLightBox(lightBox?: DataStoreContext['lightBox']): void;
+  updatePost(
+    id: string,
+    update: Partial<Pick<Post, 'title' | 'location' | 'created'>>
+  ): Promise<void>;
 }
 
 export interface DataStoreProviderProps extends PropsWithChildren {
@@ -40,6 +44,7 @@ export const dataStoreContext = createContext<DataStoreContext>({
   posts: [],
   session: new Session(),
   setLightBox: () => null,
+  updatePost: () => Promise.resolve(),
 });
 
 export const useDataStore = () => useContext(dataStoreContext);
@@ -132,6 +137,15 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
       posts,
       session,
       setLightBox,
+      async updatePost(id, update) {
+        const { data } = await apiClient.put<Post>(`/post/${encodeURIComponent(id)}`, update);
+        const newPosts = [...posts];
+        const index = newPosts.findIndex((p) => p.id === id);
+        newPosts.splice(index, 1);
+        newPosts.push(data);
+        newPosts.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+        setPosts(newPosts);
+      },
     }),
     [apiClient, lightBox, posts, session]
   );
