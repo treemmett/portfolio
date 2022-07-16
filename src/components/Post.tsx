@@ -28,9 +28,11 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
   const image = post.photos.find((p) => p.type === PhotoType.ORIGINAL);
 
   return (
-    <div className={styles['post-wrapper']}>
+    <div className={styles['post-wrapper']} data-testid="post">
       <div className={styles.top}>
-        <span className={styles.title}>{post.title}</span>
+        <span className={styles.title} data-testid="title">
+          {post.title}
+        </span>
       </div>
       <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
         <a className={cx(styles.post, { [styles.displayed]: query.post === post.id })} href="#foo">
@@ -54,7 +56,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
         </a>
       </Link>
       <div className={styles.under}>
-        <span className={styles.location}>
+        <span className={styles.location} data-testid="location">
           <Pin />
           {post.location}
         </span>

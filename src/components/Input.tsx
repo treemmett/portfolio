@@ -12,6 +12,7 @@ export interface InputProps {
   label?: string;
   name?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  testId?: string;
   type?: HTMLInputTypeAttribute;
   value?: string;
 }
@@ -28,6 +29,7 @@ export const Input: FC<InputProps> = ({
   label,
   name,
   onChange,
+  testId,
   type,
   value,
 }) => {
@@ -39,6 +41,7 @@ export const Input: FC<InputProps> = ({
       {(!collapseLabel || label) && <div className={styles.label}>{label}</div>}
       <input
         className={styles.input}
+        data-testid={testId}
         defaultValue={defaultValue}
         id={realId}
         name={name}

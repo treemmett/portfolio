@@ -38,11 +38,11 @@
 
 declare namespace Cypress {
   interface Chainable {
-    login(email: string): Chainable;
+    login(username?: string): Chainable;
   }
 }
 
-Cypress.Commands.add('login', (username: string) => {
+Cypress.Commands.add('login', (username = 'treemmett') => {
   cy.visit('/');
 
   cy.intercept({ hostname: 'github.com', pathname: '/login/oauth/authorize' }, (req) =>
