@@ -38,13 +38,7 @@ export const LightBox: FC = () => {
   const { deletePost, lightBox, posts, session, setLightBox } = useDataStore();
 
   const photo = useMemo(
-    () =>
-      posts
-        .find((p) => p.id === query.post)
-        ?.photos.reduce((acc, cur) => {
-          if (acc.type !== PhotoType.SCALED) return cur;
-          return cur.type === PhotoType.SCALED && cur.width > acc.width ? cur : acc;
-        }),
+    () => posts.find((p) => p.id === query.post)?.photos.find((p) => p.type === PhotoType.ORIGINAL),
     [query.post, posts]
   );
 

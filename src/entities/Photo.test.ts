@@ -35,14 +35,4 @@ describe('photo types', () => {
     const p = await Photo.upload(sharp(PHOTO_PATH), PhotoType.ORIGINAL);
     expect(p.type).toBe(PhotoType.ORIGINAL);
   });
-
-  it('should set the blurred photo type', async () => {
-    const p = await Photo.upload(sharp(PHOTO_PATH), PhotoType.BLURRED);
-    expect(p.type).toBe(PhotoType.BLURRED);
-  });
-
-  it('should set the scaled photo type', async () => {
-    const p = await Photo.upload(sharp(PHOTO_PATH), PhotoType.SCALED);
-    expect(p.type).toBe(PhotoType.SCALED);
-  });
 });

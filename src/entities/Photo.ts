@@ -1,6 +1,6 @@
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsDataURI, IsDate, IsEnum, IsInt, IsUUID } from 'class-validator';
+import { IsDataURI, IsEnum, IsInt, IsUUID } from 'class-validator';
 import { Sharp } from 'sharp';
 import { v4 } from 'uuid';
 import { Config } from '../utils/config';
@@ -13,10 +13,6 @@ export class Photo {
   @IsUUID()
   public id: string;
 
-  @IsDate()
-  @Type(() => Date)
-  public created: Date;
-
   @IsInt()
   public height: number;
 
@@ -28,10 +24,6 @@ export class Photo {
 
   @IsEnum(PhotoType)
   public type: PhotoType;
-
-  @IsDate()
-  @Type(() => Date)
-  public updated: Date;
 
   @Transform(({ obj }: { obj: Photo }) =>
     CDN_URL ? `${CDN_URL}/${obj.id}` : `${S3_URL}/${S3_BUCKET}/${obj.id}`
@@ -67,12 +59,10 @@ export class Photo {
     const photo = await transformAndValidate(
       Photo,
       {
-        created: new Date(),
         height: metadata.height,
         id,
         thumbnailURL: `data:${mime};base64,${thumbnailBuffer.toString('base64')}`,
         type,
-        updated: new Date(),
         width: metadata.width,
       },
       {

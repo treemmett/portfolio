@@ -71,20 +71,7 @@ export class Post {
 
     const image = sharp(imageBuffer);
 
-    const tasks: Promise<Photo>[] = [Photo.upload(image, PhotoType.ORIGINAL)];
-
-    // scale and blur images to the given dimensions
-    [1000].map(async (size) => {
-      const scaledImage = image.clone();
-      scaledImage.resize(size, size, { fit: 'inside' });
-      tasks.push(Photo.upload(scaledImage, PhotoType.SCALED));
-
-      const blurredImage = scaledImage.clone();
-      blurredImage.blur();
-      tasks.push(Photo.upload(blurredImage, PhotoType.BLURRED));
-    });
-
-    const photos = await Promise.all(tasks);
+    const photo = await Photo.upload(image, PhotoType.ORIGINAL);
 
     // get average color
     const { channels } = await image.stats();
@@ -98,7 +85,7 @@ export class Post {
         green: g,
         id: uuid(),
         location,
-        photos,
+        photos: [photo],
         red: r,
         title,
         updated: new Date(),
