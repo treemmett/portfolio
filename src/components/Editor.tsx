@@ -1,7 +1,15 @@
 import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { ChangeEventHandler, FC, FormEventHandler, useCallback, useRef, useState } from 'react';
+import {
+  ChangeEventHandler,
+  FC,
+  FormEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { ReactComponent as Plus } from '../icons/plusSquare.svg';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
@@ -17,8 +25,13 @@ enum UploadState {
 export const Editor: FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { addPost } = useDataStore();
+  const { addPost, posts } = useDataStore();
+
   const [imageData, setImageData] = useState('');
+  const [title, setTitle] = useState('');
+  const [location, setLocation] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     const file = e.currentTarget.files[0];
     if (!file) {
@@ -39,8 +52,12 @@ export const Editor: FC = () => {
       formRef.current.reset();
     }
 
-    router.push({ query: { newPost: undefined } }, undefined, { shallow: true });
+    router.push({}, undefined, { shallow: true });
+
+    setTitle('');
     setImageData('');
+    setDate(new Date().toISOString().split('T')[0]);
+    setLocation('');
   }, [router]);
 
   const [state, setState] = useState(UploadState.default);
@@ -64,6 +81,24 @@ export const Editor: FC = () => {
     [addPost, closeEditor, state, t]
   );
 
+  useEffect(() => {
+    if (router.query.edit) {
+      const post = posts.find((p) => p.id === router.query.edit);
+
+      if (post) {
+        setImageData(post.photos[0].url);
+        setTitle(post.title);
+        setLocation(post.location);
+        setDate(new Date(post.created).toISOString().split('T')[0]);
+      }
+    }
+  }, [posts, router.query.edit]);
+
+  const [open, setOpen] = useState(!!(router.query.newPost?.length > 0 || router.query.edit));
+  useEffect(() => {
+    setOpen(!!(router.query.newPost?.length > 0 || router.query.edit));
+  }, [router.query.newPost, router.query.edit]);
+
   return (
     <>
       <Button
@@ -74,7 +109,7 @@ export const Editor: FC = () => {
         <Plus />
       </Button>
 
-      <Modal onClose={closeEditor} open={router.query.newPost?.length > 0}>
+      <Modal onClose={closeEditor} open={open}>
         <div className={styles.container}>
           <form className={styles.form} onSubmit={uploadPost} ref={formRef}>
             <label className={cx(styles.picker, { [styles.selected]: imageData })} htmlFor="image">
@@ -91,14 +126,28 @@ export const Editor: FC = () => {
                 type="file"
               />
             </label>
-            <Input className={styles.input} label={t('Title')} name="title" />
-            <Input className={styles.input} label={t('Location')} name="location" />
+            <Input
+              className={styles.input}
+              label={t('Title')}
+              name="title"
+              onChange={(e) => setTitle(e.currentTarget.value)}
+              value={title}
+            />
+            <Input
+              className={styles.input}
+              label={t('Location')}
+              name="location"
+              onChange={(e) => setLocation(e.currentTarget.value)}
+              value={location}
+            />
             <Input
               className={styles.input}
               defaultValue={new Date().toISOString().split('T')[0]}
               label={t('Date')}
               name="date"
+              onChange={(e) => setDate(e.currentTarget.value)}
               type="date"
+              value={date}
             />
             <Button
               className={styles.input}

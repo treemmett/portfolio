@@ -27,13 +27,13 @@ export const Home: NextPage = () => {
 
       <About />
 
-      <LightBox />
-
       {session.hasPermission(AuthorizationScopes.post) && (
         <Suspense fallback="Loading...">
           <DynamicEditor />
         </Suspense>
       )}
+
+      <LightBox />
     </div>
   );
 };

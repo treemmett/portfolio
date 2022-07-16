@@ -11,6 +11,7 @@ import {
 } from 'react';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { PhotoType } from '../entities/PhotoType';
+import { ReactComponent as Edit } from '../icons/edit.svg';
 import { ReactComponent as Trash } from '../icons/trash.svg';
 import { scaleDimensions, toPx } from '../utils/pixels';
 import { toString } from '../utils/queryParam';
@@ -130,6 +131,12 @@ export const LightBox: FC = () => {
     push({ query: {} }, null, { scroll: false, shallow: true });
   }, [deletePost, query.post, push]);
 
+  const editPost = useCallback(() => {
+    push({ query: new URLSearchParams({ edit: toString(query.post) }).toString() }, undefined, {
+      shallow: true,
+    });
+  }, [push, query.post]);
+
   return (
     <Modal
       handleChildren={false}
@@ -139,6 +146,11 @@ export const LightBox: FC = () => {
     >
       {open && (
         <div className={styles.actions}>
+          {session.hasPermission(AuthorizationScopes.post) && (
+            <Button onClick={editPost}>
+              <Edit />
+            </Button>
+          )}
           {session.hasPermission(AuthorizationScopes.delete) && (
             <Button onClick={deletePostAction}>
               <Trash />
