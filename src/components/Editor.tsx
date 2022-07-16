@@ -82,6 +82,7 @@ export const Editor: FC = () => {
             />
           </label>
           <Input className={styles.input} label={t('Title')} name="title" />
+          <Input className={styles.input} label={t('Location')} name="location" />
           <Input
             className={styles.input}
             defaultValue={new Date().toISOString().split('T')[0]}

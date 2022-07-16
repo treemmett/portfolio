@@ -53,6 +53,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
         </a>
       </Link>
       <div className={styles.under}>
+        <span className={styles.location}>{post.location}</span>
         <span className={styles.date}>{new Date(post.created).toLocaleDateString()}</span>
       </div>
     </div>

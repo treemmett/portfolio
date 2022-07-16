@@ -8,7 +8,7 @@ describe('post uploading', () => {
   let post: Post;
 
   beforeAll(async () => {
-    post = await Post.upload(PHOTO_PATH, 'Title');
+    post = await Post.upload(PHOTO_PATH, 'Title', 'Nowhere');
   });
 
   it('should upload a post', () => {

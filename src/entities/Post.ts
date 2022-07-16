@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { readFile } from 'fs/promises';
 import { Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsDate, IsInt, IsUUID, Length, Max, Min, ValidateNested } from 'class-validator';
+import { IsDate, IsInt, IsString, IsUUID, Length, Max, Min, ValidateNested } from 'class-validator';
 import sharp from 'sharp';
 import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
@@ -22,6 +22,10 @@ export class Post {
   @IsDate()
   @Type(() => Date)
   public created: Date;
+
+  @Length(0, 200)
+  @IsString()
+  public location: string;
 
   @IsDate()
   @Type(() => Date)
@@ -47,9 +51,15 @@ export class Post {
   public blue: number;
 
   @Length(0, 200)
+  @IsString()
   public title: string;
 
-  public static async upload(filePath: string, title: string, date?: Date): Promise<Post> {
+  public static async upload(
+    filePath: string,
+    title: string,
+    location: string,
+    date?: Date
+  ): Promise<Post> {
     if (!filePath) {
       throw new APIError(ErrorCode.no_file_received, 400, 'No file uploaded');
     }
@@ -87,6 +97,7 @@ export class Post {
         created: new Date(date),
         green: g,
         id: uuid(),
+        location,
         photos,
         red: r,
         title,

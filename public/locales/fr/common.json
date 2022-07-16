@@ -1,6 +1,7 @@
 {
   "Date": "Date",
   "intro": "Salut, je m'appelle {{name}}",
+  "Location": "Emplacement",
   "Pick an image": "Choisir une image",
   "Post": "Poste",
   "Title": "Titre",
