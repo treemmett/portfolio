@@ -42,7 +42,7 @@ $padding-top: 2rem;
       backdrop-filter: blur(18px);
       background-color: rgba(shared.$background-dark, 5%);
 
-      @media (prefers-color-scheme: dark) {
+      @include shared.dark-mode {
         background-color: rgba(shared.$background, 5%);
       }
     }

@@ -32,7 +32,7 @@
   font-size: 1rem;
   transition: background-color 0.2s ease-out;
 
-  @media (prefers-color-scheme: dark) {
+  @include shared.dark-mode {
     @include color(shared.$background);
 
     color: shared.$text;

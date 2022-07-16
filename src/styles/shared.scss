@@ -6,12 +6,18 @@ $text: #1f271b;
 $text-light: $background;
 $background-dark: color.adjust($text, $lightness: -5%);
 
+@mixin dark-mode {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
+
 @mixin theme {
   border-color: $text;
   background-color: $background;
   color: $text;
 
-  @media (prefers-color-scheme: dark) {
+  @include dark-mode {
     border-color: $text-light;
     background-color: $background-dark;
     color: $text-light;
@@ -23,7 +29,7 @@ $background-dark: color.adjust($text, $lightness: -5%);
   background-color: $background-dark;
   color: $text-light;
 
-  @media (prefers-color-scheme: dark) {
+  @include dark-mode {
     border-color: $text;
     background-color: $background;
     color: $text;
