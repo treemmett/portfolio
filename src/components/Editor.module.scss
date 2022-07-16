@@ -57,3 +57,10 @@
   width: 100%;
   margin-top: 1rem;
 }
+
+.button {
+  position: fixed;
+  z-index: 10;
+  right: 2rem;
+  bottom: 2rem;
+}

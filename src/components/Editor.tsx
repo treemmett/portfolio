@@ -2,6 +2,7 @@ import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { ChangeEventHandler, FC, FormEventHandler, useCallback, useRef, useState } from 'react';
+import { ReactComponent as Plus } from '../icons/plusSquare.svg';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import styles from './Editor.module.scss';
@@ -64,42 +65,52 @@ export const Editor: FC = () => {
   );
 
   return (
-    <Modal onClose={closeEditor} open={router.query.newPost?.length > 0}>
-      <div className={styles.container}>
-        <form className={styles.form} onSubmit={uploadPost} ref={formRef}>
-          <label className={cx(styles.picker, { [styles.selected]: imageData })} htmlFor="image">
-            {imageData ? (
-              <img alt="selection preview" className={styles.preview} src={imageData} />
-            ) : (
-              <div>{t('Pick an image')}</div>
-            )}
-            <input
-              accept="image/*"
-              id="image"
-              name="file"
-              onChange={handleFileChange}
-              type="file"
+    <>
+      <Button
+        className={styles.button}
+        onClick={() => router.push({ query: { newPost: true } }, undefined, { shallow: true })}
+        testId="new post"
+      >
+        <Plus />
+      </Button>
+
+      <Modal onClose={closeEditor} open={router.query.newPost?.length > 0}>
+        <div className={styles.container}>
+          <form className={styles.form} onSubmit={uploadPost} ref={formRef}>
+            <label className={cx(styles.picker, { [styles.selected]: imageData })} htmlFor="image">
+              {imageData ? (
+                <img alt="selection preview" className={styles.preview} src={imageData} />
+              ) : (
+                <div>{t('Pick an image')}</div>
+              )}
+              <input
+                accept="image/*"
+                id="image"
+                name="file"
+                onChange={handleFileChange}
+                type="file"
+              />
+            </label>
+            <Input className={styles.input} label={t('Title')} name="title" />
+            <Input className={styles.input} label={t('Location')} name="location" />
+            <Input
+              className={styles.input}
+              defaultValue={new Date().toISOString().split('T')[0]}
+              label={t('Date')}
+              name="date"
+              type="date"
             />
-          </label>
-          <Input className={styles.input} label={t('Title')} name="title" />
-          <Input className={styles.input} label={t('Location')} name="location" />
-          <Input
-            className={styles.input}
-            defaultValue={new Date().toISOString().split('T')[0]}
-            label={t('Date')}
-            name="date"
-            type="date"
-          />
-          <Button
-            className={styles.input}
-            disabled={state === UploadState.uploading}
-            type="primary"
-            submit
-          >
-            {state === UploadState.uploading ? t('Uploading...') : t('Post')}
-          </Button>
-        </form>
-      </div>
-    </Modal>
+            <Button
+              className={styles.input}
+              disabled={state === UploadState.uploading}
+              type="primary"
+              submit
+            >
+              {state === UploadState.uploading ? t('Uploading...') : t('Post')}
+            </Button>
+          </form>
+        </div>
+      </Modal>
+    </>
   );
 };
