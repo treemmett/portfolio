@@ -2,7 +2,7 @@ import { serialize } from 'cookie';
 import { nextConnect } from '../../middleware/nextConnect';
 import { authorizeGitHub } from '../../utils/auth';
 
-export default nextConnect.post(async (req, res) => {
+export default nextConnect().post(async (req, res) => {
   const { accessToken, expiration, signature } = await authorizeGitHub(req.body.code);
   res.setHeader(
     'Set-Cookie',

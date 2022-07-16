@@ -2,10 +2,10 @@ import { PageConfig } from 'next';
 import { Post } from '../../entities/Post';
 import { nextConnect } from '../../middleware/nextConnect';
 
-export default nextConnect
+export default nextConnect()
   .post(async (req, res) => {
     const post = await Post.upload(
-      req.files.file.filepath,
+      req.files?.file.filepath,
       req.body.title,
       req.body.location,
       req.body.date

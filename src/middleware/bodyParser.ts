@@ -7,7 +7,7 @@ import { APIError, ErrorCode } from '../utils/errors';
 type Files = { [file: string]: File };
 
 export interface ParsedApiRequest extends NextApiRequest {
-  files: Files;
+  files?: Files;
 }
 
 export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, res, next) => {
