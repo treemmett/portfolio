@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { FC, useEffect, useRef } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
+import { ReactComponent as Pin } from '../icons/map-pin.svg';
 import { useDataStore } from './DataStore';
 import styles from './Post.module.scss';
 
@@ -53,7 +54,10 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
         </a>
       </Link>
       <div className={styles.under}>
-        <span className={styles.location}>{post.location}</span>
+        <span className={styles.location}>
+          <Pin />
+          {post.location}
+        </span>
         <span className={styles.date}>{new Date(post.created).toLocaleDateString()}</span>
       </div>
     </div>
