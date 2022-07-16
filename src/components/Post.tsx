@@ -40,7 +40,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
             style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
           >
             <Image
-              alt="some post"
+              alt={post.title}
               blurDataURL={image.thumbnailURL}
               className={styles.photo}
               height={image.height}
