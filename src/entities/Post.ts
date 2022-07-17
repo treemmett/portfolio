@@ -1,7 +1,17 @@
 import { readFile } from 'fs/promises';
 import { Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsDate, IsInt, IsString, IsUUID, Length, Max, Min, ValidateNested } from 'class-validator';
+import {
+  IsDate,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+  Max,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import sharp from 'sharp';
 import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
@@ -51,6 +61,7 @@ export class Post {
 
   @Length(0, 200)
   @IsString()
+  @IsOptional()
   public title: string;
 
   public static async upload(
