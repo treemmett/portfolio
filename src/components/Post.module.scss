@@ -15,15 +15,10 @@
   position: relative;
   z-index: 10;
   display: block;
-  margin-bottom: home.$padding;
   opacity: 1;
 
   &.displayed {
     opacity: 0;
-  }
-
-  @include screen.md {
-    margin-bottom: 0;
   }
 }
 
@@ -57,7 +52,6 @@
 .top,
 .under {
   display: flex;
-  height: 2.5rem;
   font-family: 'Bad Script', cursive;
   font-size: 1.25rem;
 
@@ -74,5 +68,13 @@
 
   .date {
     margin-left: auto;
+  }
+}
+
+.under {
+  margin-bottom: home.$padding;
+
+  @include screen.md {
+    margin-bottom: 0;
   }
 }
