@@ -72,7 +72,7 @@ export class Post {
     location: string,
     date?: Date
   ): Promise<Post> {
-    logger.verbose('Uploading post', { date, filePath, location, title });
+    logger.info('Uploading post', { date, filePath, location, title });
     if (!filePath) {
       logger.error('No filepath received', { filePath });
       throw new APIError(ErrorCode.no_file_received, 400, 'No file uploaded');
@@ -111,16 +111,16 @@ export class Post {
       },
       { validator: { forbidUnknownValues: true } }
     );
-    logger.verbose('Post passed validation');
+    logger.info('Post passed validation');
 
     await Post.addPostToIndex(post);
-    logger.verbose('Post added to index');
+    logger.info('Post added to index');
 
     return post;
   }
 
   private static async addPostToIndex(post: Post): Promise<void> {
-    logger.verbose('Adding post to index', { post });
+    logger.info('Adding post to index', { post });
     const posts = await this.getAll();
     posts.unshift(post);
     posts.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
@@ -128,7 +128,7 @@ export class Post {
   }
 
   private static async writePostsIndex(posts: Post[]): Promise<void> {
-    logger.verbose('Writing posts index', { posts });
+    logger.info('Writing posts index', { posts });
     await s3
       .upload({
         ACL: 'public-read',
@@ -144,7 +144,7 @@ export class Post {
     id: string,
     data: Partial<Pick<Post, 'created' | 'location' | 'title'>>
   ): Promise<Post> {
-    logger.verbose('Updating post', { data, id });
+    logger.info('Updating post', { data, id });
     const posts = await this.getAll();
 
     const index = posts.findIndex((p) => p.id === id);
@@ -161,20 +161,20 @@ export class Post {
       throw new APIError(ErrorCode.post_not_found, 404, 'Post not found');
     }
 
-    logger.verbose('Post found', { data, id, post });
+    logger.info('Post found', { data, id, post });
 
     if (data.created) {
-      logger.verbose('Updating post date', { new: data.created, original: post.created });
+      logger.info('Updating post date', { new: data.created, original: post.created });
       post.created = new Date(data.created);
     }
 
     if (data.location) {
-      logger.verbose('Updating post location', { new: data.location, original: post.location });
+      logger.info('Updating post location', { new: data.location, original: post.location });
       post.location = data.location;
     }
 
     if (data.title) {
-      logger.verbose('Updating post title', { new: data.title, original: post.title });
+      logger.info('Updating post title', { new: data.title, original: post.title });
       post.title = data.title;
     }
 
@@ -186,7 +186,7 @@ export class Post {
 
   public static async getAll(): Promise<Post[]> {
     try {
-      logger.verbose('Looking up post index');
+      logger.info('Looking up post index');
       const { Body } = await s3
         .getObject({
           Bucket: S3_BUCKET,
@@ -196,7 +196,7 @@ export class Post {
 
       const json = Body.toString();
 
-      logger.verbose('Post data found', { json });
+      logger.info('Post data found', { json });
 
       return (await transformAndValidate(Post, json, {
         validator: { forbidUnknownValues: true },
@@ -211,7 +211,7 @@ export class Post {
   }
 
   public static async delete(id: string): Promise<void> {
-    logger.verbose('Deleting post', { id });
+    logger.info('Deleting post', { id });
     const posts = await this.getAll();
 
     const index = posts.findIndex((p) => p.id === id);

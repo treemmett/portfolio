@@ -35,7 +35,7 @@ export class Photo {
   public width: number;
 
   public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
-    logger.verbose('Uploading photo');
+    logger.info('Uploading photo');
     const id = v4();
 
     const mime = 'image/webp';
@@ -50,9 +50,9 @@ export class Photo {
       })
       .promise();
 
-    logger.verbose('Successfully uploaded to S3');
+    logger.info('Successfully uploaded to S3');
 
-    logger.verbose('Creating thumbnail');
+    logger.info('Creating thumbnail');
     const thumbnail = image.clone();
     thumbnail.resize(20, 20, { fit: 'inside' });
 
@@ -60,7 +60,7 @@ export class Photo {
       image.metadata(),
       thumbnail.webp().toBuffer(),
     ]);
-    logger.verbose('Thumbnail and metadata created');
+    logger.info('Thumbnail and metadata created');
 
     const photo = await transformAndValidate(
       Photo,
@@ -78,7 +78,7 @@ export class Photo {
       }
     );
 
-    logger.verbose('Photo passed validation');
+    logger.info('Photo passed validation');
 
     return photo;
   }

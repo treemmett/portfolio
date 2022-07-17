@@ -12,9 +12,9 @@ export interface ParsedApiRequest extends NextApiRequest {
 }
 
 export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, res, next) => {
-  logger.verbose('Initializing body parser');
+  logger.info('Initializing body parser');
   if (!req.url.startsWith('/api/post')) {
-    logger.verbose('Skipping parser');
+    logger.info('Skipping parser');
     next();
     return;
   }
@@ -22,12 +22,12 @@ export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, r
   try {
     switch (req.headers['content-type']?.split(';')[0]) {
       case 'application/json':
-        logger.verbose('Parsing JSON');
+        logger.info('Parsing JSON');
         json()(req, res, next);
         break;
 
       case 'multipart/form-data':
-        logger.verbose('Parsing form-data');
+        logger.info('Parsing form-data');
         formidable().parse(req, (err, fields, files) => {
           if (err) {
             logger.error('An error occurred while parsing form-data', { err });
@@ -42,7 +42,7 @@ export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, r
         break;
 
       default: {
-        logger.verbose('Parsing text');
+        logger.info('Parsing text');
         text()(req, res, next);
       }
     }

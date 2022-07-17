@@ -11,9 +11,9 @@ export default nextConnect()
       req.body.location,
       req.body.date
     );
-    logger.verbose('Post created, revalidating cache');
+    logger.info('Post created, revalidating cache');
     await res.revalidate('/');
-    logger.verbose('Cache revalidated');
+    logger.info('Cache revalidated');
     res.json(post);
   })
   .delete(async (req, res) => {
