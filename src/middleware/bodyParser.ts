@@ -3,6 +3,7 @@ import formidable, { File } from 'formidable';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Middleware } from 'next-connect';
 import { APIError, ErrorCode } from '../utils/errors';
+import { logger } from '../utils/logger';
 
 type Files = { [file: string]: File };
 
@@ -11,7 +12,9 @@ export interface ParsedApiRequest extends NextApiRequest {
 }
 
 export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, res, next) => {
+  logger.verbose('Initializing body parser');
   if (!req.url.startsWith('/api/post')) {
+    logger.verbose('Skipping parser');
     next();
     return;
   }
@@ -19,25 +22,32 @@ export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, r
   try {
     switch (req.headers['content-type']?.split(';')[0]) {
       case 'application/json':
+        logger.verbose('Parsing JSON');
         json()(req, res, next);
         break;
 
       case 'multipart/form-data':
+        logger.verbose('Parsing form-data');
         formidable().parse(req, (err, fields, files) => {
-          if (err) return next(err);
+          if (err) {
+            logger.error('An error occurred while parsing form-data', { err });
+            next(err);
+            return;
+          }
 
           req.body = fields;
           req.files = files as Files;
-          return next();
+          next();
         });
         break;
 
       default: {
-        const t = text();
-        t(req, res, next);
+        logger.verbose('Parsing text');
+        text()(req, res, next);
       }
     }
   } catch (err) {
+    logger.error('An error occurred during parsing', { err });
     throw new APIError(ErrorCode.never, err);
   }
 };

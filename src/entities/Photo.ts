@@ -4,6 +4,7 @@ import { IsDataURI, IsEnum, IsInt, IsUUID } from 'class-validator';
 import { Sharp } from 'sharp';
 import { v4 } from 'uuid';
 import { Config } from '../utils/config';
+import { logger } from '../utils/logger';
 import { s3 } from '../utils/s3';
 import { PhotoType } from './PhotoType';
 
@@ -34,6 +35,7 @@ export class Photo {
   public width: number;
 
   public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
+    logger.verbose('Uploading photo');
     const id = v4();
 
     const mime = 'image/webp';
@@ -48,6 +50,9 @@ export class Photo {
       })
       .promise();
 
+    logger.verbose('Successfully uploaded to S3');
+
+    logger.verbose('Creating thumbnail');
     const thumbnail = image.clone();
     thumbnail.resize(20, 20, { fit: 'inside' });
 
@@ -55,6 +60,7 @@ export class Photo {
       image.metadata(),
       thumbnail.webp().toBuffer(),
     ]);
+    logger.verbose('Thumbnail and metadata created');
 
     const photo = await transformAndValidate(
       Photo,
@@ -71,6 +77,8 @@ export class Photo {
         },
       }
     );
+
+    logger.verbose('Photo passed validation');
 
     return photo;
   }

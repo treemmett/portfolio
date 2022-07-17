@@ -1,6 +1,7 @@
 import { PageConfig } from 'next';
 import { Post } from '../../entities/Post';
 import { nextConnect } from '../../middleware/nextConnect';
+import { logger } from '../../utils/logger';
 
 export default nextConnect()
   .post(async (req, res) => {
@@ -10,7 +11,9 @@ export default nextConnect()
       req.body.location,
       req.body.date
     );
+    logger.verbose('Post created, revalidating cache');
     await res.revalidate('/');
+    logger.verbose('Cache revalidated');
     res.json(post);
   })
   .delete(async (req, res) => {
