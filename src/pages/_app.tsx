@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
 import { FC } from 'react';
