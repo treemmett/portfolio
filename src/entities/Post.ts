@@ -13,10 +13,10 @@ import {
   ValidateNested,
 } from 'class-validator';
 import sharp from 'sharp';
+import { ulid } from 'ulid';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
 import { logger } from '../utils/logger';
-import { ensureUniqueID } from '../utils/random';
 import { s3 } from '../utils/s3';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
@@ -92,9 +92,7 @@ export class Post {
     const { channels } = await image.stats();
     const [r, g, b] = channels.map((c) => Math.floor(c.mean));
 
-    // load all posts for ID generation
-    const posts = await this.getAll();
-    const id = ensureUniqueID(posts, (p) => p.id);
+    const id = ulid();
 
     const post = await transformAndValidate(
       Post,

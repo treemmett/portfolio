@@ -23,6 +23,7 @@
     "treemmett",
     "Tregan",
     "typeorm",
+    "ulid",
     "vercel"
   ],
   "overrides": [

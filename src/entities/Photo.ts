@@ -1,8 +1,8 @@
 import { Transform } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsDataURI, IsEnum, IsInt, IsUUID } from 'class-validator';
+import { IsDataURI, IsEnum, IsInt, IsString, IsUppercase } from 'class-validator';
 import { Sharp } from 'sharp';
-import { v4 } from 'uuid';
+import { ulid } from 'ulid';
 import { Config } from '../utils/config';
 import { logger } from '../utils/logger';
 import { s3 } from '../utils/s3';
@@ -11,7 +11,8 @@ import { PhotoType } from './PhotoType';
 const { CDN_URL, S3_BUCKET, S3_URL } = Config;
 
 export class Photo {
-  @IsUUID()
+  @IsString()
+  @IsUppercase()
   public id: string;
 
   @IsInt()
@@ -36,7 +37,7 @@ export class Photo {
 
   public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
     logger.info('Uploading photo');
-    const id = v4();
+    const id = ulid();
 
     const mime = 'image/webp';
 

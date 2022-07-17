@@ -23,7 +23,6 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/react": "^18.0.14",
     "@types/sharp": "^0.30.4",
-    "@types/uuid": "^8.3.4",
     "aws-sdk": "^2.1062.0",
     "axios": "^0.27.2",
     "body-parser": "^1.19.1",
@@ -41,7 +40,7 @@
     "react-dom": "^18.2.0",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.30.7",
-    "uuid": "^8.3.2",
+    "ulid": "^2.3.0",
     "winston": "^3.8.1"
   },
   "devDependencies": {
