@@ -6,17 +6,17 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  IsUUID,
+  IsUppercase,
   Length,
   Max,
   Min,
   ValidateNested,
 } from 'class-validator';
 import sharp from 'sharp';
-import { v4 as uuid } from 'uuid';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
 import { logger } from '../utils/logger';
+import { ensureUniqueID } from '../utils/random';
 import { s3 } from '../utils/s3';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
@@ -26,7 +26,8 @@ const { S3_BUCKET } = Config;
 const POSTS_FILE_KEY = 'posts.json';
 
 export class Post {
-  @IsUUID()
+  @IsString()
+  @IsUppercase()
   public id: string;
 
   @IsDate()
@@ -91,13 +92,17 @@ export class Post {
     const { channels } = await image.stats();
     const [r, g, b] = channels.map((c) => Math.floor(c.mean));
 
+    // load all posts for ID generation
+    const posts = await this.getAll();
+    const id = ensureUniqueID(posts, (p) => p.id);
+
     const post = await transformAndValidate(
       Post,
       {
         blue: b,
         created: new Date(date),
         green: g,
-        id: uuid(),
+        id,
         location,
         photos: [photo],
         red: r,
