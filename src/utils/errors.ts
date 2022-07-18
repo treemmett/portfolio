@@ -108,8 +108,32 @@ export function getStatusCode(error: ErrorCode): number {
   }
 }
 
+export function getErrorMessage(error: ErrorCode): string {
+  switch (error) {
+    case ErrorCode.bad_access_token:
+      return 'Invalid access token';
+
+    case ErrorCode.no_file_received:
+    case ErrorCode.no_path_to_file:
+      return 'No file uploaded';
+
+    case ErrorCode.post_not_found:
+      return 'Post not found';
+
+    case ErrorCode.unauthenticated:
+      return 'Unauthenticated request';
+
+    case ErrorCode.unauthorized:
+      return 'Missing required authorization scopes';
+
+    case ErrorCode.never:
+    default:
+      return 'Something went wrong';
+  }
+}
+
 export class APIError extends Error {
-  constructor(public error: ErrorCode, public message = 'Something went wrong') {
+  constructor(public error: ErrorCode) {
     super(`API Error: ${error}`);
   }
 }

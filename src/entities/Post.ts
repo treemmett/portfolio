@@ -75,13 +75,13 @@ export class Post {
     logger.info('Uploading post', { date, filePath, location, title });
     if (!filePath) {
       logger.error('No filepath received', { filePath });
-      throw new APIError(ErrorCode.no_path_to_file, 'No file uploaded');
+      throw new APIError(ErrorCode.no_path_to_file);
     }
 
     const imageBuffer = await readFile(filePath);
     if (!imageBuffer.length) {
       logger.error('Empty file buffer', { filePath });
-      throw new APIError(ErrorCode.no_file_received, 'No file uploaded');
+      throw new APIError(ErrorCode.no_file_received);
     }
 
     const image = sharp(imageBuffer);
@@ -149,14 +149,14 @@ export class Post {
 
     if (!~index) {
       logger.error('No post index found', { id, index });
-      throw new APIError(ErrorCode.post_not_found, 'Post not found');
+      throw new APIError(ErrorCode.post_not_found);
     }
 
     const [post] = posts.splice(index, 1);
 
     if (!post) {
       logger.error('No post found', { id, index, post });
-      throw new APIError(ErrorCode.post_not_found, 'Post not found');
+      throw new APIError(ErrorCode.post_not_found);
     }
 
     logger.info('Post found', { data, id, post });
@@ -216,7 +216,7 @@ export class Post {
 
     if (!~index) {
       logger.error('Post not found', { id, index });
-      throw new APIError(ErrorCode.post_not_found, 'Post not found');
+      throw new APIError(ErrorCode.post_not_found);
     }
 
     posts.splice(index, 1);

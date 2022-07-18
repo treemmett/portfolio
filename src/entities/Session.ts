@@ -46,7 +46,7 @@ export class Session {
     try {
       verify(match[1] + signature, Config.JWT_SECRET);
     } catch {
-      throw new APIError(ErrorCode.bad_access_token, 'Invalid session');
+      throw new APIError(ErrorCode.bad_access_token);
     }
 
     return new Session(match[1]);
@@ -68,11 +68,11 @@ export class Session {
 
   public authorize(scope: AuthorizationScopes): void {
     if (!this.isValid()) {
-      throw new APIError(ErrorCode.unauthenticated, 'Unauthenticated request');
+      throw new APIError(ErrorCode.unauthenticated);
     }
 
     if (!this.hasPermission(scope)) {
-      throw new APIError(ErrorCode.unauthorized, `Missing required scope '${scope}'`);
+      throw new APIError(ErrorCode.unauthorized);
     }
   }
 
