@@ -48,6 +48,6 @@ export const bodyParser: Middleware<ParsedApiRequest, NextApiResponse> = (req, r
     }
   } catch (err) {
     logger.error('An error occurred during parsing', { err });
-    throw new APIError(ErrorCode.never, err);
+    throw new APIError(ErrorCode.body_parsing_failed);
   }
 };

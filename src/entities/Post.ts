@@ -75,7 +75,7 @@ export class Post {
     logger.info('Uploading post', { date, filePath, location, title });
     if (!filePath) {
       logger.error('No filepath received', { filePath });
-      throw new APIError(ErrorCode.no_file_received, 'No file uploaded');
+      throw new APIError(ErrorCode.no_path_to_file, 'No file uploaded');
     }
 
     const imageBuffer = await readFile(filePath);

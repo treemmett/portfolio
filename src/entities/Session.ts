@@ -68,7 +68,7 @@ export class Session {
 
   public authorize(scope: AuthorizationScopes): void {
     if (!this.isValid()) {
-      throw new APIError(ErrorCode.unauthorized, 'Unauthenticated request');
+      throw new APIError(ErrorCode.unauthenticated, 'Unauthenticated request');
     }
 
     if (!this.hasPermission(scope)) {

@@ -22,7 +22,7 @@ export async function authorizeGitHub(code: string) {
       case 'bad_verification_code':
         throw new APIError(ErrorCode.invalid_auth_code);
       default:
-        throw new APIError(ErrorCode.never);
+        throw new APIError(ErrorCode.github_error);
     }
   }
 
@@ -35,7 +35,7 @@ export async function authorizeGitHub(code: string) {
   });
 
   if (status !== 200) {
-    throw new APIError(ErrorCode.never);
+    throw new APIError(ErrorCode.github_error);
   }
 
   const scopes: AuthorizationScopes[] = [];
