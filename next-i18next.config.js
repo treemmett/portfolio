@@ -1,3 +1,5 @@
+const { resolve } = require('path');
+
 /** @type {import('next-i18next').InternalConfig} */
 module.exports = {
   /** @type {import('next').NextConfig['i18n']} */
@@ -5,4 +7,5 @@ module.exports = {
     defaultLocale: 'en',
     locales: ['en', 'fr'],
   },
+  localePath: resolve('./public/locales'),
 };
