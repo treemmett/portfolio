@@ -6,73 +6,73 @@ export enum ErrorCode {
    * Something went terribly, terribly wrong
    * @status 500
    */
-  never = 1,
+  never = 1962,
 
   /**
    * Token failed signature check
    * @status 498
    */
-  bad_access_token,
+  bad_access_token = 6339,
 
   /**
    * Unable to parse received body
    * @status 406
    */
-  body_parsing_failed,
+  body_parsing_failed = 4256,
 
   /**
    * An unknown error from GitHub was received
    * @status 500
    */
-  github_error,
+  github_error = 6535,
 
   /**
    * GitHub OAuth authorization flow was rejected
    * @status 400
    */
-  invalid_auth_code,
+  invalid_auth_code = 4352,
 
   /**
    * GitHub OAuth client credentials are incorrect
    * @status 400
    */
-  invalid_auth_secret,
+  invalid_auth_secret = 7393,
 
   /**
    * Access token was not received
    * @status 403
    */
-  missing_access_token,
+  missing_access_token = 8588,
 
   /**
    * File wasn't uploaded, or was lost to the I/O gods
    * @status 422
    */
-  no_file_received,
+  no_file_received = 1245,
 
   /**
    * File wasn't uploaded, or was lost to the I/O gods
    * @status 422
    */
-  no_path_to_file,
+  no_path_to_file = 1642,
 
   /**
    * post not found
    * @status 404
    */
-  post_not_found,
+  post_not_found = 9223,
 
   /**
    * Token not sent or is expired
    * @status 498
    */
-  unauthenticated,
+  unauthenticated = 6208,
 
   /**
    * Session lacks required authorization
    * @status 403
    */
-  unauthorized,
+  unauthorized = 1601,
 }
 
 export function getStatusCode(error: ErrorCode): number {
