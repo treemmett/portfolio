@@ -1,39 +1,8 @@
-import { URL } from 'url';
 import axios from 'axios';
-import { sign, verify } from 'jsonwebtoken';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Middleware } from 'next-connect';
+import { sign } from 'jsonwebtoken';
 import { AuthorizationScopes, Jwt } from '../entities/Jwt';
 import { Config } from './config';
 import { APIError, ErrorCode } from './errors';
-
-export const authenticateRequest: Middleware<NextApiRequest, NextApiResponse> = (
-  req,
-  res,
-  next
-) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
-
-  if (req.method?.toLowerCase() === 'get' || url.pathname === '/api/login') {
-    next();
-    return;
-  }
-
-  const signature = req.cookies['xsrf-token'];
-  const match = /^Bearer (\S+)/i.exec(req.headers.authorization);
-
-  if (!match || !signature) {
-    throw new APIError(ErrorCode.unauthorized, 401, 'Unauthenticated request');
-  }
-
-  try {
-    verify(match[1] + signature, Config.JWT_SECRET);
-  } catch {
-    throw new APIError(ErrorCode.bad_access_token, 401, 'Invalid session');
-  }
-
-  next();
-};
 
 export async function authorizeGitHub(code: string) {
   const authResponse = await axios.post(

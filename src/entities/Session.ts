@@ -1,3 +1,6 @@
+import { NextApiRequest } from 'next';
+import { Config } from '../utils/config';
+import { APIError, ErrorCode } from '../utils/errors';
 import { isBrowser } from '../utils/isBrowser';
 import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes, Jwt } from './Jwt';
 
@@ -26,15 +29,51 @@ export class Session {
     this.username = sub;
   }
 
+  public static async fromRequest(req: NextApiRequest): Promise<Session> {
+    if (isBrowser()) {
+      throw new Error('Authorization cannot be asserted on client');
+    }
+
+    const signature = req.cookies['xsrf-token'];
+    const match = /^Bearer (\S+)/i.exec(req.headers.authorization);
+
+    if (!signature || !match || !match[1]) {
+      return new Session();
+    }
+
+    const { verify } = await import('jsonwebtoken');
+
+    try {
+      verify(match[1] + signature, Config.JWT_SECRET);
+    } catch {
+      throw new APIError(ErrorCode.bad_access_token, 401, 'Invalid session');
+    }
+
+    return new Session(match[1]);
+  }
+
+  public static async authorizeRequest(
+    req: NextApiRequest,
+    scope: AuthorizationScopes
+  ): Promise<void> {
+    const session = await this.fromRequest(req);
+    session.authorize(scope);
+  }
+
   public static restore(): Session {
     if (!isBrowser()) return new Session();
 
     return new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY));
   }
 
-  public startAuthorization(): this {
-    this.authorizing = true;
-    return this;
+  public authorize(scope: AuthorizationScopes): void {
+    if (!this.isValid()) {
+      throw new APIError(ErrorCode.unauthorized, 401, 'Unauthenticated request');
+    }
+
+    if (!this.hasPermission(scope)) {
+      throw new APIError(ErrorCode.unauthorized, 403, `Missing required scope '${scope}'`);
+    }
   }
 
   public hasPermission(scope: AuthorizationScopes): boolean {
@@ -44,6 +83,11 @@ export class Session {
   }
 
   public isValid(): boolean {
-    return new Date() < this.expiration;
+    return this.username && new Date() < this.expiration;
+  }
+
+  public startAuthorization(): this {
+    this.authorizing = true;
+    return this;
   }
 }
