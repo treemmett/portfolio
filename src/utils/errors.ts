@@ -139,17 +139,11 @@ export class APIError extends Error {
 }
 
 export const errorHandler: ErrorHandler<NextApiRequest, NextApiResponse> = (err, req, res) => {
-  if (err instanceof APIError) {
-    res.status(getStatusCode(err.error)).send({
-      error: ErrorCode[err.error],
-      message: err.message,
-      stack: err.stack,
-    });
-  } else {
-    res.status(500).send({
-      error: err?.toString() || 'server_error',
-      message: 'Something broke',
-      stack: err?.stack,
-    });
-  }
+  const errorCode = err.error || ErrorCode.never;
+
+  res.status(getStatusCode(errorCode)).send({
+    error: ErrorCode[errorCode],
+    message: getErrorMessage(errorCode),
+    stack: err.stack,
+  });
 };
