@@ -93,6 +93,7 @@ export const About: FC = () => {
             ) : (
               <Button
                 className={styles.button}
+                disabled={session.authorizing}
                 label="Login with GitHub"
                 onClick={login}
                 testId="login"

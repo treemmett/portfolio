@@ -102,12 +102,27 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
       login() {
         if (session?.expiration > new Date()) return;
 
+        const popup = window.open(
+          `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
+          'oauth',
+          `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
+        );
+
+        const intervalId = setInterval(() => {
+          if (popup.closed) {
+            setSession(new Session());
+            clearInterval(intervalId);
+          }
+        }, 100);
+
         const messageHandler = async (
           event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>
         ) => {
           if (event.origin !== window.location.origin) {
             throw new Error('Message failed cross-origin check');
           }
+
+          clearInterval(intervalId);
 
           event.source.postMessage({
             type: 'OAUTH_CLOSE',
@@ -116,6 +131,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
           window.removeEventListener('message', messageHandler);
 
           if (event.data.type === 'OAUTH_ERROR') {
+            setSession(new Session());
             throw new Error(event.data.payload);
           }
 
@@ -126,13 +142,9 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
           }
         };
 
-        window.addEventListener('message', messageHandler);
+        setSession(Session.authorize());
 
-        window.open(
-          `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
-          'oauth',
-          `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
-        );
+        window.addEventListener('message', messageHandler);
       },
       posts,
       session,

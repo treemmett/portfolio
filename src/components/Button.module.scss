@@ -15,7 +15,11 @@
   }
 
   &:disabled {
-    background-color: color.grayscale($background-color);
+    background-color: color.adjust($background-color, $blackness: 100% * $scale);
+
+    &.primary {
+      background-color: color.grayscale($background-color);
+    }
   }
 }
 

@@ -14,6 +14,8 @@ export class Session {
 
   public username?: string;
 
+  public authorizing = false;
+
   constructor(public accessToken?: string) {
     if (!accessToken) return;
 
@@ -28,6 +30,12 @@ export class Session {
     if (!isBrowser()) return new Session();
 
     return new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY));
+  }
+
+  public static authorize(): Session {
+    const s = new Session();
+    s.authorizing = true;
+    return s;
   }
 
   public hasPermission(scope: AuthorizationScopes): boolean {
