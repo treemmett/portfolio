@@ -32,10 +32,9 @@ export class Session {
     return new Session(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY));
   }
 
-  public static authorize(): Session {
-    const s = new Session();
-    s.authorizing = true;
-    return s;
+  public startAuthorization(): this {
+    this.authorizing = true;
+    return this;
   }
 
   public hasPermission(scope: AuthorizationScopes): boolean {

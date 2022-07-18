@@ -142,7 +142,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
           }
         };
 
-        setSession(Session.authorize());
+        setSession((s) => s.startAuthorization());
 
         window.addEventListener('message', messageHandler);
       },
