@@ -60,7 +60,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
           <Pin />
           {post.location}
         </span>
-        <span className={styles.date}>{new Date(post.created).toLocaleDateString('ii')}</span>
+        <span className={styles.date}>{new Date(post.created).toLocaleDateString('af')}</span>
       </div>
     </div>
   );
