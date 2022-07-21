@@ -1,5 +1,5 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { LngLat, Map, Marker } from 'mapbox-gl';
+import { LngLat, LngLatBounds, Map, Marker } from 'mapbox-gl';
 import { NextPage } from 'next';
 import { useEffect, useRef } from 'react';
 import { Config } from '../utils/config';
@@ -17,24 +17,49 @@ const Timeline: NextPage = () => {
   const map = useRef<Map>();
   useEffect(() => {
     if (mapContainer.current && !map.current) {
+      const markers = getMarkers();
+
+      const sw = new LngLat(markers[0].lng, markers[0].lat);
+      const ne = new LngLat(markers[0].lng, markers[0].lat);
+      markers.forEach((lngLat) => {
+        if (ne.lng < lngLat.lng) {
+          ne.lng = lngLat.lng;
+        }
+
+        if (ne.lat < lngLat.lat) {
+          ne.lat = lngLat.lat;
+        }
+
+        if (sw.lng > lngLat.lng) {
+          sw.lng = lngLat.lng;
+        }
+
+        if (sw.lat > lngLat.lat) {
+          sw.lat = lngLat.lat;
+        }
+      });
+
       map.current = new Map({
         accessToken: Config.NEXT_PUBLIC_MAPBOX_TOKEN,
         attributionControl: false,
-        center: [-70.9, 42.35],
+        bounds: new LngLatBounds(sw, ne),
         container: mapContainer.current,
+        fitBoundsOptions: {
+          padding: 50,
+        },
         style: 'mapbox://styles/mapbox/dark-v10',
         zoom: 9,
       });
 
-      map.current.on('click', (e) => {
-        const markers = getMarkers();
-        markers.push(e.lngLat);
-        new Marker().setLngLat(e.lngLat).addTo(map.current);
-        localStorage.setItem(MARKERS_KEY, JSON.stringify(markers));
+      markers.forEach((lngLat) => {
+        new Marker().setLngLat(lngLat).addTo(map.current);
       });
 
-      getMarkers().forEach((lngLat) => {
-        new Marker().setLngLat(lngLat).addTo(map.current);
+      map.current.on('click', (e) => {
+        const m = getMarkers();
+        m.push(e.lngLat);
+        new Marker().setLngLat(e.lngLat).addTo(map.current);
+        localStorage.setItem(MARKERS_KEY, JSON.stringify(m));
       });
     }
   }, [map]);
