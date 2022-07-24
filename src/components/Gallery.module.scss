@@ -1,6 +1,7 @@
 @use '../components/About.module';
-@use '../pages/home.module';
 @use '../styles/screen';
+
+$padding: 6rem;
 
 .container {
   position: relative;
@@ -9,13 +10,13 @@
   height: 100vh;
   flex-direction: column;
   align-items: center;
-  padding: home.$padding 2rem;
-  padding-top: calc(calc(home.$padding * 2.5) + About.$padding-top);
+  padding: $padding 2rem;
+  padding-top: calc(calc($padding * 2.5) + About.$padding-top);
 
   @include screen.md {
     flex-direction: row;
-    padding: home.$padding;
+    padding: $padding;
     padding-right: 0;
-    padding-left: calc(home.$padding + About.$width - 1rem);
+    padding-left: calc($padding + About.$width - 1rem);
   }
 }

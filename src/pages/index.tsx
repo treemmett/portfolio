@@ -6,10 +6,9 @@ import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
 import { Post } from '../entities/Post';
 import { Config } from '../utils/config';
-import styles from './home.module.scss';
 
 export const Home: NextPage = () => (
-  <div className={styles.container}>
+  <div>
     <Head>
       <title>{Config.NEXT_PUBLIC_NAME}</title>
     </Head>

@@ -1,4 +1,4 @@
-@use '../pages/home.module';
+@use './Gallery.module';
 @use '../styles/screen';
 
 .post-wrapper {
@@ -7,7 +7,7 @@
   flex: 0 0 auto;
 
   @include screen.md {
-    padding-right: home.$padding - 1rem;
+    padding-right: Gallery.$padding - 1rem;
   }
 }
 
@@ -72,7 +72,7 @@
 }
 
 .under {
-  margin-bottom: home.$padding;
+  margin-bottom: Gallery.$padding;
 
   @include screen.md {
     margin-bottom: 0;
