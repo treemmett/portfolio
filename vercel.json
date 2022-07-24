@@ -1,6 +1,6 @@
 {
   "functions": {
-    "page/api/*.js": {
+    "src/page/api/*.js": {
       "includeFiles": ["next-i18next.config.js", "public/locales/**"]
     }
   }
