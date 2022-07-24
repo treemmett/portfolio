@@ -1,0 +1,12 @@
+{
+  "Date": "Datum",
+  "intro": "Hallo, ich bin {{name}}",
+  "Location": "Ort",
+  "Pick an image": "Wählen Sie ein Bild aus",
+  "Post": "Post",
+  "Save": "Speichern",
+  "Title": "Titel",
+  "Upload failed": "Upload fehlgeschlagen",
+  "Uploading...": "Hochladen...",
+  "Welcome back": "Willkommen zurück"
+}

@@ -1,6 +1,6 @@
 {
   "version": "0.2",
-  "import": ["@cspell/dict-fr-fr/cspell-ext.json"],
+  "import": ["@cspell/dict-de-de/cspell-ext.json", "@cspell/dict-fr-fr/cspell-ext.json"],
   "language": "en",
   "dictionaries": ["typescript", "html"],
   "words": [
@@ -31,6 +31,10 @@
     {
       "filename": "public/locales/fr/**",
       "language": "fr,en-US"
+    },
+    {
+      "filename": "public/locales/de/**",
+      "language": "de,en-US"
     },
     {
       "filename": "**/*.svg",
