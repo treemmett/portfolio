@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance } from 'axios';
+import { LngLat } from 'mapbox-gl';
 import {
   createContext,
   FC,
@@ -10,18 +11,21 @@ import {
   useState,
 } from 'react';
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
+import { Marker } from '../entities/Marker';
 import { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
 import { Config } from '../utils/config';
 
 export interface DataStoreContext {
+  addMarker(lngLat: LngLat): Promise<void>;
   addPost(form: FormData): Promise<void>;
   apiClient: AxiosInstance;
   deletePost(id: string): Promise<void>;
   destroySession: () => void;
   lightBox?: MutableRefObject<HTMLElement>;
   login(): void;
+  markers: Marker[];
   posts: Post[];
   session: Session;
   setLightBox(lightBox?: DataStoreContext['lightBox']): void;
@@ -32,15 +36,18 @@ export interface DataStoreContext {
 }
 
 export interface DataStoreProviderProps extends PropsWithChildren {
+  defaultMarkers?: Marker[];
   defaultPosts?: Post[];
 }
 
 export const dataStoreContext = createContext<DataStoreContext>({
+  addMarker: () => Promise.resolve(),
   addPost: () => Promise.resolve(),
   apiClient: Axios,
   deletePost: () => Promise.resolve(),
   destroySession: () => null,
   login: () => null,
+  markers: [],
   posts: [],
   session: new Session(),
   setLightBox: () => null,
@@ -49,7 +56,11 @@ export const dataStoreContext = createContext<DataStoreContext>({
 
 export const useDataStore = () => useContext(dataStoreContext);
 
-export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaultPosts }) => {
+export const DataStoreProvider: FC<DataStoreProviderProps> = ({
+  children,
+  defaultMarkers,
+  defaultPosts,
+}) => {
   const [session, setSession] = useState(new Session());
   useEffect(() => {
     setSession(Session.restore());
@@ -73,10 +84,15 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
 
   const [lightBox, setLightBox] = useState<MutableRefObject<HTMLElement>>();
 
+  const [markers, setMarkers] = useState<Marker[]>(defaultMarkers || []);
   const [posts, setPosts] = useState<Post[]>(defaultPosts || []);
 
   const contextValue = useMemo<DataStoreContext>(
     () => ({
+      async addMarker(lngLat: LngLat) {
+        const { data } = await apiClient.post<Marker>('/timeline', lngLat);
+        setMarkers([data, ...markers]);
+      },
       async addPost(formData) {
         const { data } = await apiClient.post<Post>('/post', formData);
         const p = [data, ...posts].sort(
@@ -146,6 +162,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
 
         window.addEventListener('message', messageHandler);
       },
+      markers,
       posts,
       session,
       setLightBox,
@@ -159,7 +176,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
         setPosts(newPosts);
       },
     }),
-    [apiClient, lightBox, posts, session]
+    [apiClient, lightBox, markers, posts, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;
