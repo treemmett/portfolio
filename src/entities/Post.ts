@@ -36,6 +36,7 @@ export class Post {
 
   @Length(0, 200)
   @IsString()
+  @IsOptional()
   public location: string;
 
   @IsDate()
