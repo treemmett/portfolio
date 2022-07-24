@@ -35,9 +35,13 @@ export interface DataStoreContext {
   ): Promise<void>;
 }
 
+export interface DataStoreDefaults {
+  markers?: Marker[];
+  posts?: Post[];
+}
+
 export interface DataStoreProviderProps extends PropsWithChildren {
-  defaultMarkers?: Marker[];
-  defaultPosts?: Post[];
+  defaults: DataStoreDefaults;
 }
 
 export const dataStoreContext = createContext<DataStoreContext>({
@@ -56,11 +60,7 @@ export const dataStoreContext = createContext<DataStoreContext>({
 
 export const useDataStore = () => useContext(dataStoreContext);
 
-export const DataStoreProvider: FC<DataStoreProviderProps> = ({
-  children,
-  defaultMarkers,
-  defaultPosts,
-}) => {
+export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaults }) => {
   const [session, setSession] = useState(new Session());
   useEffect(() => {
     setSession(Session.restore());
@@ -84,8 +84,8 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({
 
   const [lightBox, setLightBox] = useState<MutableRefObject<HTMLElement>>();
 
-  const [markers, setMarkers] = useState<Marker[]>(defaultMarkers || []);
-  const [posts, setPosts] = useState<Post[]>(defaultPosts || []);
+  const [markers, setMarkers] = useState<Marker[]>(defaults.markers || []);
+  const [posts, setPosts] = useState<Post[]>(defaults.posts || []);
 
   const contextValue = useMemo<DataStoreContext>(
     () => ({

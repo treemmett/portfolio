@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Suspense } from 'react';
 import { About } from '../components/About';
-import { useDataStore } from '../components/DataStore';
+import { DataStoreDefaults, useDataStore } from '../components/DataStore';
 import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
 import { AuthorizationScopes } from '../entities/Jwt';
@@ -38,7 +38,7 @@ export const Home: NextPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps<DataStoreDefaults> = async ({ locale }) => {
   const posts = await Post.getAll();
 
   return {

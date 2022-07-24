@@ -2,17 +2,17 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { LngLat, LngLatBounds, Map, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { useEffect, useRef } from 'react';
-import { DataStoreProviderProps, useDataStore } from '../components/DataStore';
+import { DataStoreDefaults, useDataStore } from '../components/DataStore';
 import { Marker as MarkerEntity } from '../entities/Marker';
 import { Config } from '../utils/config';
 import styles from './timeline.module.scss';
 
-export const getStaticProps: GetStaticProps<DataStoreProviderProps> = async () => {
+export const getStaticProps: GetStaticProps<DataStoreDefaults> = async () => {
   const markers = await MarkerEntity.getAll();
 
   return {
     props: {
-      defaultMarkers: markers,
+      markers,
     },
   };
 };
