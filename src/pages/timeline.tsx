@@ -1,26 +1,28 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { LngLat, LngLatBounds, Map, Marker } from 'mapbox-gl';
-import { NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import { useEffect, useRef } from 'react';
-import { useDataStore } from '../components/DataStore';
+import { DataStoreProviderProps, useDataStore } from '../components/DataStore';
+import { Marker as MarkerEntity } from '../entities/Marker';
 import { Config } from '../utils/config';
 import styles from './timeline.module.scss';
 
-const MARKERS_KEY = 'markers';
+export const getStaticProps: GetStaticProps<DataStoreProviderProps> = async () => {
+  const markers = await MarkerEntity.getAll();
 
-function getMarkers(): LngLat[] {
-  const storage = localStorage.getItem(MARKERS_KEY);
-  return storage ? JSON.parse(storage) : [];
-}
+  return {
+    props: {
+      defaultMarkers: markers,
+    },
+  };
+};
 
 const Timeline: NextPage = () => {
-  const { addMarker } = useDataStore();
+  const { addMarker, markers } = useDataStore();
   const mapContainer = useRef<HTMLDivElement>();
   const map = useRef<Map>();
   useEffect(() => {
     if (mapContainer.current && !map.current) {
-      const markers = getMarkers();
-
       const getBounds = (): LngLatBounds => {
         const sw = new LngLat(markers[0].lng, markers[0].lat);
         const ne = new LngLat(markers[0].lng, markers[0].lat);
@@ -67,7 +69,7 @@ const Timeline: NextPage = () => {
         await addMarker(lngLat);
       });
     }
-  }, [addMarker, map]);
+  }, [addMarker, map, markers]);
 
   useEffect(() => {
     const handler = () => {

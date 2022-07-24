@@ -5,8 +5,8 @@ import { FC } from 'react';
 import { DataStoreProvider } from '../components/DataStore';
 import './_app.scss';
 
-const MyApp: FC<AppProps> = ({ Component, pageProps }) => (
-  <DataStoreProvider defaultPosts={pageProps.posts}>
+const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => (
+  <DataStoreProvider defaultMarkers={pageProps.defaultMarkers} defaultPosts={pageProps.posts}>
     {/* eslint-disable-next-line react/jsx-props-no-spreading */}
     <Component {...pageProps} />
   </DataStoreProvider>
