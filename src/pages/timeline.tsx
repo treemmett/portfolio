@@ -58,15 +58,40 @@ const Timeline: NextPage = () => {
         },
         style: 'mapbox://styles/mapbox/dark-v10',
         zoom: 9,
-      });
+      })
+        .on('load', () => {
+          map.current.addSource('route', {
+            data: {
+              geometry: {
+                coordinates: markers.map((m) => [m.lng, m.lat]),
+                type: 'LineString',
+              },
+              properties: {},
+              type: 'Feature',
+            },
+            type: 'geojson',
+          });
+          map.current.addLayer({
+            id: 'route',
+            layout: {
+              'line-cap': 'round',
+              'line-join': 'round',
+            },
+            paint: {
+              'line-color': '#888',
+              'line-width': 2,
+            },
+            source: 'route',
+            type: 'line',
+          });
+        })
+        .on('click', async ({ lngLat }) => {
+          new Marker().setLngLat(lngLat).addTo(map.current);
+          await addMarker(lngLat);
+        });
 
       markers.forEach((lngLat) => {
         new Marker().setLngLat(lngLat).addTo(map.current);
-      });
-
-      map.current.on('click', async ({ lngLat }) => {
-        new Marker().setLngLat(lngLat).addTo(map.current);
-        await addMarker(lngLat);
       });
     }
 
