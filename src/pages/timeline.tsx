@@ -22,7 +22,7 @@ const Timeline: NextPage = () => {
   const mapContainer = useRef<HTMLDivElement>();
   const map = useRef<Map>();
   useEffect(() => {
-    if (mapContainer.current && !map.current) {
+    if (mapContainer.current) {
       const getBounds = (): LngLatBounds => {
         const sw = new LngLat(markers[0].lng, markers[0].lat);
         const ne = new LngLat(markers[0].lng, markers[0].lat);
@@ -69,6 +69,12 @@ const Timeline: NextPage = () => {
         await addMarker(lngLat);
       });
     }
+
+    return () => {
+      if (map.current) {
+        map.current.remove();
+      }
+    };
   }, [addMarker, map, markers]);
 
   useEffect(() => {
