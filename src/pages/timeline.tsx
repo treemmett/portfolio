@@ -88,7 +88,7 @@ const Timeline: NextPage = () => {
 
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
-  });
+  }, []);
 
   return (
     <div className={styles.timeline}>
