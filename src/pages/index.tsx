@@ -8,7 +8,7 @@ import { Post } from '../entities/Post';
 import { Config } from '../utils/config';
 
 export const Home: NextPage = () => (
-  <div>
+  <>
     <Head>
       <title>{Config.NEXT_PUBLIC_NAME}</title>
     </Head>
@@ -16,7 +16,7 @@ export const Home: NextPage = () => (
     <Gallery />
 
     <LightBox />
-  </div>
+  </>
 );
 
 export const getStaticProps: GetStaticProps<DataStoreDefaults> = async ({ locale }) => {
