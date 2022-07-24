@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@next/bundle-analyzer": "^12.2.0",
+    "@turf/bezier-spline": "^6.5.0",
     "@types/body-parser": "^1.19.2",
     "@types/cookie": "^0.5.1",
     "@types/formidable": "^2.0.3",

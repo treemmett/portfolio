@@ -1,4 +1,5 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
+import lineString from '@turf/bezier-spline';
 import { LngLat, LngLatBounds, Map, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { useEffect, useRef } from 'react';
@@ -61,14 +62,10 @@ const Timeline: NextPage = () => {
       })
         .on('load', () => {
           map.current.addSource('route', {
-            data: {
-              geometry: {
-                coordinates: markers.map((m) => [m.lng, m.lat]),
-                type: 'LineString',
-              },
-              properties: {},
-              type: 'Feature',
-            },
+            data: lineString({
+              coordinates: markers.map((m) => [m.lng, m.lat]),
+              type: 'LineString',
+            }),
             type: 'geojson',
           });
           map.current.addLayer({
