@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { sign } from 'jsonwebtoken';
-import { AuthorizationScopes, Jwt } from '../entities/Jwt';
+import { SignJWT } from 'jose';
+import { AuthorizationScopes } from '../entities/Jwt';
 import { Config } from './config';
 import { APIError, ErrorCode } from './errors';
 
@@ -47,13 +47,12 @@ export async function authorizeGitHub(code: string) {
   const expiration = new Date();
   expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
 
-  const jwt: Jwt = {
-    exp: Math.floor(expiration.getTime() / 1000),
-    scp: scopes,
-    sub: data.login,
-  };
+  const token = await new SignJWT({ scp: scopes })
+    .setExpirationTime(Math.floor(expiration.getTime() / 1000))
+    .setSubject(data.login)
+    .sign(new TextEncoder().encode(Config.JWT_SECRET));
 
-  const accessTokenParts = sign(jwt, Config.JWT_SECRET).split('.');
+  const accessTokenParts = token.split('.');
   const signature = accessTokenParts.pop();
   accessTokenParts.push('');
 

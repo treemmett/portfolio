@@ -1,3 +1,4 @@
+import { jwtVerify, decodeJwt } from 'jose';
 import { NextApiRequest } from 'next';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
@@ -5,9 +6,7 @@ import { isBrowser } from '../utils/isBrowser';
 import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes, Jwt } from './Jwt';
 
 function decodeToken(accessToken: string): Jwt {
-  const [, payload] = accessToken.split('.');
-  const json = window.atob(payload);
-  return JSON.parse(json);
+  return decodeJwt(accessToken) as unknown as Jwt;
 }
 
 export class Session {
@@ -41,10 +40,8 @@ export class Session {
       return new Session();
     }
 
-    const { verify } = await import('jsonwebtoken');
-
     try {
-      verify(match[1] + signature, Config.JWT_SECRET);
+      await jwtVerify(match[1] + signature, new TextEncoder().encode(Config.JWT_SECRET));
     } catch {
       throw new APIError(ErrorCode.bad_access_token);
     }
