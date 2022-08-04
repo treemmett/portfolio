@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
 import { ReactComponent as LinkedIn } from '../icons/linkedin.svg';
@@ -107,3 +107,17 @@ export const About: FC = () => {
     </>
   );
 };
+
+export interface WithAboutProps extends PropsWithChildren {
+  className?: string;
+}
+
+/**
+ * Wrapper that includes About, and applies padding
+ */
+export const WithAbout: FC<WithAboutProps> = ({ children, className }) => (
+  <div className={cx(styles.wrapper, className)}>
+    {children}
+    <About />
+  </div>
+);

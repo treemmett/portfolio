@@ -1,7 +1,7 @@
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import { About } from '../components/About';
+import { WithAbout } from '../components/About';
 import { DataStoreDefaults } from '../components/DataStore';
 import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
@@ -9,17 +9,15 @@ import { Post } from '../entities/Post';
 import { Config } from '../utils/config';
 
 export const Home: NextPage = () => (
-  <>
+  <WithAbout>
     <Head>
       <title>{Config.NEXT_PUBLIC_NAME}</title>
     </Head>
 
     <Gallery />
 
-    <About />
-
     <LightBox />
-  </>
+  </WithAbout>
 );
 
 export const getStaticProps: GetStaticProps<DataStoreDefaults> = async ({ locale }) => {

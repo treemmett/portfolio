@@ -3,7 +3,7 @@ import lineString from '@turf/bezier-spline';
 import { LngLat, LngLatBounds, Map, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { useEffect, useRef } from 'react';
-import { About } from '../components/About';
+import { WithAbout } from '../components/About';
 import { DataStoreDefaults, useDataStore } from '../components/DataStore';
 import { Marker as MarkerEntity } from '../entities/Marker';
 import { Config } from '../utils/config';
@@ -114,11 +114,9 @@ const Timeline: NextPage = () => {
   }, []);
 
   return (
-    <div className={styles.timeline}>
+    <WithAbout className={styles.timeline}>
       <div className={styles.map} id="map" ref={mapContainer} />
-
-      <About />
-    </div>
+    </WithAbout>
   );
 };
 
