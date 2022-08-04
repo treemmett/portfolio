@@ -100,19 +100,6 @@ const Timeline: NextPage = () => {
     };
   }, [addMarker, map, markers]);
 
-  useEffect(() => {
-    const handler = () => {
-      if (map.current) {
-        if (mapContainer.current.clientHeight < map.current.getCanvasContainer().clientHeight) {
-          map.current.resize();
-        }
-      }
-    };
-
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
-  }, []);
-
   return (
     <WithAbout className={styles.timeline}>
       <div className={styles.map} id="map" ref={mapContainer} />
