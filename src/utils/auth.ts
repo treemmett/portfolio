@@ -48,6 +48,7 @@ export async function authorizeGitHub(code: string) {
   expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
 
   const token = await new SignJWT({ scp: scopes })
+    .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime(Math.floor(expiration.getTime() / 1000))
     .setSubject(data.login)
     .sign(new TextEncoder().encode(Config.JWT_SECRET));
