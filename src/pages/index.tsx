@@ -1,6 +1,7 @@
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
+import { About } from '../components/About';
 import { DataStoreDefaults } from '../components/DataStore';
 import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
@@ -14,6 +15,8 @@ export const Home: NextPage = () => (
     </Head>
 
     <Gallery />
+
+    <About />
 
     <LightBox />
   </>
