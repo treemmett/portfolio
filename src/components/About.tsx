@@ -116,7 +116,7 @@ export interface WithAboutProps extends PropsWithChildren {
  * Wrapper that includes About, and applies padding
  */
 export const WithAbout: FC<WithAboutProps> = ({ children, className }) => (
-  <div className={cx(styles.wrapper, className)}>
+  <div className={cx(className, styles.wrapper)}>
     {children}
     <About />
   </div>
