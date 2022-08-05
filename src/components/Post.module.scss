@@ -33,7 +33,6 @@
 
 .photo {
   display: block;
-  width: auto;
   max-width: 100%;
   height: 100%;
   max-height: 70vh;
@@ -46,6 +45,10 @@
   &.phase {
     filter: blur(5px);
     opacity: 0;
+  }
+
+  @include screen.md {
+    width: auto;
   }
 }
 
