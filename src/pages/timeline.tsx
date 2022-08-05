@@ -2,6 +2,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import lineString from '@turf/bezier-spline';
 import { LngLat, LngLatBounds, Map, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
 import { DataStoreDefaults, useDataStore } from '../components/DataStore';
@@ -10,12 +11,13 @@ import { Config } from '../utils/config';
 import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
 
-export const getStaticProps: GetStaticProps<DataStoreDefaults> = async () => {
+export const getStaticProps: GetStaticProps<DataStoreDefaults> = async ({ locale }) => {
   const markers = await MarkerEntity.getAll();
 
   return {
     props: {
       markers,
+      ...(await serverSideTranslations(locale, ['common'])),
     },
   };
 };
