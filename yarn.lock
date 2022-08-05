@@ -1739,6 +1739,11 @@
   resolved "https://registry.yarnpkg.com/@cspell/dict-en_us/-/dict-en_us-2.1.4.tgz#be68ed8601dd84d41a40a1fee23b521d3b60e688"
   integrity sha512-W4b+aIvZ637FqtTmrTe/T9i9748cuTQf82eWUgV9O296WzZj7rCxm+rzOrmRTAcCmU+9+6Cdsr0unETFQfuxww==
 
+"@cspell/dict-et-ee@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-et-ee/-/dict-et-ee-2.0.6.tgz#f6bc6db4817fe9ac271028782082f70f63c0ce24"
+  integrity sha512-oRcyZaTaWtsWnBkP0LwUukEyc87niScmQsQ2ncKRezYYwJAKteRAcW6g3/9GP6wGgam3/9FCbKCwS0ozKg5+FA==
+
 "@cspell/dict-filetypes@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@cspell/dict-filetypes/-/dict-filetypes-2.0.1.tgz#a77467dad8fee31c28d623f85a15ce6fca3e2fdc"

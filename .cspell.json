@@ -1,6 +1,10 @@
 {
   "version": "0.2",
-  "import": ["@cspell/dict-de-de/cspell-ext.json", "@cspell/dict-fr-fr/cspell-ext.json"],
+  "import": [
+    "@cspell/dict-de-de/cspell-ext.json",
+    "@cspell/dict-et-ee/cspell-ext.json",
+    "@cspell/dict-fr-fr/cspell-ext.json"
+  ],
   "language": "en",
   "dictionaries": ["typescript", "html"],
   "words": [
@@ -30,12 +34,16 @@
   ],
   "overrides": [
     {
-      "filename": "public/locales/fr/**",
-      "language": "fr,en-US"
-    },
-    {
       "filename": "public/locales/de/**",
       "language": "de,en-US"
+    },
+    {
+      "filename": "public/locales/et/**",
+      "language": "et,en-US"
+    },
+    {
+      "filename": "public/locales/fr/**",
+      "language": "fr,en-US"
     },
     {
       "filename": "**/*.svg",

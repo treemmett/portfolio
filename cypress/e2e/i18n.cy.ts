@@ -1,4 +1,4 @@
-/* cspell:dictionaries fr-fr, de-de */
+/* cspell:dictionaries fr-fr, et-ee, de-de */
 
 describe('locales', () => {
   it('displays german', () => {
@@ -9,5 +9,10 @@ describe('locales', () => {
   it('displays french', () => {
     cy.visit('/fr');
     cy.contains("Salut, je m'appelle Tregan");
+  });
+
+  it('displays estonian', () => {
+    cy.visit('/et');
+    cy.contains('Tere, ma olen Tregan');
   });
 });

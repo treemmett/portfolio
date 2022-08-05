@@ -1,5 +1,5 @@
 const config = {
-  '*': ['prettier -l', 'cspell'],
+  '*': ['prettier -l', 'cspell --gitignore'],
   '*.(css|scss)': 'stylelint',
   '*.(ts|tsx)': () => 'tsc --skipLibCheck --noEmit',
   '*.(ts|tsx|js|jsx)': 'eslint',

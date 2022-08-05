@@ -5,7 +5,7 @@ module.exports = {
   /** @type {import('next').NextConfig['i18n']} */
   i18n: {
     defaultLocale: 'en',
-    locales: ['de', 'en', 'fr'],
+    locales: ['de', 'en', 'et', 'fr'],
   },
   localePath: resolve('./public/locales'),
 };
