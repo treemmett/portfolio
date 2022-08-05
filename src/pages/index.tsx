@@ -8,6 +8,17 @@ import { LightBox } from '../components/LightBox';
 import { Post } from '../entities/Post';
 import { Config } from '../utils/config';
 
+export const getStaticProps: GetStaticProps<DataStoreDefaults> = async ({ locale }) => {
+  const posts = await Post.getAll();
+
+  return {
+    props: {
+      posts: JSON.parse(JSON.stringify(posts)),
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
+};
+
 export const Home: NextPage = () => (
   <WithAbout>
     <Head>
@@ -19,16 +30,5 @@ export const Home: NextPage = () => (
     <LightBox />
   </WithAbout>
 );
-
-export const getStaticProps: GetStaticProps<DataStoreDefaults> = async ({ locale }) => {
-  const posts = await Post.getAll();
-
-  return {
-    props: {
-      posts: JSON.parse(JSON.stringify(posts)),
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  };
-};
 
 export default Home;
