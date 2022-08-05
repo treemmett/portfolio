@@ -13,3 +13,5 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => (
 );
 
 export default appWithTranslation(MyApp);
+
+export { reportWebVitals } from 'next-axiom';
