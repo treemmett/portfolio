@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
@@ -49,6 +50,10 @@ export const About: FC = () => {
         <h2>
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
         </h2>
+        <nav className={styles.nav}>
+          <Link href="/">Gallery</Link>
+          <Link href="/timeline">Map</Link>
+        </nav>
         <div className={styles.social}>
           {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
             <Anchor
