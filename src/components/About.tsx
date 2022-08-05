@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
+import { AuthorizationScopes } from '../entities/Jwt';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
 import { ReactComponent as LinkedIn } from '../icons/linkedin.svg';
@@ -53,18 +54,20 @@ export const About: FC = () => {
         <h2>
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
         </h2>
-        <nav className={styles.nav}>
-          <Link href="/">
-            <a className={cx({ [styles.active]: router.pathname === '/' })} href="#a">
-              {t('Gallery')}
-            </a>
-          </Link>
-          <Link href="/timeline">
-            <a className={cx({ [styles.active]: router.pathname === '/timeline' })} href="#a">
-              {t('Map')}
-            </a>
-          </Link>
-        </nav>
+        {session.hasPermission(AuthorizationScopes.post) && (
+          <nav className={styles.nav}>
+            <Link href="/">
+              <a className={cx({ [styles.active]: router.pathname === '/' })} href="#a">
+                {t('Gallery')}
+              </a>
+            </Link>
+            <Link href="/timeline">
+              <a className={cx({ [styles.active]: router.pathname === '/timeline' })} href="#a">
+                {t('Map')}
+              </a>
+            </Link>
+          </nav>
+        )}
         <div className={styles.social}>
           {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
             <Anchor
