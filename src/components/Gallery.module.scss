@@ -5,6 +5,7 @@ $padding: 6rem;
 
 .gallery {
   display: flex;
+  height: 100%;
   flex-direction: column;
   align-items: center;
   padding: $padding 2rem;
@@ -12,7 +13,6 @@ $padding: 6rem;
 
   @include screen.md {
     flex-direction: row;
-    padding: $padding;
-    padding-right: 0;
+    padding: 0 $padding;
   }
 }
