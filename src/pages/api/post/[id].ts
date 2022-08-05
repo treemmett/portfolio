@@ -16,7 +16,7 @@ export default nextConnect()
     await i18nRevalidate('/', res);
     res.end();
   })
-  .put(async (req, res) => {
+  .patch(async (req, res) => {
     await Session.authorizeRequest(req, AuthorizationScopes.post);
 
     const post = await Post.update(toString(req.query.id), req.body);

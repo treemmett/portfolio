@@ -167,7 +167,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
       session,
       setLightBox,
       async updatePost(id, update) {
-        const { data } = await apiClient.put<Post>(`/post/${encodeURIComponent(id)}`, update);
+        const { data } = await apiClient.patch<Post>(`/post/${encodeURIComponent(id)}`, update);
         const newPosts = [...posts];
         const index = newPosts.findIndex((p) => p.id === id);
         newPosts.splice(index, 1);
