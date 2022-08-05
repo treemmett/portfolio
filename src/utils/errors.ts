@@ -15,12 +15,6 @@ export enum ErrorCode {
   bad_access_token = 6339,
 
   /**
-   * Unable to parse received body
-   * @status 406
-   */
-  body_parsing_failed = 4256,
-
-  /**
    * An unknown error from GitHub was received
    * @status 500
    */
@@ -88,9 +82,6 @@ export function getStatusCode(error: ErrorCode): number {
 
     case ErrorCode.post_not_found:
       return 404;
-
-    case ErrorCode.body_parsing_failed:
-      return 406;
 
     case ErrorCode.no_file_received:
     case ErrorCode.no_path_to_file:

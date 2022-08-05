@@ -1,4 +1,3 @@
-import { PageConfig } from 'next';
 import { AuthorizationScopes } from '../../../entities/Jwt';
 import { Post } from '../../../entities/Post';
 import { Session } from '../../../entities/Session';
@@ -24,9 +23,3 @@ export default nextConnect()
     await i18nRevalidate('/', res);
     res.send(post);
   });
-
-export const config: PageConfig = {
-  api: {
-    bodyParser: false,
-  },
-};
