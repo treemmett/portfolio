@@ -1,10 +1,8 @@
 import { createLogger, format, transports } from 'winston';
-import { Config } from './config';
+
+const { combine, timestamp, prettyPrint } = format;
 
 export const logger = createLogger({
-  transports: [
-    new transports.Console({
-      format: Config.NODE_ENV === 'production' ? format.json() : format.simple(),
-    }),
-  ],
+  format: combine(timestamp(), prettyPrint()),
+  transports: [new transports.Console()],
 });
