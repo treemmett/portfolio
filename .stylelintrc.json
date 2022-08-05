@@ -10,6 +10,12 @@
       "syntaxExtensions": ["sass"]
     },
     "color-function-notation": "legacy",
-    "prettier/prettier": true
+    "prettier/prettier": true,
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global"]
+      }
+    ]
   }
 }

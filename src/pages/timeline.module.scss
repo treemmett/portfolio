@@ -4,4 +4,14 @@
 
 .map {
   height: 100vh;
+
+  :global {
+    .mapboxgl-ctrl-bottom-left {
+      transform: scale(0.75) translate(-15%, 10%);
+    }
+
+    .mapboxgl-ctrl-logo {
+      pointer-events: none;
+    }
+  }
 }
