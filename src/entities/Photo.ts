@@ -36,7 +36,7 @@ export class Photo {
   public width: number;
 
   public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
-    logger.info('Uploading photo');
+    logger.info('Uploading photo', await image.metadata());
     const id = ulid();
 
     const mime = 'image/webp';
