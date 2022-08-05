@@ -142,8 +142,10 @@ export const errorHandler: ErrorHandler<NextApiRequest, NextApiResponse> = (err,
   const errorCode = err.error || ErrorCode.never;
 
   res.status(getStatusCode(errorCode)).send({
-    error: ErrorCode[errorCode],
-    message: getErrorMessage(errorCode),
-    stack: err.stack,
+    error: {
+      code: errorCode,
+      message: getErrorMessage(errorCode),
+      stack: err.stack,
+    },
   });
 };

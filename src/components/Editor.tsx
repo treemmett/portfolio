@@ -84,7 +84,8 @@ export const Editor: FC = () => {
         alert(
           [
             t('Upload failed'),
-            err?.response?.data?.message || JSON.stringify(err?.response?.data),
+            err?.response?.data?.error?.message || 'Unknown error',
+            err?.response?.data?.error?.code,
           ].join(' - ')
         );
       } finally {
