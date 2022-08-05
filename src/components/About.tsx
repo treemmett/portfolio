@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
@@ -44,6 +45,8 @@ export const About: FC = () => {
 
   const { t } = useTranslation();
 
+  const router = useRouter();
+
   return (
     <>
       <main className={cx(styles.main, { [styles.default]: !height && !width })} ref={ref}>
@@ -51,8 +54,16 @@ export const About: FC = () => {
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
         </h2>
         <nav className={styles.nav}>
-          <Link href="/">Gallery</Link>
-          <Link href="/timeline">Map</Link>
+          <Link href="/">
+            <a className={cx({ [styles.active]: router.pathname === '/' })} href="#a">
+              Gallery
+            </a>
+          </Link>
+          <Link href="/timeline">
+            <a className={cx({ [styles.active]: router.pathname === '/timeline' })} href="#a">
+              Map
+            </a>
+          </Link>
         </nav>
         <div className={styles.social}>
           {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
