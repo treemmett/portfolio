@@ -1,6 +1,6 @@
 const { resolve } = require('path');
 
-/** @type {import('next-i18next').InternalConfig} */
+/** @type {import('next-i18next').UserConfig} */
 module.exports = {
   /** @type {import('next').NextConfig['i18n']} */
   i18n: {

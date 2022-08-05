@@ -5,6 +5,7 @@ import { Session } from '../../../entities/Session';
 import { nextConnect } from '../../../middleware/nextConnect';
 import { logger } from '../../../utils/logger';
 import { toString } from '../../../utils/queryParam';
+import { i18nRevalidate } from '../../../utils/revalidate';
 
 export default nextConnect()
   .delete(async (req, res) => {
@@ -12,7 +13,7 @@ export default nextConnect()
 
     await Post.delete(toString(req.query.id));
     logger.info('Post deleted, revalidating cache');
-    await res.revalidate('/');
+    await i18nRevalidate('/', res);
     res.end();
   })
   .put(async (req, res) => {
@@ -20,7 +21,7 @@ export default nextConnect()
 
     const post = await Post.update(toString(req.query.id), req.body);
     logger.info('Post updated, revalidating cache');
-    await res.revalidate('/');
+    await i18nRevalidate('/', res);
     res.send(post);
   });
 

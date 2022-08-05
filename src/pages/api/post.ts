@@ -4,6 +4,7 @@ import { Post } from '../../entities/Post';
 import { Session } from '../../entities/Session';
 import { nextConnect } from '../../middleware/nextConnect';
 import { logger } from '../../utils/logger';
+import { i18nRevalidate } from '../../utils/revalidate';
 
 export default nextConnect().post(async (req, res) => {
   await Session.authorizeRequest(req, AuthorizationScopes.post);
@@ -15,7 +16,7 @@ export default nextConnect().post(async (req, res) => {
     req.body.date
   );
   logger.info('Post created, revalidating cache');
-  await res.revalidate('/');
+  await i18nRevalidate('/', res);
   logger.info('Cache revalidated');
   res.json(post);
 });
