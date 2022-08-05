@@ -81,7 +81,12 @@ export const Editor: FC = () => {
         closeEditor();
       } catch (err) {
         console.error(err?.response?.data?.error || err);
-        alert([t('Upload failed'), err?.response?.data?.message].join(' - '));
+        alert(
+          [
+            t('Upload failed'),
+            err?.response?.data?.message || JSON.stringify(err?.response?.data),
+          ].join(' - ')
+        );
       } finally {
         setState(UploadState.default);
       }
