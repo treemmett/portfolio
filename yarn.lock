@@ -1854,6 +1854,11 @@
   resolved "https://registry.yarnpkg.com/@cspell/dict-software-terms/-/dict-software-terms-2.0.12.tgz#9db09e7871dd6d80b56d8b0b584f3681a436e3fe"
   integrity sha512-zsgraHo5PIDY1mTaWGA2NsxhO8g85inD758pEQL1MeKTFlGiFHT4vW+faryzhvBT5LOMH4LnTs0yGrMyn7JlkQ==
 
+"@cspell/dict-sv@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-sv/-/dict-sv-2.0.3.tgz#42959eb4f85b8f1aa438a7e1232fa9dd5e5f38bf"
+  integrity sha512-Bl0sJfl2ntIpiIZI4Wi/BbQ2LK3/EBtd+LE9xeDqVy68UTs45Fq3splwggYJYG7DbwRTnfm86pc4GSD88rbehA==
+
 "@cspell/dict-swift@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@cspell/dict-swift/-/dict-swift-1.0.1.tgz#e289680bf79538096eb7c36b21aeb97e97fdd9fc"

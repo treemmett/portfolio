@@ -1,0 +1,14 @@
+{
+  "Date": "Datum",
+  "Gallery": "Galleri",
+  "intro": "Hej, jag heter {{name}}",
+  "Location": "Plats",
+  "Map": "Karta",
+  "Pick an image": "Välj en bild",
+  "Post": "Inlägg",
+  "Save": "Spara",
+  "Title": "Titel",
+  "Upload failed": "Upload misslyckades",
+  "Uploading...": "Laddar upp...",
+  "Welcome back": "Välkommen tillbaka"
+}

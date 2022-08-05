@@ -46,6 +46,10 @@
       "language": "fr,en-US"
     },
     {
+      "filename": "public/locales/sv/**",
+      "language": "sv,en-US"
+    },
+    {
       "filename": "**/*.svg",
       "languageId": "css,html"
     }
