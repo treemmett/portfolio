@@ -2,7 +2,6 @@
 @use '../styles/shared';
 
 $width: 25rem;
-$padding-top: 2rem;
 
 .main,
 .backdrop {
@@ -10,7 +9,7 @@ $padding-top: 2rem;
 
   position: fixed;
   z-index: 10;
-  top: $padding-top;
+  top: 0;
   left: 0;
   width: 100%;
   padding: 2rem;
