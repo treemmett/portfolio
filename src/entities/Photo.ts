@@ -39,6 +39,9 @@ export class Photo {
     logger.info('Uploading photo', await image.metadata());
     const id = ulid();
 
+    // ensure orientation is correct
+    image.rotate();
+
     const mime = 'image/webp';
 
     await s3
