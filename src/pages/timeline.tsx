@@ -2,11 +2,12 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import lineString from '@turf/bezier-spline';
 import { LngLat, LngLatBounds, Map, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
 import { DataStoreDefaults, useDataStore } from '../components/DataStore';
 import { Marker as MarkerEntity } from '../entities/Marker';
 import { Config } from '../utils/config';
+import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
 
 export const getStaticProps: GetStaticProps<DataStoreDefaults> = async () => {
@@ -20,6 +21,9 @@ export const getStaticProps: GetStaticProps<DataStoreDefaults> = async () => {
 };
 
 const Timeline: NextPage = () => {
+  const [darkMode, setDarkMode] = useState(isDarkMode());
+  useEffect(() => listenForDarkModeChange(setDarkMode), []);
+
   const { addMarker, markers } = useDataStore();
   const mapContainer = useRef<HTMLDivElement>();
   const map = useRef<Map>();
@@ -58,7 +62,7 @@ const Timeline: NextPage = () => {
         fitBoundsOptions: {
           padding: 50,
         },
-        style: 'mapbox://styles/mapbox/dark-v10',
+        style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
         zoom: 9,
       })
         .on('load', () => {
@@ -98,7 +102,7 @@ const Timeline: NextPage = () => {
         map.current.remove();
       }
     };
-  }, [addMarker, map, markers]);
+  }, [addMarker, darkMode, map, markers]);
 
   return (
     <WithAbout className={styles.timeline}>
