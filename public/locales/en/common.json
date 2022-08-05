@@ -1,7 +1,9 @@
 {
   "Date": "Date",
+  "Gallery": "Gallery",
   "intro": "Hi, I'm {{name}}",
   "Location": "Location",
+  "Map": "Map",
   "Pick an image": "Pick an image",
   "Post": "Post",
   "Save": "Save",

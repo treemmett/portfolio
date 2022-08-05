@@ -1,7 +1,9 @@
 {
   "Date": "Date",
+  "Gallery": "Galerie",
   "intro": "Salut, je m'appelle {{name}}",
   "Location": "Emplacement",
+  "Map": "Carte",
   "Pick an image": "Choisir une image",
   "Post": "Poste",
   "Save": "Enregistrer",

@@ -56,12 +56,12 @@ export const About: FC = () => {
         <nav className={styles.nav}>
           <Link href="/">
             <a className={cx({ [styles.active]: router.pathname === '/' })} href="#a">
-              Gallery
+              {t('Gallery')}
             </a>
           </Link>
           <Link href="/timeline">
             <a className={cx({ [styles.active]: router.pathname === '/timeline' })} href="#a">
-              Map
+              {t('Map')}
             </a>
           </Link>
         </nav>
