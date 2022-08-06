@@ -52,6 +52,7 @@ export const Editor: FC = () => {
     setImageData('');
     setDate(new Date().toISOString().split('T')[0]);
     setLocation('');
+    setFile(null);
   }, [router]);
 
   const [state, setState] = useState(UploadState.default);
