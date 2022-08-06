@@ -23,6 +23,12 @@ const nextConfig = {
   },
   productionBrowserSourceMaps: true,
   reactStrictMode: true,
+  rewrites: async () => [
+    {
+      destination: '/api/rss',
+      source: '/rss',
+    },
+  ],
   /**
    *
    * @param {import('webpack').Configuration} c

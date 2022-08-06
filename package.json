@@ -21,6 +21,7 @@
     "@types/mapbox-gl": "^2.7.3",
     "@types/react": "^18.0.14",
     "@types/sharp": "^0.30.4",
+    "@types/xml": "^1.0.8",
     "aws-sdk": "^2.1062.0",
     "axios": "^0.27.2",
     "class-transformer": "^0.5.1",
@@ -39,7 +40,8 @@
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.30.7",
     "ulid": "^2.3.0",
-    "winston": "^3.8.1"
+    "winston": "^3.8.1",
+    "xml": "^1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
