@@ -42,6 +42,10 @@ export class Photo {
   @IsInt()
   public width: number;
 
+  public async delete(): Promise<void> {
+    await s3.deleteObject({ Bucket: S3_BUCKET, Key: this.id }).promise();
+  }
+
   public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
     logger.info('Uploading photo', await image.metadata());
     const id = ulid();

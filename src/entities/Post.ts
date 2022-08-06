@@ -289,7 +289,9 @@ export class Post {
       throw new APIError(ErrorCode.post_not_found);
     }
 
-    posts.splice(index, 1);
+    const [post] = posts.splice(index, 1);
+
+    await Promise.all(post.photos.map((p) => p.delete()));
 
     await this.writePostsIndex(posts);
   }
