@@ -22,17 +22,9 @@ export default nextConnect().get(async (req, res) => {
                 { description: post.location },
                 { pubDate: post.created.toUTCString() },
                 { guid: post.id },
-                {
-                  'media:content': {
-                    _attr: {
-                      height: post.photos[0].height,
-                      medium: 'image',
-                      type: 'image/webp',
-                      url: post.photos[0].url,
-                      width: post.photos[0].width,
-                    },
-                  },
-                },
+                ...post.photos.map((photo) => ({
+                  enclosure: { _attr: { length: photo.size, type: 'image/webp', url: photo.url } },
+                })),
               ],
             })),
           ],
