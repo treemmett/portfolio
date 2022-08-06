@@ -1,5 +1,0 @@
-{
-  "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
-  "slowTestThreshold": 10000,
-  "testTimeout": 20000
-}
