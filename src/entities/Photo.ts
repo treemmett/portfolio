@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsDataURI, IsEnum, IsInt, IsString, IsUppercase } from 'class-validator';
+import { IsDataURI, IsEnum, IsInt, IsString, IsUppercase, Min } from 'class-validator';
 import { Sharp } from 'sharp';
 import { ulid } from 'ulid';
 import { Config } from '../utils/config';
@@ -17,6 +17,13 @@ export class Photo {
 
   @IsInt()
   public height: number;
+
+  /**
+   * size in bytes
+   */
+  @IsInt()
+  @Min(0)
+  public size: number;
 
   /**
    * base64 data uri of the scaled down thumbnail
@@ -44,10 +51,12 @@ export class Photo {
 
     const mime = 'image/webp';
 
+    const buffer = await image.webp().toBuffer();
+
     await s3
       .upload({
         ACL: 'public-read',
-        Body: await image.webp().toBuffer(),
+        Body: buffer,
         Bucket: S3_BUCKET,
         ContentType: mime,
         Key: id,
@@ -71,10 +80,11 @@ export class Photo {
       {
         height: metadata.height,
         id,
+        size: buffer.length,
         thumbnailURL: `data:${mime};base64,${thumbnailBuffer.toString('base64')}`,
         type,
         width: metadata.width,
-      },
+      } as Photo,
       {
         validator: {
           forbidUnknownValues: true,
