@@ -26,7 +26,7 @@ import { PhotoType } from './PhotoType';
 
 const { JWT_SECRET, S3_BUCKET } = Config;
 
-const POSTS_FILE_KEY = 'posts.json';
+const POSTS_FILE_KEY = '_posts.json';
 
 const ISSUER = 'upload';
 
