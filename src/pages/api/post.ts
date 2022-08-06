@@ -6,6 +6,10 @@ import { logger } from '../../utils/logger';
 import { i18nRevalidate } from '../../utils/revalidate';
 
 export default nextConnect()
+  .patch(async (req, res) => {
+    await Session.authorizeRequest(req, AuthorizationScopes.post);
+    await i18nRevalidate('/', res);
+  })
   .post(async (req, res) => {
     await Session.authorizeRequest(req, AuthorizationScopes.post);
     const token = await Post.requestUploadToken(req.body.location, req.body.title, req.body.date);
