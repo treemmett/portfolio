@@ -12,14 +12,14 @@ import {
 } from 'react';
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import { Marker } from '../entities/Marker';
-import { Post } from '../entities/Post';
+import type { Post, UploadToken } from '../entities/Post';
 import { Session } from '../entities/Session';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
 import { Config } from '../utils/config';
 
 export interface DataStoreContext {
   addMarker(lngLat: LngLat): Promise<void>;
-  addPost(form: FormData): Promise<void>;
+  addPost(file: File, date?: string, location?: string, title?: string): Promise<void>;
   apiClient: AxiosInstance;
   deletePost(id: string): Promise<void>;
   destroySession: () => void;
@@ -93,8 +93,18 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
         const { data } = await apiClient.post<Marker>('/timeline', lngLat);
         setMarkers([data, ...markers]);
       },
-      async addPost(formData) {
-        const { data } = await apiClient.post<Post>('/post', formData);
+      async addPost(file, date, location, title) {
+        const { data: uploadToken } = await apiClient.post<UploadToken>('/post', {
+          date,
+          location,
+          title,
+        });
+        await Axios.put(uploadToken.url, file, {
+          headers: {
+            'Content-Type': 'application/octet-stream',
+          },
+        });
+        const { data } = await apiClient.put<Post>('/post', { token: uploadToken.token });
         const p = [data, ...posts].sort(
           (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
         );

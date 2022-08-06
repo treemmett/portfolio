@@ -1,15 +1,7 @@
 import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import {
-  ChangeEventHandler,
-  FC,
-  FormEventHandler,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { FC, FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as Plus } from '../icons/plusSquare.svg';
 import { toString } from '../utils/queryParam';
 import { Button } from './Button';
@@ -30,12 +22,12 @@ export const Editor: FC = () => {
   const editId = toString(router.query.edit);
 
   const [imageData, setImageData] = useState('');
+  const [file, setFile] = useState<File>();
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const handleFileChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
-    const file = e.currentTarget.files[0];
+  useEffect(() => {
     if (!file) {
       setImageData('');
       return;
@@ -46,7 +38,7 @@ export const Editor: FC = () => {
       setImageData(reader.result.toString());
     });
     reader.readAsDataURL(file);
-  }, []);
+  }, [file]);
 
   const formRef = useRef<HTMLFormElement>();
   const closeEditor = useCallback(() => {
@@ -75,7 +67,7 @@ export const Editor: FC = () => {
         if (editId) {
           await updatePost(editId, { created: new Date(date), location, title });
         } else {
-          await addPost(new FormData(e.currentTarget));
+          await addPost(file, date, location, title);
         }
 
         closeEditor();
@@ -92,7 +84,7 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [addPost, closeEditor, date, editId, location, state, t, title, updatePost]
+    [addPost, closeEditor, date, editId, file, location, state, t, title, updatePost]
   );
 
   useEffect(() => {
@@ -136,7 +128,7 @@ export const Editor: FC = () => {
                 accept="image/*"
                 id="image"
                 name="file"
-                onChange={handleFileChange}
+                onChange={(e) => setFile(e.currentTarget.files[0])}
                 type="file"
               />
             </label>
@@ -156,7 +148,6 @@ export const Editor: FC = () => {
             />
             <Input
               className={styles.input}
-              defaultValue={new Date().toISOString().split('T')[0]}
               label={t('Date')}
               name="date"
               onChange={(e) => setDate(e.currentTarget.value)}

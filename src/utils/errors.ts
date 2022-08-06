@@ -15,6 +15,12 @@ export enum ErrorCode {
   bad_access_token = 6339,
 
   /**
+   * Upload token failed signature check
+   * @status 498
+   */
+  bad_upload_token = 4271,
+
+  /**
    * An unknown error from GitHub was received
    * @status 500
    */
@@ -45,10 +51,10 @@ export enum ErrorCode {
   no_file_received = 1245,
 
   /**
-   * File wasn't uploaded, or was lost to the I/O gods
+   * No upload token was received
    * @status 422
    */
-  no_path_to_file = 1642,
+  no_upload_token = 1642,
 
   /**
    * post not found
@@ -81,13 +87,14 @@ export function getStatusCode(error: ErrorCode): number {
       return 403;
 
     case ErrorCode.post_not_found:
+    case ErrorCode.no_file_received:
       return 404;
 
-    case ErrorCode.no_file_received:
-    case ErrorCode.no_path_to_file:
+    case ErrorCode.no_upload_token:
       return 422;
 
     case ErrorCode.bad_access_token:
+    case ErrorCode.bad_upload_token:
       return 498;
 
     case ErrorCode.github_error:
@@ -104,9 +111,14 @@ export function getErrorMessage(error: ErrorCode): string {
     case ErrorCode.bad_access_token:
       return 'Invalid access token';
 
+    case ErrorCode.bad_upload_token:
+      return 'Invalid upload token';
+
     case ErrorCode.no_file_received:
-    case ErrorCode.no_path_to_file:
-      return 'No file uploaded';
+      return 'File not found';
+
+    case ErrorCode.no_upload_token:
+      return 'No upload token';
 
     case ErrorCode.post_not_found:
       return 'Post not found';
