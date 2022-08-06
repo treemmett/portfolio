@@ -106,6 +106,37 @@ export const Editor: FC = () => {
     setOpen(!!(router.query.newPost?.length > 0 || editId));
   }, [router.query.newPost, editId]);
 
+  useEffect(() => {
+    const dropHandler = (e: DragEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      const { files } = e.dataTransfer;
+      const [f] = files;
+
+      if (f) {
+        if (!router.query.newPost) {
+          router.push({ query: { newPost: true } }, undefined, { shallow: true });
+        }
+
+        setFile(f);
+      }
+    };
+
+    const dragHandler = (e: DragEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    };
+
+    window.addEventListener('drop', dropHandler);
+    window.addEventListener('dragover', dragHandler);
+    return () => {
+      window.removeEventListener('drop', dropHandler);
+      window.removeEventListener('dragover', dragHandler);
+    };
+  }, [router]);
+
   return (
     <>
       <Button
