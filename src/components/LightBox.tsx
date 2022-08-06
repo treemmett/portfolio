@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import Image from 'next/future/image';
 import { useRouter } from 'next/router';
 import {
   FC,
@@ -37,10 +38,8 @@ export const LightBox: FC = () => {
   const { query, push } = useRouter();
   const { deletePost, lightBox, posts, session, setLightBox } = useDataStore();
 
-  const photo = useMemo(
-    () => posts.find((p) => p.id === query.post)?.photos.find((p) => p.type === PhotoType.ORIGINAL),
-    [query.post, posts]
-  );
+  const post = useMemo(() => posts.find((p) => p.id === query.post), [query.post, posts]);
+  const photo = useMemo(() => post?.photos.find((p) => p.type === PhotoType.ORIGINAL), [post]);
 
   const galleryRef = useRef<HTMLDivElement>();
   const [frame, setFrame] = useState(AnimationFrame.off);
@@ -153,16 +152,20 @@ export const LightBox: FC = () => {
         </div>
       )}
       {photo && (
-        <img
-          alt="My Post"
+        <Image
+          alt={post.title}
           className={cx(styles.photo, {
             [styles.animating]: [AnimationFrame.to_gallery, AnimationFrame.to_light_box].includes(
               frame
             ),
           })}
+          height={photo.height}
           onTransitionEnd={handleTransitionEnd}
+          sizes="95vh,95vw"
           src={photo.url}
           style={{ height: toPx(height), left: toPx(left), top: toPx(top), width: toPx(width) }}
+          width={photo.width}
+          priority
         />
       )}
     </Modal>
