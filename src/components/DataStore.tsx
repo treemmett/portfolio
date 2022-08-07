@@ -28,7 +28,7 @@ export interface ApiRequest {
 export interface DataStoreContext {
   addMarker(marker: Marker): Promise<void>;
   addPost(post: Post): void;
-  deletePost(id: string): Promise<void>;
+  deletePost(id: string): void;
   destroySession: () => void;
   lightBox?: MutableRefObject<HTMLElement>;
   login(): void;
@@ -53,7 +53,7 @@ export interface DataStoreProviderProps extends PropsWithChildren {
 export const dataStoreContext = createContext<DataStoreContext>({
   addMarker: () => Promise.resolve(),
   addPost: () => null,
-  deletePost: () => Promise.resolve(),
+  deletePost: () => null,
   destroySession: () => null,
   login: () => null,
   markers: [],
@@ -105,8 +105,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
           )
         );
       },
-      async deletePost(id) {
-        await apiClient.delete(`/post/${encodeURIComponent(id)}`);
+      deletePost(id) {
         const newPosts = [...posts];
         const index = newPosts.findIndex((p) => p.id === id);
         if (~index) {

@@ -14,6 +14,7 @@ import { AuthorizationScopes } from '../entities/Jwt';
 import { PhotoType } from '../entities/PhotoType';
 import { ReactComponent as Edit } from '../icons/edit.svg';
 import { ReactComponent as Trash } from '../icons/trash.svg';
+import { apiClient } from '../utils/apiClient';
 import { scaleDimensions, toPx } from '../utils/pixels';
 import { toString } from '../utils/queryParam';
 import { Button } from './Button';
@@ -119,7 +120,9 @@ export const LightBox: FC = () => {
   const open = ![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame);
 
   const deletePostAction = useCallback(async () => {
-    await deletePost(toString(query.post));
+    const id = toString(query.post);
+    await apiClient.delete(`/post/${encodeURIComponent(id)}`);
+    deletePost(id);
     setFrame(AnimationFrame.off);
     push({ query: {} }, null, { scroll: false, shallow: true });
   }, [deletePost, query.post, push]);
