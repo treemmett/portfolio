@@ -14,9 +14,7 @@ import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import { Marker } from '../entities/Marker';
 import type { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
-import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
 import { apiClient } from '../utils/apiClient';
-import { Config } from '../utils/config';
 
 export interface ApiRequest {
   id: string;
@@ -31,12 +29,12 @@ export interface DataStoreContext {
   deletePost(id: string): void;
   destroySession: () => void;
   lightBox?: MutableRefObject<HTMLElement>;
-  login(): void;
   markers: Marker[];
   posts: Post[];
   session: Session;
   setLightBox(lightBox?: DataStoreContext['lightBox']): void;
   setRequests: Dispatch<SetStateAction<ApiRequest[]>>;
+  setSession: Dispatch<SetStateAction<Session>>;
   requests: ApiRequest[];
   updatePost(id: string, update: Post): void;
 }
@@ -55,13 +53,13 @@ export const dataStoreContext = createContext<DataStoreContext>({
   addPost: () => null,
   deletePost: () => null,
   destroySession: () => null,
-  login: () => null,
   markers: [],
   posts: [],
   requests: [],
   session: new Session(),
   setLightBox: () => null,
   setRequests: () => null,
+  setSession: () => null,
   updatePost: () => null,
 });
 
@@ -118,59 +116,13 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
         setSession(new Session());
       },
       lightBox,
-      login() {
-        if (session?.expiration > new Date()) return;
-
-        const popup = window.open(
-          `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
-          'oauth',
-          `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
-        );
-
-        const intervalId = setInterval(() => {
-          if (popup.closed) {
-            setSession(new Session());
-            clearInterval(intervalId);
-          }
-        }, 100);
-
-        const messageHandler = async (
-          event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>
-        ) => {
-          if (event.origin !== window.location.origin) {
-            throw new Error('Message failed cross-origin check');
-          }
-
-          clearInterval(intervalId);
-
-          event.source.postMessage({
-            type: 'OAUTH_CLOSE',
-          } as OAuthCloseMessage);
-
-          window.removeEventListener('message', messageHandler);
-
-          if (event.data.type === 'OAUTH_ERROR') {
-            setSession(new Session());
-            throw new Error(event.data.payload);
-          }
-
-          if (event.data.type === 'OAUTH_CODE') {
-            const loginResponse = await apiClient.post('/login', { code: event.data.payload });
-            localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
-            setSession(new Session(loginResponse.data));
-          }
-        };
-
-        setSession((s) => s.startAuthorization());
-
-        window.addEventListener('message', messageHandler);
-      },
       markers,
       posts,
       requests,
       session,
       setLightBox,
       setRequests,
+      setSession,
       async updatePost(id, update) {
         const newPosts = [...posts];
         const index = newPosts.findIndex((p) => p.id === id);

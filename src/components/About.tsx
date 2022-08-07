@@ -3,12 +3,15 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
-import { AuthorizationScopes } from '../entities/Jwt';
+import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes } from '../entities/Jwt';
+import { Session } from '../entities/Session';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
 import { ReactComponent as LinkedIn } from '../icons/linkedin.svg';
 import { ReactComponent as Logout } from '../icons/logout.svg';
 import { ReactComponent as User } from '../icons/user.svg';
+import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
+import { apiClient } from '../utils/apiClient';
 import { Config } from '../utils/config';
 import { toPx } from '../utils/pixels';
 import styles from './About.module.scss';
@@ -17,10 +20,56 @@ import { Button } from './Button';
 import { useDataStore } from './DataStore';
 
 export const About: FC = () => {
-  const { destroySession, login, session } = useDataStore();
+  const { destroySession, session, setSession } = useDataStore();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const ref = useRef<HTMLElement>();
+
+  const login = useCallback(() => {
+    if (session?.expiration > new Date()) return;
+
+    const popup = window.open(
+      `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
+      'oauth',
+      `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
+    );
+
+    const intervalId = setInterval(() => {
+      if (popup.closed) {
+        setSession(new Session());
+        clearInterval(intervalId);
+      }
+    }, 100);
+
+    const messageHandler = async (event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>) => {
+      if (event.origin !== window.location.origin) {
+        throw new Error('Message failed cross-origin check');
+      }
+
+      clearInterval(intervalId);
+
+      event.source.postMessage({
+        type: 'OAUTH_CLOSE',
+      } as OAuthCloseMessage);
+
+      window.removeEventListener('message', messageHandler);
+
+      if (event.data.type === 'OAUTH_ERROR') {
+        setSession(new Session());
+        throw new Error(event.data.payload);
+      }
+
+      if (event.data.type === 'OAUTH_CODE') {
+        const loginResponse = await apiClient.post('/login', { code: event.data.payload });
+        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
+        setSession(new Session(loginResponse.data));
+      }
+    };
+
+    setSession((s) => s.startAuthorization());
+
+    window.addEventListener('message', messageHandler);
+  }, [session?.expiration, setSession]);
 
   const copyDimensions = useCallback(() => {
     if (!ref.current) return;
