@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
 import { DataStoreDefaults, useDataStore } from '../components/DataStore';
 import { Marker as MarkerEntity } from '../entities/Marker';
+import { apiClient } from '../utils/apiClient';
 import { Config } from '../utils/config';
 import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
@@ -91,7 +92,8 @@ const Timeline: NextPage = () => {
         })
         .on('click', async ({ lngLat }) => {
           new Marker().setLngLat(lngLat).addTo(map.current);
-          await addMarker(lngLat);
+          const { data } = await apiClient.post<MarkerEntity>('/timeline', lngLat);
+          await addMarker(data);
         });
 
       markers.forEach((lngLat) => {

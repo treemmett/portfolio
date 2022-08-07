@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { LngLat } from 'mapbox-gl';
 import {
   createContext,
   FC,
@@ -27,7 +26,7 @@ export interface ApiRequest {
 }
 
 export interface DataStoreContext {
-  addMarker(lngLat: LngLat): Promise<void>;
+  addMarker(marker: Marker): Promise<void>;
   addPost(file: File, date?: string, location?: string, title?: string): Promise<void>;
   deletePost(id: string): Promise<void>;
   destroySession: () => void;
@@ -97,9 +96,8 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
 
   const contextValue = useMemo<DataStoreContext>(
     () => ({
-      async addMarker(lngLat: LngLat) {
-        const { data } = await apiClient.post<Marker>('/timeline', lngLat);
-        setMarkers([data, ...markers]);
+      async addMarker(marker: Marker) {
+        setMarkers([marker, ...markers]);
       },
       async addPost(file, date, location, title) {
         const requestId = ulid();
