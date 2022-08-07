@@ -5,14 +5,14 @@ import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
-import { DataStoreDefaults, useDataStore } from '../components/DataStore';
+import { DefaultState, useDataStore } from '../components/DataStore';
 import { Marker as MarkerEntity } from '../entities/Marker';
 import { apiClient } from '../utils/apiClient';
 import { Config } from '../utils/config';
 import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
 
-export const getStaticProps: GetStaticProps<DataStoreDefaults> = async ({ locale }) => {
+export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
   const markers = await MarkerEntity.getAll();
 
   return {

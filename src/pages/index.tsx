@@ -2,13 +2,13 @@ import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import { WithAbout } from '../components/About';
-import { DataStoreDefaults } from '../components/DataStore';
+import { DefaultState } from '../components/DataStore';
 import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
 import { Post } from '../entities/Post';
 import { Config } from '../utils/config';
 
-export const getStaticProps: GetStaticProps<DataStoreDefaults> = async ({ locale }) => {
+export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
   const posts = await Post.getAll();
 
   return {

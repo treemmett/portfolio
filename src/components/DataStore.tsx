@@ -23,7 +23,7 @@ export interface ApiRequest {
   type: 'upload';
 }
 
-export interface DataStoreContext {
+export interface State {
   addMarker(marker: Marker): Promise<void>;
   addPost(post: Post): void;
   deletePost(id: string): void;
@@ -32,23 +32,23 @@ export interface DataStoreContext {
   markers: Marker[];
   posts: Post[];
   session: Session;
-  setLightBox(lightBox?: DataStoreContext['lightBox']): void;
+  setLightBox(lightBox?: State['lightBox']): void;
   setRequests: Dispatch<SetStateAction<ApiRequest[]>>;
   setSession: Dispatch<SetStateAction<Session>>;
   requests: ApiRequest[];
   updatePost(id: string, update: Post): void;
 }
 
-export interface DataStoreDefaults {
+export interface DefaultState {
   markers?: Marker[];
   posts?: Post[];
 }
 
 export interface DataStoreProviderProps extends PropsWithChildren {
-  defaults: DataStoreDefaults;
+  defaults: DefaultState;
 }
 
-export const dataStoreContext = createContext<DataStoreContext>({
+export const dataStoreContext = createContext<State>({
   addMarker: () => Promise.resolve(),
   addPost: () => null,
   deletePost: () => null,
@@ -91,7 +91,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
   const [markers, setMarkers] = useState<Marker[]>(defaults.markers || []);
   const [posts, setPosts] = useState<Post[]>(defaults.posts || []);
 
-  const contextValue = useMemo<DataStoreContext>(
+  const contextValue = useMemo<State>(
     () => ({
       async addMarker(marker: Marker) {
         setMarkers([marker, ...markers]);
