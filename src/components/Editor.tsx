@@ -1,8 +1,12 @@
+import axios from 'axios';
 import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
+import { ulid } from 'ulid';
+import { Post, UploadToken } from '../entities/Post';
 import { ReactComponent as Plus } from '../icons/plusSquare.svg';
+import { apiClient } from '../utils/apiClient';
 import { toString } from '../utils/queryParam';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
@@ -18,7 +22,7 @@ enum UploadState {
 export const Editor: FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { addPost, posts, updatePost } = useDataStore();
+  const { addPost, posts, requests, setRequests, updatePost } = useDataStore();
   const editId = toString(router.query.edit);
 
   const [imageData, setImageData] = useState('');
@@ -66,9 +70,68 @@ export const Editor: FC = () => {
         setState(UploadState.uploading);
 
         if (editId) {
-          await updatePost(editId, { created: new Date(date), location, title });
+          const { data } = await apiClient.patch<Post>(`/post/${encodeURIComponent(editId)}`, {
+            created: new Date(date),
+            location,
+            title,
+          });
+          await updatePost(editId, data);
         } else {
-          await addPost(file, date, location, title);
+          const requestId = ulid();
+
+          setRequests([
+            ...requests,
+            { id: requestId, progress: 0, status: 'uploading', type: 'upload' },
+          ]);
+
+          const { data: uploadToken } = await apiClient.post<UploadToken>(
+            '/post',
+            {
+              date,
+              location,
+              title,
+            },
+            {
+              onUploadProgress(progress: ProgressEvent) {
+                setRequests((rs) => {
+                  const request = rs.find((r) => r.id === requestId);
+                  request.progress = (progress.loaded / progress.total) * 0.1;
+                  return [...rs];
+                });
+              },
+            }
+          );
+          await axios.put(uploadToken.url, file, {
+            headers: {
+              'Content-Type': 'application/octet-stream',
+            },
+            onUploadProgress(progress: ProgressEvent) {
+              setRequests((rs) => {
+                const request = rs.find((r) => r.id === requestId);
+                request.progress = 0.1 + (progress.loaded / progress.total) * 0.8;
+                return [...rs];
+              });
+            },
+          });
+          const { data } = await apiClient.put<Post>(
+            '/post',
+            { token: uploadToken.token },
+            {
+              onUploadProgress(progress: ProgressEvent) {
+                setRequests((rs) => {
+                  const request = rs.find((r) => r.id === requestId);
+                  request.progress = 0.9 + (progress.loaded / progress.total) * 0.1;
+                  return [...rs];
+                });
+              },
+            }
+          );
+          setRequests((rs) => {
+            const request = rs.find((r) => r.id === requestId);
+            request.status = 'complete';
+            return [...rs];
+          });
+          addPost(data);
         }
 
         closeEditor();
@@ -85,7 +148,20 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [addPost, closeEditor, date, editId, file, location, state, t, title, updatePost]
+    [
+      addPost,
+      closeEditor,
+      date,
+      editId,
+      file,
+      location,
+      requests,
+      setRequests,
+      state,
+      t,
+      title,
+      updatePost,
+    ]
   );
 
   useEffect(() => {
