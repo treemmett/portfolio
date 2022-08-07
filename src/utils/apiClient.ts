@@ -5,6 +5,7 @@ export interface ApiRequest {
   progress: number;
   startRequest: (setProgress: (progress: number) => void) => Promise<void>;
   status: 'queued' | 'uploading' | 'complete';
+  thumbnailUrl?: string;
 }
 
 export const apiClient = axios.create({

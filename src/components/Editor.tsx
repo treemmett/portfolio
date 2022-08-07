@@ -114,6 +114,7 @@ export const Editor: FC = () => {
                 type: 'ADD_POST',
               });
             },
+            thumbnailUrl: imageData,
             type: 'ADD_API_REQUEST',
           });
         }
@@ -132,7 +133,7 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [closeEditor, date, dispatch, editId, file, location, state, t, title]
+    [closeEditor, date, dispatch, editId, file, imageData, location, state, t, title]
   );
 
   useEffect(() => {

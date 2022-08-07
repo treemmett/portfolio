@@ -37,7 +37,15 @@
 }
 
 .item {
+  display: flex;
+  align-items: center;
   padding: 1rem;
   border-top: 1px solid;
   border-top-color: inherit;
+}
+
+.thumbnail {
+  max-width: 2rem;
+  max-height: 1.5rem;
+  margin-right: 1rem;
 }

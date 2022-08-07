@@ -28,7 +28,12 @@ export const ApiManager: FC = () => {
       <div className={cx(styles.list, { [styles.collapsed]: collapsed })}>
         {requests.map((r) => (
           <div className={styles.item} key={r.id}>
-            {r.progress * 100}% - {r.status}
+            {r.thumbnailUrl && (
+              <img alt="Uploading thumbnail" className={styles.thumbnail} src={r.thumbnailUrl} />
+            )}
+            <span>
+              {r.progress * 100}% - {r.status}
+            </span>
           </div>
         ))}
       </div>

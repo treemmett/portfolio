@@ -25,7 +25,7 @@ export interface State {
 }
 
 export type Action =
-  | { type: 'ADD_API_REQUEST'; startRequest: ApiRequest['startRequest'] }
+  | { type: 'ADD_API_REQUEST'; startRequest: ApiRequest['startRequest']; thumbnailUrl?: string }
   | { type: 'ADD_MARKER'; marker: Marker }
   | { type: 'ADD_POST'; post: Post }
   | { type: 'DELETE_POST'; id: string }
@@ -46,6 +46,7 @@ function reducer(state: State, action: Action): State {
             progress: 0,
             startRequest: action.startRequest,
             status: 'queued',
+            thumbnailUrl: action.thumbnailUrl,
           },
           ...state.requests,
         ],
