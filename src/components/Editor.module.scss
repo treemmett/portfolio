@@ -28,7 +28,8 @@
   overflow: hidden;
   width: 100%;
   padding: 3rem;
-  border: 1px solid hsla(20deg, 0%, 20%, 80%);
+  border-width: 1px;
+  border-style: solid;
   cursor: pointer;
 
   &:not(.selected) {

@@ -5,6 +5,8 @@ $background: #ecf8f8;
 $text: #1f271b;
 $text-light: $background;
 $background-dark: color.adjust($text, $lightness: -5%);
+$border-dark: color.adjust($text, $lightness: 10%);
+$border-light: color.adjust($text-light, $lightness: -30%);
 
 @mixin dark-mode {
   @media (prefers-color-scheme: dark) {
@@ -13,30 +15,29 @@ $background-dark: color.adjust($text, $lightness: -5%);
 }
 
 @mixin theme {
-  border-color: $text;
+  border-color: $border-light;
   background-color: $background;
   color: $text;
 
   @include dark-mode {
-    border-color: $text-light;
+    border-color: $border-dark;
     background-color: $background-dark;
     color: $text-light;
   }
 }
 
 @mixin inverted-theme {
-  border-color: $text-light;
+  border-color: $border-dark;
   background-color: $background-dark;
   color: $text-light;
 
   @include dark-mode {
-    border-color: $text;
+    border-color: $border-light;
     background-color: $background;
     color: $text;
   }
 }
 
 @mixin border {
-  border: 1px solid $text;
   border-radius: 1rem / 1.2rem;
 }
