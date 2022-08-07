@@ -1,4 +1,4 @@
-import Axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 import { LngLat } from 'mapbox-gl';
 import {
   createContext,
@@ -16,6 +16,7 @@ import { Marker } from '../entities/Marker';
 import type { Post, UploadToken } from '../entities/Post';
 import { Session } from '../entities/Session';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
+import { apiClient } from '../utils/apiClient';
 import { Config } from '../utils/config';
 
 export interface ApiRequest {
@@ -28,7 +29,6 @@ export interface ApiRequest {
 export interface DataStoreContext {
   addMarker(lngLat: LngLat): Promise<void>;
   addPost(file: File, date?: string, location?: string, title?: string): Promise<void>;
-  apiClient: AxiosInstance;
   deletePost(id: string): Promise<void>;
   destroySession: () => void;
   lightBox?: MutableRefObject<HTMLElement>;
@@ -56,7 +56,6 @@ export interface DataStoreProviderProps extends PropsWithChildren {
 export const dataStoreContext = createContext<DataStoreContext>({
   addMarker: () => Promise.resolve(),
   addPost: () => Promise.resolve(),
-  apiClient: Axios,
   deletePost: () => Promise.resolve(),
   destroySession: () => null,
   login: () => null,
@@ -76,12 +75,9 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
   useEffect(() => {
     setSession(Session.restore());
   }, []);
-  const apiClient = useMemo(() => {
-    const client = Axios.create({
-      baseURL: '/api',
-      withCredentials: true,
-    });
-    client.interceptors.request.use((req) => {
+
+  useEffect(() => {
+    const id = apiClient.interceptors.request.use((req) => {
       if (!req.headers) req.headers = {};
 
       if (session.isValid()) {
@@ -90,7 +86,8 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
 
       return req;
     });
-    return client;
+
+    return () => apiClient.interceptors.request.eject(id);
   }, [session]);
 
   const [lightBox, setLightBox] = useState<MutableRefObject<HTMLElement>>();
@@ -129,7 +126,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
             },
           }
         );
-        await Axios.put(uploadToken.url, file, {
+        await axios.put(uploadToken.url, file, {
           headers: {
             'Content-Type': 'application/octet-stream',
           },
@@ -164,7 +161,6 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
         );
         setPosts(p);
       },
-      apiClient,
       async deletePost(id) {
         await apiClient.delete(`/post/${encodeURIComponent(id)}`);
         const newPosts = [...posts];
@@ -241,7 +237,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
         setPosts(newPosts);
       },
     }),
-    [apiClient, lightBox, markers, posts, requests, session]
+    [lightBox, markers, posts, requests, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;
