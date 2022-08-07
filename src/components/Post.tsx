@@ -18,12 +18,15 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
   const ref = useRef<HTMLDivElement>();
 
   const { query } = useRouter();
-  const { setLightBox } = useDataStore();
+  const { dispatch } = useDataStore();
   useEffect(() => {
     if (query.post === post.id) {
-      setLightBox(ref);
+      dispatch({
+        ref,
+        type: 'SET_LIGHT_BOX',
+      });
     }
-  }, [post.id, query.post, setLightBox]);
+  }, [dispatch, post.id, query.post]);
 
   const image = post.photos.find((p) => p.type === PhotoType.ORIGINAL);
 

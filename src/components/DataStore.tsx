@@ -4,11 +4,10 @@ import {
   FC,
   MutableRefObject,
   PropsWithChildren,
-  SetStateAction,
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useReducer,
 } from 'react';
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import { Marker } from '../entities/Marker';
@@ -24,19 +23,122 @@ export interface ApiRequest {
 }
 
 export interface State {
-  addMarker(marker: Marker): Promise<void>;
-  addPost(post: Post): void;
-  deletePost(id: string): void;
-  destroySession: () => void;
   lightBox?: MutableRefObject<HTMLElement>;
   markers: Marker[];
   posts: Post[];
   session: Session;
-  setLightBox(lightBox?: State['lightBox']): void;
-  setRequests: Dispatch<SetStateAction<ApiRequest[]>>;
-  setSession: Dispatch<SetStateAction<Session>>;
   requests: ApiRequest[];
-  updatePost(id: string, update: Post): void;
+}
+
+export type Action =
+  | { type: 'ADD_API_REQUEST'; id: string }
+  | { type: 'ADD_MARKER'; marker: Marker }
+  | { type: 'ADD_POST'; post: Post }
+  | { type: 'DELETE_POST'; id: string }
+  | { type: 'LOGIN'; session: Session }
+  | { type: 'LOGOUT' }
+  | { type: 'SET_LIGHT_BOX'; ref?: MutableRefObject<HTMLElement> }
+  | { type: 'SET_API_REQUEST_STATUS'; id: string; progress?: number; status?: ApiRequest['status'] }
+  | { type: 'UPDATE_POST'; post: Post };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'ADD_API_REQUEST':
+      return {
+        ...state,
+        requests: [
+          { id: action.id, progress: 0, status: 'uploading', type: 'upload' },
+          ...state.requests,
+        ],
+      };
+
+    case 'ADD_MARKER':
+      return {
+        ...state,
+        markers: [action.marker, ...state.markers],
+      };
+
+    case 'ADD_POST':
+      return {
+        ...state,
+        posts: [action.post, ...state.posts].sort(
+          (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
+        ),
+      };
+
+    case 'DELETE_POST': {
+      const posts = [...state.posts];
+      const index = posts.findIndex((p) => p.id === action.id);
+      if (~index) {
+        posts.splice(index, 1);
+        return {
+          ...state,
+          posts,
+        };
+      }
+      return state;
+    }
+
+    case 'LOGIN':
+      localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, action.session.accessToken);
+      return {
+        ...state,
+        session: action.session,
+      };
+
+    case 'LOGOUT': {
+      localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+      return {
+        ...state,
+        session: new Session(),
+      };
+    }
+
+    case 'SET_API_REQUEST_STATUS': {
+      const requests = [...state.requests];
+      const request = requests.find((r) => r.id === action.id);
+      if (request) {
+        if (typeof action.progress === 'number') {
+          request.progress = action.progress;
+        }
+
+        if (action.status) {
+          request.status = action.status;
+        }
+
+        return {
+          ...state,
+          requests,
+        };
+      }
+      return state;
+    }
+
+    case 'SET_LIGHT_BOX':
+      return {
+        ...state,
+        lightBox: action.ref,
+      };
+
+    case 'UPDATE_POST': {
+      const posts = [...state.posts];
+      const index = posts.findIndex((p) => p.id === action.post.id);
+      if (~index) {
+        posts.splice(index, 1);
+        posts.push(action.post);
+        posts.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+        return {
+          ...state,
+          posts,
+        };
+      }
+
+      return state;
+    }
+
+    default:
+      return state;
+  }
 }
 
 export interface DefaultState {
@@ -48,92 +150,49 @@ export interface DataStoreProviderProps extends PropsWithChildren {
   defaults: DefaultState;
 }
 
-export const dataStoreContext = createContext<State>({
-  addMarker: () => Promise.resolve(),
-  addPost: () => null,
-  deletePost: () => null,
-  destroySession: () => null,
+const defaultState = {
   markers: [],
   posts: [],
   requests: [],
   session: new Session(),
-  setLightBox: () => null,
-  setRequests: () => null,
-  setSession: () => null,
-  updatePost: () => null,
+};
+
+export interface ContextValue extends State {
+  dispatch: Dispatch<Action>;
+}
+
+export const dataStoreContext = createContext<ContextValue>({
+  ...defaultState,
+  dispatch: () => null,
 });
 
 export const useDataStore = () => useContext(dataStoreContext);
 
 export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaults }) => {
-  const [session, setSession] = useState(new Session());
-  const [requests, setRequests] = useState<ApiRequest[]>([]);
+  const [state, dispatch] = useReducer(reducer, { ...defaultState, ...defaults });
+
   useEffect(() => {
-    setSession(Session.restore());
+    dispatch({
+      session: Session.restore(),
+      type: 'LOGIN',
+    });
   }, []);
 
   useEffect(() => {
     const id = apiClient.interceptors.request.use((req) => {
       if (!req.headers) req.headers = {};
 
-      if (session.isValid()) {
-        req.headers.authorization = `Bearer ${session.accessToken}`;
+      if (state.session.isValid()) {
+        req.headers.authorization = `Bearer ${state.session.accessToken}`;
       }
 
       return req;
     });
 
     return () => apiClient.interceptors.request.eject(id);
-  }, [session]);
+  }, [state.session]);
 
-  const [lightBox, setLightBox] = useState<MutableRefObject<HTMLElement>>();
+  const ContextValue = useMemo<ContextValue>(() => ({ ...state, dispatch }), [state]);
 
-  const [markers, setMarkers] = useState<Marker[]>(defaults.markers || []);
-  const [posts, setPosts] = useState<Post[]>(defaults.posts || []);
-
-  const contextValue = useMemo<State>(
-    () => ({
-      async addMarker(marker: Marker) {
-        setMarkers([marker, ...markers]);
-      },
-      addPost(post) {
-        setPosts(
-          [post, ...posts].sort(
-            (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
-          )
-        );
-      },
-      deletePost(id) {
-        const newPosts = [...posts];
-        const index = newPosts.findIndex((p) => p.id === id);
-        if (~index) {
-          newPosts.splice(index, 1);
-          setPosts(newPosts);
-        }
-      },
-      destroySession() {
-        localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-        setSession(new Session());
-      },
-      lightBox,
-      markers,
-      posts,
-      requests,
-      session,
-      setLightBox,
-      setRequests,
-      setSession,
-      async updatePost(id, update) {
-        const newPosts = [...posts];
-        const index = newPosts.findIndex((p) => p.id === id);
-        newPosts.splice(index, 1);
-        newPosts.push(update);
-        newPosts.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-        setPosts(newPosts);
-      },
-    }),
-    [lightBox, markers, posts, requests, session]
-  );
-
-  return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;
+  return <dataStoreContext.Provider value={ContextValue}>{children}</dataStoreContext.Provider>;
 };

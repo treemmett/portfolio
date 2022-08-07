@@ -22,7 +22,7 @@ enum UploadState {
 export const Editor: FC = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { addPost, posts, requests, setRequests, updatePost } = useDataStore();
+  const { dispatch, posts } = useDataStore();
   const editId = toString(router.query.edit);
 
   const [imageData, setImageData] = useState('');
@@ -75,14 +75,14 @@ export const Editor: FC = () => {
             location,
             title,
           });
-          await updatePost(editId, data);
+          dispatch({ post: data, type: 'UPDATE_POST' });
         } else {
           const requestId = ulid();
 
-          setRequests([
-            ...requests,
-            { id: requestId, progress: 0, status: 'uploading', type: 'upload' },
-          ]);
+          dispatch({
+            id: requestId,
+            type: 'ADD_API_REQUEST',
+          });
 
           const { data: uploadToken } = await apiClient.post<UploadToken>(
             '/post',
@@ -93,10 +93,10 @@ export const Editor: FC = () => {
             },
             {
               onUploadProgress(progress: ProgressEvent) {
-                setRequests((rs) => {
-                  const request = rs.find((r) => r.id === requestId);
-                  request.progress = (progress.loaded / progress.total) * 0.1;
-                  return [...rs];
+                dispatch({
+                  id: requestId,
+                  progress: (progress.loaded / progress.total) * 0.1,
+                  type: 'SET_API_REQUEST_STATUS',
                 });
               },
             }
@@ -106,10 +106,10 @@ export const Editor: FC = () => {
               'Content-Type': 'application/octet-stream',
             },
             onUploadProgress(progress: ProgressEvent) {
-              setRequests((rs) => {
-                const request = rs.find((r) => r.id === requestId);
-                request.progress = 0.1 + (progress.loaded / progress.total) * 0.8;
-                return [...rs];
+              dispatch({
+                id: requestId,
+                progress: 0.1 + (progress.loaded / progress.total) * 0.8,
+                type: 'SET_API_REQUEST_STATUS',
               });
             },
           });
@@ -118,20 +118,25 @@ export const Editor: FC = () => {
             { token: uploadToken.token },
             {
               onUploadProgress(progress: ProgressEvent) {
-                setRequests((rs) => {
-                  const request = rs.find((r) => r.id === requestId);
-                  request.progress = 0.9 + (progress.loaded / progress.total) * 0.1;
-                  return [...rs];
+                dispatch({
+                  id: requestId,
+                  progress: 0.9 + (progress.loaded / progress.total) * 0.1,
+                  type: 'SET_API_REQUEST_STATUS',
                 });
               },
             }
           );
-          setRequests((rs) => {
-            const request = rs.find((r) => r.id === requestId);
-            request.status = 'complete';
-            return [...rs];
+
+          dispatch({
+            id: requestId,
+            status: 'complete',
+            type: 'SET_API_REQUEST_STATUS',
           });
-          addPost(data);
+
+          dispatch({
+            post: data,
+            type: 'ADD_POST',
+          });
         }
 
         closeEditor();
@@ -148,20 +153,7 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [
-      addPost,
-      closeEditor,
-      date,
-      editId,
-      file,
-      location,
-      requests,
-      setRequests,
-      state,
-      t,
-      title,
-      updatePost,
-    ]
+    [closeEditor, date, dispatch, editId, file, location, state, t, title]
   );
 
   useEffect(() => {

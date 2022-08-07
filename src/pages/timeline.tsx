@@ -27,7 +27,7 @@ const Timeline: NextPage = () => {
   const [darkMode, setDarkMode] = useState(isDarkMode());
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
 
-  const { addMarker, markers } = useDataStore();
+  const { dispatch, markers } = useDataStore();
   const mapContainer = useRef<HTMLDivElement>();
   const map = useRef<Map>();
   useEffect(() => {
@@ -93,7 +93,10 @@ const Timeline: NextPage = () => {
         .on('click', async ({ lngLat }) => {
           new Marker().setLngLat(lngLat).addTo(map.current);
           const { data } = await apiClient.post<MarkerEntity>('/timeline', lngLat);
-          await addMarker(data);
+          dispatch({
+            marker: data,
+            type: 'ADD_MARKER',
+          });
         });
 
       markers.forEach((lngLat) => {
@@ -106,7 +109,7 @@ const Timeline: NextPage = () => {
         map.current.remove();
       }
     };
-  }, [addMarker, darkMode, map, markers]);
+  }, [darkMode, dispatch, map, markers]);
 
   return (
     <WithAbout className={styles.timeline}>

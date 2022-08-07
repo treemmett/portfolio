@@ -37,7 +37,7 @@ enum AnimationFrame {
 
 export const LightBox: FC = () => {
   const { query, push } = useRouter();
-  const { deletePost, lightBox, posts, session, setLightBox } = useDataStore();
+  const { dispatch, lightBox, posts, session } = useDataStore();
 
   const post = useMemo(() => posts.find((p) => p.id === query.post), [query.post, posts]);
   const photo = useMemo(() => post?.photos.find((p) => p.type === PhotoType.ORIGINAL), [post]);
@@ -58,10 +58,12 @@ export const LightBox: FC = () => {
       setHeight(0);
       setLeft(0);
       setTop(0);
-      setLightBox();
       setFrame(AnimationFrame.off);
+      dispatch({
+        type: 'SET_LIGHT_BOX',
+      });
     }
-  }, [query.post, setLightBox]);
+  }, [dispatch, query.post]);
 
   const scaleImage = useCallback(() => {
     const [w, h] = scaleDimensions(
@@ -115,17 +117,20 @@ export const LightBox: FC = () => {
     }
 
     return () => window.removeEventListener('resize', scaleImage);
-  }, [frame, lightBox, setLightBox, width, height, photo, scaleImage, scaleToGallery]);
+  }, [frame, lightBox, width, height, photo, scaleImage, scaleToGallery]);
 
   const open = ![AnimationFrame.off, AnimationFrame.to_gallery].includes(frame);
 
   const deletePostAction = useCallback(async () => {
     const id = toString(query.post);
     await apiClient.delete(`/post/${encodeURIComponent(id)}`);
-    deletePost(id);
+    dispatch({
+      id,
+      type: 'DELETE_POST',
+    });
     setFrame(AnimationFrame.off);
     push({ query: {} }, null, { scroll: false, shallow: true });
-  }, [deletePost, query.post, push]);
+  }, [dispatch, query.post, push]);
 
   const editPost = useCallback(() => {
     push({ query: new URLSearchParams({ edit: toString(query.post) }).toString() }, undefined, {

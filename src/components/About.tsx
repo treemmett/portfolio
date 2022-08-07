@@ -20,7 +20,7 @@ import { Button } from './Button';
 import { useDataStore } from './DataStore';
 
 export const About: FC = () => {
-  const { destroySession, session, setSession } = useDataStore();
+  const { dispatch, session } = useDataStore();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const ref = useRef<HTMLElement>();
@@ -36,7 +36,7 @@ export const About: FC = () => {
 
     const intervalId = setInterval(() => {
       if (popup.closed) {
-        setSession(new Session());
+        dispatch({ type: 'LOGOUT' });
         clearInterval(intervalId);
       }
     }, 100);
@@ -55,21 +55,21 @@ export const About: FC = () => {
       window.removeEventListener('message', messageHandler);
 
       if (event.data.type === 'OAUTH_ERROR') {
-        setSession(new Session());
+        dispatch({ type: 'LOGOUT' });
         throw new Error(event.data.payload);
       }
 
       if (event.data.type === 'OAUTH_CODE') {
         const loginResponse = await apiClient.post('/login', { code: event.data.payload });
         localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
-        setSession(new Session(loginResponse.data));
+        dispatch({ session: new Session(loginResponse.data), type: 'LOGIN' });
       }
     };
 
-    setSession((s) => s.startAuthorization());
+    dispatch({ session: session.startAuthorization(), type: 'LOGIN' });
 
     window.addEventListener('message', messageHandler);
-  }, [session?.expiration, setSession]);
+  }, [dispatch, session]);
 
   const copyDimensions = useCallback(() => {
     if (!ref.current) return;
@@ -153,7 +153,7 @@ export const About: FC = () => {
               <Button
                 className={styles.button}
                 label="Logout"
-                onClick={destroySession}
+                onClick={() => dispatch({ type: 'LOGOUT' })}
                 testId="logout"
               >
                 <Logout />
