@@ -14,27 +14,29 @@ $border-light: color.adjust($text-light, $lightness: -30%);
   }
 }
 
-@mixin theme {
+@mixin light-theme {
   border-color: $border-light;
   background-color: $background;
   color: $text;
+}
 
+@mixin dark-theme {
+  border-color: $border-dark;
+  background-color: $background-dark;
+  color: $text-light;
+}
+
+@mixin theme {
+  @include light-theme;
   @include dark-mode {
-    border-color: $border-dark;
-    background-color: $background-dark;
-    color: $text-light;
+    @include dark-theme;
   }
 }
 
 @mixin inverted-theme {
-  border-color: $border-dark;
-  background-color: $background-dark;
-  color: $text-light;
-
+  @include dark-theme;
   @include dark-mode {
-    border-color: $border-light;
-    background-color: $background;
-    color: $text;
+    @include light-theme;
   }
 }
 
