@@ -47,6 +47,10 @@
     @include color(shared.$primary);
   }
 
+  &.small {
+    padding: 0.25rem;
+  }
+
   &:disabled {
     cursor: default;
   }

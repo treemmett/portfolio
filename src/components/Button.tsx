@@ -10,6 +10,7 @@ export interface ButtonProps extends PropsWithChildren {
   /** aria label */
   label?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  size?: 'small';
   /** button is of submit type */
   submit?: boolean;
   testId?: string;
@@ -22,6 +23,7 @@ export const Button: FC<ButtonProps> = ({
   disabled,
   label,
   onClick,
+  size,
   submit,
   testId,
   type,
@@ -30,6 +32,7 @@ export const Button: FC<ButtonProps> = ({
     aria-label={label}
     className={cx(styles.button, className, {
       [styles.primary]: type === 'primary',
+      [styles.small]: size === 'small',
     })}
     data-testid={testId}
     disabled={disabled}
