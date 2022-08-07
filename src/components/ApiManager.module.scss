@@ -1,0 +1,25 @@
+@use '../styles/shared';
+
+.manager {
+  @include shared.theme;
+
+  position: fixed;
+  z-index: 100;
+  bottom: 1rem;
+  left: 1rem;
+  overflow: hidden;
+  width: calc(100vw - 2rem);
+  max-width: 30rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
+
+  header {
+    padding: 1rem;
+  }
+
+  .item {
+    padding: 1rem;
+    border-top: 1px solid;
+    border-top-color: inherit;
+  }
+}

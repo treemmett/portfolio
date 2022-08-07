@@ -10,12 +10,20 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { ulid } from 'ulid';
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import { Marker } from '../entities/Marker';
 import type { Post, UploadToken } from '../entities/Post';
 import { Session } from '../entities/Session';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
 import { Config } from '../utils/config';
+
+export interface ApiRequest {
+  id: string;
+  progress: number;
+  status: 'queued' | 'uploading' | 'processing' | 'complete';
+  type: 'upload';
+}
 
 export interface DataStoreContext {
   addMarker(lngLat: LngLat): Promise<void>;
@@ -29,6 +37,7 @@ export interface DataStoreContext {
   posts: Post[];
   session: Session;
   setLightBox(lightBox?: DataStoreContext['lightBox']): void;
+  requests: ApiRequest[];
   updatePost(
     id: string,
     update: Partial<Pick<Post, 'title' | 'location' | 'created'>>
@@ -53,6 +62,7 @@ export const dataStoreContext = createContext<DataStoreContext>({
   login: () => null,
   markers: [],
   posts: [],
+  requests: [],
   session: new Session(),
   setLightBox: () => null,
   updatePost: () => Promise.resolve(),
@@ -62,6 +72,7 @@ export const useDataStore = () => useContext(dataStoreContext);
 
 export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaults }) => {
   const [session, setSession] = useState(new Session());
+  const [requests, setRequests] = useState<ApiRequest[]>([]);
   useEffect(() => {
     setSession(Session.restore());
   }, []);
@@ -94,17 +105,60 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
         setMarkers([data, ...markers]);
       },
       async addPost(file, date, location, title) {
-        const { data: uploadToken } = await apiClient.post<UploadToken>('/post', {
-          date,
-          location,
-          title,
-        });
+        const requestId = ulid();
+
+        setRequests([
+          ...requests,
+          { id: requestId, progress: 0, status: 'uploading', type: 'upload' },
+        ]);
+
+        const { data: uploadToken } = await apiClient.post<UploadToken>(
+          '/post',
+          {
+            date,
+            location,
+            title,
+          },
+          {
+            onUploadProgress(e: ProgressEvent) {
+              setRequests((rs) => {
+                const request = rs.find((r) => r.id === requestId);
+                request.progress = (e.loaded / e.total) * 0.1;
+                return [...rs];
+              });
+            },
+          }
+        );
         await Axios.put(uploadToken.url, file, {
           headers: {
             'Content-Type': 'application/octet-stream',
           },
+          onUploadProgress(e: ProgressEvent) {
+            setRequests((rs) => {
+              const request = rs.find((r) => r.id === requestId);
+              request.progress = 0.1 + (e.loaded / e.total) * 0.8;
+              return [...rs];
+            });
+          },
         });
-        const { data } = await apiClient.put<Post>('/post', { token: uploadToken.token });
+        const { data } = await apiClient.put<Post>(
+          '/post',
+          { token: uploadToken.token },
+          {
+            onUploadProgress(e: ProgressEvent) {
+              setRequests((rs) => {
+                const request = rs.find((r) => r.id === requestId);
+                request.progress = 0.9 + (e.loaded / e.total) * 0.1;
+                return [...rs];
+              });
+            },
+          }
+        );
+        setRequests((rs) => {
+          const request = rs.find((r) => r.id === requestId);
+          request.status = 'complete';
+          return [...rs];
+        });
         const p = [data, ...posts].sort(
           (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
         );
@@ -174,6 +228,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
       },
       markers,
       posts,
+      requests,
       session,
       setLightBox,
       async updatePost(id, update) {
@@ -186,7 +241,7 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
         setPosts(newPosts);
       },
     }),
-    [apiClient, lightBox, markers, posts, session]
+    [apiClient, lightBox, markers, posts, requests, session]
   );
 
   return <dataStoreContext.Provider value={contextValue}>{children}</dataStoreContext.Provider>;
