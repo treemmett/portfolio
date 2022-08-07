@@ -7,6 +7,7 @@ export type ButtonTypes = 'default' | 'primary';
 export interface ButtonProps extends PropsWithChildren {
   className?: string;
   disabled?: boolean;
+  inverted?: boolean;
   /** aria label */
   label?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -21,6 +22,7 @@ export const Button: FC<ButtonProps> = ({
   children,
   className,
   disabled,
+  inverted,
   label,
   onClick,
   size,
@@ -31,6 +33,7 @@ export const Button: FC<ButtonProps> = ({
   <button
     aria-label={label}
     className={cx(styles.button, className, {
+      [styles.inverted]: inverted,
       [styles.primary]: type === 'primary',
       [styles.small]: size === 'small',
     })}

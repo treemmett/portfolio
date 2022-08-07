@@ -42,6 +42,18 @@
     color: shared.$text;
   }
 
+  &.inverted {
+    @include color(shared.$background);
+
+    color: shared.$text;
+
+    @include shared.dark-mode {
+      @include color;
+
+      color: shared.$text-light;
+    }
+  }
+
   &.primary {
     color: #fff;
     @include color(shared.$primary);
