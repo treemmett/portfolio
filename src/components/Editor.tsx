@@ -3,7 +3,6 @@ import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
-import { ulid } from 'ulid';
 import { Post, UploadToken } from '../entities/Post';
 import { ReactComponent as Plus } from '../icons/plusSquare.svg';
 import { apiClient } from '../utils/apiClient';
@@ -77,65 +76,45 @@ export const Editor: FC = () => {
           });
           dispatch({ post: data, type: 'UPDATE_POST' });
         } else {
-          const requestId = ulid();
-
           dispatch({
-            id: requestId,
-            type: 'ADD_API_REQUEST',
-          });
+            async startRequest(setProgress) {
+              const { data: uploadToken } = await apiClient.post<UploadToken>(
+                '/post',
+                {
+                  date,
+                  location,
+                  title,
+                },
+                {
+                  onUploadProgress(progress: ProgressEvent) {
+                    setProgress((progress.loaded / progress.total) * 0.05);
+                  },
+                }
+              );
+              await axios.put(uploadToken.url, file, {
+                headers: {
+                  'Content-Type': 'application/octet-stream',
+                },
+                onUploadProgress(progress: ProgressEvent) {
+                  setProgress(0.05 + (progress.loaded / progress.total) * 0.9);
+                },
+              });
 
-          const { data: uploadToken } = await apiClient.post<UploadToken>(
-            '/post',
-            {
-              date,
-              location,
-              title,
-            },
-            {
-              onUploadProgress(progress: ProgressEvent) {
-                dispatch({
-                  id: requestId,
-                  progress: (progress.loaded / progress.total) * 0.1,
-                  type: 'SET_API_REQUEST_STATUS',
-                });
-              },
-            }
-          );
-          await axios.put(uploadToken.url, file, {
-            headers: {
-              'Content-Type': 'application/octet-stream',
-            },
-            onUploadProgress(progress: ProgressEvent) {
+              const { data } = await apiClient.put<Post>(
+                '/post',
+                { token: uploadToken.token },
+                {
+                  onUploadProgress(progress: ProgressEvent) {
+                    setProgress(0.95 + (progress.loaded / progress.total) * 0.05);
+                  },
+                }
+              );
               dispatch({
-                id: requestId,
-                progress: 0.1 + (progress.loaded / progress.total) * 0.8,
-                type: 'SET_API_REQUEST_STATUS',
+                post: data,
+                type: 'ADD_POST',
               });
             },
-          });
-          const { data } = await apiClient.put<Post>(
-            '/post',
-            { token: uploadToken.token },
-            {
-              onUploadProgress(progress: ProgressEvent) {
-                dispatch({
-                  id: requestId,
-                  progress: 0.9 + (progress.loaded / progress.total) * 0.1,
-                  type: 'SET_API_REQUEST_STATUS',
-                });
-              },
-            }
-          );
-
-          dispatch({
-            id: requestId,
-            status: 'complete',
-            type: 'SET_API_REQUEST_STATUS',
-          });
-
-          dispatch({
-            post: data,
-            type: 'ADD_POST',
+            type: 'ADD_API_REQUEST',
           });
         }
 

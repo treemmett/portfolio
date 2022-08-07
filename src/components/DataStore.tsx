@@ -9,18 +9,12 @@ import {
   useMemo,
   useReducer,
 } from 'react';
+import { ulid } from 'ulid';
 import { ACCESS_TOKEN_STORAGE_KEY } from '../entities/Jwt';
 import { Marker } from '../entities/Marker';
 import type { Post } from '../entities/Post';
 import { Session } from '../entities/Session';
-import { apiClient } from '../utils/apiClient';
-
-export interface ApiRequest {
-  id: string;
-  progress: number;
-  status: 'queued' | 'uploading' | 'processing' | 'complete';
-  type: 'upload';
-}
+import { apiClient, ApiRequest } from '../utils/apiClient';
 
 export interface State {
   lightBox?: MutableRefObject<HTMLElement>;
@@ -31,7 +25,7 @@ export interface State {
 }
 
 export type Action =
-  | { type: 'ADD_API_REQUEST'; id: string }
+  | { type: 'ADD_API_REQUEST'; startRequest: ApiRequest['startRequest'] }
   | { type: 'ADD_MARKER'; marker: Marker }
   | { type: 'ADD_POST'; post: Post }
   | { type: 'DELETE_POST'; id: string }
@@ -47,7 +41,12 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         requests: [
-          { id: action.id, progress: 0, status: 'uploading', type: 'upload' },
+          {
+            id: ulid(),
+            progress: 0,
+            startRequest: action.startRequest,
+            status: 'queued',
+          },
           ...state.requests,
         ],
       };
@@ -191,6 +190,28 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
 
     return () => apiClient.interceptors.request.eject(id);
   }, [state.session]);
+
+  useEffect(() => {
+    const numberOfActiveRequests = state.requests.filter((r) => r.status === 'uploading').length;
+    if (numberOfActiveRequests > 2) return;
+
+    const requestToFire = state.requests.find((r) => r.status === 'queued');
+    if (!requestToFire) return;
+
+    dispatch({
+      id: requestToFire.id,
+      status: 'uploading',
+      type: 'SET_API_REQUEST_STATUS',
+    });
+
+    requestToFire
+      .startRequest((progress) =>
+        dispatch({ id: requestToFire.id, progress, type: 'SET_API_REQUEST_STATUS' })
+      )
+      .then(() =>
+        dispatch({ id: requestToFire.id, status: 'complete', type: 'SET_API_REQUEST_STATUS' })
+      );
+  }, [state.requests]);
 
   const ContextValue = useMemo<ContextValue>(() => ({ ...state, dispatch }), [state]);
 
