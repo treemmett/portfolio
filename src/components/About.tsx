@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, PropsWithChildren, useCallback, useEffect, useRef, useState } from 'react';
-import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes } from '../entities/Jwt';
+import { AuthorizationScopes } from '../entities/Jwt';
 import { Session } from '../entities/Session';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
@@ -61,7 +61,6 @@ export const About: FC = () => {
 
       if (event.data.type === 'OAUTH_CODE') {
         const loginResponse = await apiClient.post('/login', { code: event.data.payload });
-        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
         dispatch({ session: new Session(loginResponse.data), type: 'LOGIN' });
       }
     };

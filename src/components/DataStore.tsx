@@ -80,7 +80,9 @@ function reducer(state: State, action: Action): State {
     }
 
     case 'LOGIN':
-      localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, action.session.accessToken);
+      if (action.session.accessToken) {
+        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, action.session.accessToken);
+      }
       return {
         ...state,
         session: action.session,
