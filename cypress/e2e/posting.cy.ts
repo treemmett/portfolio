@@ -16,7 +16,8 @@ describe('posting', () => {
 
     cy.get('form button[type="submit"]').should('contain', 'Post');
     cy.get('form button[type="submit"]').click();
-    cy.get('form button[type="submit"]').should('contain', 'Uploading');
+    cy.get('[data-testid="upload-manager"]').should('contain', 'Uploading');
+    cy.get('[data-testid="upload-manager"]').should('contain', 'complete');
 
     cy.get('form').should('not.exist');
     cy.location('search').should('not.contain', 'newPost=true');

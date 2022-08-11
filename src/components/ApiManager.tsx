@@ -13,7 +13,7 @@ export const ApiManager: FC = () => {
   if (!requests.length) return null;
 
   return (
-    <div className={styles.manager}>
+    <div className={styles.manager} data-testid="upload-manager">
       <header className={styles.header}>
         <span>Uploading</span>
         <Button
