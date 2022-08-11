@@ -1,0 +1,46 @@
+name: Test
+
+on: push
+
+jobs:
+  setup:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Cancel previous run
+        uses: styfle/cancel-workflow-action@0.10.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+    build:
+      needs: setup
+      steps:
+        - uses: actions/cache@v3
+          with:
+            path: ~/node_modules
+            key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+        - name: build
+          run: yarn build
+        - uses: actions/upload-artifact@v3
+          with:
+            name: dist
+            path: .next/
+
+    test:
+      needs: build
+      steps:
+        - uses: actions/download-artifact@v3
+          with:
+            name: dist
+        - uses: cypress-io/github-action@v4
+          with:
+            env: MOCK=true
+            install: false
+            start: yarn start
+            wait-on: 'http://localhost:3000'
