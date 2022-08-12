@@ -26,9 +26,15 @@ jobs:
           access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Cypress
+      - name: Install dependencies
         uses: cypress-io/github-action@v4
         with:
-          build: yarn build
+          runTest: false
+      - name: Build
+        run: yarn build
+      - name: Run Cypress
+        uses: cypress-io/github-action@v4
+        with:
+          install: false
           start: yarn start
           wait-on: 'http://localhost:3000'
