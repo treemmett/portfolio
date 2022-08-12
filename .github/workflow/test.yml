@@ -1,46 +1,34 @@
 name: Test
 
-on: push
+on: [push]
 
 jobs:
-  setup:
+  test:
     runs-on: 'ubuntu-latest'
+    env:
+      AUTHORIZED_USERS: ${{ secrets.AUTHORIZED_USERS }}
+      CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      MOCK: true
+      NEXT_PUBLIC_GITHUB_USERNAME: ${{ secrets.NEXT_PUBLIC_GITHUB_USERNAME }}
+      NEXT_PUBLIC_INSTAGRAM_USERNAME: ${{ secrets.NEXT_PUBLIC_INSTAGRAM_USERNAME }}
+      NEXT_PUBLIC_LINKEDIN_USERNAME: ${{ secrets.NEXT_PUBLIC_LINKEDIN_USERNAME }}
+      NEXT_PUBLIC_NAME: ${{ secrets.NEXT_PUBLIC_NAME }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      S3_KEY: ${{ secrets.S3_KEY }}
+      S3_KEY_SECRET: ${{ secrets.S3_KEY_SECRET }}
+      S3_URL: ${{ secrets.S3_URL }}
     steps:
       - name: Cancel previous run
         uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: actions/checkout@v3
-      - uses: actions/cache@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cypress
+        uses: cypress-io/github-action@v4
         with:
-          path: ~/node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        run: yarn --frozen-lockfile
-
-    build:
-      needs: setup
-      steps:
-        - uses: actions/cache@v3
-          with:
-            path: ~/node_modules
-            key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
-        - name: build
-          run: yarn build
-        - uses: actions/upload-artifact@v3
-          with:
-            name: dist
-            path: .next/
-
-    test:
-      needs: build
-      steps:
-        - uses: actions/download-artifact@v3
-          with:
-            name: dist
-        - uses: cypress-io/github-action@v4
-          with:
-            env: MOCK=true
-            install: false
-            start: yarn start
-            wait-on: 'http://localhost:3000'
+          build: yarn build
+          start: yarn start
+          wait-on: 'http://localhost:3000'
