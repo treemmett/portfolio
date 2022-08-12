@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   test:
+    environment: test
     runs-on: 'ubuntu-latest'
     env:
       AUTHORIZED_USERS: ${{ secrets.AUTHORIZED_USERS }}
