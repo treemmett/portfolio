@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         uses: cypress-io/github-action@v4
         with:
-          runTest: false
+          runTests: false
       - name: Build
         run: yarn build
       - name: Run Cypress
