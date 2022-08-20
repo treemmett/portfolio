@@ -100,4 +100,4 @@ jobs:
           config: baseUrl=${BASE_URL}
           install: false
           record: true
-          wait-on: $BASE_URL
+          wait-on: ${BASE_URL}
