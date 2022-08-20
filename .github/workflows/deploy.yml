@@ -100,7 +100,6 @@ jobs:
           config: baseUrl=${BASE_URL}
           install: false
           record: true
-          wait-on: ${BASE_URL}
 
   cleanup:
     needs: [setup, preview, test]
