@@ -93,11 +93,10 @@ jobs:
       - name: Run Cypress
         uses: cypress-io/github-action@v4
         env:
-          BASE_URL: ${{ needs.preview.outputs.url }}
           CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         with:
-          config: baseUrl=${BASE_URL}
+          config: baseUrl=${{ needs.preview.outputs.url }}
           install: false
           record: true
 
