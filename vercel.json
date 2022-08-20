@@ -3,5 +3,8 @@
     "src/pages/api/*.js": {
       "includeFiles": "/{next-i18next.config.js,public/locales/**}"
     }
+  },
+  "github": {
+    "enabled": false
   }
 }
