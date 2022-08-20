@@ -55,7 +55,7 @@ jobs:
           S3_KEY_SECRET: ${{ secrets.S3_KEY_SECRET }}
           S3_URL: ${{ secrets.S3_URL }}
       - name: Deploy
-        uses: amondnet/vercel-action@v20
+        uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
