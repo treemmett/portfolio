@@ -34,7 +34,7 @@
     "next": "^12.2.2",
     "next-axiom": "^0.11.1",
     "next-connect": "^0.11.0",
-    "next-i18next": "^11.0.0",
+    "next-i18next": "^11.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reflect-metadata": "^0.1.13",
