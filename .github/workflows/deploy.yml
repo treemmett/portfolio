@@ -20,6 +20,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
   preview:
+    environment: preview
     needs: setup
     runs-on: 'ubuntu-latest'
     steps:
