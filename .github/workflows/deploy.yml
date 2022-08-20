@@ -50,6 +50,7 @@ jobs:
           CDN_URL: ${{ secrets.CDN_URL }}
           GITHUB_CLIENT_SECRET: foobar
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MOCK: true
           NEXT_PUBLIC_GITHUB_CLIENT_ID: foobar
           NEXT_PUBLIC_GITHUB_USERNAME: ${{ secrets.NEXT_PUBLIC_GITHUB_USERNAME }}
           NEXT_PUBLIC_INSTAGRAM_USERNAME: ${{ secrets.NEXT_PUBLIC_INSTAGRAM_USERNAME }}
