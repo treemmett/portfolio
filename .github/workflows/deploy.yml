@@ -23,6 +23,19 @@ jobs:
     runs-on: 'ubuntu-latest'
     needs: setup
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ needs.setup.outputs.cache }}
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-next-js-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-next-js-${{ hashFiles('**/yarn.lock') }}-
+      - name: Install dependencies
+        run: yarn --prefer-offline --frozen-lockfile
       - name: lint
         run: yarn lint
 
