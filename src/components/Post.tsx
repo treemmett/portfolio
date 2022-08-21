@@ -7,6 +7,7 @@ import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
 import { ReactComponent as Pin } from '../icons/map-pin.svg';
 import { useDataStore } from './DataStore';
+import { FormattedDate } from './FormattedDate';
 import styles from './Post.module.scss';
 
 export interface PostProps {
@@ -63,7 +64,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
           <Pin />
           {post.location}
         </span>
-        <span className={styles.date}>{new Date(post.created).toLocaleDateString('af')}</span>
+        <FormattedDate className={styles.date} date={post.created} />
       </div>
     </div>
   );
