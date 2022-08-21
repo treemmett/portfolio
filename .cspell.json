@@ -3,7 +3,8 @@
   "import": [
     "@cspell/dict-de-de/cspell-ext.json",
     "@cspell/dict-et-ee/cspell-ext.json",
-    "@cspell/dict-fr-fr/cspell-ext.json"
+    "@cspell/dict-fr-fr/cspell-ext.json",
+    "@cspell/dict-sv/cspell-ext.json"
   ],
   "language": "en",
   "dictionaries": ["typescript", "html"],
