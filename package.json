@@ -12,7 +12,12 @@
     "start": "next start",
     "prepare": "husky install",
     "test": "MOCK=true start-server-and-test 'yarn dev' http://localhost:3000 'yarn cypress open'",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "lint": "concurrently yarn:lint:*",
+    "lint:code": "next lint",
+    "lint:format": "prettier -c .",
+    "lint:spelling": "cspell \"**/*\" --gitignore",
+    "lint:style": "stylelint **/*.{scss,css}"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^12.2.0",
@@ -60,6 +65,7 @@
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
+    "concurrently": "^7.2.2",
     "cspell": "^6.8.0",
     "cypress": "^10.3.0",
     "eslint": "^8.2.0",

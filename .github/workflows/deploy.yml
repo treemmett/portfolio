@@ -19,6 +19,13 @@ jobs:
         id: yarn
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
+  lint:
+    runs-on: 'ubuntu-latest'
+    needs: setup
+    steps:
+      - name: lint
+        run: yarn lint
+
   preview:
     environment: preview
     needs: setup
@@ -74,7 +81,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
 
   test:
-    needs: [setup, preview]
+    needs: [setup, lint, preview]
     runs-on: 'ubuntu-latest'
     steps:
       - name: Checkout
