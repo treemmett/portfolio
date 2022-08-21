@@ -60,7 +60,7 @@
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
-    "cspell": "^5.16.0",
+    "cspell": "^6.8.0",
     "cypress": "^10.3.0",
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "19.0.4",
