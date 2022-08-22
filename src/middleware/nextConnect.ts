@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import '../../cypress/mock';
+import '../mock';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NC from 'next-connect';
 import { errorHandler } from '../utils/errors';
