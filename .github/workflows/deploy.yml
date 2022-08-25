@@ -65,24 +65,26 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Set env
+        run: |
+          echo true                             | yarn vercel env add MOCK preview --token=${VERCEL_TOKEN} -y
+          echo ${{ secrets.JWT_SECRET }}        | yarn vercel env add JWT_SECRET preview --token=${VERCEL_TOKEN} -y
+          echo foobar                           | yarn vercel env add GITHUB_CLIENT_SECRET preview --token=${VERCEL_TOKEN} -y
+          echo ${{ secrets.CDN_URL }}           | yarn vercel env add CDN_URL preview --token=${VERCEL_TOKEN} -y
+          echo ${{ secrets.AUTHORIZED_USERS }}  | yarn vercel env add AUTHORIZED_USERS preview --token=${VERCEL_TOKEN} -y
+          echo ${{ secrets.S3_BUCKET }}         | yarn vercel env add S3_BUCKET preview --token=${VERCEL_TOKEN} -y
+          echo ${{ secrets.S3_KEY }}            | yarn vercel env add S3_KEY preview --token=${VERCEL_TOKEN} -y
+          echo ${{ secrets.S3_KEY_SECRET }}     | yarn vercel env add S3_KEY_SECRET preview --token=${VERCEL_TOKEN} -y
+          echo ${{ secrets.S3_URL }}            | yarn vercel env add S3_URL preview --token=${VERCEL_TOKEN} -y
       - name: Build
         run: yarn vercel build
         env:
-          AUTHORIZED_USERS: ${{ secrets.AUTHORIZED_USERS }}
-          CDN_URL: ${{ secrets.CDN_URL }}
-          GITHUB_CLIENT_SECRET: foobar
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          MOCK: true
           NEXT_PUBLIC_GITHUB_CLIENT_ID: foobar
           NEXT_PUBLIC_GITHUB_USERNAME: ${{ secrets.NEXT_PUBLIC_GITHUB_USERNAME }}
           NEXT_PUBLIC_INSTAGRAM_USERNAME: ${{ secrets.NEXT_PUBLIC_INSTAGRAM_USERNAME }}
           NEXT_PUBLIC_LINKEDIN_USERNAME: ${{ secrets.NEXT_PUBLIC_LINKEDIN_USERNAME }}
           NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
           NEXT_PUBLIC_NAME: ${{ secrets.NEXT_PUBLIC_NAME }}
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          S3_KEY: ${{ secrets.S3_KEY }}
-          S3_KEY_SECRET: ${{ secrets.S3_KEY_SECRET }}
-          S3_URL: ${{ secrets.S3_URL }}
       - name: Deploy
         id: deploy
         uses: amondnet/vercel-action@v25
