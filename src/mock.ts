@@ -2,7 +2,7 @@ import axios from 'axios';
 import adapter from 'axios/lib/adapters/http';
 import nock from 'nock';
 
-if (process.env.MOCK === 'true') {
+if (process.env.MOCK) {
   axios.defaults.adapter = adapter;
 
   nock('https://github.com')
