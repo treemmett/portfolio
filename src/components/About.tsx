@@ -35,6 +35,7 @@ export const About: FC = () => {
     );
 
     const intervalId = setInterval(() => {
+      console.log({ popup });
       if (popup.closed) {
         dispatch({ type: 'LOGOUT' });
         clearInterval(intervalId);
