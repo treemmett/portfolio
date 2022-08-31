@@ -45,10 +45,9 @@ jobs:
         # cspell:word bitnami
         env:
           MINIO_DEFAULT_BUCKETS: minio-bucket
+          MINIO_FORCE_NEW_KEYS: yes
           MINIO_ROOT_PASSWORD: minio-root-password
           MINIO_ROOT_USER: minio-root-user
-          MINIO_SERVER_ACCESS_KEY: minio-access-key
-          MINIO_SERVER_SECRET_KEY: minio-secret-key
         image: bitnami/minio
         ports:
           - 9000:9000
@@ -82,8 +81,8 @@ jobs:
           NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
           NEXT_PUBLIC_NAME: ${{ secrets.NEXT_PUBLIC_NAME }}
           S3_BUCKET: MINIO_DEFAULT_BUCKETS
-          S3_KEY: minio-access-key
-          S3_KEY_SECRET: minio-secret-key
+          S3_KEY: minio-root-user
+          S3_KEY_SECRET: minio-root-password
         with:
           browser: chrome
           build: yarn build
