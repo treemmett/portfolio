@@ -44,17 +44,15 @@ declare namespace Cypress {
 
 Cypress.Commands.add('login', (username = 'treemmett') => {
   cy.visit('/');
-
   cy.window().then((win) => {
-    cy.stub(win, 'open').as('windowOpen');
+    cy.stub(win, 'open').as('windowOpen').returns({ closed: true });
   });
-
   cy.intercept('/api/login').as('login');
-
   cy.get('[data-testid=login]').click();
-
-  cy.get('@windowOpen').should('be.called');
-
+  cy.get('@windowOpen').should(
+    'be.calledWithMatch',
+    /https:\/\/github.com\/login\/oauth\/authorize\?client_id=/
+  );
   cy.window().then((win) => {
     win.postMessage({
       payload: username,

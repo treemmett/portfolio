@@ -9,6 +9,20 @@ describe('authentication', () => {
     cy.get('[data-testid="new post"]');
   });
 
+  it('should process github redirect callback', () => {
+    cy.visit('/login?code=oh_hello');
+    cy.window().then((win) => {
+      // eslint-disable-next-line no-param-reassign
+      win.opener = {
+        postMessage: cy.stub().as('postMessage'),
+      };
+    });
+    cy.get('@postMessage').should('be.called.with', {
+      payload: 'oh_hello',
+      type: 'OAUTH_CODE',
+    });
+  });
+
   it('should authenticate an unknown user, and not allow posting', () => {
     cy.login('bob');
     cy.contains('Welcome back');
