@@ -1,9 +1,7 @@
-name: Deploy
+name: Test
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   setup:
@@ -61,6 +59,7 @@ jobs:
         env:
           CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           browser: chrome
           build: yarn build
