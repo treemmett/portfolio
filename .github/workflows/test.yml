@@ -40,6 +40,12 @@ jobs:
   test:
     needs: setup
     runs-on: 'ubuntu-latest'
+    services:
+      minio:
+        # cspell:word bitnami
+        image: bitnami/minio
+        ports:
+          - 9000:9000
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -74,7 +80,7 @@ jobs:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           S3_KEY: ${{ secrets.S3_KEY }}
           S3_KEY_SECRET: ${{ secrets.S3_KEY_SECRET }}
-          S3_URL: ${{ secrets.S3_URL }}
+          S3_URL: minio
         with:
           browser: chrome
           build: yarn build
