@@ -45,6 +45,8 @@ jobs:
         # cspell:word bitnami
         env:
           MINIO_DEFAULT_BUCKETS: minio-bucket
+          MINIO_ROOT_PASSWORD: minio-root-password
+          MINIO_ROOT_USER: minio-root-user
           MINIO_SERVER_ACCESS_KEY: minio-access-key
           MINIO_SERVER_SECRET_KEY: minio-secret-key
         image: bitnami/minio
