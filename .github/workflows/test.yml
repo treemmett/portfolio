@@ -80,7 +80,7 @@ jobs:
           NEXT_PUBLIC_LINKEDIN_USERNAME: ${{ secrets.NEXT_PUBLIC_LINKEDIN_USERNAME }}
           NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
           NEXT_PUBLIC_NAME: ${{ secrets.NEXT_PUBLIC_NAME }}
-          S3_BUCKET: MINIO_DEFAULT_BUCKETS
+          S3_BUCKET: minio-bucket
           S3_KEY: minio-root-user
           S3_KEY_SECRET: minio-root-password
         with:
