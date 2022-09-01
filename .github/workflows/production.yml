@@ -10,7 +10,9 @@ jobs:
     uses: ./.github/workflows/test.yml
     secrets: inherit
   deploy:
-    environment: production
+    environment:
+      name: production
+      url: https://tregan.me
     needs: test
     runs-on: 'ubuntu-latest'
     steps:
