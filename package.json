@@ -61,7 +61,7 @@
     "@cspell/dict-et-ee": "^2.0.6",
     "@cspell/dict-fr-fr": "^2.1.0",
     "@cspell/dict-sv": "^2.0.3",
-    "@svgr/webpack": "^6.2.1",
+    "@svgr/webpack": "^6.3.1",
     "@types/node": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "@typescript-eslint/parser": "^5.9.0",
