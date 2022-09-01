@@ -35,6 +35,12 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Remove previous env
+        run: |
+          vercel env ls production |
+          grep -i encrypted |
+          awk '/ Encrypted/ {print $1}' |
+          xargs -I % vercel env rm % production -y
       - name: Set env
         run: |
           echo ${{ secrets.JWT_SECRET }}        | yarn vercel env add JWT_SECRET production --token=${{ secrets.VERCEL_TOKEN }} -y
