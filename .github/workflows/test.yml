@@ -33,6 +33,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
@@ -64,6 +67,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Cache build
         uses: actions/cache@v3
         with:
@@ -86,11 +92,11 @@ jobs:
           JWT_SECRET: foobar
           MOCK: true
           NEXT_PUBLIC_GITHUB_CLIENT_ID: foobar
-          NEXT_PUBLIC_GITHUB_USERNAME: ${{ secrets.NEXT_PUBLIC_GITHUB_USERNAME }}
-          NEXT_PUBLIC_INSTAGRAM_USERNAME: ${{ secrets.NEXT_PUBLIC_INSTAGRAM_USERNAME }}
-          NEXT_PUBLIC_LINKEDIN_USERNAME: ${{ secrets.NEXT_PUBLIC_LINKEDIN_USERNAME }}
+          NEXT_PUBLIC_GITHUB_USERNAME: treemmett
+          NEXT_PUBLIC_INSTAGRAM_USERNAME: treemmett
+          NEXT_PUBLIC_LINKEDIN_USERNAME: treemmett
           NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
-          NEXT_PUBLIC_NAME: ${{ secrets.NEXT_PUBLIC_NAME }}
+          NEXT_PUBLIC_NAME: Tregan
           S3_BUCKET: minio-bucket
           S3_KEY: minio-root-user
           S3_KEY_SECRET: minio-root-password
