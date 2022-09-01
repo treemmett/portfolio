@@ -5,10 +5,17 @@ on:
     branches-ignore:
       - main
   workflow_call:
+  workflow_run:
+    workflows: ['Dependabot PR Check']
+    types:
+      - completed
 
 jobs:
   setup:
     runs-on: 'ubuntu-latest'
+    if: |
+      (github.event_name != 'workflow_run') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     outputs:
       cache: ${{ steps.yarn.outputs.dir }}
     steps:
