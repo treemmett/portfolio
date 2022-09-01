@@ -58,7 +58,7 @@
     "@commitlint/cli": "^16.1.0",
     "@commitlint/config-conventional": "^16.0.0",
     "@cspell/dict-de-de": "^2.1.0",
-    "@cspell/dict-et-ee": "^2.0.6",
+    "@cspell/dict-et-ee": "^2.0.7",
     "@cspell/dict-fr-fr": "^2.1.1",
     "@cspell/dict-sv": "^2.0.3",
     "@svgr/webpack": "^6.3.1",
