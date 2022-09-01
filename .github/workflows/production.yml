@@ -44,7 +44,7 @@ jobs:
           echo ${{ secrets.S3_KEY_SECRET }}     | yarn vercel env add S3_KEY_SECRET production --token=${{ secrets.VERCEL_TOKEN }} -y
           echo ${{ secrets.S3_URL }}            | yarn vercel env add S3_URL production --token=${{ secrets.VERCEL_TOKEN }} -y
       - name: Build
-        run: yarn vercel build
+        run: yarn vercel build --prod
         env:
           AUTHORIZED_USERS: ${{ secrets.AUTHORIZED_USERS }}
           CDN_URL: ${{ secrets.CDN_URL }}
