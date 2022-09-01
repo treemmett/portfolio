@@ -36,7 +36,7 @@ jobs:
       - name: Set env
         run: |
           echo ${{ secrets.JWT_SECRET }}        | yarn vercel env add JWT_SECRET production --token=${{ secrets.VERCEL_TOKEN }} -y
-          echo foobar                           | yarn vercel env add GITHUB_CLIENT_SECRET production --token=${{ secrets.VERCEL_TOKEN }} -y
+          echo ${{ secrets.GH_CLIENT_SECRET }}  | yarn vercel env add GITHUB_CLIENT_SECRET production --token=${{ secrets.VERCEL_TOKEN }} -y
           echo ${{ secrets.CDN_URL }}           | yarn vercel env add CDN_URL production --token=${{ secrets.VERCEL_TOKEN }} -y
           echo ${{ secrets.AUTHORIZED_USERS }}  | yarn vercel env add AUTHORIZED_USERS production --token=${{ secrets.VERCEL_TOKEN }} -y
           echo ${{ secrets.S3_BUCKET }}         | yarn vercel env add S3_BUCKET production --token=${{ secrets.VERCEL_TOKEN }} -y
@@ -48,9 +48,9 @@ jobs:
         env:
           AUTHORIZED_USERS: ${{ secrets.AUTHORIZED_USERS }}
           CDN_URL: ${{ secrets.CDN_URL }}
-          GITHUB_CLIENT_SECRET: foobar
+          GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          NEXT_PUBLIC_GITHUB_CLIENT_ID: foobar
+          NEXT_PUBLIC_GITHUB_CLIENT_ID: ${{ secrets.CDN_URL }}
           NEXT_PUBLIC_GITHUB_USERNAME: ${{ secrets.NEXT_PUBLIC_GITHUB_USERNAME }}
           NEXT_PUBLIC_INSTAGRAM_USERNAME: ${{ secrets.NEXT_PUBLIC_INSTAGRAM_USERNAME }}
           NEXT_PUBLIC_LINKEDIN_USERNAME: ${{ secrets.NEXT_PUBLIC_LINKEDIN_USERNAME }}
