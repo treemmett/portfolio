@@ -1542,10 +1542,10 @@
   resolved "https://registry.yarnpkg.com/@cspell/dict-fonts/-/dict-fonts-2.0.1.tgz#16a99591fef8ba616d09db8973494e9d9ecdd3c9"
   integrity sha512-UX9evXp7IPZ55G1NxVLADoRgGa+6MPSFx4zWveT6vHIVI9k50yZZY2QkIgQIOEPgk8RNrNe1Tf6HLfndgFL2kQ==
 
-"@cspell/dict-fr-fr@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-fr-fr/-/dict-fr-fr-2.1.0.tgz#a2a8e2bf9fdf75c66f9f575ef8c5032aa6a96b6b"
-  integrity sha512-P2HejLDpRZeHrFewkhkFVxl3PuscGaggOhmHyB7LfHSfo7XF/0Oj3m5asKKETXxKiUGGLmNNAsHM9FNtmgulwQ==
+"@cspell/dict-fr-fr@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-fr-fr/-/dict-fr-fr-2.1.1.tgz#95f23d1802851759537c700226ecdec609406765"
+  integrity sha512-rwU1Z0yZYIV8X/PSBXXbS+17lxtQADJqaXThXEUmWF3mMLqbddXkvBvWb0OOhqhDtMGjMqFYjavcVvg8lhX6YQ==
 
 "@cspell/dict-fullstack@^2.0.6":
   version "2.0.6"
