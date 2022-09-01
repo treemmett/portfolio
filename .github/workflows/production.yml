@@ -40,7 +40,7 @@ jobs:
           vercel env ls production |
           grep -i encrypted |
           awk '/ Encrypted/ {print $1}' |
-          xargs -I % vercel env rm % production -y
+          xargs -I % vercel env rm % production -y --token=${VERCEL_TOKEN}
       - name: Set env
         run: |
           echo ${{ secrets.JWT_SECRET }}        | yarn vercel env add JWT_SECRET production --token=${{ secrets.VERCEL_TOKEN }} -y
