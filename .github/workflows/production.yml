@@ -52,11 +52,6 @@ jobs:
           envkey_S3_KEY: ${{ secrets.S3_KEY }}
           envkey_S3_KEY_SECRET: ${{ secrets.S3_KEY_SECRET }}
           envkey_S3_URL: ${{ secrets.S3_URL }}
-      - uses: actions/upload-artifact@v3
-        name: Upload env
-        with:
-          name: env
-          path: .env
       - name: Set env
         # cspell:word hackzcompany
         uses: hackzcompany/vercel-env-push-action@v2
