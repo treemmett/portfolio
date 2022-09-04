@@ -49,7 +49,7 @@ jobs:
           envkey_GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           envkey_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          envkey_NEXT_PUBLIC_GITHUB_CLIENT_ID: ${{ NEXT_PUBLIC_GITHUB_CLIENT_ID }}
+          envkey_NEXT_PUBLIC_GITHUB_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GITHUB_CLIENT_ID }}
           envkey_NEXT_PUBLIC_GITHUB_USERNAME: ${{ secrets.NEXT_PUBLIC_GITHUB_USERNAME }}
           envkey_NEXT_PUBLIC_INSTAGRAM_USERNAME: ${{ secrets.NEXT_PUBLIC_INSTAGRAM_USERNAME }}
           envkey_NEXT_PUBLIC_LINKEDIN_USERNAME: ${{ secrets.NEXT_PUBLIC_LINKEDIN_USERNAME }}
