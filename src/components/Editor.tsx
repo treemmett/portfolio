@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 import { Post, UploadToken } from '../entities/Post';
-import { ReactComponent as Plus } from '../icons/plusSquare.svg';
+import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { apiClient } from '../utils/apiClient';
 import { toString } from '../utils/queryParam';
 import { Button } from './Button';

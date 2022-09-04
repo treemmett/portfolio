@@ -9,7 +9,7 @@ import { Button } from '../components/Button';
 import { DefaultState, useDataStore } from '../components/DataStore';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
-import { ReactComponent as Plus } from '../icons/plusSquare.svg';
+import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { ReactComponent as X } from '../icons/x-square.svg';
 import { apiClient } from '../utils/apiClient';
 import { Config } from '../utils/config';
