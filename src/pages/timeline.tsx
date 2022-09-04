@@ -5,8 +5,12 @@ import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
+import { Button } from '../components/Button';
 import { DefaultState, useDataStore } from '../components/DataStore';
+import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
+import { ReactComponent as Plus } from '../icons/plusSquare.svg';
+import { ReactComponent as X } from '../icons/x-square.svg';
 import { apiClient } from '../utils/apiClient';
 import { Config } from '../utils/config';
 import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
@@ -24,7 +28,9 @@ export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) =
 };
 
 const Timeline: NextPage = () => {
+  const { session } = useDataStore();
   const [darkMode, setDarkMode] = useState(isDarkMode());
+  const [selecting, setSelecting] = useState(false);
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
 
   const { dispatch, markers } = useDataStore();
@@ -114,6 +120,17 @@ const Timeline: NextPage = () => {
   return (
     <WithAbout className={styles.timeline}>
       <div className={styles.map} id="map" ref={mapContainer} />
+
+      {session.hasPermission(AuthorizationScopes.post) && (
+        <Button
+          className={styles.button}
+          inverted={selecting}
+          onClick={() => setSelecting(!selecting)}
+          testId="new post"
+        >
+          {selecting ? <X /> : <Plus />}
+        </Button>
+      )}
     </WithAbout>
   );
 };
