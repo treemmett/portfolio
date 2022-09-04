@@ -1,6 +1,6 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import lineString from '@turf/bezier-spline';
-import { LngLat, LngLatBounds, Map, MapMouseEvent, Marker } from 'mapbox-gl';
+import { LngLatBounds, LngLatLike, Map, MapMouseEvent, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -16,18 +16,47 @@ import { Config } from '../utils/config';
 import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
 
-export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
+export interface TimelineProps {
+  ne: LngLatLike;
+  sw: LngLatLike;
+}
+
+export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = async ({ locale }) => {
   const markers = await MarkerEntity.getAll();
+
+  const ne: LngLatLike = markers.length
+    ? { lat: markers[0].lat, lng: markers[0].lng }
+    : { lat: 42.35, lng: -70.9 };
+  const sw = { ...ne };
+  markers.forEach((lngLat) => {
+    if (ne.lng < lngLat.lng) {
+      ne.lng = lngLat.lng;
+    }
+
+    if (ne.lat < lngLat.lat) {
+      ne.lat = lngLat.lat;
+    }
+
+    if (sw.lng > lngLat.lng) {
+      sw.lng = lngLat.lng;
+    }
+
+    if (sw.lat > lngLat.lat) {
+      sw.lat = lngLat.lat;
+    }
+  });
 
   return {
     props: {
       markers,
+      ne,
+      sw,
       ...(await serverSideTranslations(locale, ['common'])),
     },
   };
 };
 
-const Timeline: NextPage = () => {
+const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
   const { session } = useDataStore();
   const [darkMode, setDarkMode] = useState(isDarkMode());
   const [selecting, setSelecting] = useState(false);
@@ -38,34 +67,10 @@ const Timeline: NextPage = () => {
   const map = useRef<Map>();
   useEffect(() => {
     if (mapContainer.current) {
-      const getBounds = (): LngLatBounds => {
-        const sw = new LngLat(markers[0].lng, markers[0].lat);
-        const ne = new LngLat(markers[0].lng, markers[0].lat);
-        markers.forEach((lngLat) => {
-          if (ne.lng < lngLat.lng) {
-            ne.lng = lngLat.lng;
-          }
-
-          if (ne.lat < lngLat.lat) {
-            ne.lat = lngLat.lat;
-          }
-
-          if (sw.lng > lngLat.lng) {
-            sw.lng = lngLat.lng;
-          }
-
-          if (sw.lat > lngLat.lat) {
-            sw.lat = lngLat.lat;
-          }
-        });
-
-        return new LngLatBounds(sw, ne);
-      };
-
       map.current = new Map({
         accessToken: Config.NEXT_PUBLIC_MAPBOX_TOKEN,
         attributionControl: false,
-        bounds: markers.length ? getBounds() : undefined,
+        bounds: new LngLatBounds(sw, ne),
         center: markers.length ? undefined : [-70.9, 42.35],
         container: mapContainer.current,
         fitBoundsOptions: {
@@ -106,7 +111,7 @@ const Timeline: NextPage = () => {
         map.current.remove();
       }
     };
-  }, [darkMode, dispatch, map, markers]);
+  }, [darkMode, dispatch, map, markers, ne, sw]);
 
   const mapClickHandler = useCallback(
     async ({ lngLat }: MapMouseEvent) => {
