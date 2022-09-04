@@ -10,6 +10,7 @@ jobs:
     uses: ./.github/workflows/test.yml
     secrets: inherit
   deploy:
+    needs: test
     environment:
       name: production
       url: https://tregan.me
