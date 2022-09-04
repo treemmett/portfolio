@@ -13,7 +13,6 @@ jobs:
     environment:
       name: production
       url: https://tregan.me
-    needs: test
     runs-on: 'ubuntu-latest'
     steps:
       - name: Checkout
@@ -58,6 +57,7 @@ jobs:
         uses: hackzcompany/vercel-env-push-action@v2
         with:
           project: ${{ secrets.VERCEL_PROJECT_ID }}
+          team_id: ''
           token: ${{ secrets.VERCEL_TOKEN }}
           environments: production
       - name: Deploy
@@ -68,5 +68,4 @@ jobs:
           vercel-args: --prod
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          team_id: ''
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
