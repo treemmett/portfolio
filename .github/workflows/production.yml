@@ -55,10 +55,11 @@ jobs:
         # cspell:word hackzcompany
         uses: hackzcompany/vercel-env-push-action@v2
         with:
+          env_type: plain
+          environments: production
           project: ${{ secrets.VERCEL_PROJECT_ID }}
           team_id: ${{ secrets.VERCEL_TEAM }}
           token: ${{ secrets.VERCEL_TOKEN }}
-          environments: production
       - name: Deploy
         id: deploy
         uses: amondnet/vercel-action@v25
