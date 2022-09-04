@@ -1,9 +1,9 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import lineString from '@turf/bezier-spline';
-import { LngLat, LngLatBounds, Map, Marker } from 'mapbox-gl';
+import { LngLat, LngLatBounds, Map, MapMouseEvent, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
 import { Button } from '../components/Button';
 import { DefaultState, useDataStore } from '../components/DataStore';
@@ -73,37 +73,28 @@ const Timeline: NextPage = () => {
         },
         style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
         zoom: 9,
-      })
-        .on('load', () => {
-          map.current.addSource('route', {
-            data: lineString({
-              coordinates: markers.map((m) => [m.lng, m.lat]),
-              type: 'LineString',
-            }),
-            type: 'geojson',
-          });
-          map.current.addLayer({
-            id: 'route',
-            layout: {
-              'line-cap': 'round',
-              'line-join': 'round',
-            },
-            paint: {
-              'line-color': '#888',
-              'line-width': 2,
-            },
-            source: 'route',
-            type: 'line',
-          });
-        })
-        .on('click', async ({ lngLat }) => {
-          new Marker().setLngLat(lngLat).addTo(map.current);
-          const { data } = await apiClient.post<MarkerEntity>('/timeline', lngLat);
-          dispatch({
-            marker: data,
-            type: 'ADD_MARKER',
-          });
+      }).on('load', () => {
+        map.current.addSource('route', {
+          data: lineString({
+            coordinates: markers.map((m) => [m.lng, m.lat]),
+            type: 'LineString',
+          }),
+          type: 'geojson',
         });
+        map.current.addLayer({
+          id: 'route',
+          layout: {
+            'line-cap': 'round',
+            'line-join': 'round',
+          },
+          paint: {
+            'line-color': '#888',
+            'line-width': 2,
+          },
+          source: 'route',
+          type: 'line',
+        });
+      });
 
       markers.forEach((lngLat) => {
         new Marker().setLngLat(lngLat).addTo(map.current);
@@ -116,6 +107,30 @@ const Timeline: NextPage = () => {
       }
     };
   }, [darkMode, dispatch, map, markers]);
+
+  const mapClickHandler = useCallback(
+    async ({ lngLat }: MapMouseEvent) => {
+      new Marker().setLngLat(lngLat).addTo(map.current);
+      const { data } = await apiClient.post<MarkerEntity>('/timeline', lngLat);
+      dispatch({
+        marker: data,
+        type: 'ADD_MARKER',
+      });
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    if (selecting && map.current) {
+      map.current.on('click', mapClickHandler);
+    }
+
+    return () => {
+      if (map.current) {
+        map.current.off('click', mapClickHandler);
+      }
+    };
+  }, [map, mapClickHandler, selecting]);
 
   return (
     <WithAbout className={styles.timeline}>
