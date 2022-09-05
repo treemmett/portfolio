@@ -43,7 +43,7 @@ export class Marker {
     const marker = await transformAndValidate(Marker, {
       city,
       country,
-      date,
+      date: new Date(date),
       id: ulid(),
       lat,
       lng,

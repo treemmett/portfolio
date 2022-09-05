@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { ErrorHandler } from 'next-connect';
+import { logger } from './logger';
 
 export enum ErrorCode {
   /**
@@ -153,6 +154,8 @@ export class APIError extends Error {
 
 export const errorHandler: ErrorHandler<NextApiRequest, NextApiResponse> = (err, req, res) => {
   const errorCode = err.error || ErrorCode.never;
+
+  logger.error(err);
 
   res.status(getStatusCode(errorCode)).send({
     error: {
