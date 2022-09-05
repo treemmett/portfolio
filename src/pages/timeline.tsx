@@ -1,28 +1,16 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import lineString from '@turf/bezier-spline';
-import {
-  GeoJSONSource,
-  LngLat,
-  LngLatBounds,
-  LngLatLike,
-  Map,
-  MapMouseEvent,
-  Marker,
-} from 'mapbox-gl';
+import { GeoJSONSource, LngLatBounds, LngLatLike, Map, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
-import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
-import { Button } from '../components/Button';
+import { CheckIn } from '../components/CheckIn';
 import { DefaultState, useDataStore } from '../components/DataStore';
-import { Input } from '../components/Input';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
-import { ReactComponent as Plus } from '../icons/plus-square.svg';
-import { ReactComponent as X } from '../icons/x-square.svg';
 import { Config } from '../utils/config';
-import { getRemValue, isDarkMode, listenForDarkModeChange } from '../utils/pixels';
+import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
 
 export interface TimelineProps {
@@ -66,7 +54,6 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
 };
 
 const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
-  const { t } = useTranslation();
   const { session } = useDataStore();
   const [darkMode, setDarkMode] = useState(isDarkMode());
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
@@ -98,47 +85,6 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
       }
     };
   }, [darkMode, dispatch, map, ne, sw]);
-
-  const [selecting, setSelecting] = useState(false);
-  const [selectedCoordinates, setSelectedCoordinates] = useState<LngLat>();
-  const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
-    setSelectedCoordinates(lngLat);
-  }, []);
-  useEffect(() => {
-    let marker: Marker;
-    if (selectedCoordinates) {
-      marker = new Marker({ color: '#CF5D40' }).setLngLat(selectedCoordinates).addTo(map.current);
-      map.current
-        .setPadding({
-          bottom: getRemValue() * 2,
-          left: getRemValue() * 10,
-          right: getRemValue() * 4,
-          top: getRemValue() * 2,
-        })
-        .flyTo({ center: selectedCoordinates, zoom: 8 });
-    }
-
-    return () => {
-      if (marker) {
-        marker.remove();
-      }
-    };
-  }, [selectedCoordinates]);
-
-  useEffect(() => {
-    if (selecting && map.current) {
-      map.current.on('click', mapClickHandler);
-    } else {
-      setSelectedCoordinates(null);
-    }
-
-    return () => {
-      if (map.current) {
-        map.current.off('click', mapClickHandler);
-      }
-    };
-  }, [map, mapClickHandler, selecting]);
-
   useEffect(() => {
     const markersOnMap: Marker[] = [];
     if (map.current && mapLoaded && markers.length) {
@@ -194,44 +140,7 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
     <WithAbout className={styles.timeline}>
       <div className={styles.map} id="map" ref={mapContainer} />
 
-      {selectedCoordinates && (
-        <div className={styles.editor}>
-          <Input
-            label={t('Longitude')}
-            onChange={(e) =>
-              setSelectedCoordinates(
-                new LngLat(parseFloat(e.currentTarget.value), selectedCoordinates.lat)
-              )
-            }
-            step={0.001}
-            type="number"
-            value={selectedCoordinates.lng.toString()}
-          />
-          <Input
-            label={t('Latitude')}
-            onChange={(e) =>
-              setSelectedCoordinates(
-                new LngLat(selectedCoordinates.lng, parseFloat(e.currentTarget.value))
-              )
-            }
-            step={0.001}
-            type="number"
-            value={selectedCoordinates.lat.toString()}
-          />
-        </div>
-      )}
-
-      {session.hasPermission(AuthorizationScopes.post) && (
-        <Button
-          className={styles.button}
-          inverted={selecting}
-          label={t('Check in')}
-          onClick={() => setSelecting(!selecting)}
-          testId="check-in"
-        >
-          {selecting ? <X /> : <Plus />}
-        </Button>
-      )}
+      {session.hasPermission(AuthorizationScopes.post) && <CheckIn map={map} />}
     </WithAbout>
   );
 };
