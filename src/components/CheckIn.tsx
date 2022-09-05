@@ -20,6 +20,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   const [selectedCoordinates, setSelectedCoordinates] = useState<LngLat>();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [country, setCountry] = useState<Country>('--' as Country);
+  const [city, setCity] = useState('');
 
   const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
     setSelectedCoordinates(lngLat);
@@ -110,6 +111,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             type="select"
             value={country}
           />
+          <Input label={t('City')} onChange={(e) => setCity(e.currentTarget.value)} value={city} />
         </div>
       )}
     </>
