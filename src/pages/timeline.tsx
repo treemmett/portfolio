@@ -1,6 +1,14 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import lineString from '@turf/bezier-spline';
-import { GeoJSONSource, LngLatBounds, LngLatLike, Map, MapMouseEvent, Marker } from 'mapbox-gl';
+import {
+  GeoJSONSource,
+  LngLat,
+  LngLatBounds,
+  LngLatLike,
+  Map,
+  MapMouseEvent,
+  Marker,
+} from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -11,7 +19,6 @@ import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { ReactComponent as X } from '../icons/x-square.svg';
-import { apiClient } from '../utils/apiClient';
 import { Config } from '../utils/config';
 import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
@@ -59,7 +66,6 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
 const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
   const { session } = useDataStore();
   const [darkMode, setDarkMode] = useState(isDarkMode());
-  const [selecting, setSelecting] = useState(false);
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
 
   const { dispatch, markers } = useDataStore();
@@ -90,17 +96,25 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
     };
   }, [darkMode, dispatch, map, ne, sw]);
 
-  const mapClickHandler = useCallback(
-    async ({ lngLat }: MapMouseEvent) => {
-      new Marker().setLngLat(lngLat).addTo(map.current);
-      const { data } = await apiClient.post<MarkerEntity>('/timeline', lngLat);
-      dispatch({
-        marker: data,
-        type: 'ADD_MARKER',
-      });
-    },
-    [dispatch]
-  );
+  const [selecting, setSelecting] = useState(false);
+  const [selectedCoordinates, setSelectedCoordinates] = useState<LngLat>();
+
+  const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
+    setSelectedCoordinates(lngLat);
+  }, []);
+  useEffect(() => {
+    let marker: Marker;
+    if (selectedCoordinates) {
+      marker = new Marker({ color: '#CF5D40' }).setLngLat(selectedCoordinates).addTo(map.current);
+      map.current.flyTo({ center: selectedCoordinates, zoom: 8 });
+    }
+
+    return () => {
+      if (marker) {
+        marker.remove();
+      }
+    };
+  }, [selectedCoordinates]);
 
   useEffect(() => {
     if (selecting && map.current) {
