@@ -11,10 +11,11 @@ export interface InputProps {
   id?: string;
   label?: string;
   name?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
+  options?: { id: string; label: string }[];
   step?: number;
   testId?: string;
-  type?: HTMLInputTypeAttribute;
+  type?: HTMLInputTypeAttribute | 'select';
   value?: string | number;
 }
 
@@ -30,6 +31,7 @@ export const Input: FC<InputProps> = ({
   label,
   name,
   onChange,
+  options,
   step,
   testId,
   type,
@@ -41,17 +43,27 @@ export const Input: FC<InputProps> = ({
   return (
     <label className={cx(styles.wrapper, className)} htmlFor={realId}>
       {(!collapseLabel || label) && <div className={styles.label}>{label}</div>}
-      <input
-        className={styles.input}
-        data-testid={testId}
-        defaultValue={defaultValue}
-        id={realId}
-        name={name}
-        onChange={onChange}
-        step={step}
-        type={type}
-        value={value}
-      />
+      {type === 'select' ? (
+        <select className={styles.input} onChange={onChange} value={value}>
+          {options.map((opt) => (
+            <option key={opt.id} value={opt.id}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          className={styles.input}
+          data-testid={testId}
+          defaultValue={defaultValue}
+          id={realId}
+          name={name}
+          onChange={onChange}
+          step={step}
+          type={type}
+          value={value}
+        />
+      )}
     </label>
   );
 };

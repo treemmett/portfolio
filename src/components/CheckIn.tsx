@@ -98,23 +98,18 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             value={selectedCoordinates.lat.toString()}
           />
           <Input
-            className={styles.input}
             label={t('Date')}
-            name="date"
             onChange={(e) => setDate(e.currentTarget.value)}
             type="date"
             value={date}
           />
-          <select onChange={(e) => setCountry(e.currentTarget.value as Country)} value={country}>
-            <option value="--" disabled>
-              Country
-            </option>
-            {Object.entries(Country).map(([name, code]) => (
-              <option key={code} value={code}>
-                {splitCase(name)}
-              </option>
-            ))}
-          </select>
+          <Input
+            label={t('Country')}
+            onChange={(e) => setCountry(e.currentTarget.value as Country)}
+            options={Object.entries(Country).map(([name, id]) => ({ id, label: splitCase(name) }))}
+            type="select"
+            value={country}
+          />
         </div>
       )}
     </>
