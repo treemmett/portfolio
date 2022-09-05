@@ -10,6 +10,7 @@ import {
   Marker,
 } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
@@ -65,6 +66,7 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
 };
 
 const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
+  const { t } = useTranslation();
   const { session } = useDataStore();
   const [darkMode, setDarkMode] = useState(isDarkMode());
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
@@ -99,7 +101,6 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
 
   const [selecting, setSelecting] = useState(false);
   const [selectedCoordinates, setSelectedCoordinates] = useState<LngLat>();
-
   const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
     setSelectedCoordinates(lngLat);
   }, []);
@@ -196,7 +197,7 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
       {selectedCoordinates && (
         <div className={styles.editor}>
           <Input
-            label="Longitude"
+            label={t('Longitude')}
             onChange={(e) =>
               setSelectedCoordinates(
                 new LngLat(parseFloat(e.currentTarget.value), selectedCoordinates.lat)
@@ -207,7 +208,7 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
             value={selectedCoordinates.lng.toString()}
           />
           <Input
-            label="Latitude"
+            label={t('Latitude')}
             onChange={(e) =>
               setSelectedCoordinates(
                 new LngLat(selectedCoordinates.lng, parseFloat(e.currentTarget.value))
@@ -224,8 +225,9 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
         <Button
           className={styles.button}
           inverted={selecting}
+          label={t('Check in')}
           onClick={() => setSelecting(!selecting)}
-          testId="new post"
+          testId="check-in"
         >
           {selecting ? <X /> : <Plus />}
         </Button>
