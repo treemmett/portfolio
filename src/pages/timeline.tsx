@@ -3,9 +3,9 @@ import lineString from '@turf/bezier-spline';
 import { GeoJSONSource, LngLatBounds, LngLatLike, Map, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
-import { CheckIn } from '../components/CheckIn';
 import { DefaultState, useDataStore } from '../components/DataStore';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
@@ -52,6 +52,8 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
     },
   };
 };
+
+const DynamicCheckIn = dynamic(() => import('../components/CheckIn').then((mod) => mod.CheckIn));
 
 const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
   const { session } = useDataStore();
@@ -140,7 +142,11 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
     <WithAbout className={styles.timeline}>
       <div className={styles.map} id="map" ref={mapContainer} />
 
-      {session.hasPermission(AuthorizationScopes.post) && <CheckIn map={map} />}
+      {session.hasPermission(AuthorizationScopes.post) && (
+        <Suspense fallback="Loading...">
+          <DynamicCheckIn map={map} />
+        </Suspense>
+      )}
     </WithAbout>
   );
 };
