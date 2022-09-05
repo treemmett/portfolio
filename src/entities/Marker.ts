@@ -1,6 +1,7 @@
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsNumber } from 'class-validator';
-import { LngLat } from 'mapbox-gl';
+import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
+import { ulid } from 'ulid';
+import { Country } from '../lib/countryCodes';
 import { Config } from '../utils/config';
 import { logger } from '../utils/logger';
 import { s3 } from '../utils/s3';
@@ -10,16 +11,38 @@ const { S3_BUCKET } = Config;
 const MARKERS_FILE_KEY = '_markers.json';
 
 export class Marker {
+  @IsEnum(Country)
+  public country: Country;
+
+  @IsString()
+  public city: string;
+
+  @IsDate()
+  public date: Date;
+
+  @IsString()
+  public id: string;
+
   @IsNumber()
   public lat: number;
 
   @IsNumber()
   public lng: number;
 
-  public static async checkIn(lngLat: LngLat): Promise<Marker> {
+  public static async checkIn(
+    lng: number,
+    lat: number,
+    date: Date,
+    country: Country,
+    city: string
+  ): Promise<Marker> {
     const marker = await transformAndValidate(Marker, {
-      lat: lngLat.lat,
-      lng: lngLat.lng,
+      city,
+      country,
+      date,
+      id: ulid(),
+      lat,
+      lng,
     });
 
     const markers = await this.getAll();

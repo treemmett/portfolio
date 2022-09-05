@@ -1,13 +1,16 @@
 import { LngLat, Map, MapMouseEvent, Marker } from 'mapbox-gl';
 import { useTranslation } from 'next-i18next';
 import { FC, MutableRefObject, useCallback, useEffect, useState } from 'react';
+import { Marker as MarkerEntity } from '../entities/Marker';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { ReactComponent as X } from '../icons/x-square.svg';
 import { Country } from '../lib/countryCodes';
+import { apiClient } from '../utils/apiClient';
 import { splitCase } from '../utils/casing';
 import { getRemValue } from '../utils/pixels';
 import { Button } from './Button';
 import styles from './CheckIn.module.scss';
+import { useDataStore } from './DataStore';
 import { Input } from './Input';
 
 export interface CheckInProps {
@@ -21,6 +24,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [country, setCountry] = useState<Country>('--' as Country);
   const [city, setCity] = useState('');
+  const { dispatch } = useDataStore();
 
   const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
     setSelectedCoordinates(lngLat);
@@ -61,6 +65,18 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
       }
     };
   }, [map, mapClickHandler, selecting]);
+
+  const saveCheckIn = useCallback(async () => {
+    const { data } = await apiClient.post<MarkerEntity>('/timeline', {
+      city,
+      country,
+      date,
+      lat: selectedCoordinates.lat,
+      lng: selectedCoordinates.lng,
+    });
+    dispatch({ marker: data, type: 'ADD_MARKER' });
+    setSelecting(false);
+  }, [city, country, date, dispatch, selectedCoordinates]);
 
   return (
     <>
@@ -112,7 +128,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             value={country}
           />
           <Input label={t('City')} onChange={(e) => setCity(e.currentTarget.value)} value={city} />
-          <Button className={styles.save} type="primary" submit>
+          <Button className={styles.save} onClick={saveCheckIn} type="primary">
             {t('Save')}
           </Button>
         </div>

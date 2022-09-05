@@ -6,7 +6,8 @@ import { i18nRevalidate } from '../../utils/revalidate';
 
 export default nextConnect().post(async (req, res) => {
   await Session.authorizeRequest(req, AuthorizationScopes.post);
-  const marker = await Marker.checkIn(req.body);
+  const { city, country, date, lat, lng } = req.body;
+  const marker = await Marker.checkIn(lng, lat, date, country, city);
   await i18nRevalidate('/timeline', res);
   res.send(marker);
 });
