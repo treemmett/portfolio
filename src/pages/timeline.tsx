@@ -1,6 +1,6 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import lineString from '@turf/bezier-spline';
-import { LngLatBounds, LngLatLike, Map, MapMouseEvent, Marker } from 'mapbox-gl';
+import { GeoJSONSource, LngLatBounds, LngLatLike, Map, MapMouseEvent, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -65,45 +65,22 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
   const { dispatch, markers } = useDataStore();
   const mapContainer = useRef<HTMLDivElement>();
   const map = useRef<Map>();
+  const [mapLoaded, setMapLoaded] = useState(false);
   useEffect(() => {
     if (mapContainer.current) {
       map.current = new Map({
         accessToken: Config.NEXT_PUBLIC_MAPBOX_TOKEN,
         attributionControl: false,
         bounds: new LngLatBounds(sw, ne),
-        center: markers.length ? undefined : [-70.9, 42.35],
         container: mapContainer.current,
         fitBoundsOptions: {
           padding: 50,
         },
         style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
         zoom: 9,
-      }).on('load', () => {
-        map.current.addSource('route', {
-          data: lineString({
-            coordinates: markers.map((m) => [m.lng, m.lat]),
-            type: 'LineString',
-          }),
-          type: 'geojson',
-        });
-        map.current.addLayer({
-          id: 'route',
-          layout: {
-            'line-cap': 'round',
-            'line-join': 'round',
-          },
-          paint: {
-            'line-color': '#888',
-            'line-width': 2,
-          },
-          source: 'route',
-          type: 'line',
-        });
-      });
-
-      markers.forEach((lngLat) => {
-        new Marker().setLngLat(lngLat).addTo(map.current);
-      });
+      })
+        .on('load', () => setMapLoaded(true))
+        .on('remove', () => setMapLoaded(false));
     }
 
     return () => {
@@ -111,7 +88,7 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
         map.current.remove();
       }
     };
-  }, [darkMode, dispatch, map, markers, ne, sw]);
+  }, [darkMode, dispatch, map, ne, sw]);
 
   const mapClickHandler = useCallback(
     async ({ lngLat }: MapMouseEvent) => {
@@ -136,6 +113,57 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
       }
     };
   }, [map, mapClickHandler, selecting]);
+
+  useEffect(() => {
+    const markersOnMap: Marker[] = [];
+    if (map.current && mapLoaded && markers.length) {
+      markers.forEach((lngLat) => {
+        markersOnMap.push(new Marker().setLngLat(lngLat).addTo(map.current));
+      });
+
+      if (markers.length >= 2) {
+        const existingSource = map.current.getSource('route') as GeoJSONSource;
+        const data = lineString(
+          {
+            coordinates: markers.map((m) => [m.lng, m.lat]),
+            type: 'LineString',
+          },
+          {
+            sharpness: 0.4,
+          }
+        );
+
+        if (existingSource) {
+          existingSource.setData(data);
+        } else {
+          map.current.addSource('route', {
+            data,
+            type: 'geojson',
+          });
+
+          map.current.addLayer({
+            id: 'route',
+            layout: {
+              'line-cap': 'round',
+              'line-join': 'round',
+            },
+            paint: {
+              'line-color': '#888',
+              'line-width': 2,
+            },
+            source: 'route',
+            type: 'line',
+          });
+        }
+      }
+    }
+
+    return () => {
+      if (map.current && mapLoaded) {
+        markersOnMap.forEach((marker) => marker.remove());
+      }
+    };
+  }, [markers, mapLoaded]);
 
   return (
     <WithAbout className={styles.timeline}>
