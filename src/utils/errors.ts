@@ -39,6 +39,12 @@ export enum ErrorCode {
   invalid_auth_secret = 7393,
 
   /**
+   * post not found
+   * @status 404
+   */
+  marker_not_found = 6381,
+
+  /**
    * Access token was not received
    * @status 403
    */
@@ -86,8 +92,9 @@ export function getStatusCode(error: ErrorCode): number {
     case ErrorCode.unauthenticated:
       return 403;
 
-    case ErrorCode.post_not_found:
+    case ErrorCode.marker_not_found:
     case ErrorCode.no_file_received:
+    case ErrorCode.post_not_found:
       return 404;
 
     case ErrorCode.no_upload_token:
@@ -113,6 +120,9 @@ export function getErrorMessage(error: ErrorCode): string {
 
     case ErrorCode.bad_upload_token:
       return 'Invalid upload token';
+
+    case ErrorCode.marker_not_found:
+      return 'Marker not found';
 
     case ErrorCode.no_file_received:
       return 'File not found';

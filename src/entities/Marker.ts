@@ -3,6 +3,7 @@ import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 import { ulid } from 'ulid';
 import { Country } from '../lib/countryCodes';
 import { Config } from '../utils/config';
+import { APIError, ErrorCode } from '../utils/errors';
 import { logger } from '../utils/logger';
 import { s3 } from '../utils/s3';
 
@@ -29,6 +30,9 @@ export class Marker {
   @IsNumber()
   public lng: number;
 
+  @IsDate()
+  public updated: Date;
+
   public static async checkIn(
     lng: number,
     lat: number,
@@ -43,6 +47,7 @@ export class Marker {
       id: ulid(),
       lat,
       lng,
+      updated: new Date(),
     });
 
     const markers = await this.getAll();
@@ -73,6 +78,54 @@ export class Marker {
 
       throw err;
     }
+  }
+
+  public static async update(
+    id: string,
+    data: Partial<Pick<Marker, 'city' | 'country' | 'date' | 'lat' | 'lng'>>
+  ): Promise<Marker> {
+    logger.info('Updating marker', { data, id });
+    const markers = await this.getAll();
+
+    const index = markers.findIndex((p) => p.id === id);
+
+    if (!~index) {
+      logger.error('No marker index found', { id, index });
+      throw new APIError(ErrorCode.marker_not_found);
+    }
+
+    const [marker] = markers.splice(index, 1);
+
+    if (!marker) {
+      logger.error('No marker found', { id, index, marker });
+      throw new APIError(ErrorCode.marker_not_found);
+    }
+
+    logger.info('Marker found', { data, id, marker });
+
+    if (data.city) {
+      marker.city = data.city;
+    }
+    if (data.country) {
+      marker.country = data.country;
+    }
+    if (data.date) {
+      marker.date = data.date;
+    }
+    if (data.lat) {
+      marker.lat = data.lat;
+    }
+    if (data.lng) {
+      marker.lng = data.lng;
+    }
+
+    marker.updated = new Date();
+
+    logger.info('Writing updated marker', { marker });
+
+    markers.unshift(marker);
+    await this.writeIndex(markers);
+    return marker;
   }
 
   private static async writeIndex(markers: Marker[]): Promise<void> {
