@@ -28,6 +28,7 @@ export type Action =
   | { type: 'ADD_API_REQUEST'; startRequest: ApiRequest['startRequest']; thumbnailUrl?: string }
   | { type: 'ADD_MARKER'; marker: Marker }
   | { type: 'ADD_POST'; post: Post }
+  | { type: 'DELETE_MARKER'; id: string }
   | { type: 'DELETE_POST'; id: string }
   | { type: 'LOGIN'; session: Session }
   | { type: 'LOGOUT' }
@@ -68,6 +69,19 @@ function reducer(state: State, action: Action): State {
           (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
         ),
       };
+
+    case 'DELETE_MARKER': {
+      const markers = [...state.markers];
+      const index = markers.findIndex((m) => m.id === action.id);
+      if (~index) {
+        markers.splice(index, 1);
+        return {
+          ...state,
+          markers,
+        };
+      }
+      return state;
+    }
 
     case 'DELETE_POST': {
       const posts = [...state.posts];

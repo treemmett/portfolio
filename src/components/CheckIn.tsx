@@ -114,12 +114,20 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
       });
       dispatch({ marker: data, type: 'ADD_MARKER' });
     }
-  }, [city, country, date, dispatch, router.query.edit, selectedCoordinates]);
+    closeEditor();
+  }, [city, closeEditor, country, date, dispatch, router.query.edit, selectedCoordinates]);
+
+  const deleteMarker = useCallback(async () => {
+    const id = toString(router.query.edit);
+    await apiClient.patch<MarkerEntity>(`/timeline/${encodeURIComponent(id)}`);
+    dispatch({ id, type: 'DELETE_MARKER' });
+    closeEditor();
+  }, [closeEditor, dispatch, router.query.edit]);
 
   return (
     <>
       <Button
-        className={styles.button}
+        className={styles['add-button']}
         inverted={selecting}
         label={t('Check in')}
         onClick={() => (selecting ? closeEditor() : setSelecting(!selecting))}
@@ -166,7 +174,12 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             value={country}
           />
           <Input label={t('City')} onChange={(e) => setCity(e.currentTarget.value)} value={city} />
-          <Button className={styles.save} onClick={saveCheckIn} type="primary">
+          {router.query.edit && (
+            <Button className={styles.button} onClick={deleteMarker} type="primary">
+              {t('Delete')}
+            </Button>
+          )}
+          <Button className={styles.button} onClick={saveCheckIn} type="primary">
             {t('Save')}
           </Button>
         </div>

@@ -1,6 +1,6 @@
 @use '../styles/shared';
 
-.button {
+.add-button {
   position: fixed;
   z-index: 10;
   right: 2rem;
@@ -14,8 +14,10 @@
   position: absolute;
   top: 4rem;
   left: 4rem;
+  display: flex;
   width: 20rem;
   height: calc(100% - 8rem);
+  flex-direction: column;
   padding: 2rem;
   box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
 
@@ -23,8 +25,11 @@
     margin-top: 1rem;
   }
 
-  .save {
+  .button {
     width: 100%;
-    margin-top: 100%;
+
+    &:first-of-type {
+      margin-top: auto;
+    }
   }
 }

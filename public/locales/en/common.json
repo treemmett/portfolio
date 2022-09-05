@@ -3,6 +3,7 @@
   "City": "City",
   "Country": "Country",
   "Date": "Date",
+  "Delete": "Delete",
   "Gallery": "Gallery",
   "intro": "Hi, I'm {{name}}",
   "Latitude": "Latitude",
