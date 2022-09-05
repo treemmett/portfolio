@@ -55,7 +55,9 @@ function reducer(state: State, action: Action): State {
     case 'ADD_MARKER':
       return {
         ...state,
-        markers: [action.marker, ...state.markers],
+        markers: [action.marker, ...state.markers].sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        ),
       };
 
     case 'ADD_POST':

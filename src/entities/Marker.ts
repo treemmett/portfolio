@@ -149,7 +149,9 @@ export class Marker {
     await s3
       .upload({
         ACL: 'public-read',
-        Body: JSON.stringify(markers),
+        Body: JSON.stringify(
+          markers.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        ),
         Bucket: S3_BUCKET,
         ContentType: 'application/json',
         Key: MARKERS_FILE_KEY,
