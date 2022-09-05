@@ -3,6 +3,8 @@ import { useTranslation } from 'next-i18next';
 import { FC, MutableRefObject, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { ReactComponent as X } from '../icons/x-square.svg';
+import { Country } from '../lib/countryCodes';
+import { splitCase } from '../utils/casing';
 import { getRemValue } from '../utils/pixels';
 import { Button } from './Button';
 import styles from './CheckIn.module.scss';
@@ -17,6 +19,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   const [selecting, setSelecting] = useState(false);
   const [selectedCoordinates, setSelectedCoordinates] = useState<LngLat>();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [country, setCountry] = useState<Country>('--' as Country);
 
   const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
     setSelectedCoordinates(lngLat);
@@ -102,6 +105,16 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             type="date"
             value={date}
           />
+          <select onChange={(e) => setCountry(e.currentTarget.value as Country)} value={country}>
+            <option value="--" disabled>
+              Country
+            </option>
+            {Object.entries(Country).map(([name, code]) => (
+              <option key={code} value={code}>
+                {splitCase(name)}
+              </option>
+            ))}
+          </select>
         </div>
       )}
     </>
