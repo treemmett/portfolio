@@ -112,6 +112,9 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             value={country}
           />
           <Input label={t('City')} onChange={(e) => setCity(e.currentTarget.value)} value={city} />
+          <Button className={styles.save} type="primary" submit>
+            {t('Save')}
+          </Button>
         </div>
       )}
     </>
