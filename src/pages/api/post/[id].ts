@@ -7,17 +7,13 @@ import { toString } from '../../../utils/queryParam';
 import { i18nRevalidate } from '../../../utils/revalidate';
 
 export default nextConnect()
-  .delete(async (req, res) => {
-    await Session.authorizeRequest(req, AuthorizationScopes.delete);
-
+  .delete(Session.authorizeRequest(AuthorizationScopes.delete), async (req, res) => {
     await Post.delete(toString(req.query.id));
     logger.info('Post deleted, revalidating cache');
     await i18nRevalidate('/', res);
     res.end();
   })
-  .patch(async (req, res) => {
-    await Session.authorizeRequest(req, AuthorizationScopes.post);
-
+  .patch(Session.authorizeRequest(AuthorizationScopes.post), async (req, res) => {
     const post = await Post.update(toString(req.query.id), req.body);
     logger.info('Post updated, revalidating cache');
     await i18nRevalidate('/', res);

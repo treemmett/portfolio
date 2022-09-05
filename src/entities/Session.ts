@@ -1,5 +1,6 @@
 import { jwtVerify, decodeJwt } from 'jose';
-import { NextApiRequest } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Middleware } from 'next-connect';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
 import { isBrowser } from '../utils/isBrowser';
@@ -49,12 +50,14 @@ export class Session {
     return new Session(match[1]);
   }
 
-  public static async authorizeRequest(
-    req: NextApiRequest,
+  public static authorizeRequest(
     scope: AuthorizationScopes
-  ): Promise<void> {
-    const session = await this.fromRequest(req);
-    session.authorize(scope);
+  ): Middleware<NextApiRequest, NextApiResponse> {
+    return async (req, res, next) => {
+      const session = await this.fromRequest(req);
+      session.authorize(scope);
+      next();
+    };
   }
 
   public static restore(): Session {
