@@ -8,6 +8,12 @@ import { i18nRevalidate } from '../../../utils/revalidate';
 
 export default nextConnect()
   .use(Session.authorizeRequest(AuthorizationScopes.post))
+  .delete(async (req, res) => {
+    await Marker.delete(toString(req.query.id));
+    logger.info('Marker deleted, revalidating cache');
+    await i18nRevalidate('/', res);
+    res.end();
+  })
   .patch(async (req, res) => {
     const marker = await Marker.update(toString(req.query.id), req.body);
     logger.info('Marker updated, revalidating cache');

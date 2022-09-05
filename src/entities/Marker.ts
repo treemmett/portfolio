@@ -56,6 +56,22 @@ export class Marker {
     return marker;
   }
 
+  public static async delete(id: string): Promise<void> {
+    logger.info('Deleting marker', { id });
+    const markers = await this.getAll();
+
+    const index = markers.findIndex((p) => p.id === id);
+
+    if (!~index) {
+      logger.error('marker not found', { id, index });
+      throw new APIError(ErrorCode.marker_not_found);
+    }
+
+    markers.splice(index, 1);
+
+    await this.writeIndex(markers);
+  }
+
   public static async getAll(): Promise<Marker[]> {
     try {
       logger.info('Looking up markers index');
