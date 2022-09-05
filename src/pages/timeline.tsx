@@ -4,6 +4,7 @@ import { GeoJSONSource, LngLatBounds, LngLatLike, Map, Marker } from 'mapbox-gl'
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
 import { DefaultState, useDataStore } from '../components/DataStore';
@@ -56,11 +57,10 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
 const DynamicCheckIn = dynamic(() => import('../components/CheckIn').then((mod) => mod.CheckIn));
 
 const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
-  const { session } = useDataStore();
+  const router = useRouter();
   const [darkMode, setDarkMode] = useState(isDarkMode());
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
-
-  const { dispatch, markers } = useDataStore();
+  const { dispatch, markers, session } = useDataStore();
   const mapContainer = useRef<HTMLDivElement>();
   const map = useRef<Map>();
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -90,8 +90,15 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
   useEffect(() => {
     const markersOnMap: Marker[] = [];
     if (map.current && mapLoaded && markers.length) {
-      markers.forEach((lngLat) => {
-        markersOnMap.push(new Marker().setLngLat(lngLat).addTo(map.current));
+      markers.forEach(({ lat, lng, id }) => {
+        const marker = new Marker().setLngLat({ lat, lng }).addTo(map.current);
+        markersOnMap.push(marker);
+
+        if (session.hasPermission(AuthorizationScopes.post)) {
+          marker.getElement().addEventListener('click', () => {
+            router.push({ query: { edit: id } }, undefined, { shallow: true });
+          });
+        }
       });
 
       if (markers.length >= 2) {
@@ -136,7 +143,7 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
         markersOnMap.forEach((marker) => marker.remove());
       }
     };
-  }, [markers, mapLoaded]);
+  }, [markers, mapLoaded, router, session]);
 
   return (
     <WithAbout className={styles.timeline}>

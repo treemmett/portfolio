@@ -33,6 +33,7 @@ export type Action =
   | { type: 'LOGOUT' }
   | { type: 'SET_LIGHT_BOX'; ref?: MutableRefObject<HTMLElement> }
   | { type: 'SET_API_REQUEST_STATUS'; id: string; progress?: number; status?: ApiRequest['status'] }
+  | { type: 'UPDATE_MARKER'; marker: Marker }
   | { type: 'UPDATE_POST'; post: Post };
 
 function reducer(state: State, action: Action): State {
@@ -123,6 +124,22 @@ function reducer(state: State, action: Action): State {
         ...state,
         lightBox: action.ref,
       };
+
+    case 'UPDATE_MARKER': {
+      const markers = [...state.markers];
+      const index = markers.findIndex((p) => p.id === action.marker.id);
+      if (~index) {
+        markers.splice(index, 1);
+        markers.push(action.marker);
+        markers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return {
+          ...state,
+          markers,
+        };
+      }
+
+      return state;
+    }
 
     case 'UPDATE_POST': {
       const posts = [...state.posts];

@@ -1,5 +1,6 @@
 import { LngLat, Map, MapMouseEvent, Marker } from 'mapbox-gl';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { FC, MutableRefObject, useCallback, useEffect, useState } from 'react';
 import { Marker as MarkerEntity } from '../entities/Marker';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
@@ -8,6 +9,7 @@ import { Country } from '../lib/countryCodes';
 import { apiClient } from '../utils/apiClient';
 import { splitCase } from '../utils/casing';
 import { getRemValue } from '../utils/pixels';
+import { toString } from '../utils/queryParam';
 import { Button } from './Button';
 import styles from './CheckIn.module.scss';
 import { useDataStore } from './DataStore';
@@ -18,13 +20,14 @@ export interface CheckInProps {
 }
 
 export const CheckIn: FC<CheckInProps> = ({ map }) => {
+  const router = useRouter();
   const { t } = useTranslation();
   const [selecting, setSelecting] = useState(false);
   const [selectedCoordinates, setSelectedCoordinates] = useState<LngLat>();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [country, setCountry] = useState<Country>('--' as Country);
   const [city, setCity] = useState('');
-  const { dispatch } = useDataStore();
+  const { dispatch, markers } = useDataStore();
 
   const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
     setSelectedCoordinates(lngLat);
@@ -66,17 +69,52 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
     };
   }, [map, mapClickHandler, selecting]);
 
-  const saveCheckIn = useCallback(async () => {
-    const { data } = await apiClient.post<MarkerEntity>('/timeline', {
-      city,
-      country,
-      date,
-      lat: selectedCoordinates.lat,
-      lng: selectedCoordinates.lng,
-    });
-    dispatch({ marker: data, type: 'ADD_MARKER' });
+  useEffect(() => {
+    const id = toString(router.query.edit);
+    setSelecting(!!id);
+
+    if (id) {
+      const editingMarker = markers.find((m) => m.id === id);
+      if (editingMarker) {
+        setSelectedCoordinates(new LngLat(editingMarker.lng, editingMarker.lat));
+        setDate(new Date(editingMarker.date).toISOString().split('T')[0]);
+        setCity(editingMarker.city);
+        setCountry(editingMarker.country);
+      }
+    }
+  }, [markers, router.query.edit]);
+
+  const closeEditor = useCallback(() => {
     setSelecting(false);
-  }, [city, country, date, dispatch, selectedCoordinates]);
+    setSelectedCoordinates(null);
+    setDate(new Date().toISOString().split('T')[0]);
+    setCountry('--' as Country);
+    setCity('');
+    router.push({ query: {} }, undefined, { shallow: true });
+  }, [router]);
+
+  const saveCheckIn = useCallback(async () => {
+    const id = toString(router.query.edit);
+    if (id) {
+      const { data } = await apiClient.patch<MarkerEntity>(`/timeline/${encodeURIComponent(id)}`, {
+        city,
+        country,
+        date,
+        lat: selectedCoordinates.lat,
+        lng: selectedCoordinates.lng,
+      });
+      dispatch({ marker: data, type: 'UPDATE_MARKER' });
+    } else {
+      const { data } = await apiClient.post<MarkerEntity>('/timeline', {
+        city,
+        country,
+        date,
+        lat: selectedCoordinates.lat,
+        lng: selectedCoordinates.lng,
+      });
+      dispatch({ marker: data, type: 'ADD_MARKER' });
+    }
+  }, [city, country, date, dispatch, router.query.edit, selectedCoordinates]);
 
   return (
     <>
@@ -84,13 +122,13 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
         className={styles.button}
         inverted={selecting}
         label={t('Check in')}
-        onClick={() => setSelecting(!selecting)}
+        onClick={() => (selecting ? closeEditor() : setSelecting(!selecting))}
         testId="check-in"
       >
         {selecting ? <X /> : <Plus />}
       </Button>
 
-      {selectedCoordinates && (
+      {selecting && (
         <div className={styles.editor}>
           <Input
             label={t('Longitude')}
@@ -101,7 +139,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             }
             step={0.001}
             type="number"
-            value={selectedCoordinates.lng.toString()}
+            value={selectedCoordinates?.lng.toString()}
           />
           <Input
             label={t('Latitude')}
@@ -112,7 +150,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             }
             step={0.001}
             type="number"
-            value={selectedCoordinates.lat.toString()}
+            value={selectedCoordinates?.lat.toString()}
           />
           <Input
             label={t('Date')}
