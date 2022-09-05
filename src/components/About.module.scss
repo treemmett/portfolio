@@ -85,6 +85,6 @@ $width: 25rem;
   @include screen.md {
     flex-direction: row;
     padding-top: 0;
-    padding-left: $width;
+    margin-left: $width;
   }
 }

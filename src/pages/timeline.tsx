@@ -15,12 +15,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { WithAbout } from '../components/About';
 import { Button } from '../components/Button';
 import { DefaultState, useDataStore } from '../components/DataStore';
+import { Input } from '../components/Input';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { ReactComponent as X } from '../icons/x-square.svg';
 import { Config } from '../utils/config';
-import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
+import { getRemValue, isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
 
 export interface TimelineProps {
@@ -106,7 +107,14 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
     let marker: Marker;
     if (selectedCoordinates) {
       marker = new Marker({ color: '#CF5D40' }).setLngLat(selectedCoordinates).addTo(map.current);
-      map.current.flyTo({ center: selectedCoordinates, zoom: 8 });
+      map.current
+        .setPadding({
+          bottom: getRemValue() * 2,
+          left: getRemValue() * 10,
+          right: getRemValue() * 4,
+          top: getRemValue() * 2,
+        })
+        .flyTo({ center: selectedCoordinates, zoom: 8 });
     }
 
     return () => {
@@ -119,6 +127,8 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
   useEffect(() => {
     if (selecting && map.current) {
       map.current.on('click', mapClickHandler);
+    } else {
+      setSelectedCoordinates(null);
     }
 
     return () => {
@@ -149,7 +159,7 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
 
         if (existingSource) {
           existingSource.setData(data);
-        } else {
+        } else if (map.current.loaded) {
           map.current.addSource('route', {
             data,
             type: 'geojson',
@@ -182,6 +192,33 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
   return (
     <WithAbout className={styles.timeline}>
       <div className={styles.map} id="map" ref={mapContainer} />
+
+      {selectedCoordinates && (
+        <div className={styles.editor}>
+          <Input
+            label="Longitude"
+            onChange={(e) =>
+              setSelectedCoordinates(
+                new LngLat(parseFloat(e.currentTarget.value), selectedCoordinates.lat)
+              )
+            }
+            step={0.001}
+            type="number"
+            value={selectedCoordinates.lng.toString()}
+          />
+          <Input
+            label="Latitude"
+            onChange={(e) =>
+              setSelectedCoordinates(
+                new LngLat(selectedCoordinates.lng, parseFloat(e.currentTarget.value))
+              )
+            }
+            step={0.001}
+            type="number"
+            value={selectedCoordinates.lat.toString()}
+          />
+        </div>
+      )}
 
       {session.hasPermission(AuthorizationScopes.post) && (
         <Button

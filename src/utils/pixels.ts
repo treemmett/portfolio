@@ -80,3 +80,11 @@ export function listenForDarkModeChange(listener: (isDarkMode: boolean) => void)
   query.addEventListener('change', handler);
   return () => query.removeEventListener('change', handler);
 }
+
+export function getRemValue(): number {
+  if (isBrowser()) {
+    return parseFloat(getComputedStyle(document.documentElement).fontSize);
+  }
+
+  return 0;
+}

@@ -12,9 +12,10 @@ export interface InputProps {
   label?: string;
   name?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  step?: number;
   testId?: string;
   type?: HTMLInputTypeAttribute;
-  value?: string;
+  value?: string | number;
 }
 
 function randomId() {
@@ -29,6 +30,7 @@ export const Input: FC<InputProps> = ({
   label,
   name,
   onChange,
+  step,
   testId,
   type,
   value,
@@ -46,6 +48,7 @@ export const Input: FC<InputProps> = ({
         id={realId}
         name={name}
         onChange={onChange}
+        step={step}
         type={type}
         value={value}
       />
