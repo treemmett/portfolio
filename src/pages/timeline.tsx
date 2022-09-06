@@ -34,7 +34,7 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
     ? { lat: markers[0].lat, lng: markers[0].lng }
     : { lat: 42.35, lng: -70.9 };
   const sw = { ...ne };
-  markers.forEach((lngLat) => {
+  [...markers].slice(-10).forEach((lngLat) => {
     if (ne.lng < lngLat.lng) {
       ne.lng = lngLat.lng;
     }
@@ -107,14 +107,14 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
               (getBreakpoint() > Breakpoint.sm
                 ? 0
                 : listContainer.current.getBoundingClientRect().top) +
-              getRemValue() * 5,
+              getRemValue() * 2,
             left:
               (getBreakpoint() > Breakpoint.sm
                 ? listContainer.current.getBoundingClientRect().right
                 : 0) +
-              getRemValue() * 5,
-            right: getRemValue() * 5,
-            top: getRemValue() * 5,
+              getRemValue() * 2,
+            right: getRemValue() * 2,
+            top: getRemValue() * 2,
           },
         },
         style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
