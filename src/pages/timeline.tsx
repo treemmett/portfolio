@@ -1,5 +1,4 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import lineString from '@turf/bezier-spline';
 import { GeoJSONSource, LngLatBounds, LngLatLike, Map, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -103,15 +102,14 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
 
       if (markers.length >= 2) {
         const existingSource = map.current.getSource('route') as GeoJSONSource;
-        const data = lineString(
-          {
+        const data: GeoJSON.Feature = {
+          geometry: {
             coordinates: markers.map((m) => [m.lng, m.lat]),
             type: 'LineString',
           },
-          {
-            sharpness: 0.4,
-          }
-        );
+          properties: {},
+          type: 'Feature',
+        };
 
         if (existingSource) {
           existingSource.setData(data);
