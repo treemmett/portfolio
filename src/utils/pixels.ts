@@ -1,7 +1,15 @@
+import breakpoints from '../styles/pixels.module.scss';
 import { isBrowser } from './isBrowser';
 
 export function toPx(px: number): string {
   return `${px}px`;
+}
+
+/**
+ * Removes the `px` suffix from input
+ */
+export function fromPx(size: string): number {
+  return parseFloat(size.replace(/px$/, ''));
 }
 
 export function scaleDimensions(
@@ -87,4 +95,22 @@ export function getRemValue(): number {
   }
 
   return 0;
+}
+
+export enum Breakpoint {
+  sm,
+  md,
+  lg,
+  xl,
+}
+
+export function getBreakpoint(): Breakpoint {
+  if (!isBrowser()) return Breakpoint.sm;
+
+  const { innerWidth } = window;
+
+  if (innerWidth < fromPx(breakpoints.sm)) return Breakpoint.sm;
+  if (innerWidth < fromPx(breakpoints.md)) return Breakpoint.md;
+  if (innerWidth < fromPx(breakpoints.lg)) return Breakpoint.lg;
+  return Breakpoint.xl;
 }
