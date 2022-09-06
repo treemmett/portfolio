@@ -23,10 +23,9 @@
   @include shared.inverted-theme;
 
   position: absolute;
-  bottom: 10rem;
+  bottom: 3rem;
   overflow: auto;
   width: 100%;
-  max-height: 40rem;
   padding: 1rem 2rem;
   white-space: nowrap;
 
@@ -45,6 +44,7 @@
     bottom: unset;
     left: 2rem;
     width: auto;
+    max-height: calc(100vh - 4rem);
 
     .country {
       display: block;
