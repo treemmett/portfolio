@@ -193,7 +193,7 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
 
       <div className={styles.list} ref={listContainer}>
         {countries.map(({ country, flag, name }) => (
-          <div key={country}>
+          <div className={styles.country} key={country}>
             {flag} {name}
           </div>
         ))}

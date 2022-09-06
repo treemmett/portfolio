@@ -20,20 +20,35 @@
 }
 
 .list {
-  @include shared.border;
   @include shared.inverted-theme;
 
   position: absolute;
-  bottom: 1rem;
-  left: 1rem;
+  bottom: 10rem;
   overflow: auto;
+  width: 100%;
   max-height: 40rem;
   padding: 1rem 2rem;
+  white-space: nowrap;
+
+  .country {
+    display: inline-block;
+
+    &:not(:last-child) {
+      margin-right: 2rem;
+    }
+  }
 
   @include screen.md {
+    @include shared.border;
+
     top: 2rem;
     bottom: unset;
     left: 2rem;
     width: auto;
+
+    .country {
+      display: block;
+      margin: 0 !important;
+    }
   }
 }
