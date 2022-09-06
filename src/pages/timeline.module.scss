@@ -1,4 +1,5 @@
 @use '../styles/shared';
+@use '../styles/screen';
 
 .timeline {
   position: relative;
@@ -23,7 +24,16 @@
   @include shared.inverted-theme;
 
   position: absolute;
-  top: 2rem;
-  left: 2rem;
+  bottom: 1rem;
+  left: 1rem;
+  overflow: auto;
+  max-height: 40rem;
   padding: 1rem 2rem;
+
+  @include screen.md {
+    top: 2rem;
+    bottom: unset;
+    left: 2rem;
+    width: auto;
+  }
 }

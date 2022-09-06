@@ -12,7 +12,13 @@ import { Country } from '../lib/countryCodes';
 import { countryFlags } from '../lib/countryFlags';
 import { splitCase } from '../utils/casing';
 import { Config } from '../utils/config';
-import { getRemValue, isDarkMode, listenForDarkModeChange } from '../utils/pixels';
+import {
+  Breakpoint,
+  getBreakpoint,
+  getRemValue,
+  isDarkMode,
+  listenForDarkModeChange,
+} from '../utils/pixels';
 import styles from './timeline.module.scss';
 
 export interface TimelineProps {
@@ -97,8 +103,16 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
         container: mapContainer.current,
         fitBoundsOptions: {
           padding: {
-            bottom: getRemValue() * 5,
-            left: listContainer.current.getBoundingClientRect().right + getRemValue() * 5,
+            bottom:
+              (getBreakpoint() > Breakpoint.sm
+                ? 0
+                : listContainer.current.getBoundingClientRect().top) +
+              getRemValue() * 5,
+            left:
+              (getBreakpoint() > Breakpoint.sm
+                ? listContainer.current.getBoundingClientRect().right
+                : 0) +
+              getRemValue() * 5,
             right: getRemValue() * 5,
             top: getRemValue() * 5,
           },
