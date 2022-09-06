@@ -9,11 +9,15 @@ import { WithAbout } from '../components/About';
 import { DefaultState, useDataStore } from '../components/DataStore';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
+import { Country } from '../lib/countryCodes';
+import { countryFlags } from '../lib/countryFlags';
+import { splitCase } from '../utils/casing';
 import { Config } from '../utils/config';
 import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
 
 export interface TimelineProps {
+  countries: { country: Country; flag: string; name: string }[];
   ne: LngLatLike;
   sw: LngLatLike;
 }
@@ -43,8 +47,29 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
     }
   });
 
+  // filter country flags to avoid sending massive payload to client
+  const countryMappings = Object.fromEntries(Object.entries(Country).map((a) => a.reverse()));
+  const countries = Object.entries(countryFlags)
+    .reduce((acc, [country, flag]: [Country, string]) => {
+      if (~markers.findIndex((m) => m.country === country)) {
+        acc.push({
+          country,
+          flag,
+          name: splitCase(countryMappings[country]),
+        });
+      }
+
+      return acc;
+    }, [] as TimelineProps['countries'])
+    .sort((a, b) => {
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+      return 0;
+    });
+
   return {
     props: {
+      countries,
       markers,
       ne,
       sw,
@@ -55,7 +80,7 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
 
 const DynamicCheckIn = dynamic(() => import('../components/CheckIn').then((mod) => mod.CheckIn));
 
-const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
+const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
   const router = useRouter();
   const [darkMode, setDarkMode] = useState(isDarkMode());
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
@@ -146,6 +171,14 @@ const Timeline: NextPage<TimelineProps> = ({ ne, sw }) => {
   return (
     <WithAbout className={styles.timeline}>
       <div className={styles.map} id="map" ref={mapContainer} />
+
+      <div className={styles.list}>
+        {countries.map(({ country, flag, name }) => (
+          <div key={country}>
+            {flag} {name}
+          </div>
+        ))}
+      </div>
 
       {session.hasPermission(AuthorizationScopes.post) && (
         <Suspense fallback="Loading...">

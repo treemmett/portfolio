@@ -1,3 +1,5 @@
+@use '../styles/shared';
+
 .timeline {
   position: relative;
 }
@@ -14,4 +16,14 @@
       pointer-events: none;
     }
   }
+}
+
+.list {
+  @include shared.border;
+  @include shared.inverted-theme;
+
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  padding: 1rem 2rem;
 }
