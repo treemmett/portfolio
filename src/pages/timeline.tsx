@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Suspense, useEffect, useRef, useState } from 'react';
-import { WithAbout } from '../components/About';
 import { DefaultState, useDataStore } from '../components/DataStore';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
@@ -13,7 +12,7 @@ import { Country } from '../lib/countryCodes';
 import { countryFlags } from '../lib/countryFlags';
 import { splitCase } from '../utils/casing';
 import { Config } from '../utils/config';
-import { isDarkMode, listenForDarkModeChange } from '../utils/pixels';
+import { getRemValue, isDarkMode, listenForDarkModeChange } from '../utils/pixels';
 import styles from './timeline.module.scss';
 
 export interface TimelineProps {
@@ -86,6 +85,7 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
   const { dispatch, markers, session } = useDataStore();
   const mapContainer = useRef<HTMLDivElement>();
+  const listContainer = useRef<HTMLDivElement>();
   const map = useRef<Map>();
   const [mapLoaded, setMapLoaded] = useState(false);
   useEffect(() => {
@@ -96,7 +96,12 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
         bounds: new LngLatBounds(sw, ne),
         container: mapContainer.current,
         fitBoundsOptions: {
-          padding: 50,
+          padding: {
+            bottom: getRemValue() * 5,
+            left: listContainer.current.getBoundingClientRect().right + getRemValue() * 5,
+            right: getRemValue() * 5,
+            top: getRemValue() * 5,
+          },
         },
         style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
         zoom: 9,
@@ -169,10 +174,10 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
   }, [markers, mapLoaded, router, session]);
 
   return (
-    <WithAbout className={styles.timeline}>
+    <>
       <div className={styles.map} id="map" ref={mapContainer} />
 
-      <div className={styles.list}>
+      <div className={styles.list} ref={listContainer}>
         {countries.map(({ country, flag, name }) => (
           <div key={country}>
             {flag} {name}
@@ -185,7 +190,7 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
           <DynamicCheckIn map={map} />
         </Suspense>
       )}
-    </WithAbout>
+    </>
   );
 };
 
