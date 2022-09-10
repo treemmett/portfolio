@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { FC, PropsWithChildren, useCallback, useRef, useState } from 'react';
 import { Session } from '../entities/Session';
 import { ReactComponent as GitHub } from '../icons/github.svg';
@@ -82,6 +83,8 @@ export const About: FC = () => {
         </div>
         <nav className={cx(styles.navigation, { [styles.visible]: showMenu })}>
           <main className={styles.main}>
+            <Link href="/timeline">Follow me</Link>
+            <Link href="/resume">Resume</Link>
             <div className={styles.social}>
               {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
                 <Anchor
