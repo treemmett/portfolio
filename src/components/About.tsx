@@ -18,7 +18,9 @@ import { MenuButton } from './MenuButton';
 
 export const About: FC = () => {
   const { dispatch, session } = useDataStore();
-  const ref = useRef<HTMLElement>();
+  const [showMenu, setShowMenu] = useState(false);
+  const { t } = useTranslation();
+  const ref = useRef<HTMLDivElement>();
 
   const login = useCallback(() => {
     if (session?.expiration > new Date()) return;
@@ -65,80 +67,79 @@ export const About: FC = () => {
     window.addEventListener('message', messageHandler);
   }, [dispatch, session]);
 
-  const { t } = useTranslation();
-
-  const [showMenu, setShowMenu] = useState(false);
-
   return (
-    <div className={styles.about}>
-      <div className={styles.header}>
-        <MenuButton
-          active={showMenu}
-          className={styles['menu-toggle']}
-          onClick={() => setShowMenu(!showMenu)}
-        />
-        <h2 className={styles.title}>
-          {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
-        </h2>
+    <>
+      <div className={styles.about} ref={ref}>
+        <div className={styles.header}>
+          <MenuButton
+            active={showMenu}
+            className={styles['menu-toggle']}
+            onClick={() => setShowMenu(!showMenu)}
+          />
+          <h2 className={styles.title}>
+            {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
+          </h2>
+        </div>
+        <nav className={cx(styles.navigation, { [styles.visible]: showMenu })}>
+          <main className={styles.main}>
+            <div className={styles.social}>
+              {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
+                <Anchor
+                  className={styles.button}
+                  href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`}
+                  label="Follow me on GitHub"
+                  button
+                >
+                  <GitHub />
+                </Anchor>
+              )}
+              {Config.NEXT_PUBLIC_INSTAGRAM_USERNAME && (
+                <Anchor
+                  className={styles.button}
+                  href={`https://www.instagram.com/${Config.NEXT_PUBLIC_INSTAGRAM_USERNAME}/`}
+                  label="Follow me on Instagram"
+                  button
+                >
+                  <Instagram />
+                </Anchor>
+              )}
+              {Config.NEXT_PUBLIC_LINKEDIN_USERNAME && (
+                <Anchor
+                  className={styles.button}
+                  href={`https://www.linkedin.com/in/${Config.NEXT_PUBLIC_LINKEDIN_USERNAME}/`}
+                  label="Connect on LinkedIn"
+                  button
+                >
+                  <LinkedIn />
+                </Anchor>
+              )}
+              {Config.NEXT_PUBLIC_GITHUB_CLIENT_ID &&
+                (session.isValid() ? (
+                  <Button
+                    className={styles.button}
+                    label="Logout"
+                    onClick={() => dispatch({ type: 'LOGOUT' })}
+                    testId="logout"
+                  >
+                    <Logout />
+                  </Button>
+                ) : (
+                  <Button
+                    className={styles.button}
+                    disabled={session.authorizing}
+                    label="Login with GitHub"
+                    onClick={login}
+                    testId="login"
+                  >
+                    <User />
+                  </Button>
+                ))}
+            </div>
+          </main>
+        </nav>
       </div>
-      <nav className={cx(styles.navigation, { [styles.visible]: showMenu })}>
-        <main className={styles.main} ref={ref}>
-          <div className={styles.social}>
-            {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
-              <Anchor
-                className={styles.button}
-                href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`}
-                label="Follow me on GitHub"
-                button
-              >
-                <GitHub />
-              </Anchor>
-            )}
-            {Config.NEXT_PUBLIC_INSTAGRAM_USERNAME && (
-              <Anchor
-                className={styles.button}
-                href={`https://www.instagram.com/${Config.NEXT_PUBLIC_INSTAGRAM_USERNAME}/`}
-                label="Follow me on Instagram"
-                button
-              >
-                <Instagram />
-              </Anchor>
-            )}
-            {Config.NEXT_PUBLIC_LINKEDIN_USERNAME && (
-              <Anchor
-                className={styles.button}
-                href={`https://www.linkedin.com/in/${Config.NEXT_PUBLIC_LINKEDIN_USERNAME}/`}
-                label="Connect on LinkedIn"
-                button
-              >
-                <LinkedIn />
-              </Anchor>
-            )}
-            {Config.NEXT_PUBLIC_GITHUB_CLIENT_ID &&
-              (session.isValid() ? (
-                <Button
-                  className={styles.button}
-                  label="Logout"
-                  onClick={() => dispatch({ type: 'LOGOUT' })}
-                  testId="logout"
-                >
-                  <Logout />
-                </Button>
-              ) : (
-                <Button
-                  className={styles.button}
-                  disabled={session.authorizing}
-                  label="Login with GitHub"
-                  onClick={login}
-                  testId="login"
-                >
-                  <User />
-                </Button>
-              ))}
-          </div>
-        </main>
-      </nav>
-    </div>
+      <div className={cx(styles.backdrop, { [styles.open]: showMenu })} />
+    </>
   );
 };
 
