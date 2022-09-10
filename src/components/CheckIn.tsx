@@ -6,6 +6,7 @@ import { Marker as MarkerEntity } from '../entities/Marker';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { ReactComponent as X } from '../icons/x-square.svg';
 import { Country } from '../lib/countryCodes';
+import { geocode } from '../lib/geocode';
 import { apiClient } from '../utils/apiClient';
 import { splitCase } from '../utils/casing';
 import { getRemValue } from '../utils/pixels';
@@ -31,7 +32,13 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
 
   const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
     setSelectedCoordinates(lngLat);
+
+    geocode(lngLat.lng, lngLat.lat).then((address) => {
+      setCity(address.city || '');
+      setCountry(address.country_code);
+    });
   }, []);
+
   useEffect(() => {
     let marker: Marker;
     if (selectedCoordinates) {
