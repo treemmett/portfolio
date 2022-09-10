@@ -1,5 +1,12 @@
 @use '../styles/screen';
 
+// stylelint-disable
+@page {
+  margin: 1rem;
+  size: auto;
+}
+// stylelint-enable
+
 .page {
   width: 100%;
   max-width: 70rem;
@@ -44,6 +51,16 @@
   grid-template-columns: 1fr;
 
   @include screen.md {
+    align-items: start;
+    grid-template-areas:
+      'contact about'
+      'contact experience'
+      'skills experience';
+    grid-template-columns: 40% 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  @media print {
     align-items: start;
     grid-template-areas:
       'contact about'
