@@ -5,14 +5,8 @@ export default class Doc extends Document {
     return (
       <Html>
         <Head>
-          <link href="https://fonts.googleapis.com" rel="preconnect" />
-          <link crossOrigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect" />
           <link
-            href="https://fonts.googleapis.com/css2?family=Bad+Script&display=swap"
-            rel="stylesheet"
-          />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Gowun+Batang&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Josefin+Sans:wght@300;400&display=swap"
             rel="stylesheet"
           />
           <link href="/favicon.ico" rel="icon" />
