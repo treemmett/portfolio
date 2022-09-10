@@ -44,6 +44,7 @@ const nextConfig = {
           loader: '@svgr/webpack',
           options: {
             exportType: 'named',
+            svgo: false,
           },
         },
       ],
