@@ -40,23 +40,23 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
       </div>
       <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
         <a className={cx(styles.post, { [styles.displayed]: query.post === post.id })} href="#foo">
-          <div
+          {/* <div
             className={styles['image-wrapper']}
             ref={ref}
             style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
-          >
-            <Image
-              alt={post.title}
-              blurDataURL={image.thumbnailURL}
-              className={styles.photo}
-              height={image.height}
-              placeholder="blur"
-              priority={priority}
-              sizes="60vh,80vw"
-              src={image.url}
-              width={image.width}
-            />
-          </div>
+          > */}
+          <Image
+            alt={post.title}
+            blurDataURL={image.thumbnailURL}
+            className={styles.photo}
+            height={image.height}
+            placeholder="blur"
+            priority={priority}
+            sizes="60vh,80vw"
+            src={image.url}
+            width={image.width}
+          />
+          {/* </div> */}
         </a>
       </Link>
       <div className={styles.under}>
