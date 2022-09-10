@@ -16,7 +16,7 @@ export interface PostProps {
 }
 
 export const Post: FC<PostProps> = ({ post, priority }) => {
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef();
 
   const { query } = useRouter();
   const { dispatch } = useDataStore();
@@ -39,12 +39,11 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
         </span>
       </div>
       <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
-        <a className={cx(styles.post, { [styles.displayed]: query.post === post.id })} href="#foo">
-          {/* <div
-            className={styles['image-wrapper']}
-            ref={ref}
-            style={{ backgroundColor: `rgb(${post.red}, ${post.green}, ${post.blue})` }}
-          > */}
+        <a
+          className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
+          href="#foo"
+          ref={ref}
+        >
           <Image
             alt={post.title}
             blurDataURL={image.thumbnailURL}
@@ -56,7 +55,6 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
             src={image.url}
             width={image.width}
           />
-          {/* </div> */}
         </a>
       </Link>
       <div className={styles.under}>

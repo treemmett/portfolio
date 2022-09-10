@@ -14,7 +14,7 @@
 .post {
   position: relative;
   z-index: 10;
-  display: block;
+  display: inline-block;
   opacity: 1;
 
   &.displayed {
