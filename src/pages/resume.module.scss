@@ -13,9 +13,18 @@
     grid-template-rows: 1fr;
   }
 
-  section {
-    a {
-      display: block;
+  svg {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  h5 {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 0.75rem;
     }
   }
 }
