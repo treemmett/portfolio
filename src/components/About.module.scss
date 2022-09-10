@@ -13,6 +13,7 @@ $width: 25rem;
   flex-direction: column;
   font-family: 'Bad Script', cursive;
   font-size: 1.5rem;
+  pointer-events: none;
 
   @include screen.md {
     @include shared.inverted-theme;
@@ -32,6 +33,7 @@ $width: 25rem;
 
   display: flex;
   align-items: center;
+  pointer-events: all;
 
   & > * {
     flex-grow: 0;
@@ -61,6 +63,7 @@ $width: 25rem;
   display: flex;
   height: 100%;
   flex-direction: column;
+  pointer-events: all;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
 
