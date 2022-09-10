@@ -43,7 +43,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
           right: getRemValue() * 4,
           top: getRemValue() * 2,
         })
-        .flyTo({ center: selectedCoordinates, zoom: 8 });
+        .flyTo({ center: selectedCoordinates, zoom: 15 });
     }
 
     return () => {
