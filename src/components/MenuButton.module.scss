@@ -12,17 +12,18 @@
     display: block;
     width: 200%;
     height: 200%;
+    pointer-events: none;
   }
 
   path {
     fill: none;
-    stroke: #fff;
+    stroke: currentColor;
     stroke-dasharray: var(--length) var(--total-length);
     stroke-dashoffset: var(--offset);
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 3;
-    transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 
     --length: 24;
     --offset: -38;

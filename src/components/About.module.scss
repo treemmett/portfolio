@@ -15,6 +15,11 @@ $width: 25rem;
   padding: 2rem;
   font-family: 'Bad Script', cursive;
   font-size: 1.5rem;
+  transition: transform 0.3s ease;
+
+  &.visible {
+    transform: translateX(100%);
+  }
 
   @include screen.md {
     right: unset;
@@ -45,15 +50,22 @@ $width: 25rem;
 }
 
 .mobile-header {
-  @include shared.theme;
+  @include shared.inverted-theme;
 
   position: fixed;
-  z-index: 100;
+  z-index: 50;
   top: 0;
   left: 0;
-  display: block;
+  display: flex;
   width: 100%;
+  align-items: center;
   padding: 0.5rem 1rem;
+
+  h2 {
+    display: inline-block;
+    margin: 0;
+    margin-right: 2rem;
+  }
 
   @include screen.md {
     display: none;
@@ -112,5 +124,30 @@ $width: 25rem;
     flex-direction: row;
     padding-top: 0;
     margin-left: $width;
+  }
+}
+
+.menu-button {
+  svg line {
+    transform-origin: 0% 100%;
+    transition: transform 0.2s ease;
+  }
+
+  &.active {
+    svg {
+      line {
+        &:nth-child(1) {
+          transform: rotate(45deg);
+        }
+
+        &:nth-child(2) {
+          transform: scaleX(0);
+        }
+
+        &:nth-child(3) {
+          transform: rotate(-45deg);
+        }
+      }
+    }
   }
 }

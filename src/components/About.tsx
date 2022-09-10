@@ -18,6 +18,7 @@ import styles from './About.module.scss';
 import { Anchor } from './Anchor';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
+import { MenuButton } from './MenuButton';
 
 export const About: FC = () => {
   const { dispatch, session } = useDataStore();
@@ -96,15 +97,24 @@ export const About: FC = () => {
 
   const router = useRouter();
 
+  const [showMenu, setShowMenu] = useState(false);
+
   return (
     <>
       <div className={styles['mobile-header']}>
+        <MenuButton active={showMenu} onClick={() => setShowMenu(!showMenu)} />
         <h2>
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
         </h2>
       </div>
 
-      <main className={cx(styles.main, { [styles.default]: !height && !width })} ref={ref}>
+      <main
+        className={cx(styles.main, {
+          [styles.visible]: showMenu,
+          [styles.default]: !height && !width,
+        })}
+        ref={ref}
+      >
         <h2 className={styles.title}>
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
         </h2>
@@ -176,7 +186,10 @@ export const About: FC = () => {
             ))}
         </div>
       </main>
-      <main className={styles.backdrop} style={{ height: toPx(height), width: toPx(width) }} />
+      <main
+        className={cx(styles.backdrop, { [styles.visible]: showMenu })}
+        style={{ height: toPx(height), width: toPx(width) }}
+      />
     </>
   );
 };
