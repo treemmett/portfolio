@@ -99,7 +99,7 @@ export const About: FC = () => {
   return (
     <>
       <main className={cx(styles.main, { [styles.default]: !height && !width })} ref={ref}>
-        <h2>
+        <h2 className={styles.title}>
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
         </h2>
         {session.hasPermission(AuthorizationScopes.post) && (
