@@ -57,6 +57,9 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
     const c = map.current;
 
     if (selecting && c) {
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        setSelectedCoordinates(new LngLat(coords.longitude, coords.latitude));
+      });
       c.on('click', mapClickHandler);
     } else {
       setSelectedCoordinates(null);
