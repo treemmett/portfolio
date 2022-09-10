@@ -75,6 +75,24 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
           </section>
         ))}
       </aside>
+
+      <aside>
+        <section>
+          <h3>Experience</h3>
+          <hr />
+          {resume.work?.map((work) => (
+            <section className={styles.work} key={work.name}>
+              <h5>{`${work.startDate} - ${work.endDate || 'Present'}`}</h5>
+              <h4>{work.name}</h4>
+              <ul>
+                {work.highlights.map((highlight) => (
+                  <li key={highlight}>{highlight}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </section>
+      </aside>
     </main>
   </div>
 );

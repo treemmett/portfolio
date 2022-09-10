@@ -3,13 +3,21 @@
   max-width: 70rem;
   padding: 2rem;
   margin: auto;
-  text-transform: uppercase;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-transform: uppercase;
+  }
 
   main {
     display: grid;
-    gap: 0 0;
+    gap: 2rem;
     grid-template-areas: 'about .';
-    grid-template-columns: 40% 1fr;
+    grid-template-columns: 30% 1fr;
     grid-template-rows: 1fr;
   }
 
@@ -32,5 +40,11 @@
     svg {
       margin-right: 0.75rem;
     }
+  }
+}
+
+.work {
+  h5 {
+    justify-content: flex-end;
   }
 }

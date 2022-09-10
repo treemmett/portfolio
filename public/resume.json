@@ -36,9 +36,9 @@
       "url": "https://showcaseidx.com",
       "startDate": "2021-08",
       "highlights": [
-        "Upgraded front-end architecture improving time-to-first-byte by 70%, and increasing Googlebot indexing by 240%",
+        "Upgraded front-end architecture improving time-to-first-byte by 70%, and increasing Googlebot indexing by 240%.",
         "Updated application from React v0.14 to React v18, and added 100% TypeScript support and typings.",
-        "Lead initiative to replace homebrew SSR solution with Next.js"
+        "Lead initiative to replace homebrew SSR solution with Next.js."
       ]
     },
     {
