@@ -16,17 +16,20 @@ jobs:
       url: https://tregan.me
     runs-on: 'ubuntu-latest'
     steps:
+      - name: Get yarn cache directory path
+        id: cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Cache dependencies
+      - name: Cache resources
         uses: actions/cache@v3
         with:
           path: |
-            ${{ needs.setup.outputs.cache }}
+            ${{ steps.cache.outputs.dir }}
             ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-next-js-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.json', '**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
-            ${{ runner.os }}-next-js-${{ hashFiles('**/yarn.lock') }}-
+            ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile
       - name: Pull configuration
