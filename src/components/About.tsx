@@ -98,6 +98,12 @@ export const About: FC = () => {
 
   return (
     <>
+      <div className={styles['mobile-header']}>
+        <h2>
+          {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
+        </h2>
+      </div>
+
       <main className={cx(styles.main, { [styles.default]: !height && !width })} ref={ref}>
         <h2 className={styles.title}>
           {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}

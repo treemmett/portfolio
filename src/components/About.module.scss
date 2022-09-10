@@ -36,6 +36,30 @@ $width: 25rem;
   }
 }
 
+.title {
+  display: none;
+
+  @include screen.md {
+    display: block;
+  }
+}
+
+.mobile-header {
+  @include shared.theme;
+
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+
+  @include screen.md {
+    display: none;
+  }
+}
+
 .main {
   @supports (backdrop-filter: blur()) {
     &:not(.default) {
