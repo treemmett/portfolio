@@ -77,9 +77,11 @@ $width: 25rem;
     transform: translateX(0);
   }
 
-  a {
-    display: block;
-    margin-bottom: 2rem;
+  .links {
+    a {
+      display: block;
+      margin-bottom: 2rem;
+    }
   }
 
   &.visible {

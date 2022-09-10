@@ -83,8 +83,10 @@ export const About: FC = () => {
         </div>
         <nav className={cx(styles.navigation, { [styles.visible]: showMenu })}>
           <main className={styles.main}>
-            <Link href="/timeline">Follow me</Link>
-            <Link href="/resume">Resume</Link>
+            <div className={styles.links}>
+              <Link href="/timeline">Follow me</Link>
+              <Link href="/resume">Resume</Link>
+            </div>
             <div className={styles.social}>
               {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
                 <Anchor
