@@ -54,7 +54,7 @@ declare module 'resume' {
      *
      * For example: https://twitter.com/elonmusk
      * */
-    url?: URL;
+    url?: string;
   }
 
   /** A work entry on the resume. */
@@ -76,7 +76,7 @@ declare module 'resume' {
     position?: string;
 
     /** e.g. https://facebook.com */
-    url?: URL;
+    url?: string;
 
     /** An overview of the responsibilities at the organization. */
     summary?: string;
@@ -93,7 +93,7 @@ declare module 'resume' {
     position?: string;
 
     /** e.g. https://facebook.example.com */
-    url?: URL;
+    url?: string;
 
     /** Give an overview of your responsibilities at the company */
     summary?: string;
@@ -107,7 +107,7 @@ declare module 'resume' {
     institution?: string;
 
     /** e.g. https://facebook.example.com */
-    url?: URL;
+    url?: string;
 
     /** e.g. Arts */
     area?: string;
@@ -143,7 +143,7 @@ declare module 'resume' {
     date?: string;
 
     /** e.g. https://example.com */
-    url?: URL;
+    url?: string;
 
     /** e.g. Google */
     issuer?: string;
@@ -159,7 +159,7 @@ declare module 'resume' {
     releaseDate?: Date;
 
     /** e.g. https://www.computer.org.example.com/csdl/mags/co/1996/10/rx069-abs.html */
-    url?: URL;
+    url?: string;
 
     /** Short summary of publication. e.g. Discussion of the World Wide Web, HTTP, HTML. */
     summary?: string;
@@ -256,7 +256,7 @@ declare module 'resume' {
      *
      * For example: https://www.computer.org/csdl/mags/co/1996/10/rx069-abs.html
      */
-    url?: URL;
+    url?: string;
 
     /** The role on this project or in the company. */
     roles?: string[];
@@ -277,7 +277,7 @@ declare module 'resume' {
   /** Metadata for a resume. */
   export interface Meta {
     /** URL to the latest version of this document. */
-    canonical?: URL;
+    canonical?: string;
 
     /**
      * The version, should follow semantic versioning.
@@ -309,7 +309,7 @@ declare module 'resume' {
     label?: string;
 
     /** URL to an a JPEG or PNG image. */
-    image?: URL;
+    image?: string;
 
     /**
      * Email address to contact the individual.
@@ -330,7 +330,7 @@ declare module 'resume' {
      *
      * For example: a portfolio or personal homepage
      */
-    url?: URL;
+    url?: string;
 
     /** A short bio about the individual. */
     summary?: string;
@@ -349,7 +349,7 @@ declare module 'resume' {
    */
   export interface Resume {
     /** Version of JSON schema is defined against. */
-    $schema?: URL;
+    $schema?: string;
 
     /** Basic information of an individual. */
     basics?: Basic;

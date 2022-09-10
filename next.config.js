@@ -29,6 +29,9 @@ const nextConfig = {
       source: '/rss',
     },
   ],
+  serverRuntimeConfig: {
+    root: __dirname,
+  },
   /**
    *
    * @param {import('webpack').Configuration} c

@@ -1,0 +1,21 @@
+.page {
+  width: 100%;
+  max-width: 70rem;
+  padding: 2rem;
+  margin: auto;
+  text-transform: uppercase;
+
+  main {
+    display: grid;
+    gap: 0 0;
+    grid-template-areas: 'about .';
+    grid-template-columns: 40% 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  section {
+    a {
+      display: block;
+    }
+  }
+}
