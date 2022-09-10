@@ -1,3 +1,5 @@
+@use '../styles/screen';
+
 .page {
   width: 100%;
   max-width: 70rem;
@@ -11,14 +13,6 @@
   h5,
   h6 {
     text-transform: uppercase;
-  }
-
-  main {
-    display: grid;
-    gap: 2rem;
-    grid-template-areas: 'about .';
-    grid-template-columns: 30% 1fr;
-    grid-template-rows: 1fr;
   }
 
   section {
@@ -41,6 +35,35 @@
       margin-right: 0.75rem;
     }
   }
+}
+
+.grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-areas: 'about' 'contact' 'experience' 'skills';
+  grid-template-columns: 1fr;
+
+  @include screen.md {
+    align-items: start;
+    grid-template-areas:
+      'contact about'
+      'contact experience'
+      'skills experience';
+    grid-template-columns: 40% 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+.contact {
+  grid-area: contact;
+}
+
+.experience {
+  grid-area: experience;
+}
+
+.skills {
+  grid-area: skills;
 }
 
 .work {
