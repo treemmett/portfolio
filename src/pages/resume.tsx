@@ -65,6 +65,15 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
             );
           })}
         </section>
+        {resume.skills?.map((skill) => (
+          <section key={skill.name}>
+            <h3>{skill.name}</h3>
+            <hr />
+            {skill.keywords.map((keyword) => (
+              <h5 key={keyword}>{keyword}</h5>
+            ))}
+          </section>
+        ))}
       </aside>
     </main>
   </div>
