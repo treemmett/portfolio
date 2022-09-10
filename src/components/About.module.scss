@@ -36,6 +36,7 @@ $width: 25rem;
   pointer-events: all;
 
   @include screen.md {
+    background-color: transparent;
     box-shadow: unset;
   }
 
