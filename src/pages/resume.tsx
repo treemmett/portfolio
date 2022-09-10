@@ -47,11 +47,15 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
         <hr />
         <h5>
           <At />
-          <a href={`mailto:${resume.basics.email}`}>{resume.basics.email}</a>
+          <a href={`mailto:${resume.basics.email}`} rel="noreferrer" target="_blank">
+            {resume.basics.email}
+          </a>
         </h5>
         <h5>
           <LinkIcon />
-          <a href={resume.basics.url}>{resume.basics.url}</a>
+          <a href={resume.basics.url} rel="noreferrer" target="_blank">
+            {resume.basics.url}
+          </a>
         </h5>
         {resume.basics.profiles.map((profile) => {
           const Icon = ProfileIcons[profile.network?.toLowerCase()];
@@ -59,7 +63,9 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
           return (
             <h5 key={profile.network}>
               {Icon && <Icon />}
-              <a href={profile.url}>/{profile.username}</a>
+              <a href={profile.url} rel="noreferrer" target="_blank">
+                /{profile.username}
+              </a>
             </h5>
           );
         })}
