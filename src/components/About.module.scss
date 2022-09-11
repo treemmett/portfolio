@@ -75,6 +75,7 @@ $width: 25rem;
   transition: transform 0.3s ease;
 
   @include screen.md {
+    backdrop-filter: unset;
     transform: translateX(0);
   }
 
