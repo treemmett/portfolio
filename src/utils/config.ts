@@ -5,6 +5,8 @@ export class Config {
 
   public static GITHUB_CLIENT_SECRET?: string = process.env.GITHUB_CLIENT_SECRET;
 
+  public static GEOLOCATION_KEY = process.env.GEOLOCATION_KEY;
+
   public static NEXT_PUBLIC_INSIGHTS_TOKEN = process.env.NEXT_PUBLIC_INSIGHTS_TOKEN;
 
   public static JWT_SECRET = process.env.JWT_SECRET || 'hello';
