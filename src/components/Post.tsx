@@ -6,8 +6,8 @@ import { FC, useEffect, useRef } from 'react';
 import { PhotoType } from '../entities/PhotoType';
 import type { Post as PostEntity } from '../entities/Post';
 import { ReactComponent as Pin } from '../icons/map-pin.svg';
+import { formatDate } from '../utils/date';
 import { useDataStore } from './DataStore';
-import { FormattedDate } from './FormattedDate';
 import styles from './Post.module.scss';
 
 export interface PostProps {
@@ -40,7 +40,9 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
       </div>
       <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
         <a
-          aria-label={[post.title, post.location, post.created].filter((i) => !!i).join(', ')}
+          aria-label={[post.title, post.location, formatDate(post.created)]
+            .filter((i) => !!i)
+            .join(', ')}
           className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
           href="#foo"
           ref={ref}
@@ -63,7 +65,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
           <Pin />
           {post.location}
         </span>
-        <FormattedDate className={styles.date} date={post.created} />
+        <span className={styles.date}>{formatDate(post.created)}</span>
       </div>
     </div>
   );
