@@ -1,10 +1,10 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { GeoJSONSource, LngLatBounds, LngLatLike, Map, Marker } from 'mapbox-gl';
+import type { GeoJSONSource, LngLatLike, Map as MapType, Marker as MarkerType } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { DefaultState, useDataStore } from '../components/DataStore';
 import { AuthorizationScopes } from '../entities/Jwt';
 import { Marker as MarkerEntity } from '../entities/Marker';
@@ -89,39 +89,46 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
   const router = useRouter();
   const [darkMode, setDarkMode] = useState(isDarkMode());
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
-  const { dispatch, markers, session } = useDataStore();
+  const { markers, session } = useDataStore();
   const mapContainer = useRef<HTMLDivElement>();
   const listContainer = useRef<HTMLDivElement>();
-  const map = useRef<Map>();
+  const map = useRef<MapType>();
   const [mapLoaded, setMapLoaded] = useState(false);
+
+  const initializeMap = useCallback(async () => {
+    const { LngLatBounds, Map } = await import('mapbox-gl');
+
+    map.current = new Map({
+      accessToken: Config.NEXT_PUBLIC_MAPBOX_TOKEN,
+      attributionControl: false,
+      bounds: new LngLatBounds(sw, ne),
+      container: mapContainer.current,
+      fitBoundsOptions: {
+        padding: {
+          bottom:
+            (getBreakpoint() > Breakpoint.sm
+              ? 0
+              : listContainer.current.getBoundingClientRect().top) +
+            getRemValue() * 2,
+          left:
+            (getBreakpoint() > Breakpoint.sm
+              ? listContainer.current.getBoundingClientRect().right
+              : 0) +
+            getRemValue() * 2,
+          right: getRemValue() * 2,
+          top: getRemValue() * 2,
+        },
+      },
+      style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
+      zoom: 9,
+    })
+      .on('load', () => setMapLoaded(true))
+      .on('remove', () => setMapLoaded(false));
+  }, [darkMode, ne, sw]);
+
   useEffect(() => {
     if (mapContainer.current) {
-      map.current = new Map({
-        accessToken: Config.NEXT_PUBLIC_MAPBOX_TOKEN,
-        attributionControl: false,
-        bounds: new LngLatBounds(sw, ne),
-        container: mapContainer.current,
-        fitBoundsOptions: {
-          padding: {
-            bottom:
-              (getBreakpoint() > Breakpoint.sm
-                ? 0
-                : listContainer.current.getBoundingClientRect().top) +
-              getRemValue() * 2,
-            left:
-              (getBreakpoint() > Breakpoint.sm
-                ? listContainer.current.getBoundingClientRect().right
-                : 0) +
-              getRemValue() * 2,
-            right: getRemValue() * 2,
-            top: getRemValue() * 2,
-          },
-        },
-        style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
-        zoom: 9,
-      })
-        .on('load', () => setMapLoaded(true))
-        .on('remove', () => setMapLoaded(false));
+      initializeMap();
     }
 
     return () => {
@@ -129,10 +136,13 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
         map.current.remove();
       }
     };
-  }, [darkMode, dispatch, map, ne, sw]);
-  useEffect(() => {
-    const markersOnMap: Marker[] = [];
+  }, [initializeMap]);
+
+  const placeMarkers = useCallback(async () => {
+    const markersOnMap: MarkerType[] = [];
     if (map.current && mapLoaded && markers.length) {
+      const { Marker } = await import('mapbox-gl');
+
       markers.forEach(({ lat, lng, id }) => {
         const marker = new Marker().setLngLat({ lat, lng }).addTo(map.current);
         markersOnMap.push(marker);
@@ -179,13 +189,19 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
         }
       }
     }
+    return markersOnMap;
+  }, [mapLoaded, router, markers, session]);
+
+  useEffect(() => {
+    let markersPlaced: MarkerType[] = [];
+    placeMarkers().then((m) => {
+      markersPlaced = m;
+    });
 
     return () => {
-      if (map.current && mapLoaded) {
-        markersOnMap.forEach((marker) => marker.remove());
-      }
+      markersPlaced.forEach((marker) => marker.remove());
     };
-  }, [markers, mapLoaded, router, session]);
+  }, [placeMarkers]);
 
   return (
     <>
