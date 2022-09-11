@@ -69,6 +69,7 @@ $width: 25rem;
   height: 100%;
   flex-direction: column;
   backdrop-filter: blur(1rem);
+  background-color: transparent !important;
   pointer-events: all;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
