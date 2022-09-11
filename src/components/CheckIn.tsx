@@ -157,7 +157,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             }
             step={0.001}
             type="number"
-            value={selectedCoordinates?.lng.toString()}
+            value={selectedCoordinates?.lng?.toString() || ''}
           />
           <Input
             label={t('Latitude')}
@@ -168,7 +168,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             }
             step={0.001}
             type="number"
-            value={selectedCoordinates?.lat.toString()}
+            value={selectedCoordinates?.lat?.toString() || ''}
           />
           <Input
             label={t('Date')}
