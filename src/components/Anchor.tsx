@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { track } from 'insights-js';
 import { FC, PropsWithChildren } from 'react';
 import { ButtonTypes } from './Button';
 import styles from './Button.module.scss';
@@ -21,6 +22,14 @@ export const Anchor: FC<AnchorProps> = ({ className, children, button, href, lab
       [styles.button]: button,
     })}
     href={href}
+    onClick={() => {
+      track({
+        id: 'external-link-click',
+        parameters: {
+          href,
+        },
+      });
+    }}
     rel="noreferrer"
     target="_blank"
   >

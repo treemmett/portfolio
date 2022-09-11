@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { track } from 'insights-js';
 import Image from 'next/future/image';
 import { useRouter } from 'next/router';
 import {
@@ -51,6 +52,12 @@ export const LightBox: FC = () => {
   useEffect(() => {
     if (query.post) {
       setFrame(AnimationFrame.on_gallery);
+      track({
+        id: 'photo-viewed',
+        parameters: {
+          id: toString(query.post),
+        },
+      });
     }
 
     if (!query.post) {

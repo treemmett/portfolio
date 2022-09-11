@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { track } from 'insights-js';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { FC, PropsWithChildren, useCallback, useRef, useState } from 'react';
@@ -26,6 +27,10 @@ export const About: FC = () => {
   const login = useCallback(() => {
     if (session?.expiration > new Date()) return;
 
+    track({
+      id: 'begin-login',
+    });
+
     const popup = window.open(
       `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
       'oauth',
@@ -34,6 +39,9 @@ export const About: FC = () => {
 
     const intervalId = setInterval(() => {
       if (popup.closed) {
+        track({
+          id: 'login-closed',
+        });
         dispatch({ type: 'LOGOUT' });
         clearInterval(intervalId);
       }
@@ -41,6 +49,12 @@ export const About: FC = () => {
 
     const messageHandler = async (event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>) => {
       if (event.origin !== window.location.origin) {
+        track({
+          id: 'login-failed',
+          parameters: {
+            type: 'cross-origin',
+          },
+        });
         throw new Error('Message failed cross-origin check');
       }
 
@@ -54,12 +68,29 @@ export const About: FC = () => {
 
       if (event.data.type === 'OAUTH_ERROR') {
         dispatch({ type: 'LOGOUT' });
+        track({
+          id: 'login-failed',
+          parameters: {
+            error: event.data.payload,
+            type: 'provider-rejected',
+          },
+        });
         throw new Error(event.data.payload);
       }
 
       if (event.data.type === 'OAUTH_CODE') {
+        track({ id: 'login-granted' });
         const loginResponse = await apiClient.post('/login', { code: event.data.payload });
-        dispatch({ session: new Session(loginResponse.data), type: 'LOGIN' });
+        const s = new Session(loginResponse.data);
+        track({
+          id: 'login-success',
+          parameters: {
+            expiration: s.expiration?.toISOString(),
+            scope: s.scope?.join(','),
+            username: s.username,
+          },
+        });
+        dispatch({ session: s, type: 'LOGIN' });
       }
     };
 
