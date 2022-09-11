@@ -24,11 +24,13 @@ $width: 25rem;
     right: unset;
     left: 0;
     display: flex;
+    overflow: auto;
     width: $width;
     flex-direction: column;
     padding: 5rem 2rem;
     backdrop-filter: blur(1rem);
     font-size: 2rem;
+    pointer-events: unset;
   }
 }
 
@@ -72,6 +74,7 @@ $width: 25rem;
 
   position: relative;
   display: flex;
+  overflow: auto;
   height: 100%;
   flex-direction: column;
   backdrop-filter: blur(1rem);
@@ -81,11 +84,14 @@ $width: 25rem;
   transition: transform 0.3s ease;
 
   @include screen.md {
+    overflow: unset;
     backdrop-filter: unset;
     transform: translateX(0);
   }
 
   .links {
+    margin-top: 2rem;
+
     a {
       display: block;
       margin-bottom: 2rem;
@@ -117,6 +123,7 @@ $width: 25rem;
 .social {
   display: flex;
   justify-content: space-around;
+  padding-bottom: 2rem;
 
   @include screen.md {
     margin-top: auto;
