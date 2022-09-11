@@ -40,6 +40,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
       </div>
       <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
         <a
+          aria-label={[post.title, post.location, post.created].filter((i) => !!i).join(', ')}
           className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
           href="#foo"
           ref={ref}
