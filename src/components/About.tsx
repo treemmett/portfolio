@@ -87,7 +87,7 @@ export const About: FC = () => {
               A senior software engineer specializing in React, rock climber, and digital nomad.
             </p>
             <div className={styles.links}>
-              <Link href="/timeline">Follow me</Link>
+              <Link href="/timeline">Where am I?</Link>
               <Link href="/resume">Resume</Link>
             </div>
             <div className={styles.social}>
