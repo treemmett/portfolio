@@ -3,7 +3,6 @@
 
 .post-wrapper {
   position: relative;
-  max-width: calc(100% - 2rem);
   flex: 0 0 auto;
 
   @include screen.md {
