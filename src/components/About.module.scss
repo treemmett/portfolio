@@ -91,7 +91,15 @@ $width: 25rem;
   }
 }
 
+.summary {
+  margin-bottom: auto;
+  font-size: 1.25rem;
+}
+
 .main {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
   padding: 2rem 1rem;
   margin-top: auto;
 

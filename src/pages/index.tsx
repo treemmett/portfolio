@@ -23,6 +23,10 @@ export const Home: NextPage = () => (
   <WithAbout>
     <Head>
       <title>{Config.NEXT_PUBLIC_NAME}</title>
+      <meta
+        content="Hi, I'm Tregan. A senior software engineer specializing in React, rock climber, and digital nomad."
+        name="description"
+      />
     </Head>
 
     <Gallery />

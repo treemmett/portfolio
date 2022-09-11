@@ -83,6 +83,9 @@ export const About: FC = () => {
         </div>
         <nav className={cx(styles.navigation, { [styles.visible]: showMenu })}>
           <main className={styles.main}>
+            <p className={styles.summary}>
+              A senior software engineer specializing in React, rock climber, and digital nomad.
+            </p>
             <div className={styles.links}>
               <Link href="/timeline">Follow me</Link>
               <Link href="/resume">Resume</Link>
