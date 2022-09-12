@@ -1,7 +1,17 @@
-import { FC, useCallback, useEffect, useRef } from 'react';
+/* eslint-disable max-classes-per-file */
+import { FC, useEffect, useRef } from 'react';
 import styles from './Quantum.module.scss';
 import { isBrowser } from '@utils/isBrowser';
-import { useWindowDimensions } from '@utils/useWindowDimensions';
+
+function getDistance(p1: Point, p2: Point): number {
+  return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
+}
+
+function pixelRatio(): number {
+  if (!isBrowser()) return 1;
+
+  return window.devicePixelRatio || 1;
+}
 
 class Point {
   public x: number;
@@ -22,20 +32,13 @@ class Point {
 
   public targetY: number;
 
-  constructor(
-    width: number,
-    height: number,
-    x: number,
-    y: number,
-    private ctx: CanvasRenderingContext2D
-  ) {
+  constructor(width: number, height: number, x: number, y: number, private quantum: Quantum) {
     this.x = x + (Math.random() * width) / 20;
     this.y = y + (Math.random() * height) / 20;
     this.xOrigin = x;
     this.yOrigin = y;
     this.radius = 2 + Math.random() * 2;
     this.color = 'rgba(255, 255, 255, 0.3)';
-    this.draw();
     this.newTarget();
   }
 
@@ -72,17 +75,17 @@ class Point {
 
   public draw() {
     this.closest.forEach((closePoint) => {
-      this.ctx.beginPath();
-      this.ctx.moveTo(this.x, this.y);
-      this.ctx.lineTo(closePoint.x, closePoint.y);
-      this.ctx.strokeStyle = `rgb(156, 217, 249)`;
-      this.ctx.stroke();
+      this.quantum.ctx.beginPath();
+      this.quantum.ctx.moveTo(this.x, this.y);
+      this.quantum.ctx.lineTo(closePoint.x, closePoint.y);
+      this.quantum.ctx.strokeStyle = `rgb(156, 217, 249)`;
+      this.quantum.ctx.stroke();
     });
 
-    this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
-    this.ctx.fillStyle = `rgb(156, 217, 249)`;
-    this.ctx.fill();
+    this.quantum.ctx.beginPath();
+    this.quantum.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+    this.quantum.ctx.fillStyle = `rgb(156, 217, 249)`;
+    this.quantum.ctx.fill();
     this.move();
   }
 
@@ -94,48 +97,29 @@ class Point {
   public static step = 1;
 }
 
-function getDistance(p1: Point, p2: Point): number {
-  return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
-}
+class Quantum {
+  public points: Point[] = [];
 
-function pixelRatio(): number {
-  if (!isBrowser()) return 1;
+  public canvas: HTMLCanvasElement;
 
-  return window.devicePixelRatio || 1;
-}
+  public ctx: CanvasRenderingContext2D;
 
-export const QuantumCanvas: FC = () => {
-  const ref = useRef<HTMLCanvasElement>();
-  const points = useRef<Point[]>([]);
-  const ctx = useRef<CanvasRenderingContext2D>();
-  const [width, height] = useWindowDimensions();
+  public frameID = 0;
 
-  const animateFrame = useCallback(() => {
-    if (!ctx.current) return;
-
-    ctx.current.clearRect(0, 0, width * pixelRatio(), height * pixelRatio());
-    points.current.forEach((p) => p.draw());
-    requestAnimationFrame(animateFrame);
-  }, [width, height]);
-
-  useEffect(() => {
-    if (!ref.current) return;
-
-    ctx.current = ref.current.getContext('2d');
-
-    const w = window.innerWidth * pixelRatio();
-    const h = window.innerHeight * pixelRatio();
+  constructor() {
+    const w = isBrowser() ? window.innerWidth * pixelRatio() : 0;
+    const h = isBrowser() ? window.innerHeight * pixelRatio() : 0;
 
     for (let x = 0; x < w + w / 20; x += w / 20) {
       for (let y = 0; y < h + h / 20; y += h / 20) {
-        points.current.push(new Point(w, h, x, y, ctx.current));
+        this.points.push(new Point(w, h, x, y, this));
       }
     }
 
     // find the 5 closest points
-    points.current.forEach((point) => {
+    this.points.forEach((point) => {
       const closest = [];
-      points.current.forEach((point2) => {
+      this.points.forEach((point2) => {
         if (point !== point2) {
           let placed = false;
 
@@ -161,20 +145,32 @@ export const QuantumCanvas: FC = () => {
       });
       point.setClosest(closest);
     });
-  }, [ref]);
+  }
 
-  useEffect(() => {
-    if (!ref.current) return;
+  public initialize(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    canvas.setAttribute('width', (window.innerWidth * pixelRatio()).toString());
+    canvas.setAttribute('height', (window.innerHeight * pixelRatio()).toString());
+    this.frame();
 
-    animateFrame();
-  }, [animateFrame, ref]);
+    return () => {
+      cancelAnimationFrame(this.frameID);
+    };
+  }
 
-  return (
-    <canvas
-      className={styles.canvas}
-      height={height * pixelRatio()}
-      ref={ref}
-      width={width * pixelRatio()}
-    />
-  );
+  private frame() {
+    this.ctx.clearRect(0, 0, window.innerWidth * pixelRatio(), window.innerHeight * pixelRatio());
+    this.points.forEach((p) => p.draw());
+    this.frameID = requestAnimationFrame(() => this.frame());
+  }
+}
+
+export const QuantumCanvas: FC = () => {
+  const ref = useRef<HTMLCanvasElement>();
+  const quantum = useRef(new Quantum());
+
+  useEffect(() => quantum.current.initialize(ref.current), [ref]);
+
+  return <canvas className={styles.canvas} ref={ref} />;
 };
