@@ -1,5 +1,6 @@
 // cspell:word zipcode
 import axios from 'axios';
+import { getClientIp } from 'request-ip';
 import { Country } from '@lib/countryCodes';
 import { nextConnect } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
@@ -44,12 +45,14 @@ interface GeolocationResponse {
   };
 }
 
-export default nextConnect().post(async (req, res) => {
+export default nextConnect().all(async (req, res) => {
   // return immediately, client doesn't care
   res.end();
 
   try {
-    const ip = req.socket.remoteAddress;
+    const ip = getClientIp(req);
+
+    if (['127.0.0.1', '0.0.0.0', '::ffff:127.0.0.1', '::1', '0:0:0:0:0:0:0:1'].includes(ip)) return;
 
     const { data } = await axios.get<GeolocationResponse>('https://api.ipgeolocation.io/ipgeo', {
       params: { apiKey: Config.GEOLOCATION_KEY, ip },
