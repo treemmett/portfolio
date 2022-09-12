@@ -1,7 +1,6 @@
 import xml from 'xml';
 import { Post } from '../../entities/Post';
 import { nextConnect } from '../../middleware/nextConnect';
-import { Config } from '../../utils/config';
 
 export default nextConnect().get(async (req, res) => {
   const posts = await Post.getAll();
@@ -12,7 +11,7 @@ export default nextConnect().get(async (req, res) => {
         { _attr: { version: '2.0', 'xmlns:media': 'http://search.yahoo.com/mrss/' } },
         {
           channel: [
-            { title: Config.NEXT_PUBLIC_NAME },
+            { title: 'Tregan' },
             { link: 'https://tregan.me' },
             { language: req.headers['accept-language'] || 'en-US' },
             ...posts.map((post) => ({

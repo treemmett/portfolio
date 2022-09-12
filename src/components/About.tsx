@@ -109,7 +109,7 @@ export const About: FC = () => {
             onClick={() => setShowMenu(!showMenu)}
           />
           <h2 className={styles.title}>
-            {session.isValid() ? t('Welcome back') : t('intro', { name: Config.NEXT_PUBLIC_NAME })}
+            {session.isValid() ? t('Welcome back') : t('intro', { name: 'Tregan' })}
           </h2>
         </div>
         <nav className={cx(styles.navigation, { [styles.visible]: showMenu })}>
@@ -122,36 +122,30 @@ export const About: FC = () => {
               <Link href="/resume">Resume</Link>
             </div>
             <div className={styles.social}>
-              {Config.NEXT_PUBLIC_GITHUB_USERNAME && (
-                <Anchor
-                  className={styles.button}
-                  href={`https://github.com/${Config.NEXT_PUBLIC_GITHUB_USERNAME}`}
-                  label="Follow me on GitHub"
-                  button
-                >
-                  <GitHub />
-                </Anchor>
-              )}
-              {Config.NEXT_PUBLIC_INSTAGRAM_USERNAME && (
-                <Anchor
-                  className={styles.button}
-                  href={`https://www.instagram.com/${Config.NEXT_PUBLIC_INSTAGRAM_USERNAME}/`}
-                  label="Follow me on Instagram"
-                  button
-                >
-                  <Instagram />
-                </Anchor>
-              )}
-              {Config.NEXT_PUBLIC_LINKEDIN_USERNAME && (
-                <Anchor
-                  className={styles.button}
-                  href={`https://www.linkedin.com/in/${Config.NEXT_PUBLIC_LINKEDIN_USERNAME}/`}
-                  label="Connect on LinkedIn"
-                  button
-                >
-                  <LinkedIn />
-                </Anchor>
-              )}
+              <Anchor
+                className={styles.button}
+                href="https://github.com/treemmett"
+                label="Follow me on GitHub"
+                button
+              >
+                <GitHub />
+              </Anchor>
+              <Anchor
+                className={styles.button}
+                href="https://www.instagram.com/treemmett/"
+                label="Follow me on Instagram"
+                button
+              >
+                <Instagram />
+              </Anchor>
+              <Anchor
+                className={styles.button}
+                href="https://www.linkedin.com/in/treemmett/"
+                label="Connect on LinkedIn"
+                button
+              >
+                <LinkedIn />
+              </Anchor>
               {Config.NEXT_PUBLIC_GITHUB_CLIENT_ID &&
                 (session.isValid() ? (
                   <Button

@@ -6,7 +6,6 @@ import { DefaultState } from '../components/DataStore';
 import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
 import { Post } from '../entities/Post';
-import { Config } from '../utils/config';
 
 export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
   const posts = await Post.getAll();
@@ -22,7 +21,7 @@ export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) =
 export const Home: NextPage = () => (
   <WithAbout>
     <Head>
-      <title>{Config.NEXT_PUBLIC_NAME}</title>
+      <title>Hi, I'm Tregan</title>
       <meta
         content="Hi, I'm Tregan. A senior software engineer specializing in React, rock climber, and digital nomad."
         name="description"

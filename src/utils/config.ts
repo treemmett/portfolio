@@ -13,16 +13,7 @@ export class Config {
 
   public static NEXT_PUBLIC_GITHUB_CLIENT_ID?: string = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
 
-  public static NEXT_PUBLIC_GITHUB_USERNAME?: string = process.env.NEXT_PUBLIC_GITHUB_USERNAME;
-
-  public static NEXT_PUBLIC_INSTAGRAM_USERNAME?: string =
-    process.env.NEXT_PUBLIC_INSTAGRAM_USERNAME;
-
-  public static NEXT_PUBLIC_LINKEDIN_USERNAME?: string = process.env.NEXT_PUBLIC_LINKEDIN_USERNAME;
-
   public static NEXT_PUBLIC_MAPBOX_TOKEN?: string = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-
-  public static NEXT_PUBLIC_NAME = process.env.NEXT_PUBLIC_NAME || 'Hello World';
 
   public static NODE_ENV = process.env.NODE_ENV || 'development';
 

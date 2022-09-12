@@ -90,11 +90,7 @@ jobs:
           JWT_SECRET: foobar
           MOCK: true
           NEXT_PUBLIC_GITHUB_CLIENT_ID: foobar
-          NEXT_PUBLIC_GITHUB_USERNAME: treemmett
-          NEXT_PUBLIC_INSTAGRAM_USERNAME: treemmett
-          NEXT_PUBLIC_LINKEDIN_USERNAME: treemmett
           NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
-          NEXT_PUBLIC_NAME: Tregan
           S3_BUCKET: minio-bucket
           S3_KEY: minio-root-user
           S3_KEY_SECRET: minio-root-password

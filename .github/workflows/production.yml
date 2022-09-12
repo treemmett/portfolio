@@ -46,11 +46,7 @@ jobs:
           envkey_GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
           envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           envkey_NEXT_PUBLIC_GITHUB_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GITHUB_CLIENT_ID }}
-          envkey_NEXT_PUBLIC_GITHUB_USERNAME: ${{ secrets.NEXT_PUBLIC_GITHUB_USERNAME }}
-          envkey_NEXT_PUBLIC_INSTAGRAM_USERNAME: ${{ secrets.NEXT_PUBLIC_INSTAGRAM_USERNAME }}
-          envkey_NEXT_PUBLIC_LINKEDIN_USERNAME: ${{ secrets.NEXT_PUBLIC_LINKEDIN_USERNAME }}
           envkey_NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
-          envkey_NEXT_PUBLIC_NAME: ${{ secrets.NEXT_PUBLIC_NAME }}
           envkey_S3_BUCKET: ${{ secrets.S3_BUCKET }}
           envkey_S3_KEY: ${{ secrets.S3_KEY }}
           envkey_S3_KEY_SECRET: ${{ secrets.S3_KEY_SECRET }}
