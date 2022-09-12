@@ -50,6 +50,12 @@
       }
     },
     {
+      "files": ["src/scripts/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+      }
+    },
+    {
       "files": ["cypress.config.ts", "cypress/**/*.ts", "**/*.test.ts"],
       "rules": {
         "@typescript-eslint/no-namespace": "off",

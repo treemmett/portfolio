@@ -87,6 +87,7 @@ export class Photo {
         size: buffer.length,
         thumbnailURL: `data:${mime};base64,${thumbnailBuffer.toString('base64')}`,
         type,
+        url: CDN_URL ? `${CDN_URL}/${id}` : `${S3_URL}/${S3_BUCKET}/${id}`,
         width: metadata.width,
       } as Photo,
       {
