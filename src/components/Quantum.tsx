@@ -18,6 +18,10 @@ class Point {
 
   public radius: number;
 
+  public targetX: number;
+
+  public targetY: number;
+
   constructor(
     width: number,
     height: number,
@@ -32,11 +36,38 @@ class Point {
     this.radius = 2 + Math.random() * 2;
     this.color = 'rgba(255, 255, 255, 0.3)';
     this.draw();
+    this.newTarget();
   }
 
   public setClosest(points: Point[]): this {
     this.closest = points;
     return this;
+  }
+
+  public move() {
+    const directionX = this.x < this.targetX ? 1 : -1;
+    const directionY = this.y < this.targetY ? 1 : -1;
+
+    this.x += Point.step * directionX;
+    this.y += Point.step * directionY;
+
+    if (
+      (directionX === 1 && this.x > this.targetX) ||
+      (directionX === -1 && this.x < this.targetX)
+    ) {
+      this.x = this.targetX;
+    }
+
+    if (
+      (directionY === 1 && this.y > this.targetY) ||
+      (directionY === -1 && this.y < this.targetY)
+    ) {
+      this.y = this.targetY;
+    }
+
+    if (this.y === this.targetY && this.x === this.targetX) {
+      this.newTarget();
+    }
   }
 
   public draw() {
@@ -52,7 +83,15 @@ class Point {
     this.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
     this.ctx.fillStyle = `rgb(156, 217, 249)`;
     this.ctx.fill();
+    this.move();
   }
+
+  public newTarget() {
+    this.targetX = this.xOrigin - 50 + Math.random() * 100;
+    this.targetY = this.yOrigin - 50 + Math.random() * 100;
+  }
+
+  public static step = 1;
 }
 
 function getDistance(p1: Point, p2: Point): number {
