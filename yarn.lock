@@ -1529,10 +1529,10 @@
   resolved "https://registry.yarnpkg.com/@cspell/dict-sql/-/dict-sql-1.0.4.tgz#109fb8b65ab125af1b4d66654626592fd1f23330"
   integrity sha512-+9nMcwsCzdYH0tyv2LeuVvQ+DdecS2C1N+hw6sl0FTHWI5GwULHAGW840RBwcKw0s+dl7sc0WpZhS1EW7b0pXg==
 
-"@cspell/dict-sv@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-sv/-/dict-sv-2.0.3.tgz#42959eb4f85b8f1aa438a7e1232fa9dd5e5f38bf"
-  integrity sha512-Bl0sJfl2ntIpiIZI4Wi/BbQ2LK3/EBtd+LE9xeDqVy68UTs45Fq3splwggYJYG7DbwRTnfm86pc4GSD88rbehA==
+"@cspell/dict-sv@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@cspell/dict-sv/-/dict-sv-2.0.4.tgz#e85a0e238ec4e8107500e86efce2387d98b7cb1d"
+  integrity sha512-d42ROu/Oe0YgzT/qabiP43z5cPPLOEbJfRY/eSncIJoCjbX1EFpRUp/rNrBWdsVt/uSWDsZSGd8O3rIue1txNg==
 
 "@cspell/dict-swift@^1.0.3":
   version "1.0.3"
