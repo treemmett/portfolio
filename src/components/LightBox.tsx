@@ -13,15 +13,15 @@ import {
 } from 'react';
 import { ReactComponent as Edit } from '../icons/edit.svg';
 import { ReactComponent as Trash } from '../icons/trash.svg';
-import { apiClient } from '../utils/apiClient';
-import { scaleDimensions, toPx } from '../utils/pixels';
-import { toString } from '../utils/queryParam';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { PhotoType } from '@entities/PhotoType';
+import { apiClient } from '@utils/apiClient';
+import { scaleDimensions, toPx } from '@utils/pixels';
+import { toString } from '@utils/queryParam';
 
 enum AnimationFrame {
   /** no photo is opened, and light box is off */

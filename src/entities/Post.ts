@@ -17,12 +17,12 @@ import {
 import { JWTPayload, jwtVerify, SignJWT } from 'jose';
 import sharp from 'sharp';
 import { ulid } from 'ulid';
-import { Config } from '../utils/config';
-import { APIError, ErrorCode } from '../utils/errors';
-import { logger } from '../utils/logger';
-import { s3 } from '../utils/s3';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
+import { Config } from '@utils/config';
+import { APIError, ErrorCode } from '@utils/errors';
+import { logger } from '@utils/logger';
+import { s3 } from '@utils/s3';
 
 const { JWT_SECRET, S3_BUCKET } = Config;
 

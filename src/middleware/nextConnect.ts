@@ -2,8 +2,8 @@ import 'reflect-metadata';
 import '../mock';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NC from 'next-connect';
-import { errorHandler } from '../utils/errors';
-import { logger } from '../utils/logger';
+import { errorHandler } from '@utils/errors';
+import { logger } from '@utils/logger';
 
 export const nextConnect = () =>
   NC<NextApiRequest, NextApiResponse>({

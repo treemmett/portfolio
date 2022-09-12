@@ -4,10 +4,6 @@ import { useRouter } from 'next/router';
 import { FC, MutableRefObject, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { ReactComponent as X } from '../icons/x-square.svg';
-import { apiClient } from '../utils/apiClient';
-import { splitCase } from '../utils/casing';
-import { getRemValue } from '../utils/pixels';
-import { toString } from '../utils/queryParam';
 import { Button } from './Button';
 import styles from './CheckIn.module.scss';
 import { useDataStore } from './DataStore';
@@ -15,6 +11,10 @@ import { Input } from './Input';
 import { Marker as MarkerEntity } from '@entities/Marker';
 import { Country } from '@lib/countryCodes';
 import { geocode } from '@lib/geocode';
+import { apiClient } from '@utils/apiClient';
+import { splitCase } from '@utils/casing';
+import { getRemValue } from '@utils/pixels';
+import { toString } from '@utils/queryParam';
 
 export interface CheckInProps {
   map: MutableRefObject<Map>;

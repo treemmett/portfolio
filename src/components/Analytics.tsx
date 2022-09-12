@@ -1,8 +1,8 @@
 import { init, parameters, track } from 'insights-js';
 import { useRouter } from 'next/router';
 import { FC, useEffect } from 'react';
-import { apiClient } from '../utils/apiClient';
-import { Config } from '../utils/config';
+import { apiClient } from '@utils/apiClient';
+import { Config } from '@utils/config';
 
 export const Analytics: FC = () => {
   useEffect(() => {

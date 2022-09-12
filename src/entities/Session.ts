@@ -1,10 +1,10 @@
 import { jwtVerify, decodeJwt } from 'jose';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Middleware } from 'next-connect';
-import { Config } from '../utils/config';
-import { APIError, ErrorCode } from '../utils/errors';
-import { isBrowser } from '../utils/isBrowser';
 import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes, Jwt } from './Jwt';
+import { Config } from '@utils/config';
+import { APIError, ErrorCode } from '@utils/errors';
+import { isBrowser } from '@utils/isBrowser';
 
 function decodeToken(accessToken: string): Jwt {
   return decodeJwt(accessToken) as unknown as Jwt;

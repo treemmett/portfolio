@@ -1,9 +1,9 @@
 // cspell:word zipcode
 import axios from 'axios';
-import { Config } from '../../utils/config';
-import { logger } from '../../utils/logger';
 import { Country } from '@lib/countryCodes';
 import { nextConnect } from '@middleware/nextConnect';
+import { Config } from '@utils/config';
+import { logger } from '@utils/logger';
 
 interface GeolocationResponse {
   ip: string;

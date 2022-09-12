@@ -3,10 +3,10 @@ import { transformAndValidate } from 'class-transformer-validator';
 import { IsDataURI, IsEnum, IsInt, IsString, IsUppercase, Min } from 'class-validator';
 import { Sharp } from 'sharp';
 import { ulid } from 'ulid';
-import { Config } from '../utils/config';
-import { logger } from '../utils/logger';
-import { s3 } from '../utils/s3';
 import { PhotoType } from './PhotoType';
+import { Config } from '@utils/config';
+import { logger } from '@utils/logger';
+import { s3 } from '@utils/s3';
 
 const { CDN_URL, S3_BUCKET, S3_URL } = Config;
 

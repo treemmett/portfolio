@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useRef } from 'react';
 import { ReactComponent as Pin } from '../icons/map-pin.svg';
-import { formatDate } from '../utils/date';
 import { useDataStore } from './DataStore';
 import styles from './Post.module.scss';
 import { PhotoType } from '@entities/PhotoType';
 import type { Post as PostEntity } from '@entities/Post';
+import { formatDate } from '@utils/date';
 
 export interface PostProps {
   post: PostEntity;

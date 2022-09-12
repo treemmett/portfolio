@@ -10,11 +10,11 @@ import {
   useReducer,
 } from 'react';
 import { ulid } from 'ulid';
-import { apiClient, ApiRequest } from '../utils/apiClient';
 import { ACCESS_TOKEN_STORAGE_KEY } from '@entities/Jwt';
 import { Marker } from '@entities/Marker';
 import type { Post } from '@entities/Post';
 import { Session } from '@entities/Session';
+import { apiClient, ApiRequest } from '@utils/apiClient';
 
 export interface State {
   lightBox?: MutableRefObject<HTMLElement>;
