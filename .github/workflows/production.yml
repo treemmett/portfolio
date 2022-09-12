@@ -31,35 +31,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-
       - name: Install dependencies
-        run: yarn --prefer-offline --frozen-lockfile
+        run: yarn --prefer-offline --frozen-lockfile && yarn add vercel --prefer-offline
       - name: Pull configuration
         run: yarn vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      - name: Make env file
-        uses: SpicyPizza/create-envfile@v1.3
-        with:
-          # cspell:word envkey
-          envkey_AUTHORIZED_USERS: ${{ secrets.AUTHORIZED_USERS }}
-          envkey_CDN_URL: ${{ secrets.CDN_URL }}
-          envkey_GITHUB_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
-          envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          envkey_NEXT_PUBLIC_GITHUB_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GITHUB_CLIENT_ID }}
-          envkey_NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
-          envkey_S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          envkey_S3_KEY: ${{ secrets.S3_KEY }}
-          envkey_S3_KEY_SECRET: ${{ secrets.S3_KEY_SECRET }}
-          envkey_S3_URL: ${{ secrets.S3_URL }}
-      - name: Set env
-        # cspell:word hackzcompany
-        uses: hackzcompany/vercel-env-push-action@v2
-        with:
-          env_type: plain
-          environments: production
-          project: ${{ secrets.VERCEL_PROJECT_ID }}
-          team_id: ${{ secrets.VERCEL_TEAM }}
-          token: ${{ secrets.VERCEL_TOKEN }}
       - name: Deploy
         id: deploy
         uses: amondnet/vercel-action@v25
