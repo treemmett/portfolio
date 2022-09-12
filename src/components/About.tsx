@@ -8,7 +8,6 @@ import { ReactComponent as Instagram } from '../icons/instagram.svg';
 import { ReactComponent as LinkedIn } from '../icons/linkedin.svg';
 import { ReactComponent as Logout } from '../icons/logout.svg';
 import { ReactComponent as User } from '../icons/user.svg';
-import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '../pages/login';
 import { apiClient } from '../utils/apiClient';
 import { Config } from '../utils/config';
 import styles from './About.module.scss';
@@ -17,6 +16,7 @@ import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import { MenuButton } from './MenuButton';
 import { Session } from '@entities/Session';
+import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@pages/login';
 
 export const About: FC = () => {
   const { dispatch, session } = useDataStore();

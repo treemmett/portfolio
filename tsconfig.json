@@ -21,7 +21,8 @@
       "@components/*": ["src/components/*"],
       "@entities/*": ["src/entities/*"],
       "@lib/*": ["src/lib/*"],
-      "@middleware/*": ["src/middleware/*"]
+      "@middleware/*": ["src/middleware/*"],
+      "@pages/*": ["src/pages/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
