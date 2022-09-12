@@ -1,10 +1,10 @@
-import { nextConnect } from '../../../middleware/nextConnect';
 import { logger } from '../../../utils/logger';
 import { toString } from '../../../utils/queryParam';
 import { i18nRevalidate } from '../../../utils/revalidate';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { Session } from '@entities/Session';
+import { nextConnect } from '@middleware/nextConnect';
 
 export default nextConnect()
   .delete(Session.authorizeRequest(AuthorizationScopes.delete), async (req, res) => {
