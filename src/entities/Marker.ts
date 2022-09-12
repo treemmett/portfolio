@@ -1,11 +1,11 @@
 import { transformAndValidate } from 'class-transformer-validator';
 import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
 import { ulid } from 'ulid';
-import { Country } from '../lib/countryCodes';
 import { Config } from '../utils/config';
 import { APIError, ErrorCode } from '../utils/errors';
 import { logger } from '../utils/logger';
 import { s3 } from '../utils/s3';
+import { Country } from '@lib/countryCodes';
 
 const { S3_BUCKET } = Config;
 

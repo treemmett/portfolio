@@ -5,8 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { Country } from '../lib/countryCodes';
-import { countryFlags } from '../lib/countryFlags';
 import { splitCase } from '../utils/casing';
 import { Config } from '../utils/config';
 import {
@@ -20,6 +18,8 @@ import styles from './timeline.module.scss';
 import { DefaultState, useDataStore } from '@components/DataStore';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Marker as MarkerEntity } from '@entities/Marker';
+import { Country } from '@lib/countryCodes';
+import { countryFlags } from '@lib/countryFlags';
 
 export interface TimelineProps {
   countries: { country: Country; flag: string; name: string }[];
