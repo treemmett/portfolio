@@ -2,34 +2,30 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Next.js: debug server-side",
+      "name": "debug server-side",
       "type": "node-terminal",
       "request": "launch",
       "command": "yarn dev"
     },
     {
-      "name": "Next.js: debug client-side",
-      "type": "pwa-chrome",
+      "name": "debug client-side",
+      "type": "firefox",
       "request": "launch",
-      "url": "http://localhost:3000"
+      "reAttach": true,
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/examples/blog-starter",
+      "pathMappings": [
+        {
+          "url": "http://localhost:3000/_next/",
+          "path": "${webRoot}/.next/"
+        }
+      ]
     },
     {
-      "name": "Next.js: debug full stack",
+      "name": "debug full stack",
       "type": "node-terminal",
       "request": "launch",
       "command": "yarn dev",
-      "console": "integratedTerminal",
-      "serverReadyAction": {
-        "pattern": "started server on .+, url: (https?://.+)",
-        "uriFormat": "%s",
-        "action": "debugWithChrome"
-      }
-    },
-    {
-      "name": "Next.js: debug full stack with mocks",
-      "type": "node-terminal",
-      "request": "launch",
-      "command": "MOCK=true yarn dev",
       "console": "integratedTerminal",
       "serverReadyAction": {
         "pattern": "started server on .+, url: (https?://.+)",
