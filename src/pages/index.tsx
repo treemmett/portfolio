@@ -5,7 +5,7 @@ import { WithAbout } from '@components/About';
 import { DefaultState } from '@components/DataStore';
 import { Gallery } from '@components/Gallery';
 import { LightBox } from '@components/LightBox';
-import { Quantum } from '@components/Quantum';
+import { QuantumCanvas } from '@components/Quantum';
 import { Post } from '@entities/Post';
 
 export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
@@ -29,7 +29,7 @@ export const Home: NextPage = () => (
       />
     </Head>
 
-    <Quantum />
+    <QuantumCanvas />
 
     <Gallery />
 

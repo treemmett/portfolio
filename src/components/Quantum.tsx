@@ -104,7 +104,7 @@ function pixelRatio(): number {
   return window.devicePixelRatio || 1;
 }
 
-export const Quantum: FC = () => {
+export const QuantumCanvas: FC = () => {
   const ref = useRef<HTMLCanvasElement>();
   const points = useRef<Point[]>([]);
   const ctx = useRef<CanvasRenderingContext2D>();
