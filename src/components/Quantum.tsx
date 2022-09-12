@@ -126,8 +126,8 @@ export const Quantum: FC = () => {
     const w = window.innerWidth * pixelRatio();
     const h = window.innerHeight * pixelRatio();
 
-    for (let x = 0; x < w; x += w / 20) {
-      for (let y = 0; y < h; y += h / 20) {
+    for (let x = 0; x < w + w / 20; x += w / 20) {
+      for (let y = 0; y < h + h / 20; y += h / 20) {
         points.current.push(new Point(w, h, x, y, ctx.current));
       }
     }
