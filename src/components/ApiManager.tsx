@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import { FC, useState } from 'react';
-import { ReactComponent as ChevronDown } from '../icons/chevron-down.svg';
-import { ReactComponent as ChevronUp } from '../icons/chevron-up.svg';
 import styles from './ApiManager.module.scss';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
+import { ReactComponent as ChevronDown } from '@icons/chevron-down.svg';
+import { ReactComponent as ChevronUp } from '@icons/chevron-up.svg';
 
 export const ApiManager: FC = () => {
   const { requests } = useDataStore();

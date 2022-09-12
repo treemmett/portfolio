@@ -3,13 +3,13 @@ import { join } from 'path';
 import { GetStaticProps, NextPage } from 'next';
 import getConfig from 'next/config';
 import { Resume as ResumeType } from 'resume';
-import { ReactComponent as At } from '../icons/at-sign.svg';
-import { ReactComponent as GitHub } from '../icons/github.svg';
-import { ReactComponent as Instagram } from '../icons/instagram.svg';
-import { ReactComponent as LinkIcon } from '../icons/link.svg';
-import { ReactComponent as LinkedIn } from '../icons/linkedin.svg';
-import { ReactComponent as Twitter } from '../icons/twitter.svg';
 import styles from './resume.module.scss';
+import { ReactComponent as At } from '@icons/at-sign.svg';
+import { ReactComponent as GitHub } from '@icons/github.svg';
+import { ReactComponent as Instagram } from '@icons/instagram.svg';
+import { ReactComponent as LinkIcon } from '@icons/link.svg';
+import { ReactComponent as LinkedIn } from '@icons/linkedin.svg';
+import { ReactComponent as Twitter } from '@icons/twitter.svg';
 
 const ProfileIcons = {
   github: GitHub,

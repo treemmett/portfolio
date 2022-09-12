@@ -20,6 +20,7 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@entities/*": ["src/entities/*"],
+      "@icons/*": ["src/icons/*"],
       "@lib/*": ["src/lib/*"],
       "@middleware/*": ["src/middleware/*"],
       "@pages/*": ["src/pages/*"],
