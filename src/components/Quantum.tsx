@@ -3,7 +3,7 @@ import { FC, useEffect, useRef } from 'react';
 import styles from './Quantum.module.scss';
 import { isBrowser } from '@utils/isBrowser';
 
-function getDistance(p1: Point, p2: Point): number {
+function getDistance(p1: Pick<Point, 'x' | 'y'>, p2: Pick<Point, 'x' | 'y'>): number {
   return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
 }
 
@@ -24,8 +24,6 @@ class Point {
 
   public closest: Point[] = [];
 
-  public color: string;
-
   public radius: number;
 
   public targetX: number;
@@ -37,8 +35,7 @@ class Point {
     this.y = y + (Math.random() * height) / 20;
     this.xOrigin = x;
     this.yOrigin = y;
-    this.radius = 2 + Math.random() * 2;
-    this.color = 'rgba(255, 255, 255, 0.3)';
+    this.radius = 2 + Math.random() * 2 * pixelRatio();
     this.newTarget();
   }
 
@@ -73,18 +70,37 @@ class Point {
     }
   }
 
-  public draw() {
+  public draw(x: number, y: number) {
+    let line = 0.01;
+    let circle = 0.1;
+
+    const distance = Math.abs(getDistance({ x, y }, this));
+
+    if (distance < 1000) {
+      line = 0.6;
+      circle = 1;
+    } else if (distance < 4000) {
+      line = 0.3;
+      circle = 0.6;
+    } else if (distance < 20000) {
+      line = 0.1;
+      circle = 0.3;
+    } else if (distance < 40000) {
+      line = 0.02;
+      circle = 0.1;
+    }
+
     this.closest.forEach((closePoint) => {
       this.quantum.ctx.beginPath();
       this.quantum.ctx.moveTo(this.x, this.y);
       this.quantum.ctx.lineTo(closePoint.x, closePoint.y);
-      this.quantum.ctx.strokeStyle = `rgb(156, 217, 249)`;
+      this.quantum.ctx.strokeStyle = `rgba(156, 217, 249, ${line})`;
       this.quantum.ctx.stroke();
     });
 
     this.quantum.ctx.beginPath();
     this.quantum.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
-    this.quantum.ctx.fillStyle = `rgb(156, 217, 249)`;
+    this.quantum.ctx.fillStyle = `rgba(156, 217, 249, ${circle})`;
     this.quantum.ctx.fill();
     this.move();
   }
@@ -106,9 +122,15 @@ class Quantum {
 
   public frameID = 0;
 
+  public mouseX: number;
+
+  public mouseY: number;
+
   constructor() {
     const w = isBrowser() ? window.innerWidth * pixelRatio() : 0;
     const h = isBrowser() ? window.innerHeight * pixelRatio() : 0;
+    this.mouseX = w / 2;
+    this.mouseY = h / 2;
 
     for (let x = 0; x < w + w / 20; x += w / 20) {
       for (let y = 0; y < h + h / 20; y += h / 20) {
@@ -152,18 +174,25 @@ class Quantum {
     this.ctx = canvas.getContext('2d');
     canvas.setAttribute('width', (window.innerWidth * pixelRatio()).toString());
     canvas.setAttribute('height', (window.innerHeight * pixelRatio()).toString());
+    window.addEventListener('mousemove', this.mouseListener);
     this.frame();
 
     return () => {
       cancelAnimationFrame(this.frameID);
+      window.removeEventListener('mousemove', this.mouseListener);
     };
   }
 
   private frame() {
     this.ctx.clearRect(0, 0, window.innerWidth * pixelRatio(), window.innerHeight * pixelRatio());
-    this.points.forEach((p) => p.draw());
+    this.points.forEach((p) => p.draw(this.mouseX, this.mouseY));
     this.frameID = requestAnimationFrame(() => this.frame());
   }
+
+  private mouseListener = (e: MouseEvent) => {
+    this.mouseX = e.clientX * pixelRatio();
+    this.mouseY = e.clientY * pixelRatio();
+  };
 }
 
 export const QuantumCanvas: FC = () => {
