@@ -264,7 +264,7 @@ export class Post {
 
       const json = Body.toString();
 
-      logger.info('Post data found', { json });
+      logger.info('Post data found');
 
       return (await transformAndValidate(Post, json, {
         validator: { forbidUnknownValues: true },

@@ -84,7 +84,7 @@ export class Marker {
 
       const json = Body.toString();
 
-      logger.info('Marker data found', { json });
+      logger.info('Marker data found');
 
       return JSON.parse(json);
     } catch (err) {
