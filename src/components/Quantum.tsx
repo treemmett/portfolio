@@ -1,5 +1,6 @@
 import { FC, useCallback, useEffect, useRef } from 'react';
 import styles from './Quantum.module.scss';
+import { isBrowser } from '@utils/isBrowser';
 import { useWindowDimensions } from '@utils/useWindowDimensions';
 
 class Point {
@@ -58,6 +59,12 @@ function getDistance(p1: Point, p2: Point): number {
   return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
 }
 
+function pixelRatio(): number {
+  if (!isBrowser()) return 1;
+
+  return window.devicePixelRatio || 1;
+}
+
 export const Quantum: FC = () => {
   const ref = useRef<HTMLCanvasElement>();
   const points = useRef<Point[]>([]);
@@ -67,7 +74,7 @@ export const Quantum: FC = () => {
   const animateFrame = useCallback(() => {
     if (!ctx.current) return;
 
-    ctx.current.clearRect(0, 0, width, height);
+    ctx.current.clearRect(0, 0, width * pixelRatio(), height * pixelRatio());
     points.current.forEach((p) => p.draw());
     requestAnimationFrame(animateFrame);
   }, [width, height]);
@@ -77,9 +84,12 @@ export const Quantum: FC = () => {
 
     ctx.current = ref.current.getContext('2d');
 
-    for (let x = 0; x < window.innerWidth; x += window.innerWidth / 20) {
-      for (let y = 0; y < window.innerHeight; y += window.innerHeight / 20) {
-        points.current.push(new Point(window.innerWidth, window.innerHeight, x, y, ctx.current));
+    const w = window.innerWidth * pixelRatio();
+    const h = window.innerHeight * pixelRatio();
+
+    for (let x = 0; x < w; x += w / 20) {
+      for (let y = 0; y < h; y += h / 20) {
+        points.current.push(new Point(w, h, x, y, ctx.current));
       }
     }
 
@@ -120,5 +130,12 @@ export const Quantum: FC = () => {
     animateFrame();
   }, [animateFrame, ref]);
 
-  return <canvas className={styles.canvas} height={height} ref={ref} width={width} />;
+  return (
+    <canvas
+      className={styles.canvas}
+      height={height * pixelRatio()}
+      ref={ref}
+      width={width * pixelRatio()}
+    />
+  );
 };
