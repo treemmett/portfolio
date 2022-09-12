@@ -2,7 +2,6 @@ import { LngLat, Map, MapMouseEvent, Marker } from 'mapbox-gl';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, MutableRefObject, useCallback, useEffect, useState } from 'react';
-import { Marker as MarkerEntity } from '../entities/Marker';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { ReactComponent as X } from '../icons/x-square.svg';
 import { Country } from '../lib/countryCodes';
@@ -15,6 +14,7 @@ import { Button } from './Button';
 import styles from './CheckIn.module.scss';
 import { useDataStore } from './DataStore';
 import { Input } from './Input';
+import { Marker as MarkerEntity } from '@entities/Marker';
 
 export interface CheckInProps {
   map: MutableRefObject<Map>;

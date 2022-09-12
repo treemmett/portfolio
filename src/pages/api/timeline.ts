@@ -1,8 +1,8 @@
-import { AuthorizationScopes } from '../../entities/Jwt';
-import { Marker } from '../../entities/Marker';
-import { Session } from '../../entities/Session';
 import { nextConnect } from '../../middleware/nextConnect';
 import { i18nRevalidate } from '../../utils/revalidate';
+import { AuthorizationScopes } from '@entities/Jwt';
+import { Marker } from '@entities/Marker';
+import { Session } from '@entities/Session';
 
 export default nextConnect()
   .use(Session.authorizeRequest(AuthorizationScopes.post))

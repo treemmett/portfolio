@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { SignJWT } from 'jose';
-import { AuthorizationScopes } from '../entities/Jwt';
 import { Config } from './config';
 import { APIError, ErrorCode } from './errors';
+import { AuthorizationScopes } from '@entities/Jwt';
 
 export async function authorizeGitHub(code: string) {
   const authResponse = await axios.post(

@@ -5,7 +5,7 @@ import { WithAbout } from '../components/About';
 import { DefaultState } from '../components/DataStore';
 import { Gallery } from '../components/Gallery';
 import { LightBox } from '../components/LightBox';
-import { Post } from '../entities/Post';
+import { Post } from '@entities/Post';
 
 export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
   const posts = await Post.getAll();

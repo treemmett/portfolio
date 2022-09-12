@@ -3,7 +3,6 @@ import cx from 'classnames';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
-import { Post, UploadToken } from '../entities/Post';
 import { ReactComponent as Plus } from '../icons/plus-square.svg';
 import { apiClient } from '../utils/apiClient';
 import { toString } from '../utils/queryParam';
@@ -12,6 +11,7 @@ import { useDataStore } from './DataStore';
 import styles from './Editor.module.scss';
 import { Input } from './Input';
 import { Modal } from './Modal';
+import { Post, UploadToken } from '@entities/Post';
 
 enum UploadState {
   default,

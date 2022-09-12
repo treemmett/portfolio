@@ -1,6 +1,6 @@
 import xml from 'xml';
-import { Post } from '../../entities/Post';
 import { nextConnect } from '../../middleware/nextConnect';
+import { Post } from '@entities/Post';
 
 export default nextConnect().get(async (req, res) => {
   const posts = await Post.getAll();

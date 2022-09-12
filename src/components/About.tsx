@@ -3,7 +3,6 @@ import { track } from 'insights-js';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { FC, PropsWithChildren, useCallback, useRef, useState } from 'react';
-import { Session } from '../entities/Session';
 import { ReactComponent as GitHub } from '../icons/github.svg';
 import { ReactComponent as Instagram } from '../icons/instagram.svg';
 import { ReactComponent as LinkedIn } from '../icons/linkedin.svg';
@@ -17,6 +16,7 @@ import { Anchor } from './Anchor';
 import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import { MenuButton } from './MenuButton';
+import { Session } from '@entities/Session';
 
 export const About: FC = () => {
   const { dispatch, session } = useDataStore();

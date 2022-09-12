@@ -1,9 +1,9 @@
 import dynamic from 'next/dynamic';
 import { FC, Suspense } from 'react';
-import { AuthorizationScopes } from '../entities/Jwt';
 import { useDataStore } from './DataStore';
 import styles from './Gallery.module.scss';
 import { Post } from './Post';
+import { AuthorizationScopes } from '@entities/Jwt';
 
 const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor));
 
