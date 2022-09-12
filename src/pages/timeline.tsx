@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { DefaultState, useDataStore } from '../components/DataStore';
 import { Country } from '../lib/countryCodes';
 import { countryFlags } from '../lib/countryFlags';
 import { splitCase } from '../utils/casing';
@@ -18,6 +17,7 @@ import {
   listenForDarkModeChange,
 } from '../utils/pixels';
 import styles from './timeline.module.scss';
+import { DefaultState, useDataStore } from '@components/DataStore';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Marker as MarkerEntity } from '@entities/Marker';
 
@@ -83,7 +83,7 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
   };
 };
 
-const DynamicCheckIn = dynamic(() => import('../components/CheckIn').then((mod) => mod.CheckIn));
+const DynamicCheckIn = dynamic(() => import('@components/CheckIn').then((mod) => mod.CheckIn));
 
 const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
   const router = useRouter();

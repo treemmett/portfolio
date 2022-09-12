@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
 import { FC } from 'react';
-import { Analytics } from '../components/Analytics';
-import { ApiManager } from '../components/ApiManager';
-import { DataStoreProvider } from '../components/DataStore';
+import { Analytics } from '@components/Analytics';
+import { ApiManager } from '@components/ApiManager';
+import { DataStoreProvider } from '@components/DataStore';
 import './_app.scss';
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => (
