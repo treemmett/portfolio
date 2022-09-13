@@ -3,6 +3,7 @@ import { getClientIp } from 'request-ip';
 import { Session } from '@entities/Session';
 import { nextConnect } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
+import { logger } from '@utils/logger';
 
 export interface AnalyticsParameter {
   type: string;
@@ -38,5 +39,7 @@ export default nextConnect().post(async (req, res) => {
     projectId: Config.INSIGHTS_TOKEN,
   };
 
-  await axios.post('https://getinsights.io/app/tics', body);
+  await axios.post('https://getinsights.io/app/tics', body).catch((err) => {
+    logger.error(err, 'Analytics failed');
+  });
 });
