@@ -145,8 +145,8 @@ class Quantum {
     this.mouseX = w / 2;
     this.mouseY = h / 2;
 
-    for (let x = 0; x < w + w / 20; x += w / 20) {
-      for (let y = 0; y < h + h / 20; y += h / 20) {
+    for (let x = 0; x < w + w / 30; x += w / 30) {
+      for (let y = 0; y < h + h / 30; y += h / 30) {
         this.points.push(new Point(w, h, x, y, this));
       }
     }
