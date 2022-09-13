@@ -2,6 +2,7 @@
 import { FC, useEffect, useRef } from 'react';
 import styles from './Quantum.module.scss';
 import { isBrowser } from '@utils/isBrowser';
+import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
 
 function getDistance(p1: Pick<Point, 'x' | 'y'>, p2: Pick<Point, 'x' | 'y'>): number {
   return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
@@ -77,7 +78,7 @@ class Point {
     }
   }
 
-  public draw(x: number, y: number) {
+  public draw(x: number, y: number, darkMode: boolean) {
     let line = 0;
     let circle = 0;
 
@@ -97,17 +98,20 @@ class Point {
       circle = 0.1;
     }
 
+    const color = (opacity: number) =>
+      darkMode ? `rgba(156, 217, 249, ${opacity})` : `rgba(171, 42, 97, ${opacity})`;
+
     this.closest.forEach((closePoint) => {
       this.quantum.ctx.beginPath();
       this.quantum.ctx.moveTo(this.x, this.y);
       this.quantum.ctx.lineTo(closePoint.x, closePoint.y);
-      this.quantum.ctx.strokeStyle = `rgba(156, 217, 249, ${line})`;
+      this.quantum.ctx.strokeStyle = color(line);
       this.quantum.ctx.stroke();
     });
 
     this.quantum.ctx.beginPath();
     this.quantum.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
-    this.quantum.ctx.fillStyle = `rgba(156, 217, 249, ${circle})`;
+    this.quantum.ctx.fillStyle = color(circle);
     this.quantum.ctx.fill();
     this.move();
   }
@@ -132,6 +136,8 @@ class Quantum {
   public mouseX: number;
 
   public mouseY: number;
+
+  public darkMode: boolean;
 
   constructor() {
     const w = isBrowser() ? window.innerWidth * pixelRatio() : 0;
@@ -183,8 +189,13 @@ class Quantum {
     canvas.setAttribute('height', (window.innerHeight * pixelRatio()).toString());
     window.addEventListener('mousemove', this.mouseListener);
     this.frame();
+    this.darkMode = isDarkMode();
+    const unsubscribe = listenForDarkModeChange((d) => {
+      this.darkMode = d;
+    });
 
     return () => {
+      unsubscribe();
       cancelAnimationFrame(this.frameID);
       window.removeEventListener('mousemove', this.mouseListener);
     };
@@ -192,7 +203,7 @@ class Quantum {
 
   private frame() {
     this.ctx.clearRect(0, 0, window.innerWidth * pixelRatio(), window.innerHeight * pixelRatio());
-    this.points.forEach((p) => p.draw(this.mouseX, this.mouseY));
+    this.points.forEach((p) => p.draw(this.mouseX, this.mouseY, this.darkMode));
     this.frameID = requestAnimationFrame(() => this.frame());
   }
 
