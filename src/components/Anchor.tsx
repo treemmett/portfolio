@@ -1,8 +1,8 @@
 import cx from 'classnames';
-import { track } from 'insights-js';
 import { FC, PropsWithChildren } from 'react';
 import { ButtonTypes } from './Button';
 import styles from './Button.module.scss';
+import { trace } from '@utils/analytics';
 
 export interface AnchorProps extends PropsWithChildren {
   className?: string;
@@ -23,11 +23,8 @@ export const Anchor: FC<AnchorProps> = ({ className, children, button, href, lab
     })}
     href={href}
     onClick={() => {
-      track({
-        id: 'external-link-click',
-        parameters: {
-          href,
-        },
+      trace('external-link-click', {
+        href,
       });
     }}
     rel="noreferrer"

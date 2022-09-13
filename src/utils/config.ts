@@ -7,7 +7,7 @@ export class Config {
 
   public static GEOLOCATION_KEY = process.env.GEOLOCATION_KEY;
 
-  public static NEXT_PUBLIC_INSIGHTS_TOKEN = process.env.NEXT_PUBLIC_INSIGHTS_TOKEN;
+  public static INSIGHTS_TOKEN = process.env.INSIGHTS_TOKEN;
 
   public static JWT_SECRET = process.env.JWT_SECRET || 'hello';
 

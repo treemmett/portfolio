@@ -35,7 +35,6 @@
     "class-validator": "^0.13.2",
     "classnames": "^2.3.1",
     "cookie": "^0.5.0",
-    "insights-js": "^1.2.11",
     "jose": "^4.9.2",
     "mapbox-gl": "^2.9.2",
     "next": "^12.2.5",

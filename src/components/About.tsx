@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import { track } from 'insights-js';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { FC, PropsWithChildren, useCallback, useRef, useState } from 'react';
@@ -15,6 +14,7 @@ import { ReactComponent as LinkedIn } from '@icons/linkedin.svg';
 import { ReactComponent as Logout } from '@icons/logout.svg';
 import { ReactComponent as User } from '@icons/user.svg';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@pages/login';
+import { trace } from '@utils/analytics';
 import { apiClient } from '@utils/apiClient';
 import { Config } from '@utils/config';
 
@@ -27,9 +27,7 @@ export const About: FC = () => {
   const login = useCallback(() => {
     if (session?.expiration > new Date()) return;
 
-    track({
-      id: 'begin-login',
-    });
+    trace('begin-login');
 
     const popup = window.open(
       `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
@@ -39,9 +37,7 @@ export const About: FC = () => {
 
     const intervalId = setInterval(() => {
       if (popup.closed) {
-        track({
-          id: 'login-closed',
-        });
+        trace('login-closed');
         dispatch({ type: 'LOGOUT' });
         clearInterval(intervalId);
       }
@@ -49,11 +45,8 @@ export const About: FC = () => {
 
     const messageHandler = async (event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>) => {
       if (event.origin !== window.location.origin) {
-        track({
-          id: 'login-failed',
-          parameters: {
-            type: 'cross-origin',
-          },
+        trace('login-failed', {
+          type: 'cross-origin',
         });
         throw new Error('Message failed cross-origin check');
       }
@@ -68,27 +61,21 @@ export const About: FC = () => {
 
       if (event.data.type === 'OAUTH_ERROR') {
         dispatch({ type: 'LOGOUT' });
-        track({
-          id: 'login-failed',
-          parameters: {
-            error: event.data.payload,
-            type: 'provider-rejected',
-          },
+        trace('login-failed', {
+          error: event.data.payload,
+          type: 'provider-rejected',
         });
         throw new Error(event.data.payload);
       }
 
       if (event.data.type === 'OAUTH_CODE') {
-        track({ id: 'login-granted' });
+        trace('login-granted');
         const loginResponse = await apiClient.post('/login', { code: event.data.payload });
         const s = new Session(loginResponse.data);
-        track({
-          id: 'login-success',
-          parameters: {
-            expiration: s.expiration?.toISOString(),
-            scope: s.scope?.join(','),
-            username: s.username,
-          },
+        trace('login-success', {
+          expiration: s.expiration?.toISOString(),
+          scope: s.scope?.join(','),
+          username: s.username,
         });
         dispatch({ session: s, type: 'LOGIN' });
       }
