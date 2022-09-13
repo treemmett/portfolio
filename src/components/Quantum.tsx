@@ -7,6 +7,21 @@ function getDistance(p1: Pick<Point, 'x' | 'y'>, p2: Pick<Point, 'x' | 'y'>): nu
   return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
 }
 
+function getQuinticEase(
+  currentProgress: number,
+  start: number,
+  distance: number,
+  steps: number
+): number {
+  let newProgress = currentProgress;
+  newProgress /= steps / 2;
+  if (newProgress < 1) {
+    return (distance / 2) * newProgress ** 5 + start;
+  }
+  newProgress -= 2;
+  return (distance / 2) * (newProgress ** 5 + 2) + start;
+}
+
 function pixelRatio(): number {
   if (!isBrowser()) return 1;
 
@@ -16,25 +31,33 @@ function pixelRatio(): number {
 class Point {
   public x: number;
 
-  public xOrigin: number;
-
   public y: number;
 
-  public yOrigin: number;
+  public genesisX: number;
 
-  public closest: Point[] = [];
-
-  public radius: number;
+  public genesisY: number;
 
   public targetX: number;
 
   public targetY: number;
 
+  public originX: number;
+
+  public originY: number;
+
+  public closest: Point[] = [];
+
+  public radius: number;
+
+  public step = 0;
+
+  public steps = 100;
+
   constructor(width: number, height: number, x: number, y: number, private quantum: Quantum) {
     this.x = x + (Math.random() * width) / 20;
     this.y = y + (Math.random() * height) / 20;
-    this.xOrigin = x;
-    this.yOrigin = y;
+    this.genesisX = x;
+    this.genesisY = y;
     this.radius = 2 + Math.random() * 2 * pixelRatio();
     this.newTarget();
   }
@@ -48,8 +71,13 @@ class Point {
     const directionX = this.x < this.targetX ? 1 : -1;
     const directionY = this.y < this.targetY ? 1 : -1;
 
-    this.x += Point.step * directionX;
-    this.y += Point.step * directionY;
+    this.originX = this.x;
+    this.originY = this.y;
+
+    this.x = getQuinticEase(this.step, this.originX, this.targetX - this.originX, this.steps);
+    this.y = getQuinticEase(this.step, this.originY, this.targetY - this.originY, this.steps);
+
+    this.step += 1;
 
     if (
       (directionX === 1 && this.x > this.targetX) ||
@@ -106,11 +134,11 @@ class Point {
   }
 
   public newTarget() {
-    this.targetX = this.xOrigin - 50 + Math.random() * 100;
-    this.targetY = this.yOrigin - 50 + Math.random() * 100;
+    this.step = 0;
+    this.steps = 75 + Math.random() * 100;
+    this.targetX = this.genesisX - 50 + Math.random() * 100;
+    this.targetY = this.genesisY - 50 + Math.random() * 100;
   }
-
-  public static step = 1;
 }
 
 class Quantum {
