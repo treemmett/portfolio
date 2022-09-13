@@ -1,6 +1,6 @@
-import { trace } from 'console';
 import { useRouter } from 'next/router';
 import { FC, useEffect } from 'react';
+import { trace } from '@utils/analytics';
 
 export const Analytics: FC = () => {
   const { asPath, locale } = useRouter();
