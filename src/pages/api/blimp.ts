@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getClientIp } from 'request-ip';
+import { Session } from '@entities/Session';
 import { nextConnect } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
 
@@ -18,6 +19,8 @@ export default nextConnect().post(async (req, res) => {
   // return immediately, client doesn't care
   res.send({ status: 'ok' });
 
+  const session = await Session.fromRequest(req).catch(() => false);
+
   const body: InsightsRequest = {
     id: req.body.id,
     parameters: {
@@ -30,6 +33,7 @@ export default nextConnect().post(async (req, res) => {
       locationLongitude: req.headers['x-vercel-ip-longitude'],
       locationRegion: req.headers['x-vercel-ip-country-region'],
       locationTimezone: req.headers['x-vercel-ip-timezone'],
+      username: typeof session === 'boolean' ? '<no session>' : session?.username || '<no session>',
     },
     projectId: Config.INSIGHTS_TOKEN,
   };
