@@ -78,8 +78,8 @@ class Point {
   }
 
   public draw(x: number, y: number) {
-    let line = 0.01;
-    let circle = 0.1;
+    let line = 0;
+    let circle = 0;
 
     const distance = Math.abs(getDistance({ x, y }, this));
 
@@ -92,7 +92,7 @@ class Point {
     } else if (distance < 20000) {
       line = 0.1;
       circle = 0.3;
-    } else if (distance < 40000) {
+    } else if (distance < 60000) {
       line = 0.02;
       circle = 0.1;
     }
