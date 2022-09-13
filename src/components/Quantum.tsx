@@ -50,12 +50,15 @@ class Point {
 
   public steps: number;
 
+  public opacityBase: number;
+
   constructor(width: number, height: number, x: number, y: number, private quantum: Quantum) {
     this.x = x + (Math.random() * width) / 20;
     this.y = y + (Math.random() * height) / 20;
     this.originX = x;
     this.originY = y;
     this.radius = 2 + Math.random() * 2 * pixelRatio();
+    this.opacityBase = 50000 + 75000 * Math.random();
     this.newTarget();
 
     // start with random velocity
@@ -79,39 +82,24 @@ class Point {
   }
 
   public draw(x: number, y: number, darkMode: boolean) {
-    let line = 0;
-    let circle = 0;
-
     const distance = Math.abs(getDistance({ x, y }, this));
 
-    if (distance < 1000) {
-      line = 0.6;
-      circle = 1;
-    } else if (distance < 4000) {
-      line = 0.3;
-      circle = 0.6;
-    } else if (distance < 20000) {
-      line = 0.1;
-      circle = 0.3;
-    } else if (distance < 60000) {
-      line = 0.02;
-      circle = 0.1;
-    }
+    const opacity = (this.opacityBase - distance) / 100000;
 
-    const color = (opacity: number) =>
-      darkMode ? `rgba(156, 217, 249, ${opacity})` : `rgba(171, 42, 97, ${opacity})`;
+    const color = (o: number) =>
+      darkMode ? `rgba(156, 217, 249, ${o})` : `rgba(171, 42, 97, ${o})`;
 
     this.closest.forEach((closePoint) => {
       this.quantum.ctx.beginPath();
       this.quantum.ctx.moveTo(this.x, this.y);
       this.quantum.ctx.lineTo(closePoint.x, closePoint.y);
-      this.quantum.ctx.strokeStyle = color(line);
+      this.quantum.ctx.strokeStyle = color(opacity / 2);
       this.quantum.ctx.stroke();
     });
 
     this.quantum.ctx.beginPath();
     this.quantum.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
-    this.quantum.ctx.fillStyle = color(circle);
+    this.quantum.ctx.fillStyle = color(opacity);
     this.quantum.ctx.fill();
     this.move();
   }
