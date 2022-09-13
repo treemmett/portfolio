@@ -4,6 +4,7 @@ import { Session } from '@entities/Session';
 import { nextConnect } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
 import { logger } from '@utils/logger';
+import { toString } from '@utils/queryParam';
 
 export interface AnalyticsParameter {
   type: string;
@@ -26,7 +27,9 @@ export default nextConnect().post(async (req, res) => {
     id: req.body.id,
     parameters: {
       ...req.body.parameters,
-      locationCity: req.headers['x-vercel-ip-city'],
+      locationCity: req.headers['x-vercel-ip-city']
+        ? decodeURIComponent(toString(req.headers['x-vercel-ip-city']))
+        : undefined,
       locationCountry: req.headers['x-vercel-ip-country'],
       locationIp: getClientIp(req),
       locationLanguage: req.headers['accept-language'],
