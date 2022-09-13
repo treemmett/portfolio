@@ -23,6 +23,16 @@ function getQuinticEase(
   return (distance / 2) * (newProgress ** 5 + 2) + start;
 }
 
+function ease(currentProgress: number, start: number, distance: number, steps: number) {
+  let progress = currentProgress;
+  progress /= steps / 2;
+  if (progress < 1) {
+    return (distance / 2) * progress ** 3 + start;
+  }
+  progress -= 2;
+  return (distance / 2) * (progress ** 3 + 2) + start;
+}
+
 function pixelRatio(): number {
   if (!isBrowser()) return 1;
 
@@ -81,8 +91,8 @@ class Point {
     }
   }
 
-  public draw(x: number, y: number, darkMode: boolean) {
-    const distance = Math.abs(getDistance({ x, y }, this));
+  public draw(targets: Pick<Point, 'x' | 'y'>[], darkMode: boolean) {
+    const distance = Math.min(...targets.map((target) => Math.abs(getDistance(target, this))));
 
     const opacity = (this.opacityBase - distance) / 100000;
 
@@ -127,11 +137,29 @@ class Quantum {
 
   public darkMode: boolean;
 
+  public step = 0;
+
+  public steps: number;
+
+  public targetX: number;
+
+  public targetY: number;
+
+  public originX: number;
+
+  public originY: number;
+
+  public spotlightX: number;
+
+  public spotlightY: number;
+
   constructor() {
     const w = isBrowser() ? window.innerWidth * pixelRatio() : 0;
     const h = isBrowser() ? window.innerHeight * pixelRatio() : 0;
     this.mouseX = w / 2;
     this.mouseY = h / 2;
+    this.spotlightX = w / 2;
+    this.spotlightY = h / 2;
 
     for (let x = 0; x < w + w / 30; x += w / 30) {
       for (let y = 0; y < h + h / 30; y += h / 30) {
@@ -176,6 +204,7 @@ class Quantum {
     canvas.setAttribute('width', (window.innerWidth * pixelRatio()).toString());
     canvas.setAttribute('height', (window.innerHeight * pixelRatio()).toString());
     window.addEventListener('mousemove', this.mouseListener);
+    this.newTarget();
     this.frame();
     this.darkMode = isDarkMode();
     const unsubscribe = listenForDarkModeChange((d) => {
@@ -191,7 +220,23 @@ class Quantum {
 
   private frame() {
     this.ctx.clearRect(0, 0, window.innerWidth * pixelRatio(), window.innerHeight * pixelRatio());
-    this.points.forEach((p) => p.draw(this.mouseX, this.mouseY, this.darkMode));
+    this.points.forEach((p) =>
+      p.draw(
+        [
+          { x: this.mouseX, y: this.mouseY },
+          { x: this.spotlightX, y: this.spotlightY },
+        ],
+        this.darkMode
+      )
+    );
+    this.spotlightX = ease(this.step, this.originX, this.targetX - this.originX, this.steps);
+    this.spotlightY = ease(this.step, this.originY, this.targetY - this.originY, this.steps);
+    this.step += 1;
+
+    if (this.step >= this.steps) {
+      this.newTarget();
+    }
+
     this.frameID = requestAnimationFrame(() => this.frame());
   }
 
@@ -199,6 +244,15 @@ class Quantum {
     this.mouseX = e.clientX * pixelRatio();
     this.mouseY = e.clientY * pixelRatio();
   };
+
+  private newTarget() {
+    this.step = 0;
+    this.steps = 200;
+    this.targetX = window.innerWidth * pixelRatio() * Math.random();
+    this.targetY = window.innerHeight * pixelRatio() * Math.random();
+    this.originX = this.spotlightX;
+    this.originY = this.spotlightY;
+  }
 }
 
 export const QuantumCanvas: FC = () => {
