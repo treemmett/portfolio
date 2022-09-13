@@ -33,17 +33,13 @@ class Point {
 
   public y: number;
 
-  public genesisX: number;
+  public originX: number;
 
-  public genesisY: number;
+  public originY: number;
 
   public targetX: number;
 
   public targetY: number;
-
-  public originX: number;
-
-  public originY: number;
 
   public closest: Point[] = [];
 
@@ -51,13 +47,13 @@ class Point {
 
   public step = 0;
 
-  public steps = 100;
+  public steps: number;
 
   constructor(width: number, height: number, x: number, y: number, private quantum: Quantum) {
     this.x = x + (Math.random() * width) / 20;
     this.y = y + (Math.random() * height) / 20;
-    this.genesisX = x;
-    this.genesisY = y;
+    this.originX = x;
+    this.originY = y;
     this.radius = 2 + Math.random() * 2 * pixelRatio();
     this.newTarget();
   }
@@ -68,30 +64,10 @@ class Point {
   }
 
   public move() {
-    const directionX = this.x < this.targetX ? 1 : -1;
-    const directionY = this.y < this.targetY ? 1 : -1;
-
-    this.originX = this.x;
-    this.originY = this.y;
-
-    this.x = getQuinticEase(this.step, this.originX, this.targetX - this.originX, this.steps);
-    this.y = getQuinticEase(this.step, this.originY, this.targetY - this.originY, this.steps);
+    this.x = getQuinticEase(this.step, this.x, this.targetX - this.x, this.steps);
+    this.y = getQuinticEase(this.step, this.y, this.targetY - this.y, this.steps);
 
     this.step += 1;
-
-    if (
-      (directionX === 1 && this.x > this.targetX) ||
-      (directionX === -1 && this.x < this.targetX)
-    ) {
-      this.x = this.targetX;
-    }
-
-    if (
-      (directionY === 1 && this.y > this.targetY) ||
-      (directionY === -1 && this.y < this.targetY)
-    ) {
-      this.y = this.targetY;
-    }
 
     if (this.y === this.targetY && this.x === this.targetX) {
       this.newTarget();
@@ -135,9 +111,9 @@ class Point {
 
   public newTarget() {
     this.step = 0;
-    this.steps = 75 + Math.random() * 100;
-    this.targetX = this.genesisX - 50 + Math.random() * 100;
-    this.targetY = this.genesisY - 50 + Math.random() * 100;
+    this.steps = 75 + Math.random() * 200;
+    this.targetX = this.originX - 50 + Math.random() * 100;
+    this.targetY = this.originY - 50 + Math.random() * 100;
   }
 }
 
