@@ -56,6 +56,9 @@ class Point {
     this.originY = y;
     this.radius = 2 + Math.random() * 2 * pixelRatio();
     this.newTarget();
+
+    // start with random velocity
+    this.step = Math.floor(this.steps * Math.random());
   }
 
   public setClosest(points: Point[]): this {
@@ -111,7 +114,7 @@ class Point {
 
   public newTarget() {
     this.step = 0;
-    this.steps = 75 + Math.random() * 200;
+    this.steps = 100 + Math.random() * 100;
     this.targetX = this.originX - 50 + Math.random() * 100;
     this.targetY = this.originY - 50 + Math.random() * 100;
   }
