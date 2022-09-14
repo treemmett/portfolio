@@ -83,6 +83,17 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
         ))}
       </aside>
 
+      <aside className={styles.languages}>
+        <h3>Languages</h3>
+        <hr />
+        {resume?.languages?.map((language) => (
+          <section key={language.language}>
+            <h5>{language.language}</h5>
+            <h6>{language.fluency}</h6>
+          </section>
+        ))}
+      </aside>
+
       <aside className={styles.about}>
         <h3>About</h3>
         <hr />

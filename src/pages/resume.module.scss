@@ -47,7 +47,7 @@
 .grid {
   display: grid;
   gap: 2rem;
-  grid-template-areas: 'about' 'contact' 'experience' 'skills';
+  grid-template-areas: 'about' 'contact' 'experience' 'skills' 'languages';
   grid-template-columns: 1fr;
 
   @include screen.md {
@@ -55,7 +55,8 @@
     grid-template-areas:
       'contact about'
       'contact experience'
-      'skills experience';
+      'skills experience'
+      'languages experience';
     grid-template-columns: 40% 1fr;
     grid-template-rows: 1fr 1fr;
   }
@@ -86,5 +87,21 @@
 .work {
   h5 {
     justify-content: flex-end;
+  }
+}
+
+.languages {
+  grid-area: languages;
+
+  h5 {
+    margin-bottom: 0.5rem;
+  }
+
+  h6 {
+    margin: 0;
+  }
+
+  section + section {
+    margin-top: 2rem;
   }
 }
