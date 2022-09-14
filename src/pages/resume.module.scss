@@ -71,17 +71,17 @@
     svg:first-child {
       margin-right: 0.5rem;
     }
+  }
+}
 
-    svg:last-child {
-      width: 0.75rem;
-      height: 0.75rem;
-      margin-bottom: auto;
-      margin-left: 0.25rem;
+.external-link {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-bottom: auto;
+  margin-left: 0.25rem;
 
-      @media print {
-        display: none;
-      }
-    }
+  @media print {
+    display: none;
   }
 }
 
@@ -127,6 +127,11 @@
   .work {
     h4 {
       margin: 0;
+
+      a {
+        display: flex;
+        align-items: center;
+      }
     }
 
     h5 {

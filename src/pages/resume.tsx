@@ -5,8 +5,9 @@ import getConfig from 'next/config';
 import { FC, PropsWithChildren } from 'react';
 import { Resume as ResumeType } from 'resume';
 import styles from './resume.module.scss';
+import { Anchor } from '@components/Anchor';
 import { ReactComponent as At } from '@icons/at-sign.svg';
-import { ReactComponent as ExternalLink } from '@icons/external-link.svg';
+import { ReactComponent as ExternalLinkIcon } from '@icons/external-link.svg';
 import { ReactComponent as GitHub } from '@icons/github.svg';
 import { ReactComponent as Instagram } from '@icons/instagram.svg';
 import { ReactComponent as LinkIcon } from '@icons/link.svg';
@@ -47,6 +48,8 @@ const Section: FC<PropsWithChildren<{ className?: string; name: string }>> = ({
 export interface ResumeProps {
   resume: ResumeType;
 }
+
+const ExternalLink: FC = () => <ExternalLinkIcon className={styles['external-link']} />;
 
 const Resume: NextPage<ResumeProps> = ({ resume }) => (
   <div className={styles.page}>
@@ -119,7 +122,12 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
       {resume.work?.map((work) => (
         <div className={styles.work} key={work.name}>
           <h6>{`${work.startDate} - ${work.endDate || 'Present'}`}</h6>
-          <h4>{work.name}</h4>
+          <h4>
+            <Anchor href={work.url}>
+              {work.name}
+              <ExternalLink />
+            </Anchor>
+          </h4>
           <h5>{work.position}</h5>
           <ul>
             {work.highlights.map((highlight) => (
