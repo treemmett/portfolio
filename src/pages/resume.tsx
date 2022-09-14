@@ -2,6 +2,7 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { GetStaticProps, NextPage } from 'next';
 import getConfig from 'next/config';
+import { FC, PropsWithChildren } from 'react';
 import { Resume as ResumeType } from 'resume';
 import styles from './resume.module.scss';
 import { ReactComponent as At } from '@icons/at-sign.svg';
@@ -30,6 +31,18 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
+const Section: FC<PropsWithChildren<{ className?: string; name: string }>> = ({
+  children,
+  className,
+  name,
+}) => (
+  <section className={className}>
+    <h3>{name}</h3>
+    <hr />
+    {children}
+  </section>
+);
+
 export interface ResumeProps {
   resume: ResumeType;
 }
@@ -41,9 +54,7 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
       <h2>{resume.basics.label}</h2>
     </header>
 
-    <section className={styles.contact}>
-      <h3>Contact</h3>
-      <hr />
+    <Section className={styles.contact} name="Contact">
       <a href={`mailto:${resume.basics.email}`} rel="noreferrer" target="_blank">
         <At />
         <h5>{resume.basics.email}</h5>
@@ -62,29 +73,23 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
           </a>
         );
       })}
-    </section>
+    </Section>
 
     <section className={styles.skills}>
       {resume.skills?.map((skill) => (
-        <section key={skill.name}>
-          <h3>{skill.name}</h3>
-          <hr />
+        <Section key={skill.name} name={skill.name}>
           {skill.keywords.map((keyword) => (
             <h5 key={keyword}>{keyword}</h5>
           ))}
-        </section>
+        </Section>
       ))}
     </section>
 
-    <section className={styles.about}>
-      <h3>About</h3>
-      <hr />
+    <Section className={styles.about} name="About">
       <p>{resume.basics.summary}</p>
-    </section>
+    </Section>
 
-    <section className={styles.languages}>
-      <h3>Languages</h3>
-      <hr />
+    <Section className={styles.languages} name="Languages">
       <div className={styles.list}>
         {resume?.languages?.map((language) => (
           <div className={styles.language} key={language.language}>
@@ -93,11 +98,9 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
           </div>
         ))}
       </div>
-    </section>
+    </Section>
 
-    <section className={styles.experience}>
-      <h3>Experience</h3>
-      <hr />
+    <Section className={styles.experience} name="Experience">
       {resume.work?.map((work) => (
         <div className={styles.work} key={work.name}>
           <h5>{`${work.startDate} - ${work.endDate || 'Present'}`}</h5>
@@ -109,7 +112,7 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
           </ul>
         </div>
       ))}
-    </section>
+    </Section>
   </div>
 );
 
