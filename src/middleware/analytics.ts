@@ -8,16 +8,8 @@ import { logger } from '@utils/logger';
 import { toString } from '@utils/queryParam';
 
 export const useAnalytics: Middleware<NextApiRequest, NextApiResponse> = async (req, res, next) => {
-  const { body, headers, method, url } = req;
-
-  const isAnalytics = url === '/api/blimp';
-
-  // immediately continue on middleware
-  if (!isAnalytics) {
-    next();
-  }
-
   try {
+    const { body, headers, method, url } = req;
     const ip = getClientIp(req);
 
     const [session, geoData] = await Promise.all([
@@ -43,7 +35,7 @@ export const useAnalytics: Middleware<NextApiRequest, NextApiResponse> = async (
     };
 
     // parse parameters on blimp requests
-    if (isAnalytics) {
+    if (url === '/api/blimp') {
       const { referrer, screenType, ...parameters } = body.parameters;
 
       await axiom('analytics', {
@@ -59,5 +51,7 @@ export const useAnalytics: Middleware<NextApiRequest, NextApiResponse> = async (
     }
   } catch (err) {
     logger.error(err, 'Uncaught error in analytics middleware');
+  } finally {
+    next();
   }
 };
