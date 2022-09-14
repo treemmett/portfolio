@@ -56,35 +56,46 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
     </header>
 
     <Section className={styles.contact} name="Contact">
-      <a href={`mailto:${resume.basics.email}`} rel="noreferrer" target="_blank">
-        <At />
-        <h5>{resume.basics.email}</h5>
-        <ExternalLink />
-      </a>
-      <a href={resume.basics.url} rel="noreferrer" target="_blank">
-        <LinkIcon />
-        <h5>{resume.basics.url}</h5>
-        <ExternalLink />
-      </a>
-      {resume.basics.profiles.map((profile) => {
-        const Icon = ProfileIcons[profile.network?.toLowerCase()];
-
-        return (
-          <a href={profile.url} key={profile.network} rel="noreferrer" target="_blank">
-            {Icon && <Icon />}
-            <h5>/{profile.username}</h5>
+      <div className={styles.dual}>
+        <a href={`mailto:${resume.basics.email}`} rel="noreferrer" target="_blank">
+          <h5>
+            <At />
+            {resume.basics.email}
             <ExternalLink />
-          </a>
-        );
-      })}
+          </h5>
+        </a>
+        <a href={resume.basics.url} rel="noreferrer" target="_blank">
+          <h5>
+            <LinkIcon />
+            {resume.basics.url}
+            <ExternalLink />
+          </h5>
+        </a>
+        {resume.basics.profiles.map((profile) => {
+          const Icon = ProfileIcons[profile.network?.toLowerCase()];
+
+          return (
+            <a href={profile.url} key={profile.network} rel="noreferrer" target="_blank">
+              <h5>
+                {Icon && <Icon />}/{profile.username}
+                <ExternalLink />
+              </h5>
+            </a>
+          );
+        })}
+      </div>
     </Section>
 
     <section className={styles.skills}>
       {resume.skills?.map((skill) => (
         <Section key={skill.name} name={skill.name}>
-          {skill.keywords.map((keyword) => (
-            <h5 key={keyword}>{keyword}</h5>
-          ))}
+          <div className={styles.dual}>
+            {skill.keywords.map((keyword) => (
+              <h5 className={styles.skill} key={keyword}>
+                {keyword}
+              </h5>
+            ))}
+          </div>
         </Section>
       ))}
     </section>

@@ -34,6 +34,23 @@
   }
 }
 
+.dual {
+  display: grid;
+  padding-top: 0.75rem;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+
+  h5 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 400;
+  }
+
+  @include screen.md {
+    grid-template-columns: 1fr;
+  }
+}
+
 .header {
   grid-area: header;
 
@@ -46,13 +63,13 @@
   grid-area: contact;
 
   a {
-    display: flex;
-    align-items: center;
-    margin: 1rem 0;
-
     h5 {
-      margin: 0;
-      margin-left: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    svg:first-child {
+      margin-right: 0.5rem;
     }
 
     svg:last-child {
@@ -95,6 +112,10 @@
 .skills {
   grid-area: skills;
 
+  .skill {
+    margin-top: 0;
+  }
+
   section + section {
     margin-top: 3rem;
   }
@@ -114,7 +135,7 @@
     }
 
     & + .work {
-      margin-top: 2rem;
+      margin-top: 4rem;
     }
   }
 }
