@@ -60,30 +60,30 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
 
     <Section className={styles.contact} name="Contact">
       <div className={styles.dual}>
-        <a href={`mailto:${resume.basics.email}`} rel="noreferrer" target="_blank">
+        <Anchor href={`mailto:${resume.basics.email}`}>
           <h5>
             <At />
             {resume.basics.email}
             <ExternalLink />
           </h5>
-        </a>
-        <a href={resume.basics.url} rel="noreferrer" target="_blank">
+        </Anchor>
+        <Anchor href={resume.basics.url}>
           <h5>
             <LinkIcon />
             {resume.basics.url}
             <ExternalLink />
           </h5>
-        </a>
+        </Anchor>
         {resume.basics.profiles.map((profile) => {
           const Icon = ProfileIcons[profile.network?.toLowerCase()];
 
           return (
-            <a href={profile.url} key={profile.network} rel="noreferrer" target="_blank">
+            <Anchor href={profile.url} key={profile.network}>
               <h5>
                 {Icon && <Icon />}/{profile.username}
                 <ExternalLink />
               </h5>
-            </a>
+            </Anchor>
           );
         })}
       </div>
