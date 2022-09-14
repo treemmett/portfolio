@@ -36,7 +36,8 @@
     "Tregan",
     "typeorm",
     "ulid",
-    "vercel"
+    "vercel",
+    "Zipcode"
   ],
   "overrides": [
     {
