@@ -54,6 +54,17 @@
       margin: 0;
       margin-left: 0.5rem;
     }
+
+    svg:last-child {
+      width: 0.75rem;
+      height: 0.75rem;
+      margin-bottom: auto;
+      margin-left: 0.25rem;
+
+      @media print {
+        display: none;
+      }
+    }
   }
 }
 

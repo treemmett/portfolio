@@ -6,6 +6,7 @@ import { FC, PropsWithChildren } from 'react';
 import { Resume as ResumeType } from 'resume';
 import styles from './resume.module.scss';
 import { ReactComponent as At } from '@icons/at-sign.svg';
+import { ReactComponent as ExternalLink } from '@icons/external-link.svg';
 import { ReactComponent as GitHub } from '@icons/github.svg';
 import { ReactComponent as Instagram } from '@icons/instagram.svg';
 import { ReactComponent as LinkIcon } from '@icons/link.svg';
@@ -58,10 +59,12 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
       <a href={`mailto:${resume.basics.email}`} rel="noreferrer" target="_blank">
         <At />
         <h5>{resume.basics.email}</h5>
+        <ExternalLink />
       </a>
       <a href={resume.basics.url} rel="noreferrer" target="_blank">
         <LinkIcon />
         <h5>{resume.basics.url}</h5>
+        <ExternalLink />
       </a>
       {resume.basics.profiles.map((profile) => {
         const Icon = ProfileIcons[profile.network?.toLowerCase()];
@@ -70,6 +73,7 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
           <a href={profile.url} key={profile.network} rel="noreferrer" target="_blank">
             {Icon && <Icon />}
             <h5>/{profile.username}</h5>
+            <ExternalLink />
           </a>
         );
       })}
