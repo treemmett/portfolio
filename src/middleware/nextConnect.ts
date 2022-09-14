@@ -3,6 +3,7 @@ import '../mock';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NC from 'next-connect';
 import pinoHttp from 'pino-http';
+import { useAnalytics } from './analytics';
 import { errorHandler } from '@utils/errors';
 import { logger } from '@utils/logger';
 
@@ -17,7 +18,9 @@ export const nextConnect = () =>
       logger.error('No match found', { req });
       res.status(404).json({ error: 'Route not found' });
     },
-  }).use((req, res, next) => {
-    httpLogger(req, res);
-    next();
-  });
+  })
+    .use(useAnalytics)
+    .use((req, res, next) => {
+      httpLogger(req, res);
+      next();
+    });

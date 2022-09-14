@@ -1,6 +1,5 @@
 import { apiClient } from './apiClient';
 import { isBrowser } from './isBrowser';
-import type { InsightsRequest } from '@pages/api/blimp';
 
 /**
  * Get the current host, including the protocol, origin and port (if any).
@@ -26,22 +25,13 @@ function isReferrerSameHost(): boolean {
  */
 function referrer() {
   if (!isBrowser()) {
-    return { type: 'referrer', value: '<not-in-browser>' };
+    return '<not-in-browser>';
   }
   if (isReferrerSameHost()) {
-    return { type: 'referrer', value: '<none>' };
+    return '<none>';
   }
 
-  return { type: 'referrer', value: document.referrer || '<none>' };
-}
-
-function getScreenType() {
-  const width = window.innerWidth;
-  if (width <= 414) return 'XS';
-  if (width <= 800) return 'S';
-  if (width <= 1200) return 'M';
-  if (width <= 1600) return 'L';
-  return 'XL';
+  return document.referrer || '<none>';
 }
 
 /**
@@ -55,15 +45,20 @@ function getScreenType() {
  */
 function screenType() {
   if (!isBrowser()) {
-    return { type: 'screen-type', value: '<not-in-browser>' };
+    return '<not-in-browser>';
   }
-  return { type: 'screen-type', value: getScreenType() };
+  const width = window.innerWidth;
+  if (width <= 414) return 'XS';
+  if (width <= 800) return 'S';
+  if (width <= 1200) return 'M';
+  if (width <= 1600) return 'L';
+  return 'XL';
 }
 
-export function trace(id: string, parameters?: InsightsRequest['parameters']) {
+export function trace(event: string, parameters?: Record<string, string>) {
   apiClient
     .post('/blimp', {
-      id,
+      event,
       parameters: {
         ...parameters,
         referrer: referrer(),

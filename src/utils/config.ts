@@ -1,13 +1,13 @@
 export class Config {
   public static AUTHORIZED_USERS = process.env.AUTHORIZED_USERS || '';
 
+  public static AXIOM_TOKEN = process.env.AXIOM_TOKEN;
+
   public static CDN_URL?: string = process.env.CDN_URL;
 
   public static GITHUB_CLIENT_SECRET?: string = process.env.GITHUB_CLIENT_SECRET;
 
   public static GEOLOCATION_KEY = process.env.GEOLOCATION_KEY;
-
-  public static INSIGHTS_TOKEN = process.env.INSIGHTS_TOKEN;
 
   public static JWT_SECRET = process.env.JWT_SECRET || 'hello';
 

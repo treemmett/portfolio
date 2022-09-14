@@ -43,10 +43,10 @@ interface GeolocationResponse {
   };
 }
 
-export async function geolocation(ip: string): Promise<false | GeolocationResponse> {
+export async function geolocation(ip: string): Promise<undefined | GeolocationResponse> {
   try {
     if (['127.0.0.1', '0.0.0.0', '::ffff:127.0.0.1', '::1', '0:0:0:0:0:0:0:1'].includes(ip)) {
-      return false;
+      return undefined;
     }
 
     const { data } = await axios.get<GeolocationResponse>('https://api.ipgeolocation.io/ipgeo', {
@@ -56,6 +56,6 @@ export async function geolocation(ip: string): Promise<false | GeolocationRespon
     return data;
   } catch (err) {
     logger.error(err, 'Failed to load geolocation data');
-    return false;
+    return undefined;
   }
 }
