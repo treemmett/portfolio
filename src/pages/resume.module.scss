@@ -1,107 +1,109 @@
 @use '../styles/screen';
 
-// stylelint-disable
-@page {
-  margin: 1rem;
-  size: auto;
-}
-// stylelint-enable
-
 .page {
+  display: grid;
   width: 100%;
   max-width: 70rem;
   padding: 2rem;
   margin: auto;
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    text-transform: uppercase;
-  }
-
-  section {
-    & + section {
-      margin-top: 4rem;
-    }
-  }
-
-  svg {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-  }
-
-  h5 {
-    display: flex;
-    align-items: center;
-
-    svg {
-      margin-right: 0.75rem;
-    }
-  }
-}
-
-.grid {
-  display: grid;
   gap: 2rem;
-  grid-template-areas: 'about' 'contact' 'experience' 'skills' 'languages';
+  grid-template-areas:
+    'header'
+    'about'
+    'contact'
+    'languages'
+    'experience'
+    'skills';
   grid-template-columns: 1fr;
 
   @include screen.md {
-    align-items: start;
+    gap: 1rem 2rem;
     grid-template-areas:
+      'header header'
       'contact about'
-      'contact experience'
-      'skills experience'
-      'languages experience';
-    grid-template-columns: 40% 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
-
-  @media print {
-    align-items: start;
-    grid-template-areas:
-      'contact about'
+      'contact languages'
       'contact experience'
       'skills experience';
-    grid-template-columns: 40% 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 30% 1fr;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+  }
+}
+
+.header {
+  grid-area: header;
+
+  @include screen.md {
+    margin-bottom: 1rem;
   }
 }
 
 .contact {
   grid-area: contact;
-}
 
-.experience {
-  grid-area: experience;
-}
+  a {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
 
-.skills {
-  grid-area: skills;
-}
-
-.work {
-  h5 {
-    justify-content: flex-end;
+    h5 {
+      margin: 0;
+      margin-left: 0.5rem;
+    }
   }
+}
+
+.about {
+  grid-area: about;
 }
 
 .languages {
   grid-area: languages;
 
-  h5 {
-    margin-bottom: 0.5rem;
+  .list {
+    display: flex;
+    justify-content: space-between;
   }
 
-  h6 {
-    margin: 0;
+  .language {
+    h5,
+    h6 {
+      margin: 0;
+    }
+
+    h5 {
+      margin: 0.5rem 0;
+    }
   }
+}
+
+.skills {
+  grid-area: skills;
 
   section + section {
-    margin-top: 2rem;
+    margin-top: 3rem;
+  }
+}
+
+.experience {
+  grid-area: experience;
+
+  .work {
+    h4 {
+      margin-top: 0;
+    }
+
+    h5 {
+      margin-bottom: 0;
+      text-align: right;
+    }
+
+    & + .work {
+      margin-top: 2rem;
+    }
   }
 }
