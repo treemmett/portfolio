@@ -169,8 +169,40 @@ class Spotlight {
   }
 }
 
+class Potential {
+  public y: number;
+
+  constructor(private baseY: number, public x: number) {
+    this.y = this.baseY + Math.random() * 50 - 25 * pixelRatio();
+  }
+}
+
+class Field {
+  private potentials: Potential[] = [];
+
+  constructor(public baseY: number, private quantum: Quantum) {
+    const w = window.innerWidth * pixelRatio();
+
+    for (let x = 0; x < w + w / 30; x += w / 30) {
+      this.potentials.push(new Potential(this.baseY, x));
+    }
+  }
+
+  public draw() {
+    this.quantum.ctx.beginPath();
+    this.quantum.ctx.moveTo(0, this.potentials[0].y);
+    this.potentials.forEach((potential) => {
+      this.quantum.ctx.lineTo(potential.x, potential.y);
+    });
+    this.quantum.ctx.strokeStyle = 'rgb(244, 159, 10)';
+    this.quantum.ctx.stroke();
+  }
+}
+
 class Quantum {
   public particles: Particle[] = [];
+
+  public fields: Field[] = [];
 
   public canvas: HTMLCanvasElement;
 
@@ -233,6 +265,8 @@ class Quantum {
     canvas.setAttribute('width', (window.innerWidth * pixelRatio()).toString());
     canvas.setAttribute('height', (window.innerHeight * pixelRatio()).toString());
     window.addEventListener('mousemove', this.mouseListener);
+
+    this.fields.push(new Field(((window.innerHeight * pixelRatio()) / 5) * 4, this));
     this.spotlight = new Spotlight();
     this.frame();
     const unsubscribe = listenForDarkModeChange((d) => {
@@ -240,6 +274,7 @@ class Quantum {
     });
 
     return () => {
+      this.fields = [];
       unsubscribe();
       cancelAnimationFrame(this.frameID);
       window.removeEventListener('mousemove', this.mouseListener);
@@ -249,6 +284,7 @@ class Quantum {
   private frame() {
     this.ctx.clearRect(0, 0, window.innerWidth * pixelRatio(), window.innerHeight * pixelRatio());
     this.spotlight.frame();
+    this.fields.forEach((p) => p.draw());
     this.particles.forEach((p) => p.draw());
 
     this.frameID = requestAnimationFrame(() => this.frame());
