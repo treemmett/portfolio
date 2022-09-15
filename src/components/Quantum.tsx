@@ -62,6 +62,8 @@ class Point {
 
   public opacityBase: number;
 
+  public static darkMode = isDarkMode();
+
   constructor(width: number, height: number, x: number, y: number, private quantum: Quantum) {
     this.x = x + (Math.random() * width) / 20;
     this.y = y + (Math.random() * height) / 20;
@@ -99,7 +101,7 @@ class Point {
     const opacity = (this.opacityBase - distance) / 100000;
 
     const color = (o: number) =>
-      this.quantum.darkMode ? `rgba(156, 217, 249, ${o})` : `rgba(171, 42, 97, ${o})`;
+      Point.darkMode ? `rgba(156, 217, 249, ${o})` : `rgba(171, 42, 97, ${o})`;
 
     this.closest.forEach((closePoint) => {
       this.quantum.ctx.beginPath();
@@ -180,8 +182,6 @@ class Quantum {
 
   public y: number;
 
-  public darkMode: boolean;
-
   public spotlight: Spotlight;
 
   constructor() {
@@ -235,9 +235,8 @@ class Quantum {
     window.addEventListener('mousemove', this.mouseListener);
     this.spotlight = new Spotlight();
     this.frame();
-    this.darkMode = isDarkMode();
     const unsubscribe = listenForDarkModeChange((d) => {
-      this.darkMode = d;
+      Point.darkMode = d;
     });
 
     return () => {
