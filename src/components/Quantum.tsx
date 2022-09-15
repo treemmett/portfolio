@@ -172,8 +172,35 @@ class Spotlight {
 class Potential {
   public y: number;
 
+  private target: number;
+
+  private origin: number;
+
+  private step: number;
+
   constructor(private baseY: number, public x: number) {
-    this.y = this.baseY + Math.random() * 50 - 25 * pixelRatio();
+    this.y = this.randomY();
+    this.newTarget();
+    this.step = Math.floor(100 * Math.random());
+  }
+
+  private randomY() {
+    return this.baseY + Math.random() * 100 - 50 * pixelRatio();
+  }
+
+  public newTarget() {
+    this.step = 0;
+    this.origin = this.y;
+    this.target = this.randomY();
+  }
+
+  public frame() {
+    this.y = ease(this.step, this.origin, this.target - this.origin, 100);
+    this.step += 1;
+
+    if (this.step >= 100) {
+      this.newTarget();
+    }
   }
 }
 
@@ -196,6 +223,7 @@ class Field {
     });
     this.quantum.ctx.strokeStyle = 'rgb(244, 159, 10)';
     this.quantum.ctx.stroke();
+    this.potentials.forEach((p) => p.frame());
   }
 }
 
