@@ -91,13 +91,15 @@ class Point {
     }
   }
 
-  public draw(targets: Pick<Point, 'x' | 'y'>[], darkMode: boolean) {
-    const distance = Math.min(...targets.map((target) => Math.abs(getDistance(target, this))));
+  public draw() {
+    const distance = Math.min(
+      ...[this.quantum, this.quantum.spotlight].map((target) => Math.abs(getDistance(target, this)))
+    );
 
     const opacity = (this.opacityBase - distance) / 100000;
 
     const color = (o: number) =>
-      darkMode ? `rgba(156, 217, 249, ${o})` : `rgba(171, 42, 97, ${o})`;
+      this.quantum.darkMode ? `rgba(156, 217, 249, ${o})` : `rgba(171, 42, 97, ${o})`;
 
     this.closest.forEach((closePoint) => {
       this.quantum.ctx.beginPath();
@@ -174,9 +176,9 @@ class Quantum {
 
   public frameID = 0;
 
-  public mouseX: number;
+  public x: number;
 
-  public mouseY: number;
+  public y: number;
 
   public darkMode: boolean;
 
@@ -185,8 +187,8 @@ class Quantum {
   constructor() {
     const w = isBrowser() ? window.innerWidth * pixelRatio() : 0;
     const h = isBrowser() ? window.innerHeight * pixelRatio() : 0;
-    this.mouseX = w / 2;
-    this.mouseY = h / 2;
+    this.x = w / 2;
+    this.y = h / 2;
 
     for (let x = 0; x < w + w / 30; x += w / 30) {
       for (let y = 0; y < h + h / 30; y += h / 30) {
@@ -248,16 +250,14 @@ class Quantum {
   private frame() {
     this.ctx.clearRect(0, 0, window.innerWidth * pixelRatio(), window.innerHeight * pixelRatio());
     this.spotlight.frame();
-    this.points.forEach((p) =>
-      p.draw([{ x: this.mouseX, y: this.mouseY }, this.spotlight], this.darkMode)
-    );
+    this.points.forEach((p) => p.draw());
 
     this.frameID = requestAnimationFrame(() => this.frame());
   }
 
   private mouseListener = (e: MouseEvent) => {
-    this.mouseX = e.clientX * pixelRatio();
-    this.mouseY = e.clientY * pixelRatio();
+    this.x = e.clientX * pixelRatio();
+    this.y = e.clientY * pixelRatio();
   };
 }
 
