@@ -292,13 +292,17 @@ class Quantum {
   }
 
   public initialize(canvas: HTMLCanvasElement) {
+    const h = window.innerHeight * pixelRatio();
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     canvas.setAttribute('width', (window.innerWidth * pixelRatio()).toString());
-    canvas.setAttribute('height', (window.innerHeight * pixelRatio()).toString());
+    canvas.setAttribute('height', h.toString());
     window.addEventListener('mousemove', this.mouseListener);
 
-    this.fields.push(new Field(((window.innerHeight * pixelRatio()) / 5) * 4, this));
+    for (let y = h; y > h / 2; y -= 75) {
+      this.fields.push(new Field(y, this));
+    }
+
     this.spotlight = new Spotlight();
     this.frame();
     const unsubscribe = listenForDarkModeChange((d) => {
