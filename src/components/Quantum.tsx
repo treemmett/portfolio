@@ -4,7 +4,7 @@ import styles from './Quantum.module.scss';
 import { isBrowser } from '@utils/isBrowser';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
 
-function getDistance(p1: Pick<Point, 'x' | 'y'>, p2: Pick<Point, 'x' | 'y'>): number {
+function getDistance(p1: Pick<Particle, 'x' | 'y'>, p2: Pick<Particle, 'x' | 'y'>): number {
   return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
 }
 
@@ -39,7 +39,7 @@ function pixelRatio(): number {
   return window.devicePixelRatio || 1;
 }
 
-class Point {
+class Particle {
   public x: number;
 
   public y: number;
@@ -52,7 +52,7 @@ class Point {
 
   public targetY: number;
 
-  public closest: Point[] = [];
+  public closest: Particle[] = [];
 
   public radius: number;
 
@@ -77,8 +77,8 @@ class Point {
     this.step = Math.floor(this.steps * Math.random());
   }
 
-  public setClosest(points: Point[]): this {
-    this.closest = points;
+  public setClosest(particles: Particle[]): this {
+    this.closest = particles;
     return this;
   }
 
@@ -101,7 +101,7 @@ class Point {
     const opacity = (this.opacityBase - distance) / 100000;
 
     const color = (o: number) =>
-      Point.darkMode ? `rgba(156, 217, 249, ${o})` : `rgba(171, 42, 97, ${o})`;
+      Particle.darkMode ? `rgba(156, 217, 249, ${o})` : `rgba(171, 42, 97, ${o})`;
 
     this.closest.forEach((closePoint) => {
       this.quantum.ctx.beginPath();
@@ -170,7 +170,7 @@ class Spotlight {
 }
 
 class Quantum {
-  public points: Point[] = [];
+  public particles: Particle[] = [];
 
   public canvas: HTMLCanvasElement;
 
@@ -192,21 +192,21 @@ class Quantum {
 
     for (let x = 0; x < w + w / 30; x += w / 30) {
       for (let y = 0; y < h + h / 30; y += h / 30) {
-        this.points.push(new Point(w, h, x, y, this));
+        this.particles.push(new Particle(w, h, x, y, this));
       }
     }
 
-    // find the 5 closest points
-    this.points.forEach((point) => {
+    // find the 5 closest particles
+    this.particles.forEach((particle) => {
       const closest = [];
-      this.points.forEach((point2) => {
-        if (point !== point2) {
+      this.particles.forEach((particle2) => {
+        if (particle !== particle2) {
           let placed = false;
 
           for (let i = 0; i < 5; i += 1) {
             if (!placed) {
               if (closest[i] === undefined) {
-                closest[i] = point2;
+                closest[i] = particle2;
                 placed = true;
                 break;
               }
@@ -216,14 +216,14 @@ class Quantum {
           if (placed) return;
 
           for (let i = 0; i < 5; i += 1) {
-            if (getDistance(point, point2) < getDistance(point, closest[i])) {
-              closest[i] = point2;
+            if (getDistance(particle, particle2) < getDistance(particle, closest[i])) {
+              closest[i] = particle2;
               break;
             }
           }
         }
       });
-      point.setClosest(closest);
+      particle.setClosest(closest);
     });
   }
 
@@ -236,7 +236,7 @@ class Quantum {
     this.spotlight = new Spotlight();
     this.frame();
     const unsubscribe = listenForDarkModeChange((d) => {
-      Point.darkMode = d;
+      Particle.darkMode = d;
     });
 
     return () => {
@@ -249,7 +249,7 @@ class Quantum {
   private frame() {
     this.ctx.clearRect(0, 0, window.innerWidth * pixelRatio(), window.innerHeight * pixelRatio());
     this.spotlight.frame();
-    this.points.forEach((p) => p.draw());
+    this.particles.forEach((p) => p.draw());
 
     this.frameID = requestAnimationFrame(() => this.frame());
   }
