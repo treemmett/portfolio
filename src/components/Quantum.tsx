@@ -208,6 +208,8 @@ class Potential {
   }
 }
 
+type Color = [red: number, green: number, blue: number];
+
 class Field {
   private potentials: Potential[] = [];
 
@@ -219,14 +221,28 @@ class Field {
     }
   }
 
-  public draw() {
+  private static colorA: Color = [244, 143, 10];
+
+  private static colorB: Color = [252, 252, 40];
+
+  private getComputedColor(i: number): string {
+    const colors = Field.colorA.map((color, j) => {
+      const diff = Field.colorB[j] - Field.colorA[j];
+      return color + diff * (i / this.quantum.fields.length);
+    });
+
+    return `rgb(${colors.join(', ')})`;
+  }
+
+  public draw(i: number) {
     this.quantum.ctx.beginPath();
     this.quantum.ctx.moveTo(0, this.potentials[0].y);
     this.potentials.forEach((potential) => {
       this.quantum.ctx.lineTo(potential.x, potential.y);
       potential.frame();
     });
-    this.quantum.ctx.strokeStyle = 'rgb(244, 159, 10)';
+
+    this.quantum.ctx.strokeStyle = this.getComputedColor(i);
     this.quantum.ctx.stroke();
   }
 }
@@ -313,7 +329,7 @@ class Quantum {
   private frame() {
     this.ctx.clearRect(0, 0, window.innerWidth * pixelRatio(), window.innerHeight * pixelRatio());
     this.spotlight.frame();
-    this.fields.forEach((p) => p.draw());
+    this.fields.forEach((p, i) => p.draw(i));
     this.particles.forEach((p) => p.draw());
 
     this.frameID = requestAnimationFrame(() => this.frame());
