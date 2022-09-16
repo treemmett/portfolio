@@ -264,26 +264,19 @@ class Quantum {
     this.particles.forEach((particle) => {
       const closest = [];
       this.particles.forEach((particle2) => {
-        if (particle !== particle2) {
-          let placed = false;
+        if (particle === particle2) return;
 
-          for (let i = 0; i < 5; i += 1) {
-            if (!placed) {
-              if (closest[i] === undefined) {
-                closest[i] = particle2;
-                placed = true;
-                break;
-              }
-            }
+        for (let i = 0; i < 5; i += 1) {
+          if (closest[i] === undefined) {
+            closest[i] = particle2;
+            return;
           }
+        }
 
-          if (placed) return;
-
-          for (let i = 0; i < 5; i += 1) {
-            if (getDistance(particle, particle2) < getDistance(particle, closest[i])) {
-              closest[i] = particle2;
-              break;
-            }
+        for (let i = 0; i < 5; i += 1) {
+          if (getDistance(particle, particle2) < getDistance(particle, closest[i])) {
+            closest[i] = particle2;
+            break;
           }
         }
       });
