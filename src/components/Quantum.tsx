@@ -223,11 +223,14 @@ class Field {
 
   private static colorA: Color = [244, 143, 10];
 
-  private static colorB: Color = [252, 252, 40];
+  private static colorBDarkMode: Color = [252, 252, 40];
+
+  private static colorBLightMode: Color = [22, 38, 252];
 
   private getComputedColor(i: number): string {
     const colors = Field.colorA.map((color, j) => {
-      const diff = Field.colorB[j] - Field.colorA[j];
+      const colorB = Particle.darkMode ? Field.colorBDarkMode : Field.colorBLightMode;
+      const diff = colorB[j] - Field.colorA[j];
       return color + diff * (i / this.quantum.fields.length);
     });
 
