@@ -224,10 +224,10 @@ class Field {
     this.quantum.ctx.moveTo(0, this.potentials[0].y);
     this.potentials.forEach((potential) => {
       this.quantum.ctx.lineTo(potential.x, potential.y);
+      potential.frame();
     });
     this.quantum.ctx.strokeStyle = 'rgb(244, 159, 10)';
     this.quantum.ctx.stroke();
-    this.potentials.forEach((p) => p.frame());
   }
 }
 
