@@ -68,7 +68,7 @@
     "@svgr/webpack": "^6.3.1",
     "@types/node": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^5.37.0",
-    "@typescript-eslint/parser": "^5.36.1",
+    "@typescript-eslint/parser": "^5.37.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "concurrently": "^7.4.0",
     "cspell": "^6.8.1",
