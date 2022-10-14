@@ -303,7 +303,7 @@ class Quantum {
     });
   }
 
-  public initialize(canvas: HTMLCanvasElement) {
+  public initialize(canvas: HTMLCanvasElement, includeFields?: boolean) {
     const h = window.innerHeight * pixelRatio();
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
@@ -311,8 +311,10 @@ class Quantum {
     canvas.setAttribute('height', h.toString());
     window.addEventListener('mousemove', this.mouseListener);
 
-    for (let y = h; y > h / 2; y -= 75) {
-      this.fields.push(new Field(y, this));
+    if (includeFields) {
+      for (let y = h; y > h / 2; y -= 75) {
+        this.fields.push(new Field(y, this));
+      }
     }
 
     this.spotlight = new Spotlight();
