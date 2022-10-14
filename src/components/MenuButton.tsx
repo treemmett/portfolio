@@ -12,6 +12,7 @@ export const MenuButton: FC<MenuButtonProps> = ({ active, className, onClick }) 
   <button
     className={cx(styles.menu, styles.cross, { [styles.active]: active }, className)}
     onClick={onClick}
+    type="button"
   >
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <path className={styles.first} d="M0 70l28-28c2-2 2-2 7-2h64" />
