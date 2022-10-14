@@ -1,72 +1,10 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "airbnb",
-    "airbnb/hooks",
-    "plugin:@typescript-eslint/recommended",
-    "next",
-    "prettier"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "prettier"],
-  "root": true,
-  "rules": {
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
-    "@next/next/no-img-element": "off",
-    "@typescript-eslint/lines-between-class-members": "error",
-    "@typescript-eslint/no-shadow": "error",
-    "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/no-use-before-define": "error",
-    "@typescript-eslint/no-useless-constructor": "error",
-    "lines-between-class-members": "off",
-    "import/no-unresolved": ["error", { "ignore": ["resume"] }],
-    "import/order": ["error", { "alphabetize": { "order": "asc" } }],
-    "import/prefer-default-export": "off",
-    "no-bitwise": ["error", { "allow": ["~"] }],
-    "no-shadow": "off",
-    "no-use-before-define": "off",
-    "no-useless-constructor": "off",
-    "prettier/prettier": "error",
-    "react/button-has-type": "off",
-    "react/function-component-definition": ["error", { "namedComponents": "arrow-function" }],
-    "react/jsx-filename-extension": ["error", { "extensions": [".tsx", ".jsx"] }],
-    "react/jsx-sort-props": ["error", { "shorthandLast": true }],
-    "react/no-unescaped-entities": "off",
-    "react/prop-types": "off",
-    "react/react-in-jsx-scope": "off",
-    "react/require-default-props": "off",
-    "sort-keys": ["error", "asc", { "natural": true }],
-    "class-methods-use-this": "off"
-  },
+  "extends": ["treemmett/next"],
   "overrides": [
-    {
-      "files": ["next*.js"],
-      "rules": {
-        "@typescript-eslint/no-var-requires": "off"
-      }
-    },
     {
       "files": ["src/scripts/**"],
       "rules": {
         "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
-      }
-    },
-    {
-      "files": ["cypress.config.ts", "cypress/**/*.ts", "**/*.test.ts"],
-      "rules": {
-        "@typescript-eslint/no-namespace": "off",
-        "@typescript-eslint/no-var-requires": "off",
-        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
-        "global-require": "off"
       }
     }
   ]
