@@ -85,7 +85,7 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
 
 const DynamicCheckIn = dynamic(() => import('@components/CheckIn').then((mod) => mod.CheckIn));
 
-const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
+const Timeline: NextPage<TimelineProps> = ({ countries }) => {
   const router = useRouter();
   const [darkMode, setDarkMode] = useState(isDarkMode());
   useEffect(() => listenForDarkModeChange(setDarkMode), []);
@@ -96,12 +96,12 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   const initializeMap = useCallback(async () => {
-    const { LngLatBounds, Map } = await import('mapbox-gl');
+    const { Map } = await import('mapbox-gl');
 
     map.current = new Map({
       accessToken: Config.NEXT_PUBLIC_MAPBOX_TOKEN,
       attributionControl: false,
-      bounds: new LngLatBounds(sw, ne),
+      center: markers[0],
       container: mapContainer.current,
       fitBoundsOptions: {
         padding: {
@@ -120,11 +120,11 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
         },
       },
       style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
-      zoom: 9,
+      zoom: 5,
     })
       .on('load', () => setMapLoaded(true))
       .on('remove', () => setMapLoaded(false));
-  }, [darkMode, ne, sw]);
+  }, [darkMode, markers]);
 
   useEffect(() => {
     if (mapContainer.current) {
