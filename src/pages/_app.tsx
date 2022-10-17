@@ -16,6 +16,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => (
   </DataStoreProvider>
 );
 
+// @ts-expect-error next-i18n needs updating
 export default appWithTranslation(MyApp);
 
 export { reportWebVitals } from 'next-axiom';
