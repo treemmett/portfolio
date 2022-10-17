@@ -101,7 +101,7 @@ const Timeline: NextPage<TimelineProps> = ({ countries }) => {
     map.current = new Map({
       accessToken: Config.NEXT_PUBLIC_MAPBOX_TOKEN,
       attributionControl: false,
-      center: markers[markers.length - 0],
+      center: markers[markers.length - 1],
       container: mapContainer.current,
       fitBoundsOptions: {
         padding: {
