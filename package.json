@@ -28,7 +28,7 @@
     "@types/request-ip": "^0.0.37",
     "@types/sharp": "^0.30.4",
     "@types/xml": "^1.0.8",
-    "aws-sdk": "^2.1062.0",
+    "aws-sdk": "^2.1233.0",
     "axios": "^0.27.2",
     "class-transformer": "^0.5.1",
     "class-transformer-validator": "^0.9.1",
