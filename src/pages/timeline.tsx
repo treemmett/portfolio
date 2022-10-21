@@ -184,7 +184,7 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
     };
   }, [placeMarkers]);
 
-  const flyToCountry = useCallback(
+  const focusMarkersInCountry = useCallback(
     (country: string) => {
       const countryMarkers = markers.filter((marker) => marker.country === country);
       const { sw: s, ne: n } = boundingCoordinates(countryMarkers);
@@ -203,8 +203,8 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
           <div
             className={styles.country}
             key={country}
-            onClick={() => flyToCountry(country)}
-            onKeyDown={(e) => e.key === 'Enter' && flyToCountry(country)}
+            onClick={() => focusMarkersInCountry(country)}
+            onKeyDown={(e) => e.key === 'Enter' && focusMarkersInCountry(country)}
             role="button"
             tabIndex={0}
           >
