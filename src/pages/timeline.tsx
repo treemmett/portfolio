@@ -184,13 +184,30 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
     };
   }, [placeMarkers]);
 
+  const flyToCountry = useCallback(
+    (country: string) => {
+      const countryMarkers = markers.filter((marker) => marker.country === country);
+      const { sw: s, ne: n } = boundingCoordinates(countryMarkers);
+
+      map.current.fitBounds([s, n]);
+    },
+    [markers]
+  );
+
   return (
     <>
       <div className={styles.map} id="map" ref={mapContainer} />
 
       <div className={styles.list} ref={listContainer}>
         {countries.map(({ country, flag, name }) => (
-          <div className={styles.country} key={country}>
+          <div
+            className={styles.country}
+            key={country}
+            onClick={() => flyToCountry(country)}
+            onKeyDown={(e) => e.key === 'Enter' && flyToCountry(country)}
+            role="button"
+            tabIndex={0}
+          >
             {flag} {name}
           </div>
         ))}
