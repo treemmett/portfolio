@@ -200,16 +200,14 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
 
       <div className={styles.list} ref={listContainer}>
         {countries.map(({ country, flag, name }) => (
-          <div
+          <button
             className={styles.country}
             key={country}
             onClick={() => focusMarkersInCountry(country)}
             onKeyDown={(e) => e.key === 'Enter' && focusMarkersInCountry(country)}
-            role="button"
-            tabIndex={0}
           >
             {flag} {name}
-          </div>
+          </button>
         ))}
       </div>
 
