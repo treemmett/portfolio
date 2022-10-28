@@ -187,9 +187,14 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
   const focusMarkersInCountry = useCallback(
     (country: string) => {
       const countryMarkers = markers.filter((marker) => marker.country === country);
-      const { sw: s, ne: n } = boundingCoordinates(countryMarkers);
 
-      map.current.fitBounds([s, n], { padding: 100 });
+      if (countryMarkers.length === 1) {
+        const [{ lat, lng }] = countryMarkers;
+        map.current.flyTo({ center: [lng, lat], zoom: 9 });
+      } else {
+        const { sw: s, ne: n } = boundingCoordinates(countryMarkers);
+        map.current.fitBounds([s, n], { padding: 100 });
+      }
     },
     [markers]
   );
