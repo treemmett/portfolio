@@ -11,6 +11,7 @@ import { AuthorizationScopes } from '@entities/Jwt';
 import { Marker as MarkerEntity } from '@entities/Marker';
 import { Country } from '@lib/countryCodes';
 import { countryFlags } from '@lib/countryFlags';
+import { boundingCoordinates } from '@utils/boundingCoordinates';
 import { splitCase } from '@utils/casing';
 import { Config } from '@utils/config';
 import {
@@ -30,27 +31,7 @@ export interface TimelineProps {
 export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = async ({ locale }) => {
   const markers = await MarkerEntity.getAll();
 
-  const ne: LngLatLike = markers.length
-    ? { lat: markers[0].lat, lng: markers[0].lng }
-    : { lat: 42.35, lng: -70.9 };
-  const sw = { ...ne };
-  [...markers].slice(-10).forEach((lngLat) => {
-    if (ne.lng < lngLat.lng) {
-      ne.lng = lngLat.lng;
-    }
-
-    if (ne.lat < lngLat.lat) {
-      ne.lat = lngLat.lat;
-    }
-
-    if (sw.lng > lngLat.lng) {
-      sw.lng = lngLat.lng;
-    }
-
-    if (sw.lat > lngLat.lat) {
-      sw.lat = lngLat.lat;
-    }
-  });
+  const { sw, ne } = boundingCoordinates(markers);
 
   // filter country flags to avoid sending massive payload to client
   const countryMappings = Object.fromEntries(Object.entries(Country).map((a) => a.reverse()));
@@ -203,15 +184,35 @@ const Timeline: NextPage<TimelineProps> = ({ countries }) => {
     };
   }, [placeMarkers]);
 
+  const focusMarkersInCountry = useCallback(
+    (country: string) => {
+      const countryMarkers = markers.filter((marker) => marker.country === country);
+
+      if (countryMarkers.length === 1) {
+        const [{ lat, lng }] = countryMarkers;
+        map.current.flyTo({ center: [lng, lat], zoom: 9 });
+      } else {
+        const { sw: s, ne: n } = boundingCoordinates(countryMarkers);
+        map.current.fitBounds([s, n], { padding: 100 });
+      }
+    },
+    [markers]
+  );
+
   return (
     <>
       <div className={styles.map} id="map" ref={mapContainer} />
 
       <div className={styles.list} ref={listContainer}>
         {countries.map(({ country, flag, name }) => (
-          <div className={styles.country} key={country}>
+          <button
+            className={styles.country}
+            key={country}
+            onClick={() => focusMarkersInCountry(country)}
+            onKeyDown={(e) => e.key === 'Enter' && focusMarkersInCountry(country)}
+          >
             {flag} {name}
-          </div>
+          </button>
         ))}
       </div>
 
