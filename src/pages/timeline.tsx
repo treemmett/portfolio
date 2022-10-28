@@ -189,7 +189,7 @@ const Timeline: NextPage<TimelineProps> = ({ countries, ne, sw }) => {
       const countryMarkers = markers.filter((marker) => marker.country === country);
       const { sw: s, ne: n } = boundingCoordinates(countryMarkers);
 
-      map.current.fitBounds([s, n]);
+      map.current.fitBounds([s, n], { padding: 100 });
     },
     [markers]
   );
