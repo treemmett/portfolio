@@ -79,10 +79,12 @@ const Timeline: NextPage<TimelineProps> = ({ countries }) => {
   const initializeMap = useCallback(async () => {
     const { Map } = await import('mapbox-gl');
 
+    const latestMarker = markers[markers.length - 1];
+
     map.current = new Map({
       accessToken: Config.NEXT_PUBLIC_MAPBOX_TOKEN,
       attributionControl: false,
-      center: markers[markers.length - 1],
+      center: { lat: latestMarker.lat, lng: latestMarker.lng },
       container: mapContainer.current,
       fitBoundsOptions: {
         padding: {
@@ -101,7 +103,7 @@ const Timeline: NextPage<TimelineProps> = ({ countries }) => {
         },
       },
       style: `mapbox://styles/mapbox/${darkMode ? 'dark' : 'light'}-v10`,
-      zoom: 5,
+      zoom: 8,
     })
       .on('load', () => setMapLoaded(true))
       .on('remove', () => setMapLoaded(false));
