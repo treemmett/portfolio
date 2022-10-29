@@ -210,6 +210,7 @@ const Timeline: NextPage<TimelineProps> = ({ countries }) => {
             key={country}
             onClick={() => focusMarkersInCountry(country)}
             onKeyDown={(e) => e.key === 'Enter' && focusMarkersInCountry(country)}
+            type="button"
           >
             {flag} {name}
           </button>
