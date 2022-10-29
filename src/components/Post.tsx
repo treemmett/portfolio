@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useRef } from 'react';
@@ -38,27 +38,28 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
           {post.title}
         </span>
       </div>
-      <Link href={{ query: { post: post.id } }} scroll={false} passHref shallow>
-        <a
-          aria-label={[post.title, post.location, formatDate(post.created)]
-            .filter((i) => !!i)
-            .join(', ')}
-          className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
-          href="#foo"
-          ref={ref}
-        >
-          <Image
-            alt={post.title}
-            blurDataURL={image.thumbnailURL}
-            className={styles.photo}
-            height={image.height}
-            placeholder="blur"
-            priority={priority}
-            sizes="60vh,80vw"
-            src={image.url}
-            width={image.width}
-          />
-        </a>
+      <Link
+        aria-label={[post.title, post.location, formatDate(post.created)]
+          .filter((i) => !!i)
+          .join(', ')}
+        className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
+        href={{ query: { post: post.id } }}
+        ref={ref}
+        scroll={false}
+        passHref
+        shallow
+      >
+        <Image
+          alt={post.title}
+          blurDataURL={image.thumbnailURL}
+          className={styles.photo}
+          height={image.height}
+          placeholder="blur"
+          priority={priority}
+          sizes="60vh,80vw"
+          src={image.url}
+          width={image.width}
+        />
       </Link>
       <div className={styles.under}>
         <span className={styles.location} data-testid="location">

@@ -6,20 +6,15 @@ const IS_VERCEL = typeof process.env.VERCEL !== 'undefined';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    images: {
-      allowFutureImage: true,
-      remotePatterns: [
-        !IS_VERCEL && {
-          hostname: '127.0.0.1',
-          port: '9000',
-        },
-      ].filter(Boolean),
-    },
-  },
   i18n,
   images: {
     domains: [!IS_VERCEL && '127.0.0.1', 'tregan.me', 'cdn.tregan.me'].filter(Boolean),
+    remotePatterns: [
+      !IS_VERCEL && {
+        hostname: '127.0.0.1',
+        port: '9000',
+      },
+    ].filter(Boolean),
   },
   productionBrowserSourceMaps: true,
   reactStrictMode: true,
