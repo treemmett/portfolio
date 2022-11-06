@@ -33,10 +33,14 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   const mapClickHandler = useCallback(({ lngLat }: MapMouseEvent) => {
     setSelectedCoordinates(lngLat);
 
-    geocode(lngLat.lng, lngLat.lat).then((address) => {
-      setCity(address.city || '');
-      setCountry(address.country_code);
-    });
+    geocode(lngLat.lng, lngLat.lat)
+      .then((address) => {
+        setCity(address.city || '');
+        setCountry(address.country_code);
+      })
+      .catch(() => {
+        // oh well
+      });
   }, []);
 
   useEffect(() => {

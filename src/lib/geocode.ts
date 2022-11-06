@@ -10,6 +10,7 @@ interface GeocodeResponse {
   lat: string;
   lon: string;
   display_name: string;
+  error?: string;
   address: {
     house_number: string;
     road: string;
@@ -29,6 +30,8 @@ export async function geocode(lng: number, lat: number): Promise<GeocodeResponse
   const { data } = await axios.get<GeocodeResponse>('https://geocode.maps.co/reverse', {
     params: { lat, lon: lng },
   });
+
+  if (data.error) throw new Error(data.error);
 
   data.address.country_code = data.address.country_code.toUpperCase() as Country;
 
