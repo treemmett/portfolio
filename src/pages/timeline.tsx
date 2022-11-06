@@ -138,8 +138,8 @@ const Timeline: NextPage<TimelineProps> = ({ countries }) => {
       });
 
       if (markers.length >= 2) {
-        const existingSource = map.current.getSource('route') as GeoJSONSource;
-        const data: GeoJSON.Feature = {
+        const existingRouteSource = map.current.getSource('route') as GeoJSONSource;
+        const routeData: GeoJSON.Feature = {
           geometry: {
             coordinates: markers.map((m) => [m.lng, m.lat]),
             type: 'LineString',
@@ -148,11 +148,11 @@ const Timeline: NextPage<TimelineProps> = ({ countries }) => {
           type: 'Feature',
         };
 
-        if (existingSource) {
-          existingSource.setData(data);
+        if (existingRouteSource) {
+          existingRouteSource.setData(routeData);
         } else if (map.current.loaded) {
           map.current.addSource('route', {
-            data,
+            data: routeData,
             type: 'geojson',
           });
 
