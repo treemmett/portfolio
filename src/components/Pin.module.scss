@@ -1,0 +1,30 @@
+@use '../styles/shared';
+
+$pin-height: 25px;
+$gap: 14px;
+
+.pin {
+  @include shared.inverted-theme;
+
+  position: absolute;
+  bottom: calc($pin-height - calc($gap / 2));
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  transform: translateX(-50%);
+
+  &::after {
+    position: absolute;
+    bottom: -30.9px;
+    left: 2px;
+    width: 0;
+    height: 0;
+    border: $gap solid transparent;
+    border-top: $pin-height solid shared.$background-dark;
+    content: '';
+
+    @include shared.dark-mode {
+      border-top-color: shared.$background;
+    }
+  }
+}

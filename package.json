@@ -25,6 +25,7 @@
     "@types/cookie": "^0.5.1",
     "@types/mapbox-gl": "^2.7.6",
     "@types/react": "^18.0.20",
+    "@types/react-dom": "^18.0.8",
     "@types/request-ip": "^0.0.37",
     "@types/sharp": "^0.30.4",
     "@types/xml": "^1.0.8",

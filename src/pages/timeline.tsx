@@ -5,8 +5,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import styles from './timeline.module.scss';
 import { DefaultState, useDataStore } from '@components/DataStore';
+import { Pin } from '@components/Pin';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Marker as MarkerEntity } from '@entities/Marker';
 import { Country } from '@lib/countryCodes';
@@ -127,7 +129,11 @@ const Timeline: NextPage<TimelineProps> = ({ countries }) => {
       const { Marker } = await import('mapbox-gl');
 
       markers.forEach(({ lat, lng, id }) => {
-        const marker = new Marker().setLngLat({ lat, lng }).addTo(map.current);
+        const element = document.createElement('div');
+        const root = createRoot(element);
+        root.render(<Pin />);
+
+        const marker = new Marker({ element }).setLngLat({ lat, lng }).addTo(map.current);
         markersOnMap.push(marker);
 
         if (session.hasPermission(AuthorizationScopes.post)) {
