@@ -64,7 +64,7 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
       <div className={styles.under}>
         <span className={styles.location} data-testid="location">
           <Pin />
-          {post.location}
+          {[post.location, post.countryName].filter((a) => !!a).join(', ')}
         </span>
         <span className={styles.date}>{formatDate(post.created)}</span>
       </div>

@@ -4,6 +4,7 @@ import 'tsconfig-paths/register';
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
 import { Post } from '@entities/Post';
+import { Country } from '@lib/countryCodes';
 import { logger } from '@utils/logger';
 
 const [, , num = '1'] = process.argv;
@@ -16,7 +17,8 @@ if (Number.isNaN(n)) {
 Promise.all(
   new Array(n).fill(null).map(async () => {
     const token = await Post.requestUploadToken(
-      `${faker.address.city()}, ${faker.address.country()}`,
+      faker.address.countryCode() as Country,
+      faker.address.city(),
       faker.random.words(3),
       faker.date.past()
     );

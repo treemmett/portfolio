@@ -9,7 +9,7 @@ import { QuantumCanvas } from '@components/Quantum';
 import { Post } from '@entities/Post';
 
 export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
-  const posts = await Post.getAll();
+  const posts = await Post.getAll(true);
 
   return {
     props: {

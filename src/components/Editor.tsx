@@ -10,7 +10,9 @@ import { Input } from './Input';
 import { Modal } from './Modal';
 import { Post, UploadToken } from '@entities/Post';
 import { ReactComponent as Plus } from '@icons/plus-square.svg';
+import { Country } from '@lib/countryCodes';
 import { apiClient } from '@utils/apiClient';
+import { splitCase } from '@utils/casing';
 import { toString } from '@utils/queryParam';
 
 enum UploadState {
@@ -28,6 +30,7 @@ export const Editor: FC = () => {
   const [file, setFile] = useState<File>();
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
+  const [country, setCountry] = useState<Country>();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
@@ -55,6 +58,7 @@ export const Editor: FC = () => {
     setImageData('');
     setDate(new Date().toISOString().split('T')[0]);
     setLocation('');
+    setCountry(undefined);
     setFile(null);
   }, [router]);
 
@@ -70,6 +74,7 @@ export const Editor: FC = () => {
 
         if (editId) {
           const { data } = await apiClient.patch<Post>(`/post/${encodeURIComponent(editId)}`, {
+            country,
             created: new Date(date),
             location,
             title,
@@ -81,6 +86,7 @@ export const Editor: FC = () => {
               const { data: uploadToken } = await apiClient.post<UploadToken>(
                 '/post',
                 {
+                  country,
                   date,
                   location,
                   title,
@@ -133,7 +139,7 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [closeEditor, date, dispatch, editId, file, imageData, location, state, t, title]
+    [closeEditor, country, date, dispatch, editId, file, imageData, location, state, t, title]
   );
 
   useEffect(() => {
@@ -145,6 +151,7 @@ export const Editor: FC = () => {
         setTitle(post.title);
         setLocation(post.location);
         setDate(new Date(post.created).toISOString().split('T')[0]);
+        setCountry(post.country);
       }
     }
   }, [posts, editId]);
@@ -225,6 +232,20 @@ export const Editor: FC = () => {
               name="location"
               onChange={(e) => setLocation(e.currentTarget.value)}
               value={location}
+            />
+            <Input
+              className={styles.input}
+              label={t('Country')}
+              onChange={(e) => setCountry(e.currentTarget.value as Country)}
+              options={[
+                { id: '--Empty--', label: '--Empty--' },
+                ...Object.entries(Country).map(([name, id]) => ({
+                  id,
+                  label: splitCase(name),
+                })),
+              ]}
+              type="select"
+              value={country}
             />
             <Input
               className={styles.input}
