@@ -197,10 +197,15 @@ export class Post {
 
   private static async writePostsIndex(posts: Post[]): Promise<void> {
     logger.info('Writing posts index', { posts });
+
     await s3
       .upload({
         ACL: 'public-read',
-        Body: JSON.stringify(posts),
+        Body: JSON.stringify(
+          await transformAndValidate(Post, posts, {
+            validator: { forbidUnknownValues: true },
+          })
+        ),
         Bucket: S3_BUCKET,
         ContentType: 'application/json',
         Key: POSTS_FILE_KEY,
