@@ -4,7 +4,7 @@ export interface ApiRequest {
   id: string;
   progress: number;
   startRequest: (setProgress: (progress: number) => void) => Promise<void>;
-  status: 'queued' | 'uploading' | 'complete';
+  status: 'error' | 'queued' | 'uploading' | 'complete';
   thumbnailUrl?: string;
 }
 

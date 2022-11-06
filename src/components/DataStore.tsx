@@ -246,6 +246,9 @@ export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaul
       )
       .then(() =>
         dispatch({ id: requestToFire.id, status: 'complete', type: 'SET_API_REQUEST_STATUS' })
+      )
+      .catch(() =>
+        dispatch({ id: requestToFire.id, status: 'error', type: 'SET_API_REQUEST_STATUS' })
       );
   }, [state.requests]);
 
