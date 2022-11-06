@@ -46,15 +46,19 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   useEffect(() => {
     let marker: Marker;
     if (selectedCoordinates) {
-      marker = new Marker({ color: '#CF5D40' }).setLngLat(selectedCoordinates).addTo(map.current);
-      map.current
-        .setPadding({
-          bottom: getRemValue() * 2,
-          left: getRemValue() * 10,
-          right: getRemValue() * 4,
-          top: getRemValue() * 2,
-        })
-        .flyTo({ center: selectedCoordinates, zoom: 15 });
+      marker = new Marker({ color: '#CF5D40', draggable: true })
+        .setLngLat(selectedCoordinates)
+        .addTo(map.current)
+        .on('dragend', () => {
+          setSelectedCoordinates(marker.getLngLat());
+        });
+
+      map.current.setPadding({
+        bottom: getRemValue() * 2,
+        left: getRemValue() * 10,
+        right: getRemValue() * 4,
+        top: getRemValue() * 2,
+      });
     }
 
     return () => {
