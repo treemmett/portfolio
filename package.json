@@ -66,7 +66,7 @@
     "@cspell/dict-fr-fr": "^2.1.1",
     "@cspell/dict-sv": "^2.0.4",
     "@faker-js/faker": "^7.5.0",
-    "@svgr/webpack": "^6.4.0",
+    "@svgr/webpack": "^6.5.1",
     "@types/node": "^17.0.8",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "concurrently": "^7.4.0",
