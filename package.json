@@ -34,7 +34,7 @@
     "class-transformer": "^0.5.1",
     "class-transformer-validator": "^0.9.1",
     "class-validator": "^0.13.2",
-    "classnames": "^2.3.1",
+    "classnames": "^2.3.2",
     "cookie": "^0.5.0",
     "jose": "^4.10.0",
     "mapbox-gl": "^2.10.0",
