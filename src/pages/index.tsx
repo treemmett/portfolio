@@ -16,6 +16,7 @@ export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) =
       posts: JSON.parse(JSON.stringify(posts)),
       ...(await serverSideTranslations(locale, ['common'])),
     },
+    revalidate: 60,
   };
 };
 

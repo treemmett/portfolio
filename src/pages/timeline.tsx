@@ -63,6 +63,7 @@ export const getStaticProps: GetStaticProps<DefaultState & TimelineProps> = asyn
       sw,
       ...(await serverSideTranslations(locale, ['common'])),
     },
+    revalidate: 60,
   };
 };
 
