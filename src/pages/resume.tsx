@@ -103,10 +103,6 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
       ))}
     </section>
 
-    <Section className={styles.about} name="About">
-      <p>{resume.basics.summary}</p>
-    </Section>
-
     <Section className={styles.languages} name="Languages">
       <div className={styles.list}>
         {resume?.languages?.map((language) => (

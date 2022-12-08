@@ -5,13 +5,7 @@
     "email": "hello@tregan.me",
     "label": "Senior Software Engineer",
     "url": "https://tregan.me",
-    "summary": "Hi, I'm Tregan. A senior software engineer specializing in React, rock climber, and digital nomad.",
     "profiles": [
-      {
-        "network": "Twitter",
-        "url": "https://twitter.com/treemmett",
-        "username": "treemmett"
-      },
       {
         "network": "GitHub",
         "url": "https://github.com/treemmett",
@@ -25,6 +19,11 @@
       {
         "network": "LinkedIn",
         "url": "https://linkedin.com/in/treemmett",
+        "username": "treemmett"
+      },
+      {
+        "network": "Twitter",
+        "url": "https://twitter.com/treemmett",
         "username": "treemmett"
       }
     ]

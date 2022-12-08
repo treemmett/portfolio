@@ -9,7 +9,6 @@
   gap: 2rem;
   grid-template-areas:
     'header'
-    'about'
     'contact'
     'languages'
     'experience'
@@ -20,7 +19,6 @@
     gap: 1rem 2rem;
     grid-template-areas:
       'header header'
-      'contact about'
       'contact languages'
       'contact experience'
       'skills experience';
@@ -85,10 +83,6 @@
   }
 }
 
-.about {
-  grid-area: about;
-}
-
 .languages {
   grid-area: languages;
 
@@ -150,7 +144,7 @@
     }
 
     & + .work {
-      margin-top: 6rem;
+      margin-top: 3rem;
     }
   }
 }
