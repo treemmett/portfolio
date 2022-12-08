@@ -32,23 +32,25 @@
   "work": [
     {
       "name": "Showcase IDX",
-      "position": "Senior UI Engineer",
+      "position": "Senior Software Engineer",
       "url": "https://showcaseidx.com",
       "startDate": "2021-08",
       "highlights": [
-        "Upgraded front-end architecture improving time-to-first-byte by 70%, and increasing Googlebot indexing by 240%.",
+        "Upgraded front-end architecture improving time-to-first-byte by 70%, reducing cumulative layout shift from 157 to 0.01, and improving largest and first contentful paint from 3100ms to 670ms, resulting in a 6000% increase in Googlebot indexation",
+        "Automated deployment process using Slack Apps for manual approvals and GitHub Actions to draft and publish release",
         "Updated application from React v0.14 to React v18, and added 100% TypeScript support and typings.",
-        "Lead initiative to replace homebrew SSR solution with Next.js."
+        "Team lead in initiative to replace homebrew SSR solution with Next.js.",
+        "Mentored other UI engineers, coaching them in writing strongly typed components and classes"
       ]
     },
     {
       "name": "Byte",
-      "position": "Senior Software Engineer",
+      "position": "Software Engineer",
       "url": "https://byteme.com",
       "startDate": "2020-07",
       "endDate": "2021-08",
       "highlights": [
-        "Designed in-house package management system supporting 40+ NPM packages, automatic publishing, while maintaining 100% coverage and strong TypeScript signatures.",
+        "Designed in-house package management system supporting 40+ NPM modules, automatic publishing, while maintaining 100% coverage and strong TypeScript signatures.",
         "Researched and development HIPAA compliant single-sign on service for patients and customer service representatives.",
         "Migrated existing Rest APIs to message based serverless microservice.",
         "Integrated Shopify storefront with in-house patient application and Salesforce CRM."
@@ -96,12 +98,12 @@
     {
       "name": "Frontend Development",
       "keywords": [
-        "HTML",
-        "JavaScript / TypeScript",
         "React / Next.js",
+        "JavaScript / TypeScript",
+        "Search Engine Optimization",
+        "HTML",
         "Vue",
-        "CSS / SCSS",
-        "Search Engine Optimization"
+        "CSS / SCSS"
       ]
     },
     {
