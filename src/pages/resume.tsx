@@ -112,7 +112,7 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
         {resume?.languages?.map((language) => (
           <div className={styles.language} key={language.language}>
             <h5>{language.language}</h5>
-            <h6>{language.fluency}</h6>
+            <span>{language.fluency}</span>
           </div>
         ))}
       </div>

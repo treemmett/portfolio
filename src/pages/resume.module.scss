@@ -99,12 +99,18 @@
 
   .language {
     h5,
-    h6 {
+    span {
+      display: inline;
       margin: 0;
     }
 
     h5 {
       margin: 0.5rem 0;
+    }
+
+    span {
+      margin-left: 0.5rem;
+      font-size: 0.75rem;
     }
   }
 }
