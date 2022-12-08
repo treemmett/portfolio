@@ -6,7 +6,7 @@
   max-width: 70rem;
   padding: 2rem;
   margin: auto;
-  gap: 2rem;
+  gap: 3rem 2rem;
   grid-template-areas:
     'header'
     'contact'
@@ -18,8 +18,8 @@
   @include screen.md {
     grid-template-areas:
       'header header'
-      'contact languages'
-      'contact experience'
+      'contact contact'
+      'languages experience'
       'skills experience';
     grid-template-columns: 30% 1fr;
   }
@@ -42,18 +42,10 @@
     margin-bottom: 1rem;
     font-weight: 400;
   }
-
-  @include screen.md {
-    grid-template-columns: 1fr;
-  }
 }
 
 .header {
   grid-area: header;
-
-  @include screen.md {
-    margin-bottom: 1rem;
-  }
 }
 
 .contact {
@@ -67,6 +59,16 @@
 
     svg:first-child {
       margin-right: 0.5rem;
+    }
+  }
+
+  .dual {
+    h5 {
+      margin-bottom: 0.5rem;
+    }
+
+    @include screen.md {
+      grid-template-columns: 1fr 1fr 1fr;
     }
   }
 }
@@ -93,7 +95,6 @@
   .language {
     h5,
     span {
-      display: inline;
       margin: 0;
     }
 
@@ -102,7 +103,6 @@
     }
 
     span {
-      margin-left: 0.5rem;
       font-size: 0.75rem;
     }
   }
