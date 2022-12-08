@@ -91,6 +91,15 @@
         "Configured and maintained Windows and CentOS servers running HTTP, DHCP, DNS, Active Directory, and Exchange services and configured networking rules compliant with PCI regulation.",
         "Provided help desk support for over 3,000 employees, assisting with Mac and Windows machines, mobile devices, VoIP phones, and printers."
       ]
+    },
+    {
+      "name": "Freelance Software Engineer",
+      "startDate": "2016",
+      "highlights": [
+        "Partnered with more than 15 companies to develop new tools and applications from web extensions to complete Android apps.",
+        "Migrated applications from WordPress to more modern systems such as Next.js.",
+        "Donated static websites to local non-profit organizations."
+      ]
     }
   ],
   "skills": [
