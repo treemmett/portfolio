@@ -16,7 +16,6 @@
   grid-template-columns: 1fr;
 
   @include screen.md {
-    gap: 1rem 2rem;
     grid-template-areas:
       'header header'
       'contact languages'
