@@ -88,7 +88,6 @@ jobs:
           GITHUB_CLIENT_SECRET: foobar
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JWT_SECRET: foobar
-          MOCK: true
           NEXT_PUBLIC_GITHUB_CLIENT_ID: foobar
           NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
           S3_BUCKET: minio-bucket

@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import '../mock';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NC, { Middleware } from 'next-connect';
 import pinoHttp from 'pino-http';
