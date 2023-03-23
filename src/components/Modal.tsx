@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { forwardRef, PropsWithChildren } from 'react';
+import { forwardRef, PropsWithChildren, useEffect, useState } from 'react';
 import styles from './Modal.module.scss';
 
 export interface ModalProps extends PropsWithChildren {
@@ -19,20 +19,34 @@ export interface ModalProps extends PropsWithChildren {
 }
 
 export const Modal = forwardRef<HTMLDivElement, ModalProps>(
-  ({ className, children, handleChildren = true, onClose = () => null, open = false }, ref) => (
-    <div
-      className={cx(styles['light-box'], className, {
-        [styles.open]: open,
-      })}
-      onClick={(e) => {
-        if (e.currentTarget === e.target) onClose();
-      }}
-      ref={ref}
-      role="presentation"
-    >
-      {(open || !handleChildren) && children}
-    </div>
-  )
+  ({ className, children, handleChildren = true, onClose = () => null, open = false }, ref) => {
+    const [openState, setOpen] = useState(open);
+    useEffect(() => {
+      setOpen(open);
+    }, [open]);
+
+    if (!open) return null;
+
+    return (
+      <div
+        className={cx(styles.modal, className, {
+          [styles.open]: openState,
+        })}
+        onClick={(e) => {
+          if (e.currentTarget === e.target) setOpen(false);
+        }}
+        onTransitionEnd={() => {
+          if (!openState && open) {
+            onClose();
+          }
+        }}
+        ref={ref}
+        role="presentation"
+      >
+        {(open || !handleChildren) && children}
+      </div>
+    );
+  }
 );
 
 Modal.displayName = 'modal';

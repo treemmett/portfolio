@@ -1,6 +1,6 @@
 @use '../styles/screen';
 
-.light-box {
+.modal {
   position: fixed;
   z-index: 100;
   top: 0;
@@ -9,17 +9,18 @@
   height: 100vh;
   box-sizing: border-box;
   padding: 4rem 1rem;
-  background-color: rgba(0, 0, 0, 0%);
+  background-color: rgba(0, 0, 0, 80%);
+  opacity: 0;
   overflow-y: auto;
   pointer-events: none;
-  transition: background-color 0.2s ease;
+  transition: opacity 0.2s ease;
 
   @include screen.md {
     padding: 4rem 2rem;
   }
 
   &.open {
-    background-color: rgba(0, 0, 0, 80%);
+    opacity: 1;
     pointer-events: all;
   }
 }
