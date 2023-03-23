@@ -1,18 +1,26 @@
+import { instanceToPlain } from 'class-transformer';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import { DefaultState } from '@components/DataStore';
 import { LightBox } from '@components/LightBox';
 import { Mosaic } from '@components/Mosaic';
 import { Nav } from '@components/Nav';
 import { Post } from '@entities/Post';
+import { Site } from '@entities/Site';
+import { connectToDatabase } from '@middleware/database';
 
-export const getServerSideProps: GetServerSideProps<DefaultState> = async ({ locale }) => {
-  const posts = await Post.getAll(true);
+export const getServerSideProps: GetServerSideProps = async ({ locale, req }) => {
+  await connectToDatabase();
+
+  const [posts, site] = await Promise.all([
+    Post.getAll(true),
+    Site.findOne({ where: { domain: req.headers.host } }),
+  ]);
 
   return {
     props: {
       posts: JSON.parse(JSON.stringify(posts)),
+      site: instanceToPlain(site),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   };
