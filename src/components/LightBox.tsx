@@ -10,7 +10,6 @@ import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { PhotoType } from '@entities/PhotoType';
 import { trace } from '@utils/analytics';
-import { apiClient } from '@utils/apiClient';
 import { scaleDimensions, toPx } from '@utils/pixels';
 import { toString } from '@utils/queryParam';
 
@@ -68,22 +67,6 @@ export const LightBox: FC = () => {
     push({ query: {} }, null, { scroll: false, shallow: true });
   }, [push]);
 
-  const deletePostAction = useCallback(async () => {
-    const id = toString(query.post);
-    await apiClient.delete(`/post/${encodeURIComponent(id)}`);
-    dispatch({
-      id,
-      type: 'DELETE_POST',
-    });
-    closeLightBox();
-  }, [query.post, dispatch, closeLightBox]);
-
-  const editPost = useCallback(() => {
-    push({ query: new URLSearchParams({ edit: toString(query.post) }).toString() }, undefined, {
-      shallow: true,
-    });
-  }, [push, query.post]);
-
   const panelOpen = useMemo(
     () =>
       session.hasPermission(AuthorizationScopes.delete) ||
@@ -116,10 +99,10 @@ export const LightBox: FC = () => {
       {panelOpen && (
         <div className={styles.panel}>
           {session.hasPermission(AuthorizationScopes.post) && (
-            <Button onClick={editPost}>{t('edit')}</Button>
-          )}
-          {session.hasPermission(AuthorizationScopes.delete) && (
-            <Button onClick={deletePostAction}>{t('delete')}</Button>
+            <>
+              <Button>{t('save')}</Button>
+              <Button>{t('delete')}</Button>
+            </>
           )}
         </div>
       )}
