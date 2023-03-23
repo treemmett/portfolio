@@ -54,7 +54,7 @@ export async function authorizeGitHub(code: string) {
     .sign(new TextEncoder().encode(Config.JWT_SECRET));
 
   const accessTokenParts = token.split('.');
-  const signature = accessTokenParts.pop();
+  const signature = accessTokenParts.pop() as string;
   accessTokenParts.push('');
 
   return {
