@@ -7,7 +7,7 @@ export const Nav: FC = () => {
 
   return (
     <header className={styles.nav}>
-      <h1>{site.name}</h1>
+      <h1>{site?.name}</h1>
     </header>
   );
 };

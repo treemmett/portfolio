@@ -10,7 +10,7 @@ export function useSite() {
     return response.data;
   });
 
-  const [site, setSite] = useState<ISite>(data);
+  const [site, setSite] = useState<ISite | undefined>(data);
 
   useEffect(() => {
     setSite(data);
