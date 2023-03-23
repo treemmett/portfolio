@@ -7,8 +7,12 @@
   position: sticky;
   z-index: 0;
   top: 0;
+  display: flex;
+  width: 100vw;
+  align-items: center;
   padding: 1rem;
   background-color: color.adjust(shared.$background, $alpha: -0.2);
+  overflow-x: auto;
 
   @include shared.dark-mode {
     background-color: color.adjust(shared.$background-dark, $alpha: -0.2);
@@ -16,5 +20,14 @@
 
   h1 {
     margin: 0;
+    margin-right: 1rem;
+  }
+
+  nav {
+    margin-left: auto;
+  }
+
+  a {
+    margin-right: 1rem;
   }
 }
