@@ -19,13 +19,21 @@ export const Nav: FC = () => {
         {site?.github && (
           <Anchor href={`https://github.com/${encodeURIComponent(site.github)}`}>GitHub</Anchor>
         )}
-        {site?.imdb && <Anchor href={`https://www.imdb.com/name/${site.imdb}/`}>IMDb</Anchor>}
-        {site?.instagram && (
-          <Anchor href={`https://www.instagram.com/${site.instagram}/`}>Instagram</Anchor>
+        {site?.imdb && (
+          <Anchor href={`https://www.imdb.com/name/${encodeURIComponent(site.imdb)}/`}>IMDb</Anchor>
         )}
-        {site?.twitter && <Anchor href={`https://twitter.com/${site.instagram}/`}>Twitter</Anchor>}
+        {site?.instagram && (
+          <Anchor href={`https://www.instagram.com/${encodeURIComponent(site.instagram)}/`}>
+            Instagram
+          </Anchor>
+        )}
+        {site?.twitter && (
+          <Anchor href={`https://twitter.com/${encodeURIComponent(site.twitter)}/`}>Twitter</Anchor>
+        )}
         {site?.linkedIn && (
-          <Anchor href={`https://www.linkedin.com/in/${site.linkedIn}/`}>LinkedIn</Anchor>
+          <Anchor href={`https://www.linkedin.com/in/${encodeURIComponent(site.linkedIn)}/`}>
+            LinkedIn
+          </Anchor>
         )}
       </nav>
     </header>
