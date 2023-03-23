@@ -5,10 +5,6 @@ export default class Doc extends Document {
     return (
       <Html>
         <Head>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Josefin+Sans:wght@300;400&display=swap"
-            rel="stylesheet"
-          />
           <link href="/favicon.ico" rel="icon" />
         </Head>
         <body>
