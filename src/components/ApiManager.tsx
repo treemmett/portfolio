@@ -1,14 +1,198 @@
+import axios from 'axios';
 import cx from 'classnames';
-import { FC, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { ulid } from 'ulid';
 import styles from './ApiManager.module.scss';
 import { Button } from './Button';
-import { useDataStore } from './DataStore';
+import type { Post, UploadToken } from '@entities/Post';
 import { ReactComponent as ChevronDown } from '@icons/chevron-down.svg';
 import { ReactComponent as ChevronUp } from '@icons/chevron-up.svg';
+import { usePosts } from '@lib/posts';
+import { apiClient } from '@utils/apiClient';
+
+interface ApiRequest {
+  id: string;
+  progress: number;
+  file: File;
+  name: string;
+  status: 'error' | 'queued' | 'uploading' | 'complete';
+  thumbnailUrl?: string;
+}
+
+async function loadFile(file: File): Promise<ApiRequest> {
+  try {
+    const thumbnailUrl = await new Promise<string>((res, rej) => {
+      const reader = new FileReader();
+
+      reader.addEventListener('error', () => {
+        rej();
+      });
+
+      reader.addEventListener('load', () => {
+        res(reader.result as string);
+      });
+
+      reader.readAsDataURL(file);
+    });
+
+    return {
+      file,
+      id: ulid(),
+      name: file.name,
+      progress: 0,
+      status: 'queued',
+      thumbnailUrl,
+    };
+  } catch {
+    return {
+      file,
+      id: ulid(),
+      name: file.name,
+      progress: 0,
+      status: 'error',
+    };
+  }
+}
 
 export const ApiManager: FC = () => {
-  const { requests } = useDataStore();
+  const [requests, setRequests] = useState<ApiRequest[]>([]);
   const [collapsed, setCollapsed] = useState(false);
+  const { addPost } = usePosts();
+
+  const dropHandler = useCallback(
+    async (e: DragEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (!e.dataTransfer) return;
+
+      const { files } = e.dataTransfer;
+
+      const fileList = await Promise.all(
+        [...files].reduce((acc, file) => {
+          if (file.type.startsWith('image/')) {
+            acc.push(loadFile(file));
+          }
+
+          return acc;
+        }, [] as Promise<ApiRequest>[])
+      );
+
+      setRequests([...fileList, ...requests]);
+    },
+    [requests]
+  );
+
+  const dragHandler = useCallback((e: DragEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = 'copy';
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('drop', dropHandler);
+    window.addEventListener('dragover', dragHandler);
+
+    return () => {
+      window.removeEventListener('drop', dropHandler);
+      window.removeEventListener('dragover', dragHandler);
+    };
+  }, [dragHandler, dropHandler]);
+
+  const uploadPhoto = useCallback(
+    async (request: ApiRequest) => {
+      setRequests((rs) => [
+        { ...request, status: 'uploading' },
+        ...rs.filter((r) => r.id !== request.id),
+      ]);
+
+      const { data: uploadToken } = await apiClient.post<UploadToken>('/post', {
+        onUploadProgress(progress: ProgressEvent) {
+          setRequests((rs) => {
+            const filtered = rs.filter((r) => r.id !== request.id);
+            const thisRequest = rs.find((r) => r.id === request.id);
+
+            return [
+              { ...thisRequest, progress: (progress.loaded / progress.total) * 0.05 } as ApiRequest,
+              ...filtered,
+            ];
+          });
+        },
+      });
+
+      await axios.put(uploadToken.url, request.file, {
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        onUploadProgress(progress: ProgressEvent) {
+          setRequests((rs) => {
+            const filtered = rs.filter((r) => r.id !== request.id);
+            const thisRequest = rs.find((r) => r.id === request.id);
+
+            return [
+              {
+                ...thisRequest,
+                progress: 0.05 + (progress.loaded / progress.total) * 0.9,
+              } as ApiRequest,
+              ...filtered,
+            ];
+          });
+        },
+      });
+
+      const { data } = await apiClient.put<Post>(
+        '/post',
+        { token: uploadToken.token },
+        {
+          onUploadProgress(progress: ProgressEvent) {
+            setRequests((rs) => {
+              const filtered = rs.filter((r) => r.id !== request.id);
+              const thisRequest = rs.find((r) => r.id === request.id);
+
+              return [
+                {
+                  ...thisRequest,
+                  progress: 0.95 + (progress.loaded / progress.total) * 0.05,
+                } as ApiRequest,
+                ...filtered,
+              ];
+            });
+          },
+        }
+      );
+
+      addPost(data);
+
+      setRequests((rs) => {
+        const filtered = rs.filter((r) => r.id !== request.id);
+        const thisRequest = rs.find((r) => r.id === request.id);
+
+        return [
+          {
+            ...thisRequest,
+            status: 'complete',
+          } as ApiRequest,
+          ...filtered,
+        ];
+      });
+    },
+    [addPost]
+  );
+
+  useEffect(() => {
+    const uploading = requests.filter((r) => r.status === 'uploading');
+
+    if (uploading.length < 3) {
+      const nextRequest = requests.find((f) => f.status === 'queued');
+
+      if (nextRequest) {
+        uploadPhoto(nextRequest);
+      }
+    }
+  }, [requests, uploadPhoto]);
 
   if (!requests.length) return null;
 
@@ -31,9 +215,13 @@ export const ApiManager: FC = () => {
             {r.thumbnailUrl && (
               <img alt="Uploading thumbnail" className={styles.thumbnail} src={r.thumbnailUrl} />
             )}
-            <span>
-              {r.progress * 100}% - {r.status}
-            </span>
+            {r.status === 'uploading' ? (
+              <span>{Math.floor(r.progress * 100)}%</span>
+            ) : (
+              <span className={styles.status}>{r.status}</span>
+            )}
+
+            <span className={styles.name}>{r.name}</span>
           </div>
         ))}
       </div>

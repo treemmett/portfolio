@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutate from 'swr/mutation';
 import type { Post } from '@entities/Post';
@@ -10,7 +10,23 @@ export function usePosts() {
     return response.data;
   });
 
+  const { trigger } = useSWRMutate<Post, Error, 'posts', Post>(
+    'posts',
+    async (key, { arg }) => arg,
+    {
+      populateCache(result: Post, currentData: Post[]) {
+        if (!currentData) return [result];
+
+        return [result, ...currentData];
+      },
+      revalidate: false,
+    }
+  );
+
+  const addPost = useCallback((post: Post) => trigger(post), [trigger]);
+
   return {
+    addPost,
     error,
     isLoading,
     posts: data,

@@ -42,10 +42,22 @@
   padding: 1rem;
   border-top: 1px solid;
   border-top-color: inherit;
+
+  span {
+    margin: 0.125rem;
+
+    &.name {
+      margin-left: auto;
+    }
+  }
 }
 
 .thumbnail {
   max-width: 2rem;
   max-height: 1.5rem;
   margin-right: 1rem;
+}
+
+.status {
+  text-transform: capitalize;
 }

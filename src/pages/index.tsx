@@ -1,14 +1,21 @@
 import { instanceToPlain } from 'class-transformer';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { LightBox } from '@components/LightBox';
 import { Mosaic } from '@components/Mosaic';
 import { Nav } from '@components/Nav';
+import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
+import { useSession } from '@lib/session';
 import { useSite } from '@lib/site';
 import { connectToDatabase } from '@middleware/database';
+
+const DynamicUploadManager = dynamic(() =>
+  import('@components/ApiManager').then((mod) => mod.ApiManager)
+);
 
 export const getServerSideProps: GetServerSideProps = async ({ locale, req }) => {
   await connectToDatabase();
@@ -31,6 +38,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, req }) =>
 
 export const Home: NextPage = () => {
   const { site } = useSite();
+  const { hasPermission } = useSession();
 
   return (
     <>
@@ -44,6 +52,8 @@ export const Home: NextPage = () => {
       <Mosaic />
 
       <LightBox />
+
+      {hasPermission(AuthorizationScopes.post) && <DynamicUploadManager />}
     </>
   );
 };

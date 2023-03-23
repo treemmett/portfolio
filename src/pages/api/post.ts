@@ -14,7 +14,7 @@ export default nextConnect()
     await i18nRevalidate('/', res);
   })
   .post(Session.authorizeRequest(AuthorizationScopes.post), async (req, res) => {
-    const token = await Post.requestUploadToken(req.body.location, req.body.title, req.body.date);
+    const token = await Post.requestUploadToken();
     res.send(token);
   })
   .put(Session.authorizeRequest(AuthorizationScopes.post), async (req, res) => {
