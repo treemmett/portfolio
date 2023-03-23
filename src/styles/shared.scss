@@ -4,9 +4,10 @@ $primary: #ab2a61;
 $background: #ecf8f8;
 $text: #1f271b;
 $text-light: $background;
-$background-dark: color.adjust($text, $lightness: -5%);
+$background-dark: color.adjust($text, $lightness: -8%);
 $border-dark: color.adjust($text, $lightness: 10%);
 $border-light: color.adjust($text-light, $lightness: -30%);
+$shadow: 0 0 10px rgba(0, 0, 0, 30%);
 
 @mixin dark-mode {
   @media (prefers-color-scheme: dark) {
@@ -42,4 +43,19 @@ $border-light: color.adjust($text-light, $lightness: -30%);
 
 @mixin border {
   border-radius: 1rem / 1.2rem;
+}
+
+@mixin glass($alpha: 0.3) {
+  padding: 20px;
+  border-color: color.change($border-light, $alpha: 0.3);
+  backdrop-filter: blur(10px);
+  background-color: color.change($background, $alpha: $alpha);
+  border-radius: 10px;
+  box-shadow: $shadow;
+
+  @include dark-mode {
+    border-color: color.change($border-dark, $alpha: 0.3);
+    background-color: color.change($background-dark, $alpha: $alpha);
+    color: $text-light;
+  }
 }

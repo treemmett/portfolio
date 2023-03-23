@@ -1,6 +1,9 @@
 @use '../styles/screen';
+@use '../styles/shared';
 
 .modal {
+  @include shared.glass(0.5);
+
   position: fixed;
   z-index: 100;
   top: 0;
