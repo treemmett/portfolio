@@ -45,7 +45,7 @@ export const Input: FC<InputProps> = ({
       {(!collapseLabel || label) && <div className={styles.label}>{label}</div>}
       {type === 'select' ? (
         <select className={styles.input} onChange={onChange} value={value}>
-          {options.map((opt) => (
+          {options?.map((opt) => (
             <option key={opt.id} value={opt.id}>
               {opt.label}
             </option>
