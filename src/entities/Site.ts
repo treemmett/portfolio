@@ -17,6 +17,24 @@ export class Site extends BaseEntity {
 
   @Column({ nullable: true })
   public title?: string;
+
+  @Column({ nullable: true })
+  public imdb?: string;
+
+  @Column({ nullable: true })
+  public twitter?: string;
+
+  @Column({ nullable: true })
+  public linkedIn?: string;
+
+  @Column({ nullable: true })
+  public instagram?: string;
+
+  @Column({ nullable: true })
+  public github?: string;
+
+  @Column({ nullable: true })
+  public facebook?: string;
 }
 
 export type ISite = Omit<Site, keyof BaseEntity>;

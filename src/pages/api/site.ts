@@ -13,8 +13,14 @@ export default nextConnect()
       {
         body: {
           description: [Joi.string(), null, ''],
+          facebook: [Joi.string(), null, ''],
+          github: [Joi.string(), null, ''],
+          imdb: [Joi.string(), null, ''],
+          instagram: [Joi.string(), null, ''],
+          linkedIn: [Joi.string(), null, ''],
           name: [Joi.string(), null, ''],
           title: [Joi.string(), null, ''],
+          twitter: [Joi.string(), null, ''],
         },
       },
       { allowUnknown: true }
@@ -25,9 +31,16 @@ export default nextConnect()
         res.status(404).end();
         return;
       }
+
       site.description = req.body.description || null;
+      site.facebook = req.body.facebook || null;
+      site.github = req.body.github || null;
+      site.imdb = req.body.imdb || null;
+      site.instagram = req.body.instagram || null;
+      site.linkedIn = req.body.linkedIn || null;
       site.name = req.body.name || null;
       site.title = req.body.title || null;
+      site.twitter = req.body.twitter || null;
       await site.save();
       res.send(site);
     }
