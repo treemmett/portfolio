@@ -1,4 +1,4 @@
-import { GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import { DefaultState } from '@components/DataStore';
@@ -7,7 +7,7 @@ import { Mosaic } from '@components/Mosaic';
 import { Nav } from '@components/Nav';
 import { Post } from '@entities/Post';
 
-export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps<DefaultState> = async ({ locale }) => {
   const posts = await Post.getAll(true);
 
   return {
@@ -15,7 +15,6 @@ export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) =
       posts: JSON.parse(JSON.stringify(posts)),
       ...(await serverSideTranslations(locale, ['common'])),
     },
-    revalidate: 60,
   };
 };
 
