@@ -21,5 +21,7 @@ export function formatDate(date: Date): string {
     throw new Error('Invalid date');
   }
 
+  if (!i18n) throw new Error('i18n not initialized');
+
   return `${d.getDate()} ${i18n.t(months[d.getMonth()])}, ${d.getFullYear()}`;
 }
