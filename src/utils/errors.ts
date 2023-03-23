@@ -1,3 +1,4 @@
+import { isCelebrateError, errors } from 'celebrate';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { ErrorHandler } from 'next-connect';
 
@@ -151,7 +152,19 @@ export class APIError extends Error {
   }
 }
 
-export const errorHandler: ErrorHandler<NextApiRequest, NextApiResponse> = (err, req, res) => {
+const celebrateErrorHandler = errors();
+
+export const errorHandler: ErrorHandler<NextApiRequest, NextApiResponse> = (
+  err,
+  req,
+  res,
+  next
+) => {
+  if (isCelebrateError(err)) {
+    celebrateErrorHandler(err, req, res, next);
+    return;
+  }
+
   const errorCode = err.error || ErrorCode.never;
 
   res.status(getStatusCode(errorCode)).send({
