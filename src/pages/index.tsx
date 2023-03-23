@@ -1,10 +1,9 @@
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import { WithAbout } from '@components/About';
 import { DefaultState } from '@components/DataStore';
-import { Gallery } from '@components/Gallery';
 import { LightBox } from '@components/LightBox';
+import { Mosaic } from '@components/Mosaic';
 import { Post } from '@entities/Post';
 
 export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
@@ -20,7 +19,7 @@ export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) =
 };
 
 export const Home: NextPage = () => (
-  <WithAbout>
+  <>
     <Head>
       <title>Hi, I'm Tregan</title>
       <meta
@@ -29,10 +28,10 @@ export const Home: NextPage = () => (
       />
     </Head>
 
-    <Gallery />
+    <Mosaic />
 
     <LightBox />
-  </WithAbout>
+  </>
 );
 
 export default Home;
