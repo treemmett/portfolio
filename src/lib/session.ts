@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ACCESS_TOKEN_STORAGE_KEY } from '@entities/Jwt';
+import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes } from '@entities/Jwt';
 import { Session } from '@entities/Session';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@pages/login';
 import { trace } from '@utils/analytics';
@@ -29,6 +29,15 @@ export function useSession() {
 
     return () => apiClient.interceptors.request.eject(id);
   }, [session]);
+
+  const hasPermission = useCallback(
+    (...perms: AuthorizationScopes[]): boolean => {
+      if (!session) return false;
+
+      return perms.every((p) => session.hasPermission(p));
+    },
+    [session]
+  );
 
   const login = useCallback(() => {
     if (session?.expiration && session.expiration > new Date()) return;
@@ -97,6 +106,7 @@ export function useSession() {
   }, []);
 
   return {
+    hasPermission,
     isLoggedIn,
     login,
     logout,

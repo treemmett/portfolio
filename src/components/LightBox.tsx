@@ -8,6 +8,7 @@ import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { PhotoType } from '@entities/PhotoType';
+import { useSession } from '@lib/session';
 import { trace } from '@utils/analytics';
 import { scaleDimensions, toPx } from '@utils/pixels';
 import { toString } from '@utils/queryParam';
@@ -18,7 +19,8 @@ const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor)
 
 export const LightBox: FC = () => {
   const { query, push } = useRouter();
-  const { dispatch, posts, session } = useDataStore();
+  const { dispatch, posts } = useDataStore();
+  const { hasPermission } = useSession();
 
   const post = useMemo(() => posts.find((p) => p.id === query.post), [query.post, posts]);
   const photo = useMemo(() => post?.photos.find((p) => p.type === PhotoType.ORIGINAL), [post]);
@@ -73,7 +75,7 @@ export const LightBox: FC = () => {
   return (
     <Modal
       className={classNames(styles['light-box'], {
-        [styles['panel-open']]: session.hasPermission(AuthorizationScopes.post),
+        [styles['panel-open']]: hasPermission(AuthorizationScopes.post),
       })}
       handleChildren={false}
       onClose={closeLightBox}
@@ -96,7 +98,7 @@ export const LightBox: FC = () => {
           />
         </div>
       )}
-      {session.hasPermission(AuthorizationScopes.post) && <DynamicEditor post={post} />}
+      {hasPermission(AuthorizationScopes.post) && <DynamicEditor post={post} />}
     </Modal>
   );
 };

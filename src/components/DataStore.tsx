@@ -9,14 +9,11 @@ import {
   useReducer,
 } from 'react';
 import { ulid } from 'ulid';
-import { ACCESS_TOKEN_STORAGE_KEY } from '@entities/Jwt';
 import type { Post } from '@entities/Post';
-import { Session } from '@entities/Session';
-import { apiClient, ApiRequest } from '@utils/apiClient';
+import { ApiRequest } from '@utils/apiClient';
 
 export interface State {
   posts: Post[];
-  session: Session;
   requests: ApiRequest[];
 }
 
@@ -24,7 +21,6 @@ export type Action =
   | { type: 'ADD_API_REQUEST'; startRequest: ApiRequest['startRequest']; thumbnailUrl?: string }
   | { type: 'ADD_POST'; post: Post }
   | { type: 'DELETE_POST'; id: string }
-  | { type: 'LOGIN'; session: Session }
   | { type: 'LOGOUT' }
   | { type: 'SET_API_REQUEST_STATUS'; id: string; progress?: number; status?: ApiRequest['status'] }
   | { type: 'UPDATE_POST'; post: Post };
@@ -65,23 +61,6 @@ function reducer(state: State, action: Action): State {
         };
       }
       return state;
-    }
-
-    case 'LOGIN':
-      if (action.session.accessToken) {
-        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, action.session.accessToken);
-      }
-      return {
-        ...state,
-        session: action.session,
-      };
-
-    case 'LOGOUT': {
-      localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-      return {
-        ...state,
-        session: new Session(),
-      };
     }
 
     case 'SET_API_REQUEST_STATUS': {
@@ -136,7 +115,6 @@ export interface DataStoreProviderProps extends PropsWithChildren {
 const defaultState = {
   posts: [],
   requests: [],
-  session: new Session(),
 };
 
 export interface ContextValue extends State {
@@ -152,27 +130,6 @@ export const useDataStore = () => useContext(dataStoreContext);
 
 export const DataStoreProvider: FC<DataStoreProviderProps> = ({ children, defaults }) => {
   const [state, dispatch] = useReducer(reducer, { ...defaultState, ...defaults });
-
-  useEffect(() => {
-    dispatch({
-      session: Session.restore(),
-      type: 'LOGIN',
-    });
-  }, []);
-
-  useEffect(() => {
-    const id = apiClient.interceptors.request.use((req) => {
-      if (!req.headers) req.headers = {};
-
-      if (state.session.isValid()) {
-        req.headers.authorization = `Bearer ${state.session.accessToken}`;
-      }
-
-      return req;
-    });
-
-    return () => apiClient.interceptors.request.eject(id);
-  }, [state.session]);
 
   useEffect(() => {
     const numberOfActiveRequests = state.requests.filter((r) => r.status === 'uploading').length;
