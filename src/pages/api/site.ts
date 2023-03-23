@@ -21,6 +21,7 @@ export default nextConnect()
       const site = await Site.findOne({ where: { domain: req.headers.host } });
       if (!site) {
         res.status(404).end();
+        return;
       }
       site.name = req.body.name;
       await site.save();
