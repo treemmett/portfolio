@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { CSSProperties, FC, MouseEventHandler, PropsWithChildren } from 'react';
 import styles from './Button.module.scss';
 
-export type ButtonTypes = 'default' | 'primary';
+export type ButtonTypes = 'default' | 'danger' | 'warning' | 'success';
 
 export interface ButtonProps extends PropsWithChildren {
   className?: string;
@@ -29,14 +29,16 @@ export const Button: FC<ButtonProps> = ({
   size,
   submit,
   style,
+  type = 'default',
   testId,
-  type,
 }) => (
   <button
     aria-label={label}
     className={cx(styles.button, className, {
       [styles.inverted]: inverted,
-      [styles.primary]: type === 'primary',
+      [styles.danger]: type === 'danger',
+      [styles.warning]: type === 'warning',
+      [styles.success]: type === 'success',
       [styles.small]: size === 'small',
     })}
     data-testid={testId}

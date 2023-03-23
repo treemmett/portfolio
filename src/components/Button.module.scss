@@ -1,25 +1,21 @@
 @use 'sass:color';
 @use '../styles/shared';
 
-@mixin color($background-color: shared.$background-dark, $scale: 1) {
-  background-color: $background-color;
+@mixin color($color: shared.$background-dark, $scale: 1) {
+  @include shared.glass($alpha: 0.5, $color: $color);
 
   @media (hover: hover) {
     &:hover {
-      background-color: color.adjust($background-color, $lightness: -5% * $scale);
+      @include shared.glass($alpha: 0.5, $color: color.adjust($color, $lightness: 5% * $scale));
     }
   }
 
   &:active {
-    background-color: color.adjust($background-color, $lightness: -10% * $scale);
+    @include shared.glass($alpha: 0.5, $color: color.adjust($color, $lightness: 10% * $scale));
   }
 
   &:disabled {
-    background-color: color.adjust($background-color, $blackness: 100% * $scale);
-
-    &.primary {
-      background-color: color.grayscale($background-color);
-    }
+    @include shared.glass($alpha: 0.5, $color: color.adjust($color, $blackness: 100% * $scale));
   }
 }
 
@@ -37,13 +33,13 @@
   transition: background-color 0.2s ease-out;
 
   @include shared.dark-mode {
-    @include color(shared.$background);
+    @include color($color: shared.$background);
 
     color: shared.$text;
   }
 
   &.inverted {
-    @include color(shared.$background);
+    @include color($color: shared.$background);
 
     color: shared.$text;
 
@@ -54,10 +50,22 @@
     }
   }
 
-  &.primary {
+  &.danger {
     color: #fff;
 
-    @include color(shared.$primary);
+    @include color($color: shared.$danger);
+  }
+
+  &.success {
+    color: #fff;
+
+    @include color($color: shared.$success);
+  }
+
+  &.warning {
+    color: #fff;
+
+    @include color($color: shared.$warning);
   }
 
   &.small {

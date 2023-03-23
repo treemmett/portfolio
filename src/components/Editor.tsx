@@ -46,7 +46,7 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
         type="date"
         value={trimTime(post.created)}
       />
-      <Button className={styles.input} disabled={isSaving} type="primary" submit>
+      <Button className={styles.input} disabled={isSaving} type="success" submit>
         {t('Save')}
       </Button>
     </form>
