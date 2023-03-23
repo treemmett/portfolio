@@ -3,12 +3,15 @@ import { FC, FormEventHandler, useCallback } from 'react';
 import { Button } from './Button';
 import styles from './Editor.module.scss';
 import { Input } from './Input';
+import { AuthorizationScopes } from '@entities/Jwt';
 import { usePost } from '@lib/posts';
+import { useSession } from '@lib/session';
 import { trimTime } from '@utils/date';
 
 export const Editor: FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation();
-  const { isSaving, post, save, setPost } = usePost(id);
+  const { isDeleting, isSaving, post, save, setPost, deleteTrigger } = usePost(id);
+  const { hasPermission } = useSession();
 
   const formHandler: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
@@ -19,8 +22,6 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
   );
 
   if (!post) return null;
-
-  console.log(post.created);
 
   return (
     <form className={styles.form} onSubmit={formHandler}>
@@ -49,6 +50,16 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
       <Button className={styles.input} disabled={isSaving} type="success" submit>
         {t('Save')}
       </Button>
+      {hasPermission(AuthorizationScopes.delete) && (
+        <Button
+          className={styles.input}
+          disabled={isDeleting}
+          onClick={() => deleteTrigger()}
+          type="danger"
+        >
+          {t('Delete')}
+        </Button>
+      )}
     </form>
   );
 };

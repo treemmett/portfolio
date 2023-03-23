@@ -62,7 +62,31 @@ export function usePost(id: string) {
     }
   );
 
+  const {
+    isMutating: isDeleting,
+    trigger: deleteTrigger,
+    error: deleteError,
+  } = useSWRMutate(
+    'posts',
+    async () => {
+      await apiClient.delete(`/post/${encodeURI(id)}`);
+      return post;
+    },
+    {
+      populateCache(result, currentData: Post[]) {
+        if (!currentData) return [];
+
+        const filteredData = currentData.filter((p) => p.id !== result?.id);
+        return [...filteredData];
+      },
+      revalidate: false,
+    }
+  );
+
   return {
+    deleteError,
+    deleteTrigger,
+    isDeleting,
     isSaving: isMutating,
     mutationError,
     post,
