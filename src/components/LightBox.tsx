@@ -72,8 +72,6 @@ export const LightBox: FC = () => {
     push({ query: {} }, undefined, { scroll: false, shallow: true });
   }, [push]);
 
-  if (!post) return null;
-
   return (
     <Modal
       className={classNames(styles['light-box'], {
@@ -84,23 +82,32 @@ export const LightBox: FC = () => {
       open={!!post}
       ref={galleryRef}
     >
-      {photo && (
-        <div className={styles.photo}>
-          <Image
-            alt={post.title}
-            blurDataURL={photo.thumbnailURL}
-            className={styles.img}
-            height={photo.height}
-            placeholder="blur"
-            sizes="95vw"
-            src={photo.url}
-            style={{ height: toPx(height), left: toPx(left), top: toPx(top), width: toPx(width) }}
-            width={photo.width}
-            priority
-          />
-        </div>
+      {post && (
+        <>
+          {photo && (
+            <div className={styles.photo}>
+              <Image
+                alt={post.title}
+                blurDataURL={photo.thumbnailURL}
+                className={styles.img}
+                height={photo.height}
+                placeholder="blur"
+                sizes="95vw"
+                src={photo.url}
+                style={{
+                  height: toPx(height),
+                  left: toPx(left),
+                  top: toPx(top),
+                  width: toPx(width),
+                }}
+                width={photo.width}
+                priority
+              />
+            </div>
+          )}
+          {hasPermission(AuthorizationScopes.post) && <DynamicEditor id={post.id} />}
+        </>
       )}
-      {hasPermission(AuthorizationScopes.post) && <DynamicEditor id={post.id} />}
     </Modal>
   );
 };
