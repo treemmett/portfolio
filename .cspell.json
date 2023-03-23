@@ -10,6 +10,7 @@
   "dictionaries": ["typescript", "html"],
   "words": [
     "amondnet",
+    "cdn",
     "chainable",
     "commitlint",
     "componentize",

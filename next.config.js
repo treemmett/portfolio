@@ -8,7 +8,10 @@ const IS_VERCEL = typeof process.env.VERCEL !== 'undefined';
 const nextConfig = {
   i18n,
   images: {
-    domains: [!IS_VERCEL && '127.0.0.1', 'tregan.me', 'cdn.tregan.me'].filter(Boolean),
+    domains: [
+      !IS_VERCEL && '127.0.0.1',
+      process.env.CDN_URL && new URL(process.env.CDN_URL).host,
+    ].filter(Boolean),
     remotePatterns: [
       !IS_VERCEL && {
         hostname: '127.0.0.1',
