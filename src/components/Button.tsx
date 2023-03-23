@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { FC, MouseEventHandler, PropsWithChildren } from 'react';
+import { CSSProperties, FC, MouseEventHandler, PropsWithChildren } from 'react';
 import styles from './Button.module.scss';
 
 export type ButtonTypes = 'default' | 'primary';
@@ -14,6 +14,7 @@ export interface ButtonProps extends PropsWithChildren {
   size?: 'small';
   /** button is of submit type */
   submit?: boolean;
+  style?: CSSProperties;
   testId?: string;
   type?: ButtonTypes;
 }
@@ -27,6 +28,7 @@ export const Button: FC<ButtonProps> = ({
   onClick,
   size,
   submit,
+  style,
   testId,
   type,
 }) => (
@@ -40,6 +42,7 @@ export const Button: FC<ButtonProps> = ({
     data-testid={testId}
     disabled={disabled}
     onClick={onClick}
+    style={style}
     type={submit ? 'submit' : 'button'}
   >
     {children}

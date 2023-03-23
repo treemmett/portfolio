@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -7,14 +9,14 @@ import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { PhotoType } from '@entities/PhotoType';
-import { ReactComponent as Edit } from '@icons/edit.svg';
-import { ReactComponent as Trash } from '@icons/trash.svg';
 import { trace } from '@utils/analytics';
 import { apiClient } from '@utils/apiClient';
 import { scaleDimensions, toPx } from '@utils/pixels';
 import { toString } from '@utils/queryParam';
 
 export const LightBox: FC = () => {
+  const { t } = useTranslation();
+
   const { query, push } = useRouter();
   const { dispatch, posts, session } = useDataStore();
 
@@ -82,20 +84,21 @@ export const LightBox: FC = () => {
     });
   }, [push, query.post]);
 
+  const panelOpen = useMemo(
+    () =>
+      session.hasPermission(AuthorizationScopes.delete) ||
+      session.hasPermission(AuthorizationScopes.post),
+    [session]
+  );
+
   return (
-    <Modal handleChildren={false} onClose={closeLightBox} open={!!post} ref={galleryRef}>
-      <div className={styles.actions}>
-        {session.hasPermission(AuthorizationScopes.post) && (
-          <Button onClick={editPost}>
-            <Edit />
-          </Button>
-        )}
-        {session.hasPermission(AuthorizationScopes.delete) && (
-          <Button onClick={deletePostAction}>
-            <Trash />
-          </Button>
-        )}
-      </div>
+    <Modal
+      className={classNames(styles['light-box'], { [styles['panel-open']]: panelOpen })}
+      handleChildren={false}
+      onClose={closeLightBox}
+      open={!!post}
+      ref={galleryRef}
+    >
       {photo && (
         <Image
           alt={post.title}
@@ -109,6 +112,20 @@ export const LightBox: FC = () => {
           width={photo.width}
           priority
         />
+      )}
+      {panelOpen && (
+        <>
+          {session.hasPermission(AuthorizationScopes.post) && (
+            <Button onClick={editPost} style={{ width: toPx(width) }}>
+              {t('edit')}
+            </Button>
+          )}
+          {session.hasPermission(AuthorizationScopes.delete) && (
+            <Button onClick={deletePostAction} style={{ width: toPx(width) }}>
+              {t('delete')}
+            </Button>
+          )}
+        </>
       )}
     </Modal>
   );
