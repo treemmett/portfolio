@@ -30,4 +30,16 @@
   a {
     margin-right: 1rem;
   }
+
+  button {
+    display: inline;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+  }
 }
