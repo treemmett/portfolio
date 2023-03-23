@@ -7,9 +7,7 @@ import { useDataStore } from './DataStore';
 import styles from './Editor.module.scss';
 import { Input } from './Input';
 import type { Post, UploadToken } from '@entities/Post';
-import { Country } from '@lib/countryCodes';
 import { apiClient } from '@utils/apiClient';
-import { splitCase } from '@utils/casing';
 
 enum UploadState {
   default,
@@ -24,7 +22,6 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
   const [file, setFile] = useState<File>();
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
-  const [country, setCountry] = useState<Country>();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   const formRef = useRef<HTMLFormElement>();
@@ -38,17 +35,13 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
     setTitle('');
     setDate(new Date().toISOString().split('T')[0]);
     setLocation('');
-    setCountry(undefined);
     setFile(null);
   }, [router]);
 
   const [state, setState] = useState(UploadState.default);
 
   const uploadFile = useCallback(
-    async (
-      fileData: File,
-      postData?: Pick<Post, 'country' | 'location' | 'title'> & { date: string }
-    ) => {
+    async (fileData: File, postData?: Pick<Post, 'location' | 'title'> & { date: string }) => {
       const thumbnailUrl = await new Promise<string>((res) => {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
@@ -104,14 +97,13 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
 
         if (post.id) {
           const { data } = await apiClient.patch<Post>(`/post/${encodeURIComponent(post.id)}`, {
-            country,
             created: new Date(date),
             location,
             title,
           });
           dispatch({ post: data, type: 'UPDATE_POST' });
         } else {
-          uploadFile(file, { country, date, location, title });
+          uploadFile(file, { date, location, title });
         }
 
         closeEditor();
@@ -128,7 +120,7 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
         setState(UploadState.default);
       }
     },
-    [closeEditor, country, date, dispatch, file, location, post.id, state, t, title, uploadFile]
+    [closeEditor, date, dispatch, file, location, post.id, state, t, title, uploadFile]
   );
 
   useEffect(() => {
@@ -136,7 +128,6 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
       setTitle(post.title);
       setLocation(post.location);
       setDate(new Date(post.created).toISOString().split('T')[0]);
-      setCountry(post.country);
     }
   }, [post]);
   useEffect(() => {
@@ -187,20 +178,6 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
         name="location"
         onChange={(e) => setLocation(e.currentTarget.value)}
         value={location}
-      />
-      <Input
-        className={styles.input}
-        label={t('Country')}
-        onChange={(e) => setCountry(e.currentTarget.value as Country)}
-        options={[
-          { id: '--Empty--', label: '--Empty--' },
-          ...Object.entries(Country).map(([name, id]) => ({
-            id,
-            label: splitCase(name),
-          })),
-        ]}
-        type="select"
-        value={country}
       />
       <Input
         className={styles.input}

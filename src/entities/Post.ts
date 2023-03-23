@@ -5,7 +5,6 @@ import { Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
 import {
   IsDate,
-  IsEnum,
   IsInt,
   IsOptional,
   IsString,
@@ -21,8 +20,6 @@ import sharp from 'sharp';
 import { ulid } from 'ulid';
 import { Photo } from './Photo';
 import { PhotoType } from './PhotoType';
-import { Country } from '@lib/countryCodes';
-import { splitCase } from '@utils/casing';
 import { Config } from '@utils/config';
 import { APIError, ErrorCode } from '@utils/errors';
 import { logger } from '@utils/logger';
@@ -43,10 +40,6 @@ export class Post {
   @IsString()
   @IsUppercase()
   public id: string;
-
-  @IsEnum(Country)
-  @IsOptional()
-  public country?: Country;
 
   @IsEmpty()
   public countryName?: string;
@@ -110,7 +103,7 @@ export class Post {
 
     const { jti, meta } = payload as {
       jti: string;
-      meta: { country: Country; date: string; location?: string; title?: string };
+      meta: { date: string; location?: string; title?: string };
     };
 
     let object: PromiseResult<GetObjectOutput, AWSError>;
@@ -147,7 +140,6 @@ export class Post {
       Post,
       {
         blue: b,
-        country: meta.country,
         created: new Date(meta.date),
         green: g,
         id,
@@ -171,18 +163,16 @@ export class Post {
   }
 
   public static async requestUploadToken(
-    country: Country,
     location?: string,
     title?: string,
     date = new Date()
   ): Promise<UploadToken> {
-    logger.info('Creating upload token', { country, date, location, title });
+    logger.info('Creating upload token', { date, location, title });
     const id = ulid();
 
     const [token, url] = await Promise.all([
       new SignJWT({
         meta: {
-          country,
           date: new Date(date),
           location,
           title,
@@ -232,7 +222,7 @@ export class Post {
 
   public static async update(
     id: string,
-    data: Partial<Pick<Post, 'country' | 'created' | 'location' | 'title'>>
+    data: Partial<Pick<Post, 'created' | 'location' | 'title'>>
   ): Promise<Post> {
     logger.info('Updating post', { data, id });
     const posts = await this.getAll();
@@ -258,12 +248,6 @@ export class Post {
       post.created = new Date(data.created);
     }
 
-    if (data.country) {
-      logger.info('Updating post country', { new: data.country, original: post.country });
-      post.country =
-        (data.country as Country | '--Empty--') === '--Empty--' ? undefined : data.country;
-    }
-
     if (data.location) {
       logger.info('Updating post location', { new: data.location, original: post.location });
       post.location = data.location;
@@ -280,7 +264,7 @@ export class Post {
     return post;
   }
 
-  public static async getAll(parseCountry?: boolean): Promise<Post[]> {
+  public static async getAll(): Promise<Post[]> {
     try {
       logger.info('Looking up post index');
       const { Body } = await s3
@@ -297,18 +281,6 @@ export class Post {
       const posts = (await transformAndValidate(Post, json, {
         validator: { forbidUnknownValues: true },
       })) as Post[];
-
-      if (parseCountry) {
-        const countryMappings = Object.fromEntries(Object.entries(Country).map((a) => a.reverse()));
-        return posts.map((p) => {
-          if (!p.country) return p;
-
-          return {
-            ...p,
-            countryName: splitCase(countryMappings[p.country]),
-          };
-        });
-      }
 
       return posts;
     } catch (err) {

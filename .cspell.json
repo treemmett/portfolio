@@ -25,6 +25,7 @@
     "mapbox",
     "mapboxgl",
     "minio",
+    "nocheck",
     "Nuvi",
     "picsum",
     "pino",

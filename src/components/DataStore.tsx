@@ -10,13 +10,11 @@ import {
 } from 'react';
 import { ulid } from 'ulid';
 import { ACCESS_TOKEN_STORAGE_KEY } from '@entities/Jwt';
-import { Marker } from '@entities/Marker';
 import type { Post } from '@entities/Post';
 import { Session } from '@entities/Session';
 import { apiClient, ApiRequest } from '@utils/apiClient';
 
 export interface State {
-  markers: Marker[];
   posts: Post[];
   session: Session;
   requests: ApiRequest[];
@@ -24,14 +22,11 @@ export interface State {
 
 export type Action =
   | { type: 'ADD_API_REQUEST'; startRequest: ApiRequest['startRequest']; thumbnailUrl?: string }
-  | { type: 'ADD_MARKER'; marker: Marker }
   | { type: 'ADD_POST'; post: Post }
-  | { type: 'DELETE_MARKER'; id: string }
   | { type: 'DELETE_POST'; id: string }
   | { type: 'LOGIN'; session: Session }
   | { type: 'LOGOUT' }
   | { type: 'SET_API_REQUEST_STATUS'; id: string; progress?: number; status?: ApiRequest['status'] }
-  | { type: 'UPDATE_MARKER'; marker: Marker }
   | { type: 'UPDATE_POST'; post: Post };
 
 function reducer(state: State, action: Action): State {
@@ -51,14 +46,6 @@ function reducer(state: State, action: Action): State {
         ],
       };
 
-    case 'ADD_MARKER':
-      return {
-        ...state,
-        markers: [action.marker, ...state.markers].sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-        ),
-      };
-
     case 'ADD_POST':
       return {
         ...state,
@@ -66,19 +53,6 @@ function reducer(state: State, action: Action): State {
           (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
         ),
       };
-
-    case 'DELETE_MARKER': {
-      const markers = [...state.markers];
-      const index = markers.findIndex((m) => m.id === action.id);
-      if (~index) {
-        markers.splice(index, 1);
-        return {
-          ...state,
-          markers,
-        };
-      }
-      return state;
-    }
 
     case 'DELETE_POST': {
       const posts = [...state.posts];
@@ -130,22 +104,6 @@ function reducer(state: State, action: Action): State {
       return state;
     }
 
-    case 'UPDATE_MARKER': {
-      const markers = [...state.markers];
-      const index = markers.findIndex((p) => p.id === action.marker.id);
-      if (~index) {
-        markers.splice(index, 1);
-        markers.push(action.marker);
-        markers.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        return {
-          ...state,
-          markers,
-        };
-      }
-
-      return state;
-    }
-
     case 'UPDATE_POST': {
       const posts = [...state.posts];
       const index = posts.findIndex((p) => p.id === action.post.id);
@@ -168,7 +126,6 @@ function reducer(state: State, action: Action): State {
 }
 
 export interface DefaultState {
-  markers?: Marker[];
   posts?: Post[];
 }
 
@@ -177,7 +134,6 @@ export interface DataStoreProviderProps extends PropsWithChildren {
 }
 
 const defaultState = {
-  markers: [],
   posts: [],
   requests: [],
   session: new Session(),

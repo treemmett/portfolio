@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Country } from './countryCodes';
 
 interface GeocodeResponse {
   place_id: number;
@@ -20,7 +19,7 @@ interface GeocodeResponse {
     state: string;
     postcode: string;
     country: string;
-    country_code: Country;
+    country_code: string;
   };
   // cspell:word boundingbox
   boundingbox: string[];
@@ -33,7 +32,7 @@ export async function geocode(lng: number, lat: number): Promise<GeocodeResponse
 
   if (data.error) throw new Error(data.error);
 
-  data.address.country_code = data.address.country_code.toUpperCase() as Country;
+  data.address.country_code = data.address.country_code.toUpperCase();
 
   return data.address;
 }

@@ -13,7 +13,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, req }) =>
   await connectToDatabase();
 
   const [posts, site] = await Promise.all([
-    Post.getAll(true),
+    Post.getAll(),
     Site.findOne({ where: { domain: req.headers.host } }),
   ]);
 

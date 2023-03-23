@@ -1,14 +1,13 @@
 import axios from 'axios';
 import { Config } from './config';
 import { logger } from './logger';
-import { Country } from '@lib/countryCodes';
 
 interface GeolocationResponse {
   ip: string;
   hostname: string;
   continent_code: string;
   continent_name: string;
-  country_code2: Country;
+  country_code2: string;
   country_code3: string;
   country_name: string;
   country_capital: string;
