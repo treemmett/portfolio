@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
@@ -19,12 +19,12 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
   const router = useRouter();
   const { dispatch } = useDataStore();
 
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<File | null>();
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(null);
   const closeEditor = useCallback(() => {
     if (formRef.current) {
       formRef.current.reset();
@@ -42,10 +42,14 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
 
   const uploadFile = useCallback(
     async (fileData: File, postData?: Pick<Post, 'location' | 'title'> & { date: string }) => {
-      const thumbnailUrl = await new Promise<string>((res) => {
+      const thumbnailUrl = await new Promise<string>((res, rej) => {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
-          res(reader.result.toString());
+          if (reader.result) {
+            res(reader.result.toString());
+          } else {
+            rej();
+          }
         });
         reader.readAsDataURL(fileData);
       });
@@ -103,17 +107,24 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
           });
           dispatch({ post: data, type: 'UPDATE_POST' });
         } else {
+          if (!file) return;
+
           uploadFile(file, { date, location, title });
         }
 
         closeEditor();
       } catch (err) {
-        console.error(err?.response?.data?.error || err);
+        console.error(
+          (err as AxiosError<{ error?: { message?: string; code?: string } }>)?.response?.data
+            ?.error || err
+        );
         alert(
           [
             t('Upload failed'),
-            err?.response?.data?.error?.message || 'Unknown error',
-            err?.response?.data?.error?.code,
+            (err as AxiosError<{ error?: { message?: string; code?: string } }>)?.response?.data
+              ?.error?.message || 'Unknown error',
+            (err as AxiosError<{ error?: { message?: string; code?: string } }>)?.response?.data
+              ?.error?.code,
           ].join(' - ')
         );
       } finally {
@@ -135,6 +146,8 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
       e.stopPropagation();
       e.preventDefault();
 
+      if (!e.dataTransfer) return;
+
       const { files } = e.dataTransfer;
       const [f] = files;
 
@@ -152,7 +165,9 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
     const dragHandler = (e: DragEvent) => {
       e.stopPropagation();
       e.preventDefault();
-      e.dataTransfer.dropEffect = 'copy';
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = 'copy';
+      }
     };
 
     window.addEventListener('drop', dropHandler);
