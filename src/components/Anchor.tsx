@@ -8,7 +8,7 @@ export interface AnchorProps extends PropsWithChildren {
   className?: string;
   /** emulate button design */
   button?: boolean;
-  href: string;
+  href?: string;
   /** aria label */
   label?: string;
   type?: ButtonTypes;

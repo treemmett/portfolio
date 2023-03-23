@@ -55,7 +55,7 @@ function screenType() {
   return 'XL';
 }
 
-export function trace(event: string, parameters?: Record<string, string>) {
+export function trace(event: string, parameters?: Record<string, string | undefined>) {
   apiClient
     .post('/blimp', {
       event,

@@ -14,13 +14,6 @@ import { ReactComponent as LinkIcon } from '@icons/link.svg';
 import { ReactComponent as LinkedIn } from '@icons/linkedin.svg';
 import { ReactComponent as Twitter } from '@icons/twitter.svg';
 
-const ProfileIcons = {
-  github: GitHub,
-  instagram: Instagram,
-  linkedin: LinkedIn,
-  twitter: Twitter,
-};
-
 export const getStaticProps: GetStaticProps = async () => {
   const { root } = getConfig().serverRuntimeConfig;
 
@@ -33,7 +26,7 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-const Section: FC<PropsWithChildren<{ className?: string; name: string }>> = ({
+const Section: FC<PropsWithChildren<{ className?: string; name?: string }>> = ({
   children,
   className,
   name,
@@ -54,28 +47,55 @@ const ExternalLink: FC = () => <ExternalLinkIcon className={styles['external-lin
 const Resume: NextPage<ResumeProps> = ({ resume }) => (
   <div className={styles.page}>
     <header className={styles.header}>
-      <h1>{resume.basics.name}</h1>
-      <h2>{resume.basics.label}</h2>
+      {resume.basics?.name && <h1>{resume.basics.name}</h1>}
+      {resume.basics?.label && <h2>{resume.basics.label}</h2>}
     </header>
 
     <Section className={styles.contact} name="Contact">
       <div className={styles.dual}>
-        <Anchor href={`mailto:${resume.basics.email}`}>
-          <h5>
-            <At />
-            {resume.basics.email}
-            <ExternalLink />
-          </h5>
-        </Anchor>
-        <Anchor href={resume.basics.url}>
-          <h5>
-            <LinkIcon />
-            {resume.basics.url}
-            <ExternalLink />
-          </h5>
-        </Anchor>
-        {resume.basics.profiles.map((profile) => {
-          const Icon = ProfileIcons[profile.network?.toLowerCase()];
+        {resume.basics?.email && (
+          <Anchor href={`mailto:${resume.basics.email}`}>
+            <h5>
+              <At />
+              {resume.basics.email}
+              <ExternalLink />
+            </h5>
+          </Anchor>
+        )}
+        {resume.basics?.url && (
+          <Anchor href={resume.basics.url}>
+            <h5>
+              <LinkIcon />
+              {resume.basics.url}
+              <ExternalLink />
+            </h5>
+          </Anchor>
+        )}
+        {resume.basics?.profiles?.map((profile) => {
+          if (!profile.url) return null;
+
+          let Icon: FC | null = null;
+
+          switch (profile.network?.toLowerCase()) {
+            case 'github':
+              Icon = GitHub;
+              break;
+
+            case 'instagram':
+              Icon = Instagram;
+              break;
+
+            case 'linkedin':
+              Icon = LinkedIn;
+              break;
+
+            case 'twitter':
+              Icon = Twitter;
+              break;
+
+            default:
+              break;
+          }
 
           return (
             <Anchor href={profile.url} key={profile.network}>
@@ -93,7 +113,7 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
       {resume.skills?.map((skill) => (
         <Section key={skill.name} name={skill.name}>
           <div className={styles.dual}>
-            {skill.keywords.map((keyword) => (
+            {skill.keywords?.map((keyword) => (
               <h5 className={styles.skill} key={keyword}>
                 {keyword}
               </h5>
@@ -126,7 +146,7 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
           </h4>
           <h5>{work.position}</h5>
           <ul>
-            {work.highlights.map((highlight) => (
+            {work.highlights?.map((highlight) => (
               <li key={highlight}>{highlight}</li>
             ))}
           </ul>
