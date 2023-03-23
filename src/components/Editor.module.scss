@@ -1,51 +1,13 @@
+@use '../styles/screen';
 @use '../styles/shared';
 
-.container {
-  position: relative;
-  display: flex;
-  max-width: 30rem;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-
-  > * {
-    margin-bottom: 0.5rem;
-  }
-}
-
 .form {
-  @include shared.theme;
-  @include shared.border;
-
   width: 100%;
-  padding: 1rem;
-}
 
-.picker {
-  @include shared.border;
-  @include shared.theme;
-
-  overflow: hidden;
-  width: 100%;
-  padding: 3rem;
-  border-width: 1px;
-  border-style: solid;
-  cursor: pointer;
-
-  &:not(.selected) {
-    display: flex;
-    height: 18rem;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &.selected {
-    padding: 0;
-    border: none;
-  }
-
-  input {
-    display: none;
+  @include screen.md {
+    display: block;
+    width: 25rem;
+    margin-left: auto;
   }
 }
 
@@ -57,6 +19,7 @@
 .input {
   width: 100%;
   margin-top: 1rem;
+  color: shared.$text-light;
 }
 
 .button {

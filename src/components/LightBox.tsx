@@ -1,9 +1,8 @@
 import classNames from 'classnames';
-import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button } from './Button';
 import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
@@ -13,9 +12,11 @@ import { trace } from '@utils/analytics';
 import { scaleDimensions, toPx } from '@utils/pixels';
 import { toString } from '@utils/queryParam';
 
-export const LightBox: FC = () => {
-  const { t } = useTranslation();
+const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor), {
+  loading: () => <span>Loading...</span>,
+});
 
+export const LightBox: FC = () => {
   const { query, push } = useRouter();
   const { dispatch, posts, session } = useDataStore();
 
@@ -67,16 +68,11 @@ export const LightBox: FC = () => {
     push({ query: {} }, null, { scroll: false, shallow: true });
   }, [push]);
 
-  const panelOpen = useMemo(
-    () =>
-      session.hasPermission(AuthorizationScopes.delete) ||
-      session.hasPermission(AuthorizationScopes.post),
-    [session]
-  );
-
   return (
     <Modal
-      className={classNames(styles['light-box'], { [styles['panel-open']]: panelOpen })}
+      className={classNames(styles['light-box'], {
+        [styles['panel-open']]: session.hasPermission(AuthorizationScopes.post),
+      })}
       handleChildren={false}
       onClose={closeLightBox}
       open={!!post}
@@ -96,16 +92,7 @@ export const LightBox: FC = () => {
           priority
         />
       )}
-      {panelOpen && (
-        <div className={styles.panel}>
-          {session.hasPermission(AuthorizationScopes.post) && (
-            <>
-              <Button>{t('save')}</Button>
-              <Button>{t('delete')}</Button>
-            </>
-          )}
-        </div>
-      )}
+      {session.hasPermission(AuthorizationScopes.post) && <DynamicEditor post={post} />}
     </Modal>
   );
 };
