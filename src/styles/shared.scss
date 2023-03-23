@@ -29,6 +29,7 @@ $shadow: 0 0 10px rgba(0, 0, 0, 30%);
 
 @mixin theme {
   @include light-theme;
+
   @include dark-mode {
     @include dark-theme;
   }
@@ -36,6 +37,7 @@ $shadow: 0 0 10px rgba(0, 0, 0, 30%);
 
 @mixin inverted-theme {
   @include dark-theme;
+
   @include dark-mode {
     @include light-theme;
   }
@@ -48,9 +50,9 @@ $shadow: 0 0 10px rgba(0, 0, 0, 30%);
 @mixin glass($alpha: 0.3) {
   padding: 20px;
   border-color: color.change($border-light, $alpha: 0.3);
+  border-radius: 10px;
   backdrop-filter: blur(10px);
   background-color: color.change($background, $alpha: $alpha);
-  border-radius: 10px;
   box-shadow: $shadow;
 
   @include dark-mode {

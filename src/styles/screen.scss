@@ -1,5 +1,6 @@
 // Small tablets and large smartphones (landscape view)
 $sm: 576px;
+
 @mixin sm {
   @media (min-width: $sm) {
     @content;
@@ -8,6 +9,7 @@ $sm: 576px;
 
 // Small tablets (portrait view)
 $md: 768px;
+
 @mixin md {
   @media (min-width: $md) {
     @content;
@@ -16,6 +18,7 @@ $md: 768px;
 
 // Tablets and small desktops
 $lg: 992px;
+
 @mixin lg {
   @media (min-width: $lg) {
     @content;
@@ -24,6 +27,7 @@ $lg: 992px;
 
 // Large tablets and desktops
 $xl: 1200px;
+
 @mixin xl {
   @media (min-width: $xl) {
     @content;
