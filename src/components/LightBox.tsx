@@ -79,18 +79,20 @@ export const LightBox: FC = () => {
       ref={galleryRef}
     >
       {photo && (
-        <Image
-          alt={post.title}
-          blurDataURL={photo.thumbnailURL}
-          className={styles.photo}
-          height={photo.height}
-          placeholder="blur"
-          sizes="95vw"
-          src={photo.url}
-          style={{ height: toPx(height), left: toPx(left), top: toPx(top), width: toPx(width) }}
-          width={photo.width}
-          priority
-        />
+        <div className={styles.photo}>
+          <Image
+            alt={post.title}
+            blurDataURL={photo.thumbnailURL}
+            className={styles.img}
+            height={photo.height}
+            placeholder="blur"
+            sizes="95vw"
+            src={photo.url}
+            style={{ height: toPx(height), left: toPx(left), top: toPx(top), width: toPx(width) }}
+            width={photo.width}
+            priority
+          />
+        </div>
       )}
       {session.hasPermission(AuthorizationScopes.post) && <DynamicEditor post={post} />}
     </Modal>
