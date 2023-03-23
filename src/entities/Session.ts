@@ -13,13 +13,13 @@ function decodeToken(accessToken: string): Jwt {
 export class Session {
   public expiration?: Date;
 
-  public scope?: AuthorizationScopes[] = [];
+  public scope: AuthorizationScopes[] = [];
 
   public username?: string;
 
   public authorizing = false;
 
-  constructor(public accessToken?: string) {
+  constructor(public accessToken?: string | null) {
     if (!accessToken) return;
 
     const { exp, scp, sub } = decodeToken(accessToken);
@@ -35,7 +35,7 @@ export class Session {
     }
 
     const signature = req.cookies['xsrf-token'];
-    const match = /^Bearer (\S+)/i.exec(req.headers.authorization);
+    const match = /^Bearer (\S+)/i.exec(req.headers.authorization || '');
 
     if (!signature || !match || !match[1]) {
       return new Session();
@@ -83,7 +83,11 @@ export class Session {
   }
 
   public isValid(): boolean {
-    return this.username && new Date() < this.expiration;
+    if (this.username && this.expiration) {
+      return new Date() < this.expiration;
+    }
+
+    return false;
   }
 
   public startAuthorization(): this {
