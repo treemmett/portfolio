@@ -7,6 +7,7 @@ import { Mosaic } from '@components/Mosaic';
 import { Nav } from '@components/Nav';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
+import { useSite } from '@lib/site';
 import { connectToDatabase } from '@middleware/database';
 
 export const getServerSideProps: GetServerSideProps = async ({ locale, req }) => {
@@ -28,22 +29,23 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, req }) =>
   };
 };
 
-export const Home: NextPage = () => (
-  <>
-    <Head>
-      <title>Hi, I'm Tregan</title>
-      <meta
-        content="Hi, I'm Tregan. A senior software engineer specializing in React, rock climber, and digital nomad."
-        name="description"
-      />
-    </Head>
+export const Home: NextPage = () => {
+  const { site } = useSite();
 
-    <Nav />
+  return (
+    <>
+      <Head>
+        {site?.title && <title>{site.title}</title>}
+        {site?.description && <meta content={site.description} name="description" />}
+      </Head>
 
-    <Mosaic />
+      <Nav />
 
-    <LightBox />
-  </>
-);
+      <Mosaic />
+
+      <LightBox />
+    </>
+  );
+};
 
 export default Home;
