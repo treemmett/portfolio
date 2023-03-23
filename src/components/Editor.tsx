@@ -64,7 +64,57 @@ export const Editor: FC = () => {
 
   const [state, setState] = useState(UploadState.default);
 
-  const uploadPost: FormEventHandler<HTMLFormElement> = useCallback(
+  const uploadFile = useCallback(
+    async (
+      fileData: File,
+      postData?: Pick<Post, 'country' | 'location' | 'title'> & { date: string }
+    ) => {
+      const thumbnailUrl = await new Promise<string>((res) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          res(reader.result.toString());
+        });
+        reader.readAsDataURL(fileData);
+      });
+
+      dispatch({
+        async startRequest(setProgress) {
+          const { data: uploadToken } = await apiClient.post<UploadToken>('/post', postData, {
+            onUploadProgress(progress: ProgressEvent) {
+              setProgress((progress.loaded / progress.total) * 0.05);
+            },
+          });
+          await axios.put(uploadToken.url, fileData, {
+            headers: {
+              'Content-Type': 'application/octet-stream',
+            },
+            onUploadProgress(progress: ProgressEvent) {
+              setProgress(0.05 + (progress.loaded / progress.total) * 0.9);
+            },
+          });
+
+          const { data } = await apiClient.put<Post>(
+            '/post',
+            { token: uploadToken.token },
+            {
+              onUploadProgress(progress: ProgressEvent) {
+                setProgress(0.95 + (progress.loaded / progress.total) * 0.05);
+              },
+            }
+          );
+          dispatch({
+            post: data,
+            type: 'ADD_POST',
+          });
+        },
+        thumbnailUrl,
+        type: 'ADD_API_REQUEST',
+      });
+    },
+    [dispatch]
+  );
+
+  const formHandler: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       try {
         e.preventDefault();
@@ -81,48 +131,7 @@ export const Editor: FC = () => {
           });
           dispatch({ post: data, type: 'UPDATE_POST' });
         } else {
-          dispatch({
-            async startRequest(setProgress) {
-              const { data: uploadToken } = await apiClient.post<UploadToken>(
-                '/post',
-                {
-                  country,
-                  date,
-                  location,
-                  title,
-                },
-                {
-                  onUploadProgress(progress: ProgressEvent) {
-                    setProgress((progress.loaded / progress.total) * 0.05);
-                  },
-                }
-              );
-              await axios.put(uploadToken.url, file, {
-                headers: {
-                  'Content-Type': 'application/octet-stream',
-                },
-                onUploadProgress(progress: ProgressEvent) {
-                  setProgress(0.05 + (progress.loaded / progress.total) * 0.9);
-                },
-              });
-
-              const { data } = await apiClient.put<Post>(
-                '/post',
-                { token: uploadToken.token },
-                {
-                  onUploadProgress(progress: ProgressEvent) {
-                    setProgress(0.95 + (progress.loaded / progress.total) * 0.05);
-                  },
-                }
-              );
-              dispatch({
-                post: data,
-                type: 'ADD_POST',
-              });
-            },
-            thumbnailUrl: imageData,
-            type: 'ADD_API_REQUEST',
-          });
+          uploadFile(file, { country, date, location, title });
         }
 
         closeEditor();
@@ -139,7 +148,7 @@ export const Editor: FC = () => {
         setState(UploadState.default);
       }
     },
-    [closeEditor, country, date, dispatch, editId, file, imageData, location, state, t, title]
+    [closeEditor, country, date, dispatch, editId, file, location, state, t, title, uploadFile]
   );
 
   useEffect(() => {
@@ -169,7 +178,9 @@ export const Editor: FC = () => {
       const { files } = e.dataTransfer;
       const [f] = files;
 
-      if (f) {
+      if (files.length > 1) {
+        [...files].forEach((i) => uploadFile(i));
+      } else if (files.length === 1) {
         if (!router.query.newPost) {
           router.push({ query: { newPost: true } }, undefined, { shallow: true });
         }
@@ -190,7 +201,7 @@ export const Editor: FC = () => {
       window.removeEventListener('drop', dropHandler);
       window.removeEventListener('dragover', dragHandler);
     };
-  }, [router]);
+  }, [router, uploadFile]);
 
   return (
     <>
@@ -204,7 +215,7 @@ export const Editor: FC = () => {
 
       <Modal onClose={closeEditor} open={open}>
         <div className={styles.container}>
-          <form className={styles.form} onSubmit={uploadPost} ref={formRef}>
+          <form className={styles.form} onSubmit={formHandler} ref={formRef}>
             <label className={cx(styles.picker, { [styles.selected]: imageData })} htmlFor="image">
               {imageData ? (
                 <img alt="selection preview" className={styles.preview} src={imageData} />
