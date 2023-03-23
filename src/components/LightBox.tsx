@@ -99,9 +99,11 @@ export const LightBox: FC = () => {
       {photo && (
         <Image
           alt={post.title}
+          blurDataURL={photo.thumbnailURL}
           className={styles.photo}
           height={photo.height}
-          sizes="95vh,95vw"
+          placeholder="blur"
+          sizes="95vw"
           src={photo.url}
           style={{ height: toPx(height), left: toPx(left), top: toPx(top), width: toPx(width) }}
           width={photo.width}
