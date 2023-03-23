@@ -3,7 +3,7 @@
   gap: 1rem;
 
   @for $i from 1 through 12 {
-    @media screen and (min-width: $i * 240px) {
+    @media screen and (min-width: $i * 260px) {
       columns: $i;
     }
   }

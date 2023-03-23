@@ -34,7 +34,7 @@ export const Tile: FC<TileProps> = ({ post }) => {
         placeholder="blur"
         sizes={new Array(12)
           .fill(null)
-          .map((_, i) => `(max-width: ${(i + 1) * 240}px) ${Math.floor(100 / (i + 1))}vw`)
+          .map((_, i) => `(max-width: ${(i + 1) * 260}px) ${Math.floor(100 / (i + 1))}vw`)
           .join(', ')}
         src={image.url}
         width={image.width}
