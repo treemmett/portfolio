@@ -19,8 +19,10 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, req }) =>
 
   return {
     props: {
+      fallback: {
+        site: instanceToPlain(site),
+      },
       posts: JSON.parse(JSON.stringify(posts)),
-      site: instanceToPlain(site),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   };
