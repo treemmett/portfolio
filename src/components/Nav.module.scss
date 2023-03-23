@@ -1,0 +1,20 @@
+@use 'sass:color';
+@use '../styles/shared';
+
+.nav {
+  @include shared.theme;
+
+  position: sticky;
+  z-index: 0;
+  top: 0;
+  padding: 1rem;
+  background-color: color.adjust(shared.$background, $alpha: -0.2);
+
+  @include shared.dark-mode {
+    background-color: color.adjust(shared.$background-dark, $alpha: -0.2);
+  }
+
+  h1 {
+    margin: 0;
+  }
+}

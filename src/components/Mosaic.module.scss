@@ -1,5 +1,6 @@
 .mosaic {
   padding: 1rem;
+  padding-top: 0;
   gap: 1rem;
 
   @for $i from 1 through 12 {

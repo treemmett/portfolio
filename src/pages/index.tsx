@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { DefaultState } from '@components/DataStore';
 import { LightBox } from '@components/LightBox';
 import { Mosaic } from '@components/Mosaic';
+import { Nav } from '@components/Nav';
 import { Post } from '@entities/Post';
 
 export const getStaticProps: GetStaticProps<DefaultState> = async ({ locale }) => {
@@ -27,6 +28,8 @@ export const Home: NextPage = () => (
         name="description"
       />
     </Head>
+
+    <Nav />
 
     <Mosaic />
 
