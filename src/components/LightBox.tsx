@@ -114,18 +114,14 @@ export const LightBox: FC = () => {
         />
       )}
       {panelOpen && (
-        <>
+        <div className={styles.panel}>
           {session.hasPermission(AuthorizationScopes.post) && (
-            <Button onClick={editPost} style={{ width: toPx(width) }}>
-              {t('edit')}
-            </Button>
+            <Button onClick={editPost}>{t('edit')}</Button>
           )}
           {session.hasPermission(AuthorizationScopes.delete) && (
-            <Button onClick={deletePostAction} style={{ width: toPx(width) }}>
-              {t('delete')}
-            </Button>
+            <Button onClick={deletePostAction}>{t('delete')}</Button>
           )}
-        </>
+        </div>
       )}
     </Modal>
   );
