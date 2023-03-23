@@ -21,12 +21,6 @@ const nextConfig = {
   },
   productionBrowserSourceMaps: true,
   reactStrictMode: true,
-  rewrites: async () => [
-    {
-      destination: '/api/rss',
-      source: '/rss',
-    },
-  ],
   serverRuntimeConfig: {
     root: __dirname,
   },
