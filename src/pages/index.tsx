@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, req }) =>
         site: instanceToPlain(site),
       },
       posts: JSON.parse(JSON.stringify(posts)),
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale || 'en', ['common'])),
     },
   };
 };
