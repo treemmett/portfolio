@@ -122,6 +122,8 @@ export class Post {
       throw e;
     }
 
+    if (!object.Body) throw new APIError(ErrorCode.no_file_received);
+
     await s3.deleteObject({ Bucket: S3_BUCKET, Key: this.getProcessingKey(jti) }).promise();
 
     const buffer = Buffer.from(object.Body.toString('base64'), 'base64');
@@ -274,6 +276,8 @@ export class Post {
         })
         .promise();
 
+      if (!Body) throw new APIError(ErrorCode.no_file_received);
+
       const json = Body.toString();
 
       logger.info('Post data found');
@@ -284,7 +288,7 @@ export class Post {
 
       return posts;
     } catch (err) {
-      if (err?.code === 'NoSuchKey') {
+      if ((err as AWSError)?.code === 'NoSuchKey') {
         return [];
       }
 
