@@ -1,7 +1,9 @@
 import breakpoints from '../styles/pixels.module.scss';
 import { isBrowser } from './isBrowser';
 
-export function toPx(px: number): string {
+export function toPx(px?: number): string {
+  if (!px) return '0px';
+
   return `${px}px`;
 }
 
@@ -16,21 +18,21 @@ export function scaleDimensions(
   w: number,
   h: number,
   scale: { h: number },
-  constrainToElement?: HTMLElement,
+  constrainToElement?: HTMLElement | null,
   padding?: number
 ): [w: number, h: number];
 export function scaleDimensions(
   w: number,
   h: number,
   scale: { w: number },
-  constrainToElement?: HTMLElement,
+  constrainToElement?: HTMLElement | null,
   padding?: number
 ): [w: number, h: number];
 export function scaleDimensions(
   w: number,
   h: number,
   scale: { h?: number; w?: number },
-  constrainToElement?: HTMLElement,
+  constrainToElement?: HTMLElement | null,
   padding = 0
 ): [w: number, h: number] {
   let width = w;

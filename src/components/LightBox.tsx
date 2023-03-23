@@ -23,7 +23,7 @@ export const LightBox: FC = () => {
   const post = useMemo(() => posts.find((p) => p.id === query.post), [query.post, posts]);
   const photo = useMemo(() => post?.photos.find((p) => p.type === PhotoType.ORIGINAL), [post]);
 
-  const galleryRef = useRef<HTMLDivElement>();
+  const galleryRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>();
   const [height, setHeight] = useState<number>();
   const [top, setTop] = useState<number>();
@@ -65,8 +65,10 @@ export const LightBox: FC = () => {
   }, [width, height, photo, scaleImage]);
 
   const closeLightBox = useCallback(() => {
-    push({ query: {} }, null, { scroll: false, shallow: true });
+    push({ query: {} }, undefined, { scroll: false, shallow: true });
   }, [push]);
+
+  if (!post) return null;
 
   return (
     <Modal
