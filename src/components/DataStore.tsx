@@ -2,7 +2,6 @@ import {
   createContext,
   Dispatch,
   FC,
-  MutableRefObject,
   PropsWithChildren,
   useContext,
   useEffect,
@@ -17,7 +16,6 @@ import { Session } from '@entities/Session';
 import { apiClient, ApiRequest } from '@utils/apiClient';
 
 export interface State {
-  lightBox?: MutableRefObject<HTMLElement>;
   markers: Marker[];
   posts: Post[];
   session: Session;
@@ -32,7 +30,6 @@ export type Action =
   | { type: 'DELETE_POST'; id: string }
   | { type: 'LOGIN'; session: Session }
   | { type: 'LOGOUT' }
-  | { type: 'SET_LIGHT_BOX'; ref?: MutableRefObject<HTMLElement> }
   | { type: 'SET_API_REQUEST_STATUS'; id: string; progress?: number; status?: ApiRequest['status'] }
   | { type: 'UPDATE_MARKER'; marker: Marker }
   | { type: 'UPDATE_POST'; post: Post };
@@ -132,12 +129,6 @@ function reducer(state: State, action: Action): State {
       }
       return state;
     }
-
-    case 'SET_LIGHT_BOX':
-      return {
-        ...state,
-        lightBox: action.ref,
-      };
 
     case 'UPDATE_MARKER': {
       const markers = [...state.markers];

@@ -1,3 +1,5 @@
+@use '../styles/screen';
+
 .light-box {
   position: fixed;
   z-index: 100;
@@ -11,6 +13,10 @@
   overflow-y: auto;
   pointer-events: none;
   transition: background-color 0.2s ease;
+
+  @include screen.md {
+    padding: 4rem 2rem;
+  }
 
   &.open {
     background-color: rgba(0, 0, 0, 80%);

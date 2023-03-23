@@ -2,8 +2,7 @@ import cx from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FC, useEffect, useRef } from 'react';
-import { useDataStore } from './DataStore';
+import { FC } from 'react';
 import styles from './Post.module.scss';
 import { PhotoType } from '@entities/PhotoType';
 import type { Post as PostEntity } from '@entities/Post';
@@ -16,18 +15,7 @@ export interface PostProps {
 }
 
 export const Post: FC<PostProps> = ({ post, priority }) => {
-  const ref = useRef();
-
   const { query } = useRouter();
-  const { dispatch } = useDataStore();
-  useEffect(() => {
-    if (query.post === post.id) {
-      dispatch({
-        ref,
-        type: 'SET_LIGHT_BOX',
-      });
-    }
-  }, [dispatch, post.id, query.post]);
 
   const image = post.photos.find((p) => p.type === PhotoType.ORIGINAL);
 
@@ -44,7 +32,6 @@ export const Post: FC<PostProps> = ({ post, priority }) => {
           .join(', ')}
         className={cx(styles.post, { [styles.displayed]: query.post === post.id })}
         href={{ query: { post: post.id } }}
-        ref={ref}
         scroll={false}
         passHref
         shallow
