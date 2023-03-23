@@ -16,6 +16,8 @@ export const Tile: FC<TileProps> = ({ post }) => {
     [post.photos]
   );
 
+  if (!image) return null;
+
   return (
     <Link
       aria-label={[post.title, post.location, formatDate(post.created)]
