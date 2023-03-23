@@ -13,17 +13,18 @@ import type { Post } from '@entities/Post';
 import { ApiRequest } from '@utils/apiClient';
 
 export interface State {
-  posts: Post[];
   requests: ApiRequest[];
 }
 
 export type Action =
   | { type: 'ADD_API_REQUEST'; startRequest: ApiRequest['startRequest']; thumbnailUrl?: string }
-  | { type: 'ADD_POST'; post: Post }
-  | { type: 'DELETE_POST'; id: string }
   | { type: 'LOGOUT' }
-  | { type: 'SET_API_REQUEST_STATUS'; id: string; progress?: number; status?: ApiRequest['status'] }
-  | { type: 'UPDATE_POST'; post: Post };
+  | {
+      type: 'SET_API_REQUEST_STATUS';
+      id: string;
+      progress?: number;
+      status?: ApiRequest['status'];
+    };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -42,27 +43,6 @@ function reducer(state: State, action: Action): State {
         ],
       };
 
-    case 'ADD_POST':
-      return {
-        ...state,
-        posts: [action.post, ...state.posts].sort(
-          (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
-        ),
-      };
-
-    case 'DELETE_POST': {
-      const posts = [...state.posts];
-      const index = posts.findIndex((p) => p.id === action.id);
-      if (~index) {
-        posts.splice(index, 1);
-        return {
-          ...state,
-          posts,
-        };
-      }
-      return state;
-    }
-
     case 'SET_API_REQUEST_STATUS': {
       const requests = [...state.requests];
       const request = requests.find((r) => r.id === action.id);
@@ -80,22 +60,6 @@ function reducer(state: State, action: Action): State {
           requests,
         };
       }
-      return state;
-    }
-
-    case 'UPDATE_POST': {
-      const posts = [...state.posts];
-      const index = posts.findIndex((p) => p.id === action.post.id);
-      if (~index) {
-        posts.splice(index, 1);
-        posts.push(action.post);
-        posts.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-        return {
-          ...state,
-          posts,
-        };
-      }
-
       return state;
     }
 

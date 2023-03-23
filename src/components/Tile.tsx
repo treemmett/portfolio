@@ -18,18 +18,12 @@ export const Tile: FC<TileProps> = ({ post }) => {
 
   if (!image) return null;
 
+  const label = [post.title, post.location, formatDate(post.created)].filter((i) => !!i).join(', ');
+
   return (
-    <Link
-      aria-label={[post.title, post.location, formatDate(post.created)]
-        .filter((i) => !!i)
-        .join(', ')}
-      href={{ query: { post: post.id } }}
-      scroll={false}
-      passHref
-      shallow
-    >
+    <Link aria-label={label} href={{ query: { post: post.id } }} scroll={false} passHref shallow>
       <Image
-        alt={post.title}
+        alt={label}
         blurDataURL={image.thumbnailURL}
         className={styles.tile}
         height={image.height}

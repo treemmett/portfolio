@@ -46,7 +46,7 @@ export class Post {
 
   @IsDate()
   @Type(() => Date)
-  public created: Date;
+  public created: string;
 
   @Length(0, 200)
   @IsString()
@@ -247,7 +247,7 @@ export class Post {
 
     if (data.created) {
       logger.info('Updating post date', { new: data.created, original: post.created });
-      post.created = new Date(data.created);
+      post.created = data.created;
     }
 
     if (data.location) {

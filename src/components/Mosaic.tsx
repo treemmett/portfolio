@@ -1,14 +1,14 @@
 import { FC } from 'react';
-import { useDataStore } from './DataStore';
 import styles from './Mosaic.module.scss';
 import { Tile } from './Tile';
+import { usePosts } from '@lib/posts';
 
 export const Mosaic: FC = () => {
-  const { posts } = useDataStore();
+  const { posts } = usePosts();
 
   return (
     <div className={styles.mosaic}>
-      {posts.map((post) => (
+      {posts?.map((post) => (
         <Tile key={post.id} post={post} />
       ))}
     </div>

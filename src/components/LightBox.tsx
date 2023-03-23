@@ -8,6 +8,7 @@ import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { PhotoType } from '@entities/PhotoType';
+import { usePosts } from '@lib/posts';
 import { useSession } from '@lib/session';
 import { trace } from '@utils/analytics';
 import { scaleDimensions, toPx } from '@utils/pixels';
@@ -19,10 +20,11 @@ const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor)
 
 export const LightBox: FC = () => {
   const { query, push } = useRouter();
-  const { dispatch, posts } = useDataStore();
+  const { dispatch } = useDataStore();
+  const { posts } = usePosts();
   const { hasPermission } = useSession();
 
-  const post = useMemo(() => posts.find((p) => p.id === query.post), [query.post, posts]);
+  const post = useMemo(() => posts?.find((p) => p.id === query.post), [query.post, posts]);
   const photo = useMemo(() => post?.photos.find((p) => p.type === PhotoType.ORIGINAL), [post]);
 
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -98,7 +100,7 @@ export const LightBox: FC = () => {
           />
         </div>
       )}
-      {hasPermission(AuthorizationScopes.post) && <DynamicEditor post={post} />}
+      {hasPermission(AuthorizationScopes.post) && <DynamicEditor id={post.id} />}
     </Modal>
   );
 };
