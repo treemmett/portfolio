@@ -24,7 +24,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   const router = useRouter();
   const { t } = useTranslation();
   const [selecting, setSelecting] = useState(false);
-  const [selectedCoordinates, setSelectedCoordinates] = useState<LngLat>();
+  const [selectedCoordinates, setSelectedCoordinates] = useState<LngLat | null>();
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [country, setCountry] = useState<Country>('--' as Country);
   const [city, setCity] = useState('');
@@ -88,7 +88,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   }, [map, mapClickHandler, selecting]);
 
   useEffect(() => {
-    const id = toString(router.query.edit);
+    const id = toString(router.query.edit as string);
     setSelecting(!!id);
 
     if (id) {
@@ -112,14 +112,14 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   }, [router]);
 
   const saveCheckIn = useCallback(async () => {
-    const id = toString(router.query.edit);
+    const id = toString(router.query.edit as string);
     if (id) {
       const { data } = await apiClient.patch<MarkerEntity>(`/timeline/${encodeURIComponent(id)}`, {
         city,
         country,
         date,
-        lat: selectedCoordinates.lat,
-        lng: selectedCoordinates.lng,
+        lat: selectedCoordinates?.lat,
+        lng: selectedCoordinates?.lng,
       });
       dispatch({ marker: data, type: 'UPDATE_MARKER' });
     } else {
@@ -127,8 +127,8 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
         city,
         country,
         date,
-        lat: selectedCoordinates.lat,
-        lng: selectedCoordinates.lng,
+        lat: selectedCoordinates?.lat,
+        lng: selectedCoordinates?.lng,
       });
       dispatch({ marker: data, type: 'ADD_MARKER' });
     }
@@ -136,7 +136,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
   }, [city, closeEditor, country, date, dispatch, router.query.edit, selectedCoordinates]);
 
   const deleteMarker = useCallback(async () => {
-    const id = toString(router.query.edit);
+    const id = toString(router.query.edit as string);
     await apiClient.patch<MarkerEntity>(`/timeline/${encodeURIComponent(id)}`);
     dispatch({ id, type: 'DELETE_MARKER' });
     closeEditor();
@@ -160,7 +160,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             label={t('Longitude')}
             onChange={(e) =>
               setSelectedCoordinates(
-                new LngLat(parseFloat(e.currentTarget.value), selectedCoordinates.lat)
+                new LngLat(parseFloat(e.currentTarget.value), selectedCoordinates?.lat || 0)
               )
             }
             step={0.001}
@@ -171,7 +171,7 @@ export const CheckIn: FC<CheckInProps> = ({ map }) => {
             label={t('Latitude')}
             onChange={(e) =>
               setSelectedCoordinates(
-                new LngLat(selectedCoordinates.lng, parseFloat(e.currentTarget.value))
+                new LngLat(selectedCoordinates?.lng || 0, parseFloat(e.currentTarget.value))
               )
             }
             step={0.001}
