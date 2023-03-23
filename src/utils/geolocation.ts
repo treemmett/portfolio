@@ -42,8 +42,10 @@ interface GeolocationResponse {
   };
 }
 
-export async function geolocation(ip: string): Promise<undefined | GeolocationResponse> {
+export async function geolocation(ip?: string): Promise<undefined | GeolocationResponse> {
   try {
+    if (!ip) return undefined;
+
     if (['127.0.0.1', '0.0.0.0', '::ffff:127.0.0.1', '::1', '0:0:0:0:0:0:0:1'].includes(ip)) {
       return undefined;
     }
