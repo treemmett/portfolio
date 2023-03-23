@@ -11,11 +11,11 @@ export interface InputProps {
   id?: string;
   label?: string;
   name?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
   options?: { id: string; label: string }[];
   step?: number;
   testId?: string;
-  type?: HTMLInputTypeAttribute | 'select';
+  type?: HTMLInputTypeAttribute | 'select' | 'textarea';
   value?: string | number;
 }
 
@@ -43,15 +43,25 @@ export const Input: FC<InputProps> = ({
   return (
     <label className={cx(styles.wrapper, className)} htmlFor={realId}>
       {(!collapseLabel || label) && <div className={styles.label}>{label}</div>}
-      {type === 'select' ? (
-        <select className={styles.input} onChange={onChange} value={value}>
+      {type === 'select' && (
+        <select className={styles.input} id={realId} name={name} onChange={onChange} value={value}>
           {options?.map((opt) => (
             <option key={opt.id} value={opt.id}>
               {opt.label}
             </option>
           ))}
         </select>
-      ) : (
+      )}
+      {type === 'textarea' && (
+        <textarea
+          className={styles.input}
+          id={realId}
+          name={name}
+          onChange={onChange}
+          value={value}
+        />
+      )}
+      {type !== 'select' && type !== 'textarea' && (
         <input
           className={styles.input}
           data-testid={testId}

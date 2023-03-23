@@ -12,9 +12,9 @@ export default nextConnect()
     celebrate(
       {
         body: {
-          description: [Joi.string(), null],
-          name: [Joi.string(), null],
-          title: [Joi.string(), null],
+          description: [Joi.string(), null, ''],
+          name: [Joi.string(), null, ''],
+          title: [Joi.string(), null, ''],
         },
       },
       { allowUnknown: true }
@@ -25,9 +25,9 @@ export default nextConnect()
         res.status(404).end();
         return;
       }
-      site.description = req.body.description;
-      site.name = req.body.name;
-      site.title = req.body.title;
+      site.description = req.body.description || null;
+      site.name = req.body.name || null;
+      site.title = req.body.title || null;
       await site.save();
       res.send(site);
     }

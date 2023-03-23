@@ -39,8 +39,10 @@ const Settings: NextPage = () => {
           onChange={(e) => setSite({ ...site, title: e.currentTarget.value })}
           value={site.title}
         />
-        <textarea
+        <Input
+          label={t('Description')}
           onChange={(e) => setSite({ ...site, description: e.currentTarget.value })}
+          type="textarea"
           value={site.description}
         />
         <Button submit>{t('Save')}</Button>
