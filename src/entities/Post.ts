@@ -58,8 +58,8 @@ export class Post {
   public updated: Date;
 
   @Type(() => Photo)
-  @ValidateNested({ each: true })
-  public photos: Photo[];
+  @ValidateNested()
+  public photo: Photo;
 
   @IsInt()
   @Min(0)
@@ -309,7 +309,7 @@ export class Post {
 
     const [post] = posts.splice(index, 1);
 
-    await Promise.all(post.photos.map(async (p) => p.remove()));
+    await post.photo.remove();
 
     await this.writePostsIndex(posts);
   }

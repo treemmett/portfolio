@@ -7,7 +7,6 @@ import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
-import { PhotoType } from '@entities/PhotoType';
 import { usePosts } from '@lib/posts';
 import { useSession } from '@lib/session';
 import { trace } from '@utils/analytics';
@@ -25,7 +24,6 @@ export const LightBox: FC = () => {
   const { hasPermission } = useSession();
 
   const post = useMemo(() => posts?.find((p) => p.id === query.post), [query.post, posts]);
-  const photo = useMemo(() => post?.photos.find((p) => p.type === PhotoType.ORIGINAL), [post]);
 
   const galleryRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>();
@@ -48,25 +46,25 @@ export const LightBox: FC = () => {
   }, [dispatch, query.post]);
 
   const scaleImage = useCallback(() => {
-    if (!photo) return;
+    if (!post?.photo) return;
 
     const [w, h] = scaleDimensions(
-      photo.width,
-      photo.height,
-      { h: photo.height },
+      post.photo.width,
+      post.photo.height,
+      { h: post.photo.height },
       galleryRef.current
     );
     setWidth(w);
     setHeight(h);
     setLeft(window.innerWidth / 2 - w / 2);
     setTop(window.innerHeight / 2 - h / 2);
-  }, [photo, galleryRef]);
+  }, [post, galleryRef]);
 
   useEffect(() => {
     scaleImage();
     window.addEventListener('resize', scaleImage);
     return () => window.removeEventListener('resize', scaleImage);
-  }, [width, height, photo, scaleImage]);
+  }, [width, height, post?.photo, scaleImage]);
 
   const closeLightBox = useCallback(() => {
     push({ query: {} }, undefined, { scroll: false, shallow: true });
@@ -84,27 +82,25 @@ export const LightBox: FC = () => {
     >
       {post && (
         <>
-          {photo && (
-            <div className={styles.photo}>
-              <Image
-                alt={post.title}
-                blurDataURL={photo.thumbnailURL}
-                className={styles.img}
-                height={photo.height}
-                placeholder="blur"
-                sizes="95vw"
-                src={photo.url}
-                style={{
-                  height: toPx(height),
-                  left: toPx(left),
-                  top: toPx(top),
-                  width: toPx(width),
-                }}
-                width={photo.width}
-                priority
-              />
-            </div>
-          )}
+          <div className={styles.photo}>
+            <Image
+              alt={post.title}
+              blurDataURL={post.photo.thumbnailURL}
+              className={styles.img}
+              height={post.photo.height}
+              placeholder="blur"
+              sizes="95vw"
+              src={post.photo.url}
+              style={{
+                height: toPx(height),
+                left: toPx(left),
+                top: toPx(top),
+                width: toPx(width),
+              }}
+              width={post.photo.width}
+              priority
+            />
+          </div>
           {hasPermission(AuthorizationScopes.post) && <DynamicEditor id={post.id} />}
         </>
       )}
