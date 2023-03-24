@@ -26,7 +26,7 @@ export default nextConnect()
       { allowUnknown: true }
     ),
     async (req, res) => {
-      const site = await Site.findOne({ where: { domain: req.headers.host } });
+      const [site] = await Site.find();
       if (!site) {
         res.status(404).end();
         return;
@@ -46,7 +46,7 @@ export default nextConnect()
     }
   )
   .get(async (req, res) => {
-    const site = await Site.findOne({ where: { domain: req.headers.host } });
+    const [site] = await Site.find();
     if (site) {
       res.send(site);
     } else {

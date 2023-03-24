@@ -1,13 +1,9 @@
-import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'sites' })
 export class Site extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
-
-  @Index({ unique: true })
-  @Column()
-  public domain: string;
 
   @Column({ nullable: true })
   public description?: string;

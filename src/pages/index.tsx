@@ -16,19 +16,16 @@ const DynamicUploadManager = dynamic(() =>
   import('@components/ApiManager').then((mod) => mod.ApiManager)
 );
 
-export const getServerSideProps: GetServerSideProps = async ({ locale, req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   await connectToDatabase();
 
-  const [posts, site] = await Promise.all([
-    Post.getAll(),
-    Site.findOne({ where: { domain: req.headers.host } }),
-  ]);
+  const [posts, site] = await Promise.all([Post.getAll(), Site.find()]);
 
   return {
     props: {
       fallback: {
         posts: JSON.parse(JSON.stringify(posts)),
-        site: instanceToPlain(site),
+        site: instanceToPlain(site[0]),
       },
       ...(await serverSideTranslations(locale || 'en', ['common'])),
     },
