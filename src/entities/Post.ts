@@ -309,7 +309,7 @@ export class Post {
 
     const [post] = posts.splice(index, 1);
 
-    await Promise.all(post.photos.map((p) => p.delete()));
+    await Promise.all(post.photos.map(async (p) => p.remove()));
 
     await this.writePostsIndex(posts);
   }

@@ -2,6 +2,7 @@ import { Transform } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
 import { IsDataURI, IsEnum, IsInt, IsString, IsUppercase, Min } from 'class-validator';
 import { Sharp } from 'sharp';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ulid } from 'ulid';
 import { PhotoType } from './PhotoType';
 import { Config } from '@utils/config';
@@ -10,18 +11,22 @@ import { s3 } from '@utils/s3';
 
 const { CDN_URL, S3_BUCKET, S3_URL } = Config;
 
-export class Photo {
+@Entity({ name: 'photos' })
+export class Photo extends BaseEntity {
   @IsString()
   @IsUppercase()
+  @PrimaryGeneratedColumn('uuid')
   public id: string;
 
   @IsInt()
+  @Column()
   public height: number;
 
   /**
    * size in bytes
    */
   @IsInt()
+  @Column()
   @Min(0)
   public size: number;
 
@@ -29,9 +34,14 @@ export class Photo {
    * base64 data uri of the scaled down thumbnail
    */
   @IsDataURI()
+  @Column()
   public thumbnailURL: string;
 
   @IsEnum(PhotoType)
+  @Column({
+    enum: PhotoType,
+    type: 'enum',
+  })
   public type: PhotoType;
 
   @Transform(({ obj }: { obj: Photo }) =>
@@ -40,11 +50,8 @@ export class Photo {
   public url: string;
 
   @IsInt()
+  @Column()
   public width: number;
-
-  public async delete(): Promise<void> {
-    await s3.deleteObject({ Bucket: S3_BUCKET, Key: this.id }).promise();
-  }
 
   public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
     logger.info('Uploading photo', await image.metadata());

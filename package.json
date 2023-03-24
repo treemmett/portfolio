@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev | pino-pretty",
     "build": "next build",
+    "build:tsc": "tsc -m commonjs && tsc-alias",
     "start": "next start",
     "prepare": "husky install",
     "test": "start-server-and-test 'yarn dev' http://localhost:3000 'yarn cypress open'",
@@ -19,7 +20,9 @@
     "lint:spelling": "cspell \"**/*\" --gitignore",
     "lint:style": "stylelint **/*.{scss,css}",
     "seed:up": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedUp",
-    "seed:down": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedDown"
+    "seed:down": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedDown",
+    "seed:create": "cd src/migrations && typeorm migration:create",
+    "seed:generate": "cd src/migrations && ts-node ../../node_modules/.bin/typeorm migration:generate foo -d ../../build/src/utils/dataSource.js"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^12.3.1",
@@ -87,6 +90,7 @@
     "stylelint-config-standard-scss": "^7.0.1",
     "stylelint-csstree-validator": "^2.1.0",
     "stylelint-prettier": "^3.0.0",
+    "tsc-alias": "^1.8.4",
     "tsconfig-paths": "^4.1.0",
     "typescript": "^4.8.4"
   },
