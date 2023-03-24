@@ -5,6 +5,8 @@ export class Config {
 
   public static CDN_URL?: string = process.env.CDN_URL;
 
+  public static DB_CERTIFICATE = process.env.DB_CERTIFICATE;
+
   public static DB_DATABASE = process.env.DB_DATABASE || 'daguerrio';
 
   public static DB_HOST = process.env.DB_HOST || 'localhost';
