@@ -13,12 +13,13 @@
     "prepare": "husky install",
     "test": "start-server-and-test 'yarn dev' http://localhost:3000 'yarn cypress open'",
     "analyze": "ANALYZE=true next build",
-    "seed": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seed",
     "lint": "concurrently yarn:lint:*",
     "lint:code": "next lint",
     "lint:format": "prettier -c .",
     "lint:spelling": "cspell \"**/*\" --gitignore",
-    "lint:style": "stylelint **/*.{scss,css}"
+    "lint:style": "stylelint **/*.{scss,css}",
+    "seed:up": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedUp",
+    "seed:down": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedDown"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^12.3.1",
