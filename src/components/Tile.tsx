@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { FC, useMemo } from 'react';
 import styles from './Tile.module.scss';
 import { PhotoType } from '@entities/PhotoType';
-import { Post } from '@entities/Post';
+import type { Post } from '@entities/Post';
 import { formatDate } from '@utils/date';
 
 export interface TileProps {
