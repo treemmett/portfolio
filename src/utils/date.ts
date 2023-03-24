@@ -21,7 +21,7 @@ export function formatDate(date: Date | string): string {
     throw new Error('Invalid date');
   }
 
-  if (!i18n) throw new Error('i18n not initialized');
+  if (!i18n) return date.toLocaleString();
 
   return `${d.getUTCDate()} ${i18n.t(months[d.getUTCMonth()])}, ${d.getUTCFullYear()}`;
 }
