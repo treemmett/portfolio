@@ -222,7 +222,7 @@ export class Post {
       .promise();
   }
 
-  public static async update(
+  public static async patch(
     id: string,
     data: Partial<Pick<Post, 'created' | 'location' | 'title'>>
   ): Promise<Post> {
@@ -296,7 +296,7 @@ export class Post {
     }
   }
 
-  public static async delete(id: string): Promise<void> {
+  public static async deletePost(id: string): Promise<void> {
     logger.info('Deleting post', { id });
     const posts = await this.getAll();
 
