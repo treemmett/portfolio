@@ -1,8 +1,9 @@
 import { useTranslation } from 'next-i18next';
-import { FC, FormEventHandler, useCallback } from 'react';
+import { FC, FormEventHandler, useCallback, useState } from 'react';
 import { Button } from './Button';
 import styles from './Editor.module.scss';
 import { Input } from './Input';
+import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { usePost } from '@lib/posts';
 import { useSession } from '@lib/session';
@@ -10,6 +11,7 @@ import { trimTime } from '@utils/date';
 
 export const Editor: FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { isDeleting, isSaving, post, save, setPost, deleteTrigger } = usePost(id);
   const { hasPermission } = useSession();
 
@@ -54,12 +56,22 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
         <Button
           className={styles.input}
           disabled={isDeleting}
-          onClick={() => deleteTrigger()}
+          onClick={() => setShowDeleteConfirm(true)}
           type="danger"
         >
           {t('Delete')}
         </Button>
       )}
+      <Modal
+        handleChildren={false}
+        onClose={() => setShowDeleteConfirm(false)}
+        open={showDeleteConfirm}
+      >
+        <Button onClick={() => setShowDeleteConfirm(false)}>{t('Go back')}</Button>
+        <Button disabled={isDeleting} onClick={() => deleteTrigger()} type="danger">
+          {isDeleting ? t('Deleting...') : t('Delete')}
+        </Button>
+      </Modal>
     </form>
   );
 };
