@@ -17,6 +17,7 @@
     "contentful",
     "csstree",
     "daguerrio",
+    "env",
     "geocode",
     "Googlebot",
     "heic",
