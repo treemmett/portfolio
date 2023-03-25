@@ -32,14 +32,14 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
         label={t('Title')}
         name="title"
         onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
-        value={post.title}
+        value={post.title || ''}
       />
       <Input
         className={styles.input}
         label={t('Location')}
         name="location"
         onChange={(e) => setPost({ ...post, location: e.currentTarget.value })}
-        value={post.location}
+        value={post.location || ''}
       />
       <Input
         className={styles.input}
@@ -47,7 +47,7 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
         name="date"
         onChange={(e) => setPost({ ...post, created: e.currentTarget.value })}
         type="date"
-        value={trimTime(post.created)}
+        value={trimTime(post.created) || ''}
       />
       <Button className={styles.input} disabled={isSaving} type="success" submit>
         {t('Save')}
