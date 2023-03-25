@@ -20,7 +20,7 @@ const DynamicUploadManager = dynamic(() =>
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   await connectToDatabase();
 
-  const [posts, site] = await Promise.allSettled([Post.find(), Site.find()]);
+  const [posts, site] = await Promise.allSettled([Post.getAll(), Site.find()]);
 
   return {
     props: {

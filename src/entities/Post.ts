@@ -212,6 +212,21 @@ export class Post extends BaseEntity {
     return { token, url };
   }
 
+  public static async getById(id: string): Promise<Post> {
+    const post = await Post.findOneOrFail({ relations: { photo: true }, where: { id } });
+    return transformAndValidate(Post, post);
+  }
+
+  public static async getAll(): Promise<Post[]> {
+    const posts = await Post.find({
+      relations: {
+        photo: true,
+      },
+    });
+
+    return transformAndValidate(Post, posts);
+  }
+
   private static getProcessingKey(key: string): string {
     return `processing/${key}`;
   }

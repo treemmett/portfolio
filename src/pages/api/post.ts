@@ -9,7 +9,7 @@ import { i18nRevalidate } from '@utils/revalidate';
 export default nextConnect()
   .use(connectToDatabaseMiddleware)
   .get(async (req, res) => {
-    const posts = await Post.find();
+    const posts = await Post.getAll();
     res.send(posts);
   })
   .patch(Session.authorizeRequest(AuthorizationScopes.post), async (req, res) => {
