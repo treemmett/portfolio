@@ -17,6 +17,8 @@ const DynamicUploadManager = dynamic(() =>
   import('@components/ApiManager').then((mod) => mod.ApiManager)
 );
 
+const DynamicSettings = dynamic(() => import('@components/Settings').then((mod) => mod.Settings));
+
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   await connectToDatabase();
 
@@ -50,7 +52,12 @@ export const Home: NextPage = () => {
 
       <LightBox />
 
-      {hasPermission(AuthorizationScopes.post) && <DynamicUploadManager />}
+      {hasPermission(AuthorizationScopes.post) && (
+        <>
+          <DynamicUploadManager />
+          <DynamicSettings />
+        </>
+      )}
     </>
   );
 };

@@ -1,7 +1,9 @@
-import { GetStaticProps, NextPage } from 'next';
+import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
-import { FormEventHandler, useCallback } from 'react';
-import styles from './settings.module.scss';
+import { useRouter } from 'next/router';
+import { FC, FormEventHandler, useCallback } from 'react';
+import { Modal } from './Modal';
+import styles from './Settings.module.scss';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { useSite } from '@lib/site';
@@ -12,75 +14,81 @@ export const getStaticProps: GetStaticProps = async () => ({
   },
 });
 
-const Settings: NextPage = () => {
+export const Settings: FC = () => {
   const { t } = useTranslation();
   const { isLoading, setSite, site, save } = useSite();
+  const { query, push } = useRouter();
+
+  const closeModal = useCallback(() => {
+    const q = { ...query };
+    delete q.settings;
+    push({ query: q }, undefined, { scroll: false, shallow: true });
+  }, [push, query]);
 
   const onSubmit: FormEventHandler = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
-      save();
+      await save();
+      closeModal();
     },
-    [save]
+    [closeModal, save]
   );
 
-  if (isLoading || !site) return <div>Loading...</div>;
+  if (isLoading || !site) return null;
 
   return (
-    <div className={styles.settings}>
+    <Modal handleChildren={false} onClose={closeModal} open={query.settings === 'true'}>
       <form className={styles.form} onSubmit={onSubmit}>
         <h2>Site Information</h2>
         <Input
           label={t('Name')}
           onChange={(e) => setSite({ ...site, name: e.currentTarget.value })}
-          value={site.name}
+          value={site.name || ''}
         />
         <Input
           label={t('Title')}
           onChange={(e) => setSite({ ...site, title: e.currentTarget.value })}
-          value={site.title}
+          value={site.title || ''}
         />
         <Input
           label={t('Description')}
           onChange={(e) => setSite({ ...site, description: e.currentTarget.value })}
           type="textarea"
-          value={site.description}
+          value={site.description || ''}
         />
         <h2>Social Media</h2>
         <Input
           label={t('Twitter')}
           onChange={(e) => setSite({ ...site, twitter: e.currentTarget.value })}
-          value={site.twitter}
+          value={site.twitter || ''}
         />
         <Input
           label={t('Instagram')}
           onChange={(e) => setSite({ ...site, instagram: e.currentTarget.value })}
-          value={site.instagram}
+          value={site.instagram || ''}
         />
         <Input
           label={t('LinkedIn')}
           onChange={(e) => setSite({ ...site, linkedIn: e.currentTarget.value })}
-          value={site.linkedIn}
+          value={site.linkedIn || ''}
         />
         <Input
           label={t('Facebook')}
           onChange={(e) => setSite({ ...site, facebook: e.currentTarget.value })}
-          value={site.facebook}
+          value={site.facebook || ''}
         />
         <Input
           label={t('GitHub')}
           onChange={(e) => setSite({ ...site, github: e.currentTarget.value })}
-          value={site.github}
+          value={site.github || ''}
         />
         <Input
           label={t('IMDb')}
           onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
-          value={site.imdb}
+          value={site.imdb || ''}
         />
         <Button submit>{t('Save')}</Button>
       </form>
-    </div>
+    </Modal>
   );
 };
-
-export default Settings;

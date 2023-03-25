@@ -1,18 +1,27 @@
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import React, { FC } from 'react';
+import { ReactComponent as EditIcon } from '../icons/edit.svg';
 import { Anchor } from './Anchor';
 import styles from './Nav.module.scss';
+import { AuthorizationScopes } from '@entities/Jwt';
 import { useSession } from '@lib/session';
 import { useSite } from '@lib/site';
 
 export const Nav: FC = () => {
   const { t } = useTranslation();
   const { site } = useSite();
-  const { isLoggedIn, login, logout } = useSession();
+  const { isLoggedIn, login, logout, hasPermission } = useSession();
 
   return (
     <header className={styles.nav}>
       <h1>{site?.name}</h1>
+
+      {hasPermission(AuthorizationScopes.post) && (
+        <Link className={styles.edit} href={{ query: { settings: true } }}>
+          <EditIcon />
+        </Link>
+      )}
 
       <nav>
         {site?.facebook && (
