@@ -102,7 +102,7 @@ export function useSession() {
 
   const logout = useCallback(() => {
     localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-    setIsLoggedIn(false);
+    setSession(new Session());
   }, []);
 
   return {
