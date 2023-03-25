@@ -9,6 +9,7 @@ import { AuthorizationScopes } from '@entities/Jwt';
 import { usePosts } from '@lib/posts';
 import { useSession } from '@lib/session';
 import { trace } from '@utils/analytics';
+import { formatDate } from '@utils/date';
 import { scaleDimensions, toPx } from '@utils/pixels';
 import { toString } from '@utils/queryParam';
 
@@ -82,7 +83,7 @@ export const LightBox: FC = () => {
         <>
           <div className={styles.photo}>
             <Image
-              alt={post.title}
+              alt={post.title || formatDate(post.created)}
               blurDataURL={post.photo.thumbnailURL}
               className={styles.img}
               height={post.photo.height}

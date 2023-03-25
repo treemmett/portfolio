@@ -58,8 +58,8 @@ export class Post extends BaseEntity {
   @Length(0, 200)
   @IsString()
   @IsOptional()
-  @Column({ nullable: true })
-  public location: string;
+  @Column({ nullable: true, type: 'varchar' })
+  public location?: string | null;
 
   @IsDate()
   @Type(() => Date)
@@ -93,8 +93,8 @@ export class Post extends BaseEntity {
   @Length(0, 200)
   @IsString()
   @IsOptional()
-  @Column({ nullable: true })
-  public title: string;
+  @Column({ nullable: true, type: 'varchar' })
+  public title?: string | null;
 
   public static async processUpload(token: string): Promise<Post> {
     logger.info('Processing upload');
