@@ -2,11 +2,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 import styles from './Tile.module.scss';
-import type { Post } from '@entities/Post';
+import type { IPost } from '@entities/Post';
 import { formatDate } from '@utils/date';
 
 export interface TileProps {
-  post: Post;
+  post: IPost;
 }
 
 export const Tile: FC<TileProps> = ({ post }) => {

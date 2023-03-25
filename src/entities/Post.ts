@@ -8,17 +8,26 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  IsUppercase,
+  IsUUID,
   Length,
   Max,
-  IsEmpty,
   Min,
   ValidateNested,
 } from 'class-validator';
 import { JWTPayload, jwtVerify, SignJWT } from 'jose';
 import sharp from 'sharp';
-import { ulid } from 'ulid';
-import { Photo } from './Photo';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { v4 } from 'uuid';
+import { Photo, IPhoto } from './Photo';
 import { PhotoType } from './PhotoType';
 import { Config } from '@utils/config';
 import { APIError, ErrorCode } from '@utils/errors';
@@ -27,8 +36,6 @@ import { s3 } from '@utils/s3';
 
 const { JWT_SECRET, S3_BUCKET } = Config;
 
-const POSTS_FILE_KEY = '_posts.json';
-
 const ISSUER = 'upload';
 
 export interface UploadToken {
@@ -36,49 +43,57 @@ export interface UploadToken {
   url: string;
 }
 
-export class Post {
+@Entity({ name: 'posts' })
+export class Post extends BaseEntity {
   @IsString()
-  @IsUppercase()
+  @PrimaryGeneratedColumn('uuid')
+  @IsUUID()
   public id: string;
-
-  @IsEmpty()
-  public countryName?: string;
 
   @IsDate()
   @Type(() => Date)
+  @CreateDateColumn()
   public created: string;
 
   @Length(0, 200)
   @IsString()
   @IsOptional()
+  @Column({ nullable: true })
   public location: string;
 
   @IsDate()
   @Type(() => Date)
+  @UpdateDateColumn()
   public updated: Date;
 
   @Type(() => Photo)
   @ValidateNested()
+  @OneToOne('photos')
+  @JoinColumn()
   public photo: Photo;
 
   @IsInt()
   @Min(0)
   @Max(255)
+  @Column({ type: 'smallint' })
   public red: number;
 
   @IsInt()
   @Min(0)
   @Max(255)
+  @Column({ type: 'smallint' })
   public green: number;
 
   @IsInt()
   @Min(0)
   @Max(255)
+  @Column({ type: 'smallint' })
   public blue: number;
 
   @Length(0, 200)
   @IsString()
   @IsOptional()
+  @Column({ nullable: true })
   public title: string;
 
   public static async processUpload(token: string): Promise<Post> {
@@ -136,7 +151,7 @@ export class Post {
     const { channels } = await image.stats();
     const [r, g, b] = channels.map((c) => Math.floor(c.mean));
 
-    const id = ulid();
+    const id = v4();
 
     const post = await transformAndValidate(
       Post,
@@ -146,7 +161,7 @@ export class Post {
         green: g,
         id,
         location: meta.location,
-        photos: [photo],
+        photo,
         red: r,
         title: meta.title,
         updated: new Date(),
@@ -158,7 +173,8 @@ export class Post {
     });
     logger.info('Post passed validation');
 
-    await Post.addPostToIndex(post);
+    await post.save();
+
     logger.info('Post added to index');
 
     return post;
@@ -170,7 +186,7 @@ export class Post {
     date = new Date()
   ): Promise<UploadToken> {
     logger.info('Creating upload token', { date, location, title });
-    const id = ulid();
+    const id = v4();
 
     const [token, url] = await Promise.all([
       new SignJWT({
@@ -196,125 +212,15 @@ export class Post {
     return { token, url };
   }
 
-  private static async addPostToIndex(post: Post): Promise<void> {
-    logger.info('Adding post to index', { post });
-    const posts = await this.getAll();
-    posts.unshift(post);
-    posts.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
-    await this.writePostsIndex(posts);
-  }
-
-  private static async writePostsIndex(posts: Post[]): Promise<void> {
-    logger.info('Writing posts index', { posts });
-
-    await s3
-      .upload({
-        ACL: 'public-read',
-        Body: JSON.stringify(
-          await transformAndValidate(Post, posts, {
-            validator: { forbidUnknownValues: true },
-          })
-        ),
-        Bucket: S3_BUCKET,
-        ContentType: 'application/json',
-        Key: POSTS_FILE_KEY,
-      })
-      .promise();
-  }
-
-  public static async patch(
-    id: string,
-    data: Partial<Pick<Post, 'created' | 'location' | 'title'>>
-  ): Promise<Post> {
-    logger.info('Updating post', { data, id });
-    const posts = await this.getAll();
-
-    const index = posts.findIndex((p) => p.id === id);
-
-    if (!~index) {
-      logger.error('No post index found', { id, index });
-      throw new APIError(ErrorCode.post_not_found);
-    }
-
-    const [post] = posts.splice(index, 1);
-
-    if (!post) {
-      logger.error('No post found', { id, index, post });
-      throw new APIError(ErrorCode.post_not_found);
-    }
-
-    logger.info('Post found', { data, id, post });
-
-    if (data.created) {
-      logger.info('Updating post date', { new: data.created, original: post.created });
-      post.created = data.created;
-    }
-
-    if (data.location) {
-      logger.info('Updating post location', { new: data.location, original: post.location });
-      post.location = data.location;
-    }
-
-    if (data.title) {
-      logger.info('Updating post title', { new: data.title, original: post.title });
-      post.title = data.title;
-    }
-
-    post.updated = new Date();
-    posts.unshift(post);
-    await this.writePostsIndex(posts);
-    return post;
-  }
-
-  public static async getAll(): Promise<Post[]> {
-    try {
-      logger.info('Looking up post index');
-      const { Body } = await s3
-        .getObject({
-          Bucket: S3_BUCKET,
-          Key: POSTS_FILE_KEY,
-        })
-        .promise();
-
-      if (!Body) throw new APIError(ErrorCode.no_file_received);
-
-      const json = Body.toString();
-
-      logger.info('Post data found');
-
-      const posts = (await transformAndValidate(Post, json, {
-        validator: { forbidUnknownValues: true },
-      })) as Post[];
-
-      return posts;
-    } catch (err) {
-      if ((err as AWSError)?.code === 'NoSuchKey') {
-        return [];
-      }
-
-      throw err;
-    }
-  }
-
-  public static async deletePost(id: string): Promise<void> {
-    logger.info('Deleting post', { id });
-    const posts = await this.getAll();
-
-    const index = posts.findIndex((p) => p.id === id);
-
-    if (!~index) {
-      logger.error('Post not found', { id, index });
-      throw new APIError(ErrorCode.post_not_found);
-    }
-
-    const [post] = posts.splice(index, 1);
-
-    await post.photo.remove();
-
-    await this.writePostsIndex(posts);
-  }
-
   private static getProcessingKey(key: string): string {
     return `processing/${key}`;
   }
+}
+
+export interface IPost
+  extends Omit<
+    Post,
+    keyof BaseEntity | 'photo' | 'processUpload' | 'requestUploadToken' | 'getProcessingKey'
+  > {
+  photo: IPhoto;
 }

@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutate from 'swr/mutation';
-import type { Post } from '@entities/Post';
+import type { IPost } from '@entities/Post';
 import { apiClient } from '@utils/apiClient';
 
 export function usePosts() {
   const { data, isLoading, error } = useSWR('posts', async () => {
-    const response = await apiClient.get<Post[]>('/post');
+    const response = await apiClient.get<IPost[]>('/post');
     return response.data;
   });
 
-  const { trigger } = useSWRMutate<Post, Error, 'posts', Post>(
+  const { trigger } = useSWRMutate<IPost, Error, 'posts', IPost>(
     'posts',
     async (key, { arg }) => arg,
     {
-      populateCache(result: Post, currentData: Post[]) {
+      populateCache(result: IPost, currentData: IPost[]) {
         if (!currentData) return [result];
 
         return [result, ...currentData];
@@ -23,7 +23,7 @@ export function usePosts() {
     }
   );
 
-  const addPost = useCallback((post: Post) => trigger(post), [trigger]);
+  const addPost = useCallback((post: IPost) => trigger(post), [trigger]);
 
   return {
     addPost,
@@ -36,7 +36,7 @@ export function usePosts() {
 export function usePost(id: string) {
   const { posts } = usePosts();
   const foundPost = useMemo(() => posts?.find((p) => p.id === id), [id, posts]);
-  const [post, setPost] = useState<Post | undefined>(foundPost);
+  const [post, setPost] = useState<IPost | undefined>(foundPost);
   useEffect(() => {
     setPost(foundPost);
   }, [foundPost]);
@@ -48,11 +48,11 @@ export function usePost(id: string) {
   } = useSWRMutate(
     'posts',
     async () => {
-      const response = await apiClient.patch<Post>(`/post/${encodeURI(id)}`, post);
+      const response = await apiClient.patch<IPost>(`/post/${encodeURI(id)}`, post);
       return response.data;
     },
     {
-      populateCache(result: Post, currentData: Post[]) {
+      populateCache(result: IPost, currentData: IPost[]) {
         if (!currentData) return [];
 
         const filteredData = currentData.filter((p) => p.id !== result.id);
@@ -73,7 +73,7 @@ export function usePost(id: string) {
       return post;
     },
     {
-      populateCache(result, currentData: Post[]) {
+      populateCache(result, currentData: IPost[]) {
         if (!currentData) return [];
 
         const filteredData = currentData.filter((p) => p.id !== result?.id);

@@ -4,7 +4,7 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { ulid } from 'ulid';
 import styles from './ApiManager.module.scss';
 import { Button } from './Button';
-import type { Post, UploadToken } from '@entities/Post';
+import type { IPost, UploadToken } from '@entities/Post';
 import { ReactComponent as ChevronDown } from '@icons/chevron-down.svg';
 import { ReactComponent as ChevronUp } from '@icons/chevron-up.svg';
 import { usePosts } from '@lib/posts';
@@ -143,7 +143,7 @@ export const ApiManager: FC = () => {
         },
       });
 
-      const { data } = await apiClient.put<Post>(
+      const { data } = await apiClient.put<IPost>(
         '/post',
         { token: uploadToken.token },
         {

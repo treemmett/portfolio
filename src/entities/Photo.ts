@@ -1,9 +1,9 @@
 import { Transform } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsDataURI, IsEnum, IsInt, IsString, IsUppercase, Min } from 'class-validator';
+import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min } from 'class-validator';
 import { Sharp } from 'sharp';
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { ulid } from 'ulid';
+import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
 import { Config } from '@utils/config';
 import { logger } from '@utils/logger';
@@ -14,8 +14,8 @@ const { CDN_URL, S3_BUCKET, S3_URL } = Config;
 @Entity({ name: 'photos' })
 export class Photo extends BaseEntity {
   @IsString()
-  @IsUppercase()
   @PrimaryGeneratedColumn('uuid')
+  @IsUUID()
   public id: string;
 
   @IsInt()
@@ -55,7 +55,7 @@ export class Photo extends BaseEntity {
 
   public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
     logger.info('Uploading photo', await image.metadata());
-    const id = ulid();
+    const id = v4();
 
     // ensure orientation is correct
     image.rotate();
@@ -106,6 +106,12 @@ export class Photo extends BaseEntity {
 
     logger.info('Photo passed validation');
 
+    await photo.save();
+
+    logger.info('Photo inserted');
+
     return photo;
   }
 }
+
+export type IPhoto = Omit<Photo, keyof BaseEntity | 'upload'>;

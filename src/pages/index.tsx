@@ -20,12 +20,12 @@ const DynamicUploadManager = dynamic(() =>
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   await connectToDatabase();
 
-  const [posts, site] = await Promise.allSettled([Post.getAll(), Site.find()]);
+  const [posts, site] = await Promise.allSettled([Post.find(), Site.find()]);
 
   return {
     props: {
       fallback: {
-        posts: posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : undefined,
+        posts: posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : null,
         site: instanceToPlain(site.status === 'fulfilled' ? site.status[0] : undefined),
       },
       ...(await serverSideTranslations(locale || 'en', ['common'])),
