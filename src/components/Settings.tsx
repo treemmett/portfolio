@@ -34,61 +34,63 @@ export const Settings: FC = () => {
     [closeModal, save]
   );
 
-  if (isLoading || !site) return null;
-
   return (
     <Modal handleChildren={false} onClose={closeModal} open={query.settings === 'true'}>
-      <form className={styles.form} onSubmit={onSubmit}>
-        <h2>Site Information</h2>
-        <Input
-          label={t('Name')}
-          onChange={(e) => setSite({ ...site, name: e.currentTarget.value })}
-          value={site.name || ''}
-        />
-        <Input
-          label={t('Title')}
-          onChange={(e) => setSite({ ...site, title: e.currentTarget.value })}
-          value={site.title || ''}
-        />
-        <Input
-          label={t('Description')}
-          onChange={(e) => setSite({ ...site, description: e.currentTarget.value })}
-          type="textarea"
-          value={site.description || ''}
-        />
-        <h2>Social Media</h2>
-        <Input
-          label={t('Twitter')}
-          onChange={(e) => setSite({ ...site, twitter: e.currentTarget.value })}
-          value={site.twitter || ''}
-        />
-        <Input
-          label={t('Instagram')}
-          onChange={(e) => setSite({ ...site, instagram: e.currentTarget.value })}
-          value={site.instagram || ''}
-        />
-        <Input
-          label={t('LinkedIn')}
-          onChange={(e) => setSite({ ...site, linkedIn: e.currentTarget.value })}
-          value={site.linkedIn || ''}
-        />
-        <Input
-          label={t('Facebook')}
-          onChange={(e) => setSite({ ...site, facebook: e.currentTarget.value })}
-          value={site.facebook || ''}
-        />
-        <Input
-          label={t('GitHub')}
-          onChange={(e) => setSite({ ...site, github: e.currentTarget.value })}
-          value={site.github || ''}
-        />
-        <Input
-          label={t('IMDb')}
-          onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
-          value={site.imdb || ''}
-        />
-        <Button submit>{t('Save')}</Button>
-      </form>
+      {!isLoading && site ? (
+        <form className={styles.form} onSubmit={onSubmit}>
+          <h2>Site Information</h2>
+          <Input
+            label={t('Name')}
+            onChange={(e) => setSite({ ...site, name: e.currentTarget.value })}
+            value={site.name || ''}
+          />
+          <Input
+            label={t('Title')}
+            onChange={(e) => setSite({ ...site, title: e.currentTarget.value })}
+            value={site.title || ''}
+          />
+          <Input
+            label={t('Description')}
+            onChange={(e) => setSite({ ...site, description: e.currentTarget.value })}
+            type="textarea"
+            value={site.description || ''}
+          />
+          <h2>Social Media</h2>
+          <Input
+            label={t('Twitter')}
+            onChange={(e) => setSite({ ...site, twitter: e.currentTarget.value })}
+            value={site.twitter || ''}
+          />
+          <Input
+            label={t('Instagram')}
+            onChange={(e) => setSite({ ...site, instagram: e.currentTarget.value })}
+            value={site.instagram || ''}
+          />
+          <Input
+            label={t('LinkedIn')}
+            onChange={(e) => setSite({ ...site, linkedIn: e.currentTarget.value })}
+            value={site.linkedIn || ''}
+          />
+          <Input
+            label={t('Facebook')}
+            onChange={(e) => setSite({ ...site, facebook: e.currentTarget.value })}
+            value={site.facebook || ''}
+          />
+          <Input
+            label={t('GitHub')}
+            onChange={(e) => setSite({ ...site, github: e.currentTarget.value })}
+            value={site.github || ''}
+          />
+          <Input
+            label={t('IMDb')}
+            onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
+            value={site.imdb || ''}
+          />
+          <Button submit>{t('Save')}</Button>
+        </form>
+      ) : (
+        'Loading...'
+      )}
     </Modal>
   );
 };
