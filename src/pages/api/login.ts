@@ -1,9 +1,10 @@
 import { serialize } from 'cookie';
+import { User } from '@entities/User';
+import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
-import { authorizeGitHub } from '@utils/auth';
 
-export default nextConnect().post(async (req, res) => {
-  const { accessToken, expiration, signature } = await authorizeGitHub(req.body.code);
+export default nextConnect().post(connectToDatabaseMiddleware, async (req, res) => {
+  const { accessToken, expiration, signature } = await User.authorizeGitHub(req.body.code);
   res.setHeader(
     'Set-Cookie',
     serialize('xsrf-token', signature, {
