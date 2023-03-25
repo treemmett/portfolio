@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDataStore } from './DataStore';
 import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
@@ -19,7 +18,6 @@ const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor)
 
 export const LightBox: FC = () => {
   const { query, push } = useRouter();
-  const { dispatch } = useDataStore();
   const { posts } = usePosts();
   const { hasPermission } = useSession();
 
@@ -43,7 +41,7 @@ export const LightBox: FC = () => {
       setLeft(0);
       setTop(0);
     }
-  }, [dispatch, query.post]);
+  }, [query.post]);
 
   const scaleImage = useCallback(() => {
     if (!post?.photo) return;
