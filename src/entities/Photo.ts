@@ -47,7 +47,7 @@ export class Photo extends BaseEntity {
   @Transform(({ obj }: { obj: Photo }) =>
     CDN_URL ? `${CDN_URL}/${obj.id}` : `${S3_URL}/${S3_BUCKET}/${obj.id}`
   )
-  public url: string;
+  public url = '';
 
   @IsInt()
   @Column()
