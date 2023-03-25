@@ -107,24 +107,7 @@ export class User extends BaseEntity {
       scopes.push(AuthorizationScopes.delete, AuthorizationScopes.post);
     }
 
-    const expiration = new Date();
-    expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
-
-    const token = await new SignJWT({ scp: scopes })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime(Math.floor(expiration.getTime() / 1000))
-      .setSubject(user.id)
-      .sign(new TextEncoder().encode(Config.JWT_SECRET));
-
-    const accessTokenParts = token.split('.');
-    const signature = accessTokenParts.pop() as string;
-    accessTokenParts.push('');
-
-    return {
-      accessToken: accessTokenParts.join('.'),
-      expiration,
-      signature,
-    };
+    return user.signAccessToken(scopes);
   }
 
   public static authorize(...scopes: AuthorizationScopes[]) {
@@ -157,6 +140,27 @@ export class User extends BaseEntity {
     };
 
     return middleware;
+  }
+
+  private async signAccessToken(scopes: AuthorizationScopes[]) {
+    const expiration = new Date();
+    expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
+
+    const token = await new SignJWT({ scp: scopes })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime(Math.floor(expiration.getTime() / 1000))
+      .setSubject(this.id)
+      .sign(new TextEncoder().encode(Config.JWT_SECRET));
+
+    const accessTokenParts = token.split('.');
+    const signature = accessTokenParts.pop() as string;
+    accessTokenParts.push('');
+
+    return {
+      accessToken: accessTokenParts.join('.'),
+      expiration,
+      signature,
+    };
   }
 }
 
