@@ -8,8 +8,8 @@ import { Nav } from '@components/Nav';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
-import { useSession } from '@lib/session';
 import { useSite } from '@lib/site';
+import { useUser } from '@lib/user';
 import { connectToDatabase } from '@middleware/database';
 
 const DynamicUploadManager = dynamic(() =>
@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
 
 export const Home: NextPage = () => {
   const { site } = useSite();
-  const { hasPermission } = useSession();
+  const { hasPermission } = useUser();
 
   return (
     <>

@@ -6,14 +6,14 @@ import { Input } from './Input';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { usePost } from '@lib/posts';
-import { useSession } from '@lib/session';
+import { useUser } from '@lib/user';
 import { trimTime } from '@utils/date';
 
 export const Editor: FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { isDeleting, isSaving, post, save, setPost, deleteTrigger } = usePost(id);
-  const { hasPermission } = useSession();
+  const { hasPermission } = useUser();
 
   const formHandler: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {

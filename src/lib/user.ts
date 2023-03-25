@@ -22,7 +22,7 @@ async function getUser(): Promise<IUser | null> {
   return data;
 }
 
-export function useSession() {
+export function useUser() {
   const [user, setUser] = useState<IUser>();
   const { data } = useSWR<IUser | null>('user', getUser);
   useEffect(() => setUser(data || undefined), [data]);

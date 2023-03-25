@@ -5,13 +5,13 @@ import { ReactComponent as EditIcon } from '../icons/edit.svg';
 import { Anchor } from './Anchor';
 import styles from './Nav.module.scss';
 import { AuthorizationScopes } from '@entities/Jwt';
-import { useSession } from '@lib/session';
 import { useSite } from '@lib/site';
+import { useUser } from '@lib/user';
 
 export const Nav: FC = () => {
   const { t } = useTranslation();
   const { site } = useSite();
-  const { login, logout, hasPermission, user } = useSession();
+  const { login, logout, hasPermission, user } = useUser();
 
   return (
     <header className={styles.nav}>

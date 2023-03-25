@@ -7,7 +7,7 @@ import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { usePosts } from '@lib/posts';
-import { useSession } from '@lib/session';
+import { useUser } from '@lib/user';
 import { trace } from '@utils/analytics';
 import { formatDate } from '@utils/date';
 import { scaleDimensions, toPx } from '@utils/pixels';
@@ -20,7 +20,7 @@ const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor)
 export const LightBox: FC = () => {
   const { query, push } = useRouter();
   const { posts } = usePosts();
-  const { hasPermission } = useSession();
+  const { hasPermission } = useUser();
 
   const post = useMemo(() => posts?.find((p) => p.id === query.post), [query.post, posts]);
 
