@@ -123,9 +123,8 @@ export class Post extends BaseEntity {
       throw new APIError(ErrorCode.bad_upload_token);
     }
 
-    const { jti, meta } = payload as {
+    const { jti } = payload as {
       jti: string;
-      meta: { date: string; location?: string; title?: string };
     };
 
     let object: PromiseResult<GetObjectOutput, AWSError>;
@@ -164,14 +163,12 @@ export class Post extends BaseEntity {
       Post,
       {
         blue: b,
-        created: new Date(meta.date),
+        created: new Date(),
         green: g,
         id,
-        location: meta.location,
         owner: user,
         photo,
         red: r,
-        title: meta.title,
         updated: new Date(),
       },
       { validator: { forbidUnknownValues: true } }
@@ -188,22 +185,12 @@ export class Post extends BaseEntity {
     return post;
   }
 
-  public static async requestUploadToken(
-    location?: string,
-    title?: string,
-    date = new Date()
-  ): Promise<UploadToken> {
-    logger.info('Creating upload token', { date, location, title });
+  public static async requestUploadToken(): Promise<UploadToken> {
+    logger.info('Creating upload token');
     const id = v4();
 
     const [token, url] = await Promise.all([
-      new SignJWT({
-        meta: {
-          date: new Date(date),
-          location,
-          title,
-        },
-      })
+      new SignJWT({})
         .setProtectedHeader({ alg: 'HS256' })
         .setJti(id)
         .setIssuedAt()
