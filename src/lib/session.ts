@@ -10,12 +10,14 @@ export function useSession() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string>();
   const [scopes, setScopes] = useState<AuthorizationScopes[]>([]);
+  const [accessToken, setAccessToken] = useState<string>();
 
   const logout = useCallback(() => {
     localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
     setUserId(undefined);
     setScopes([]);
     setIsLoggedIn(false);
+    setAccessToken(undefined);
   }, []);
 
   const parseToken = useCallback((token: string | null) => {
@@ -28,6 +30,8 @@ export function useSession() {
     setUserId(sub);
     setScopes(scp);
     setIsLoggedIn(true);
+    setAccessToken(token);
+    localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, token);
   }, []);
 
   useEffect(() => {
@@ -35,20 +39,22 @@ export function useSession() {
   }, [parseToken]);
 
   useEffect(() => {
-    const id = apiClient.interceptors.request.use((req) => {
-      if (!req.headers) req.headers = {};
+    let id: number;
 
-      const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+    if (isLoggedIn) {
+      id = apiClient.interceptors.request.use((req) => {
+        if (!req.headers) req.headers = {};
 
-      if (token) {
-        req.headers.authorization = `Bearer ${token}`;
-      }
+        if (accessToken) {
+          req.headers.authorization = `Bearer ${accessToken}`;
+        }
 
-      return req;
-    });
+        return req;
+      });
+    }
 
     return () => apiClient.interceptors.request.eject(id);
-  }, []);
+  }, [accessToken, isLoggedIn]);
 
   const hasPermission = useCallback(
     (...perms: AuthorizationScopes[]): boolean => perms.every((p) => scopes.includes(p)),
@@ -101,7 +107,6 @@ export function useSession() {
         trace('login-granted');
         const loginResponse = await apiClient.post('/login', { code: event.data.payload });
         parseToken(loginResponse.data);
-        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
       }
     };
 
