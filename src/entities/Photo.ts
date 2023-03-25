@@ -2,7 +2,7 @@ import { Transform, Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
 import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
 import { Sharp } from 'sharp';
-import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
 import { User } from './User';
@@ -21,8 +21,7 @@ export class Photo extends BaseEntity {
 
   @Type(() => User)
   @ValidateNested()
-  @OneToOne('users', { nullable: false })
-  @JoinColumn()
+  @ManyToOne('users', { nullable: false })
   public owner: User;
 
   @IsInt()

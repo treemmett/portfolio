@@ -22,6 +22,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -53,8 +54,7 @@ export class Post extends BaseEntity {
 
   @Type(() => User)
   @ValidateNested()
-  @OneToOne('users', { nullable: false })
-  @JoinColumn()
+  @ManyToOne('users', { nullable: false })
   public owner: User;
 
   @IsDate()

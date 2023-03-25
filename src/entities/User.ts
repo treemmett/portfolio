@@ -1,9 +1,20 @@
 import axios from 'axios';
 import { IsString, IsUUID } from 'class-validator';
 import { SignJWT, jwtVerify } from 'jose';
-import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { v4 } from 'uuid';
 import { AuthorizationScopes, Jwt } from './Jwt';
+import { Photo } from './Photo';
+import { Post } from './Post';
+import { Site } from './Site';
 import { ApiMiddleware } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
 import { APIError, ErrorCode } from '@utils/errors';
@@ -18,6 +29,15 @@ export class User extends BaseEntity {
   @Index({ unique: true })
   @Column({ nullable: true, type: 'int' })
   public githubId?: number | null;
+
+  @OneToMany('photos', 'owner')
+  public photos: Photo[];
+
+  @OneToMany('posts', 'owner')
+  public posts: Post[];
+
+  @OneToOne('sites')
+  public site: Site;
 
   public static async authorizeGitHub(code: string) {
     const authResponse = await axios.post<
