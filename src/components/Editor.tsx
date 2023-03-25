@@ -62,11 +62,7 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
           {t('Delete')}
         </Button>
       )}
-      <Modal
-        handleChildren={false}
-        onClose={() => setShowDeleteConfirm(false)}
-        open={showDeleteConfirm}
-      >
+      <Modal onClose={() => setShowDeleteConfirm(false)} open={showDeleteConfirm}>
         <Button onClick={() => setShowDeleteConfirm(false)}>{t('Go back')}</Button>
         <Button disabled={isDeleting} onClick={() => deleteTrigger()} type="danger">
           {isDeleting ? t('Deleting...') : t('Delete')}

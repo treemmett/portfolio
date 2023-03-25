@@ -35,7 +35,7 @@ export const Settings: FC = () => {
   );
 
   return (
-    <Modal handleChildren={false} onClose={closeModal} open={query.settings === 'true'}>
+    <Modal onClose={closeModal} open={query.settings === 'true'}>
       {!isLoading && site ? (
         <form className={styles.form} onSubmit={onSubmit}>
           <h2>Site Information</h2>

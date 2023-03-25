@@ -74,7 +74,6 @@ export const LightBox: FC = () => {
       className={classNames(styles['light-box'], {
         [styles['panel-open']]: hasPermission(AuthorizationScopes.post),
       })}
-      handleChildren={false}
       onClose={closeLightBox}
       open={!!post}
       ref={galleryRef}

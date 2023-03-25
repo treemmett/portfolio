@@ -5,13 +5,7 @@ import styles from './Modal.module.scss';
 export interface ModalProps extends PropsWithChildren {
   className?: string;
   /**
-   * Automatically hide children when `open` is falsely
-   * Useless if you need to animate or apply logic while closing
-   * @default true
-   */
-  handleChildren?: boolean;
-  /**
-   * Callback when the user clicks on modal wrapper
+   * Callback when modal finishes closing
    */
   onClose?: () => void;
   /** Modal is open */
@@ -19,7 +13,7 @@ export interface ModalProps extends PropsWithChildren {
 }
 
 export const Modal = forwardRef<HTMLDivElement, ModalProps>(
-  ({ className, children, handleChildren = true, onClose = () => null, open = false }, ref) => {
+  ({ className, children, onClose = () => null, open = false }, ref) => {
     const [openState, setOpen] = useState(open);
     useEffect(() => {
       setOpen(open);
@@ -43,7 +37,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
         ref={ref}
         role="presentation"
       >
-        {(open || !handleChildren) && children}
+        {children}
       </div>
     );
   }
