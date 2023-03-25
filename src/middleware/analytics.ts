@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Middleware } from 'next-connect';
 import { getClientIp } from 'request-ip';
-import { Session } from '@entities/Session';
 import { axiom } from '@utils/axiom';
 import { geolocation } from '@utils/geolocation';
 import { logger } from '@utils/logger';
@@ -12,18 +11,11 @@ export const useAnalytics: Middleware<NextApiRequest, NextApiResponse> = async (
     const { body, headers, method, url } = req;
     const ip = getClientIp(req);
 
-    const [session, geoData] = await Promise.all([
-      Session.fromRequest(req).catch(() => false),
-      geolocation(ip),
-    ]);
-
-    const username =
-      typeof session === 'boolean' ? '<no session>' : session?.username || '<no session>';
+    const geoData = await geolocation(ip);
 
     const baseFields = {
       geoData,
       ip,
-      username,
       'x-vercel-ip-city': headers['x-vercel-ip-city']
         ? decodeURIComponent(toString(headers['x-vercel-ip-city']))
         : undefined,

@@ -1,14 +1,14 @@
 import { celebrate, Joi } from 'celebrate';
 import { AuthorizationScopes } from '@entities/Jwt';
-import { Session } from '@entities/Session';
 import { Site } from '@entities/Site';
+import { User } from '@entities/User';
 import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
 
 export default nextConnect()
   .use(connectToDatabaseMiddleware)
   .patch(
-    Session.authorizeRequest(AuthorizationScopes.post),
+    User.authorize(AuthorizationScopes.post),
     celebrate(
       {
         body: {

@@ -1,7 +1,7 @@
 import { Joi, celebrate } from 'celebrate';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
-import { Session } from '@entities/Session';
+import { User } from '@entities/User';
 import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
 import { logger } from '@utils/logger';
@@ -9,7 +9,7 @@ import { logger } from '@utils/logger';
 export default nextConnect()
   .use(connectToDatabaseMiddleware)
   .use(celebrate({ query: { id: Joi.string().required() } }))
-  .delete(Session.authorizeRequest(AuthorizationScopes.delete), async (req, res) => {
+  .delete(User.authorize(AuthorizationScopes.delete), async (req, res) => {
     const post = await Post.getById(req.query.id as string);
 
     if (!post) {
@@ -30,7 +30,7 @@ export default nextConnect()
         title: [Joi.string(), null],
       },
     }),
-    Session.authorizeRequest(AuthorizationScopes.post),
+    User.authorize(AuthorizationScopes.post),
     async (req, res) => {
       const post = await Post.getById(req.query.id as string);
       post.created = req.body.created;

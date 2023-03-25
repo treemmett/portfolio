@@ -1,47 +1,61 @@
+import { decodeJwt } from 'jose';
 import { useCallback, useEffect, useState } from 'react';
-import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes } from '@entities/Jwt';
-import { Session } from '@entities/Session';
+import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes, Jwt } from '@entities/Jwt';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@pages/login';
 import { trace } from '@utils/analytics';
 import { apiClient } from '@utils/apiClient';
 import { Config } from '@utils/config';
 
 export function useSession() {
-  const [session, setSession] = useState(new Session());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState<string>();
+  const [scopes, setScopes] = useState<AuthorizationScopes[]>([]);
 
-  useEffect(() => {
-    setSession(Session.restore());
+  const logout = useCallback(() => {
+    localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+    setUserId(undefined);
+    setScopes([]);
+    setIsLoggedIn(false);
+  }, []);
+
+  const parseToken = useCallback((token: string | null) => {
+    if (!token) return;
+
+    const { exp, scp, sub } = decodeJwt(token) as unknown as Jwt;
+
+    if (new Date() >= new Date(exp * 1000)) return;
+
+    setUserId(sub);
+    setScopes(scp);
+    setIsLoggedIn(true);
   }, []);
 
   useEffect(() => {
-    setIsLoggedIn(session.isValid());
+    parseToken(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY));
+  }, [parseToken]);
 
+  useEffect(() => {
     const id = apiClient.interceptors.request.use((req) => {
       if (!req.headers) req.headers = {};
 
-      if (session.isValid()) {
-        req.headers.authorization = `Bearer ${session.accessToken}`;
+      const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+
+      if (token) {
+        req.headers.authorization = `Bearer ${token}`;
       }
 
       return req;
     });
 
     return () => apiClient.interceptors.request.eject(id);
-  }, [session]);
+  }, []);
 
   const hasPermission = useCallback(
-    (...perms: AuthorizationScopes[]): boolean => {
-      if (!session) return false;
-
-      return perms.every((p) => session.hasPermission(p));
-    },
-    [session]
+    (...perms: AuthorizationScopes[]): boolean => perms.every((p) => scopes.includes(p)),
+    [scopes]
   );
 
   const login = useCallback(() => {
-    if (session?.expiration && session.expiration > new Date()) return;
-
     trace('begin-login');
 
     const popup = window.open(
@@ -53,7 +67,7 @@ export function useSession() {
     const intervalId = setInterval(() => {
       if (!popup || popup.closed) {
         trace('login-closed');
-        setSession(new Session());
+        logout();
         clearInterval(intervalId);
       }
     }, 100);
@@ -75,7 +89,7 @@ export function useSession() {
       window.removeEventListener('message', messageHandler);
 
       if (event.data.type === 'OAUTH_ERROR') {
-        setSession(new Session());
+        logout();
         trace('login-failed', {
           error: event.data.payload,
           type: 'provider-rejected',
@@ -86,29 +100,19 @@ export function useSession() {
       if (event.data.type === 'OAUTH_CODE') {
         trace('login-granted');
         const loginResponse = await apiClient.post('/login', { code: event.data.payload });
-        const s = new Session(loginResponse.data);
+        parseToken(loginResponse.data);
         localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
-        trace('login-success', {
-          expiration: s.expiration?.toISOString(),
-          scope: s.scope?.join(','),
-          username: s.username,
-        });
-        setSession(s);
       }
     };
 
     window.addEventListener('message', messageHandler);
-  }, [session]);
-
-  const logout = useCallback(() => {
-    localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-    setSession(new Session());
-  }, []);
+  }, [logout, parseToken]);
 
   return {
     hasPermission,
     isLoggedIn,
     login,
     logout,
+    userId,
   };
 }
