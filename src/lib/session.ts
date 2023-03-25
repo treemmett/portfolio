@@ -1,6 +1,7 @@
 import { decodeJwt } from 'jose';
 import { useCallback, useEffect, useState } from 'react';
 import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes, Jwt } from '@entities/Jwt';
+import type { IUser } from '@entities/User';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@pages/login';
 import { trace } from '@utils/analytics';
 import { apiClient } from '@utils/apiClient';
@@ -8,13 +9,13 @@ import { Config } from '@utils/config';
 
 export function useSession() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState<string>();
+  const [user, setUser] = useState<IUser>();
   const [scopes, setScopes] = useState<AuthorizationScopes[]>([]);
   const [accessToken, setAccessToken] = useState<string>();
 
   const logout = useCallback(() => {
     localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-    setUserId(undefined);
+    setUser(undefined);
     setScopes([]);
     setIsLoggedIn(false);
     setAccessToken(undefined);
@@ -23,11 +24,10 @@ export function useSession() {
   const parseToken = useCallback((token: string | null) => {
     if (!token) return;
 
-    const { exp, scp, sub } = decodeJwt(token) as unknown as Jwt;
+    const { exp, scp } = decodeJwt(token) as unknown as Jwt;
 
     if (new Date() >= new Date(exp * 1000)) return;
 
-    setUserId(sub);
     setScopes(scp);
     setIsLoggedIn(true);
     setAccessToken(token);
@@ -50,6 +50,10 @@ export function useSession() {
         }
 
         return req;
+      });
+
+      apiClient.get<IUser>('/user').then(({ data }) => {
+        setUser(data);
       });
     }
 
@@ -105,7 +109,9 @@ export function useSession() {
 
       if (event.data.type === 'OAUTH_CODE') {
         trace('login-granted');
-        const loginResponse = await apiClient.post('/login', { code: event.data.payload });
+        const loginResponse = await apiClient.post<string>('/login', {
+          code: event.data.payload,
+        });
         parseToken(loginResponse.data);
       }
     };
@@ -118,6 +124,6 @@ export function useSession() {
     isLoggedIn,
     login,
     logout,
-    userId,
+    user,
   };
 }
