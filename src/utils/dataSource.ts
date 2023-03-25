@@ -11,6 +11,7 @@ import { post1679706585667 } from 'src/migrations/1679706585667-posts';
 import { user1679760880585 } from 'src/migrations/1679760880585-user';
 import { owner1679762581596 } from 'src/migrations/1679762581596-owner';
 import { multiplePosts1679767977154 } from 'src/migrations/1679767977154-multiplePosts';
+import { username1679784893697 } from 'src/migrations/1679784893697-username';
 
 export const AppDataSource = new DataSource({
   database: Config.DB_DATABASE,
@@ -23,6 +24,7 @@ export const AppDataSource = new DataSource({
     user1679760880585,
     owner1679762581596,
     multiplePosts1679767977154,
+    username1679784893697,
   ],
   password: Config.DB_PASSWORD,
   port: Config.DB_PORT,

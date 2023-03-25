@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { transformAndValidate } from 'class-transformer-validator';
 import { IsString, IsUUID } from 'class-validator';
 import { SignJWT, jwtVerify } from 'jose';
 import {
@@ -11,13 +12,14 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { v4 } from 'uuid';
-import { AuthorizationScopes, Jwt } from './Jwt';
+import { AccessTokenMeta, AuthorizationScopes, Jwt } from './Jwt';
 import { Photo } from './Photo';
 import { Post } from './Post';
 import { Site } from './Site';
 import { ApiMiddleware } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
 import { APIError, ErrorCode } from '@utils/errors';
+import { logger } from '@utils/logger';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -25,6 +27,11 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @IsUUID()
   public id: string;
+
+  @Index({ unique: true })
+  @Column()
+  @IsString()
+  public username: string;
 
   @Index({ unique: true })
   @Column({ nullable: true, type: 'int' })
@@ -38,6 +45,8 @@ export class User extends BaseEntity {
 
   @OneToOne('sites')
   public site: Site;
+
+  public scopes: AuthorizationScopes[] = [];
 
   public static async authorizeGitHub(code: string) {
     const authResponse = await axios.post<
@@ -97,8 +106,7 @@ export class User extends BaseEntity {
     if (!user) {
       user = new User();
       user.id = v4();
-      user.githubId = data.id;
-      await user.save();
+      return user.signAccessToken([AuthorizationScopes.onboard], { githubId: data.id });
     }
 
     const scopes: AuthorizationScopes[] = [];
@@ -135,18 +143,37 @@ export class User extends BaseEntity {
         throw new Error('Unauthorized');
       }
 
-      req.user = await User.findOneByOrFail({ id: jwt.sub });
+      // skip db lookup if user is pending an onboard
+      if (scopes.every((s) => s === AuthorizationScopes.onboard)) {
+        logger.trace('Onboarding user, skipping db lookup');
+        req.user = new User();
+        req.user.id = jwt.sub;
+        req.user.githubId = jwt.meta?.githubId;
+        req.user.username = '';
+      } else {
+        logger.trace('Looking up user');
+        req.user = await User.findOneByOrFail({ id: jwt.sub });
+      }
+
+      req.user.scopes = jwt.scp;
+
+      logger.trace('User found, validating');
+
+      await transformAndValidate(User, req.user);
+
+      logger.trace('User validated');
+
       next();
     };
 
     return middleware;
   }
 
-  private async signAccessToken(scopes: AuthorizationScopes[]) {
+  private async signAccessToken(scopes: AuthorizationScopes[], meta?: AccessTokenMeta) {
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
 
-    const token = await new SignJWT({ scp: scopes })
+    const token = await new SignJWT({ meta, scp: scopes })
       .setProtectedHeader({ alg: 'HS256' })
       .setExpirationTime(Math.floor(expiration.getTime() / 1000))
       .setSubject(this.id)
@@ -164,4 +191,7 @@ export class User extends BaseEntity {
   }
 }
 
-export type IUser = Omit<User, keyof BaseEntity>;
+export type IUser = Omit<
+  User,
+  keyof BaseEntity | 'authorize' | 'authorizeGitHub' | 'signAccessToken'
+>;
