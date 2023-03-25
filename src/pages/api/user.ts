@@ -9,7 +9,7 @@ export default nextConnect()
   })
   .patch(async (req, res) => {
     if (req.body.username) {
-      req.user.username = req.body.user;
+      req.user.username = req.body.username;
     }
 
     await req.user.save();

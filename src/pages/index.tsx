@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { LightBox } from '@components/LightBox';
 import { Mosaic } from '@components/Mosaic';
 import { Nav } from '@components/Nav';
+import { Welcome } from '@components/Welcome';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
@@ -53,6 +54,8 @@ export const Home: NextPage = () => {
       <Mosaic />
 
       <LightBox />
+
+      <Welcome />
 
       {hasPermission(AuthorizationScopes.post) && (
         <>

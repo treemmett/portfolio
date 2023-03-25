@@ -35,7 +35,7 @@ export function useUser() {
     [data]
   );
 
-  const { trigger: login } = useSWRMutation('user', async () => {
+  const { trigger: login } = useSWRMutation<IUser | null>('user', async () => {
     trace('begin-login');
 
     const popup = window.open(
@@ -44,7 +44,7 @@ export function useUser() {
       `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
     );
 
-    await new Promise<IUser | null>((res) => {
+    return new Promise<IUser | null>((res) => {
       const intervalId = setInterval(() => {
         if (!popup || popup.closed) {
           trace('login-closed');
@@ -94,10 +94,11 @@ export function useUser() {
     });
   });
 
-  const { trigger: logout } = useSWRMutation(
+  const { trigger: logout } = useSWRMutation<IUser | null>(
     'user',
     async () => {
       localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+      return null;
     },
     {
       populateCache: () => null,
@@ -105,10 +106,22 @@ export function useUser() {
     }
   );
 
+  const { trigger: save } = useSWRMutation<IUser | null>(
+    'user',
+    async () => {
+      if (!user) throw new Error('Unauthenticated');
+
+      const response = await apiClient.patch('/user', { username: user?.username });
+      return response.data;
+    },
+    { populateCache: (result) => result, revalidate: false }
+  );
+
   return {
     hasPermission,
     login,
     logout,
+    save,
     setUser,
     user,
   };
