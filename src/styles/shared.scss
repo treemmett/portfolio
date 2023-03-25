@@ -50,7 +50,6 @@ $success: #6fcf97;
 }
 
 @mixin glass($alpha: 0.3, $color: null) {
-  padding: 20px;
   border-color: color.change($border-light, $alpha: 0.3);
   backdrop-filter: blur(10px);
   background-color: color.change($background, $alpha: $alpha);
