@@ -9,12 +9,19 @@ import { site1679621988878 } from 'src/migrations/1679621988878-site';
 import { photo1679688008947 } from 'src/migrations/1679688008947-photo';
 import { post1679706585667 } from 'src/migrations/1679706585667-posts';
 import { user1679760880585 } from 'src/migrations/1679760880585-user';
+import { owner1679762581596 } from 'src/migrations/1679762581596-owner';
 
 export const AppDataSource = new DataSource({
   database: Config.DB_DATABASE,
   entities: [Post, Photo, Site, User],
   host: Config.DB_HOST,
-  migrations: [site1679621988878, photo1679688008947, post1679706585667, user1679760880585],
+  migrations: [
+    site1679621988878,
+    photo1679688008947,
+    post1679706585667,
+    user1679760880585,
+    owner1679762581596,
+  ],
   password: Config.DB_PASSWORD,
   port: Config.DB_PORT,
   ssl: !!Config.DB_CERTIFICATE && {

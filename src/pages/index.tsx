@@ -1,4 +1,3 @@
-import { instanceToPlain } from 'class-transformer';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -28,7 +27,10 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
     props: {
       fallback: {
         posts: posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : null,
-        site: instanceToPlain(site.status === 'fulfilled' ? site.value[0] : undefined),
+        site:
+          site.status === 'fulfilled' && site.value.length
+            ? JSON.parse(JSON.stringify(site.value[0]))
+            : null,
       },
       ...(await serverSideTranslations(locale || 'en', ['common'])),
     },

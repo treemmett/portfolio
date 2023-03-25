@@ -29,6 +29,7 @@ import {
 import { v4 } from 'uuid';
 import { Photo, IPhoto } from './Photo';
 import { PhotoType } from './PhotoType';
+import { User } from './User';
 import { Config } from '@utils/config';
 import { APIError, ErrorCode } from '@utils/errors';
 import { logger } from '@utils/logger';
@@ -49,6 +50,12 @@ export class Post extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @IsUUID()
   public id: string;
+
+  @Type(() => User)
+  @ValidateNested()
+  @OneToOne('users', { nullable: false })
+  @JoinColumn()
+  public owner: User;
 
   @IsDate()
   @Type(() => Date)
@@ -96,7 +103,7 @@ export class Post extends BaseEntity {
   @Column({ nullable: true, type: 'varchar' })
   public title?: string | null;
 
-  public static async processUpload(token: string): Promise<Post> {
+  public static async processUpload(token: string, user: User): Promise<Post> {
     logger.info('Processing upload');
     if (!token) {
       logger.error('No upload token', { token });
@@ -145,7 +152,7 @@ export class Post extends BaseEntity {
 
     const image = sharp(buffer);
 
-    const photo = await Photo.upload(image, PhotoType.ORIGINAL);
+    const photo = await Photo.upload(image, user, PhotoType.ORIGINAL);
 
     // get average color
     const { channels } = await image.stats();
@@ -161,6 +168,7 @@ export class Post extends BaseEntity {
         green: g,
         id,
         location: meta.location,
+        owner: user,
         photo,
         red: r,
         title: meta.title,

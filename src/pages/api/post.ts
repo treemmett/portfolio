@@ -1,6 +1,6 @@
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
-import { Session } from '@entities/Session';
+import { User } from '@entities/User';
 import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
 import { logger } from '@utils/logger';
@@ -12,15 +12,15 @@ export default nextConnect()
     const posts = await Post.getAll();
     res.send(posts);
   })
-  .patch(Session.authorizeRequest(AuthorizationScopes.post), async (req, res) => {
+  .patch(User.authorize(AuthorizationScopes.post), async (req, res) => {
     await i18nRevalidate('/', res);
   })
-  .post(Session.authorizeRequest(AuthorizationScopes.post), async (req, res) => {
+  .post(User.authorize(AuthorizationScopes.post), async (req, res) => {
     const token = await Post.requestUploadToken();
     res.send(token);
   })
-  .put(Session.authorizeRequest(AuthorizationScopes.post), async (req, res) => {
-    const post = await Post.processUpload(req.body.token);
+  .put(User.authorize(AuthorizationScopes.post), async (req, res) => {
+    const post = await Post.processUpload(req.body.token, req.user);
     res.send(post);
     logger.info('Post created, revalidating cache');
     await i18nRevalidate('/', res);

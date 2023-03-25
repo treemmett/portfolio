@@ -1,9 +1,18 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Type } from 'class-transformer';
+import { ValidateNested } from 'class-validator';
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './User';
 
 @Entity({ name: 'sites' })
 export class Site extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
+
+  @Type(() => User)
+  @ValidateNested()
+  @OneToOne('users', { nullable: false })
+  @JoinColumn()
+  public owner: User;
 
   @Column({ nullable: true })
   public description?: string;

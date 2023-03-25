@@ -1,10 +1,11 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min } from 'class-validator';
+import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
 import { Sharp } from 'sharp';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
+import { User } from './User';
 import { Config } from '@utils/config';
 import { logger } from '@utils/logger';
 import { s3 } from '@utils/s3';
@@ -17,6 +18,12 @@ export class Photo extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @IsUUID()
   public id: string;
+
+  @Type(() => User)
+  @ValidateNested()
+  @OneToOne('users', { nullable: false })
+  @JoinColumn()
+  public owner: User;
 
   @IsInt()
   @Column()
@@ -53,7 +60,11 @@ export class Photo extends BaseEntity {
   @Column()
   public width: number;
 
-  public static async upload(image: Sharp, type: PhotoType = PhotoType.ORIGINAL): Promise<Photo> {
+  public static async upload(
+    image: Sharp,
+    user: User,
+    type: PhotoType = PhotoType.ORIGINAL
+  ): Promise<Photo> {
     logger.info('Uploading photo', await image.metadata());
     const id = v4();
 
@@ -91,6 +102,7 @@ export class Photo extends BaseEntity {
       {
         height: metadata.height,
         id,
+        owner: user,
         size: buffer.length,
         thumbnailURL: `data:${mime};base64,${thumbnailBuffer.toString('base64')}`,
         type,

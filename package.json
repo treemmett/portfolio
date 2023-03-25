@@ -22,7 +22,7 @@
     "seed:up": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedUp",
     "seed:down": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedDown",
     "seed:create": "cd src/migrations && typeorm migration:create",
-    "seed:gen": "yarn build:tsc && cd src/migrations && ts-node ../../node_modules/.bin/typeorm migration:generate foo -d ../../build/src/utils/dataSource.js"
+    "seed:gen": "yarn build:tsc && cd src/migrations && typeorm migration:generate foo -d ../../build/src/utils/dataSource.js"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^12.3.1",

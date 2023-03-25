@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { IsString, IsUUID } from 'class-validator';
-import { SignJWT } from 'jose';
+import { SignJWT, jwtVerify } from 'jose';
 import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
-import { AuthorizationScopes } from './Jwt';
+import { AuthorizationScopes, Jwt } from './Jwt';
+import { ApiMiddleware } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
 import { APIError, ErrorCode } from '@utils/errors';
 
@@ -104,6 +105,38 @@ export class User extends BaseEntity {
       expiration,
       signature,
     };
+  }
+
+  public static authorize(...scopes: AuthorizationScopes[]) {
+    const middleware: ApiMiddleware = async (req, res, next) => {
+      const signature = req.cookies['xsrf-token'];
+      const match = /^Bearer (\S+)/i.exec(req.headers.authorization || '');
+
+      if (!signature || !match || !match[1]) {
+        throw new Error('Unauthenticated');
+      }
+
+      let jwt: Jwt;
+      try {
+        const result = await jwtVerify(
+          match[1] + signature,
+          new TextEncoder().encode(Config.JWT_SECRET)
+        );
+
+        jwt = result.payload as unknown as Jwt;
+      } catch {
+        throw new APIError(ErrorCode.bad_access_token);
+      }
+
+      if (!scopes.every((s) => jwt.scp.includes(s))) {
+        throw new Error('Unauthorized');
+      }
+
+      req.user = await User.findOneByOrFail({ id: jwt.sub });
+      next();
+    };
+
+    return middleware;
   }
 }
 
