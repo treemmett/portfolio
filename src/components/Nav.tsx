@@ -18,7 +18,7 @@ export const Nav: FC = () => {
       <h1>{site?.name}</h1>
 
       {hasPermission(AuthorizationScopes.post) && (
-        <Link className={styles.edit} href={{ query: { settings: true } }}>
+        <Link className={styles.edit} href={{ query: { settings: true } }} shallow>
           <EditIcon />
         </Link>
       )}
