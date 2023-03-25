@@ -11,7 +11,7 @@ import { useSite } from '@lib/site';
 export const Nav: FC = () => {
   const { t } = useTranslation();
   const { site } = useSite();
-  const { isLoggedIn, login, logout, hasPermission } = useSession();
+  const { login, logout, hasPermission, user } = useSession();
 
   return (
     <header className={styles.nav}>
@@ -48,12 +48,12 @@ export const Nav: FC = () => {
             LinkedIn
           </Anchor>
         )}
-        {isLoggedIn ? (
-          <button onClick={logout} type="button">
+        {user ? (
+          <button onClick={() => logout()} type="button">
             {t('Logout')}
           </button>
         ) : (
-          <button onClick={login} type="button">
+          <button onClick={() => login()} type="button">
             {t('Login')}
           </button>
         )}

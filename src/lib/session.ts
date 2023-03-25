@@ -1,71 +1,41 @@
-import { decodeJwt } from 'jose';
 import { useCallback, useEffect, useState } from 'react';
-import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes, Jwt } from '@entities/Jwt';
+import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
+import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes } from '@entities/Jwt';
 import type { IUser } from '@entities/User';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@pages/login';
 import { trace } from '@utils/analytics';
 import { apiClient } from '@utils/apiClient';
 import { Config } from '@utils/config';
 
+async function getUser(): Promise<IUser | null> {
+  const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+
+  if (!token) return null;
+
+  const { data } = await apiClient.get<IUser>('/user', {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+}
+
 export function useSession() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<IUser>();
-  const [scopes, setScopes] = useState<AuthorizationScopes[]>([]);
-  const [accessToken, setAccessToken] = useState<string>();
-
-  const logout = useCallback(() => {
-    localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
-    setUser(undefined);
-    setScopes([]);
-    setIsLoggedIn(false);
-    setAccessToken(undefined);
-  }, []);
-
-  const parseToken = useCallback((token: string | null) => {
-    if (!token) return;
-
-    const { exp, scp } = decodeJwt(token) as unknown as Jwt;
-
-    if (new Date() >= new Date(exp * 1000)) return;
-
-    setScopes(scp);
-    setIsLoggedIn(true);
-    setAccessToken(token);
-    localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, token);
-  }, []);
-
-  useEffect(() => {
-    parseToken(localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY));
-  }, [parseToken]);
-
-  useEffect(() => {
-    let id: number;
-
-    if (isLoggedIn) {
-      id = apiClient.interceptors.request.use((req) => {
-        if (!req.headers) req.headers = {};
-
-        if (accessToken) {
-          req.headers.authorization = `Bearer ${accessToken}`;
-        }
-
-        return req;
-      });
-
-      apiClient.get<IUser>('/user').then(({ data }) => {
-        setUser(data);
-      });
-    }
-
-    return () => apiClient.interceptors.request.eject(id);
-  }, [accessToken, isLoggedIn]);
+  const { data } = useSWR<IUser | null>('user', getUser);
+  useEffect(() => setUser(data || undefined), [data]);
 
   const hasPermission = useCallback(
-    (...perms: AuthorizationScopes[]): boolean => perms.every((p) => scopes.includes(p)),
-    [scopes]
+    (...perms: AuthorizationScopes[]): boolean => {
+      if (!data) return false;
+      return perms.every((p) => data.scopes.includes(p));
+    },
+    [data]
   );
 
-  const login = useCallback(() => {
+  const { trigger: login } = useSWRMutation('user', async () => {
     trace('begin-login');
 
     const popup = window.open(
@@ -74,56 +44,72 @@ export function useSession() {
       `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
     );
 
-    const intervalId = setInterval(() => {
-      if (!popup || popup.closed) {
-        trace('login-closed');
-        logout();
+    await new Promise<IUser | null>((res) => {
+      const intervalId = setInterval(() => {
+        if (!popup || popup.closed) {
+          trace('login-closed');
+          clearInterval(intervalId);
+          res(null);
+        }
+      }, 100);
+
+      const messageHandler = async (
+        event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>
+      ) => {
+        if (event.origin !== window.location.origin) {
+          trace('login-failed', {
+            type: 'cross-origin',
+          });
+          throw new Error('Message failed cross-origin check');
+        }
+
         clearInterval(intervalId);
-      }
-    }, 100);
 
-    const messageHandler = async (event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>) => {
-      if (event.origin !== window.location.origin) {
-        trace('login-failed', {
-          type: 'cross-origin',
-        });
-        throw new Error('Message failed cross-origin check');
-      }
+        event.source?.postMessage({
+          type: 'OAUTH_CLOSE',
+        } as OAuthCloseMessage);
 
-      clearInterval(intervalId);
+        window.removeEventListener('message', messageHandler);
 
-      event.source?.postMessage({
-        type: 'OAUTH_CLOSE',
-      } as OAuthCloseMessage);
+        if (event.data.type === 'OAUTH_ERROR') {
+          trace('login-failed', {
+            error: event.data.payload,
+            type: 'provider-rejected',
+          });
+          throw new Error(event.data.payload);
+        }
 
-      window.removeEventListener('message', messageHandler);
+        if (event.data.type === 'OAUTH_CODE') {
+          trace('login-granted');
+          const loginResponse = await apiClient.post<string>('/login', {
+            code: event.data.payload,
+          });
 
-      if (event.data.type === 'OAUTH_ERROR') {
-        logout();
-        trace('login-failed', {
-          error: event.data.payload,
-          type: 'provider-rejected',
-        });
-        throw new Error(event.data.payload);
-      }
+          localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
+          res(await getUser());
+        }
+      };
 
-      if (event.data.type === 'OAUTH_CODE') {
-        trace('login-granted');
-        const loginResponse = await apiClient.post<string>('/login', {
-          code: event.data.payload,
-        });
-        parseToken(loginResponse.data);
-      }
-    };
+      window.addEventListener('message', messageHandler);
+    });
+  });
 
-    window.addEventListener('message', messageHandler);
-  }, [logout, parseToken]);
+  const { trigger: logout } = useSWRMutation(
+    'user',
+    async () => {
+      localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+    },
+    {
+      populateCache: () => null,
+      revalidate: false,
+    }
+  );
 
   return {
     hasPermission,
-    isLoggedIn,
     login,
     logout,
+    setUser,
     user,
   };
 }

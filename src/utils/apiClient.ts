@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ACCESS_TOKEN_STORAGE_KEY } from '@entities/Jwt';
 
 export interface ApiRequest {
   id: string;
@@ -11,4 +12,16 @@ export interface ApiRequest {
 export const apiClient = axios.create({
   baseURL: '/api',
   withCredentials: true,
+});
+
+apiClient.interceptors.request.use((req) => {
+  const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+
+  if (!req.headers) req.headers = {};
+
+  if (token) {
+    req.headers.authorization = `Bearer ${token}`;
+  }
+
+  return req;
 });
