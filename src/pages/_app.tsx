@@ -12,7 +12,7 @@ const josefin = JosefinSans({ subsets: ['latin'], weight: ['300', '400'] });
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => (
   <main className={josefin.className}>
-    <SWRConfig value={{ fallback: pageProps.fallback }}>
+    <SWRConfig value={{ fallback: pageProps.fallback, revalidateOnFocus: false }}>
       <DataStoreProvider defaults={pageProps}>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <Component {...pageProps} />
