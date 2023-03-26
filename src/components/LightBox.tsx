@@ -7,6 +7,7 @@ import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { usePosts } from '@lib/posts';
+import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
 import { trace } from '@utils/analytics';
 import { formatDate } from '@utils/date';
@@ -21,6 +22,7 @@ export const LightBox: FC = () => {
   const { query, push } = useRouter();
   const { posts } = usePosts();
   const { hasPermission } = useUser();
+  const { site } = useSite();
 
   const post = useMemo(() => posts?.find((p) => p.id === query.post), [query.post, posts]);
 
@@ -66,10 +68,14 @@ export const LightBox: FC = () => {
   }, [width, height, post?.photo, scaleImage]);
 
   const closeLightBox = useCallback(() => {
+    if (!post) {
+      push(query.username ? `/u/${query.owner}` : '/');
+    }
+
     const q = { ...query };
     delete q.post;
-    push(post?.owner ? `/u/${post.owner.username}` : '/');
-  }, [post, push, query]);
+    push(site?.domain === window.location.host ? '/' : `/u/${post?.owner.username}/`);
+  }, [post, push, query, site?.domain]);
 
   return (
     <Modal
