@@ -68,3 +68,9 @@ export class UserNotFoundError extends APIError {
     super(message, 404);
   }
 }
+
+export class SiteNotFoundError extends APIError {
+  constructor(public message = 'Site not found') {
+    super(message, 404);
+  }
+}

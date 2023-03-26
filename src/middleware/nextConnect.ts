@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { isCelebrateError } from 'celebrate';
+import { isCelebrateError, errors } from 'celebrate';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NC, { Middleware } from 'next-connect';
 import pinoHttp from 'pino-http';
@@ -19,14 +19,14 @@ export interface ApiRequest extends NextApiRequest {
 
 export type ApiMiddleware = Middleware<ApiRequest, NextApiResponse>;
 
+const celebrateErrorHandler = errors();
+
 export const nextConnect = () =>
   NC<ApiRequest, NextApiResponse>({
     onError: (err, req, res, next) => {
       logger.error({ err }, 'Request error caught');
 
       if (isCelebrateError(err)) {
-        // @ts-expect-error celebrate wasn't built for next
-        // TODO
         celebrateErrorHandler(err, req, res, next);
         return;
       }

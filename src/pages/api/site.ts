@@ -43,11 +43,8 @@ export default nextConnect()
       res.send(site);
     }
   )
-  .get(async (req, res) => {
-    const [site] = await Site.find();
-    if (site) {
-      res.send(site);
-    } else {
-      res.status(404).end();
-    }
+  .get(celebrate({ query: { username: Joi.string().required() } }), async (req, res) => {
+    const site = await Site.getByUsername(req.query.username as string);
+
+    res.send(site);
   });

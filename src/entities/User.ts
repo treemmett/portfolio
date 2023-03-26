@@ -49,7 +49,7 @@ export class User extends BaseEntity {
   @OneToMany('posts', 'owner')
   public posts: Post[];
 
-  @OneToOne('sites')
+  @OneToOne('sites', 'owner')
   public site: Site;
 
   public scopes: AuthorizationScopes[] = [];

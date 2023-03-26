@@ -1,12 +1,13 @@
 import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import type { User } from './User';
+import { SiteNotFoundError } from '@utils/errors';
 
 @Entity({ name: 'sites' })
 export class Site extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @OneToOne('users', { nullable: false })
+  @OneToOne('users', 'site', { nullable: false })
   @JoinColumn()
   public owner: User;
 
@@ -36,6 +37,16 @@ export class Site extends BaseEntity {
 
   @Column({ nullable: true })
   public facebook?: string;
+
+  public static async getByUsername(username: string): Promise<Site> {
+    const site = await Site.findOne({
+      where: { owner: { username } },
+    });
+
+    if (!site) throw new SiteNotFoundError();
+
+    return site;
+  }
 }
 
 export type ISite = Omit<Site, keyof BaseEntity>;
