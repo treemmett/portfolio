@@ -1,6 +1,4 @@
 export class Config {
-  public static AUTHORIZED_USERS = process.env.AUTHORIZED_USERS || '';
-
   public static AXIOM_TOKEN = process.env.AXIOM_TOKEN;
 
   public static CDN_URL?: string = process.env.CDN_URL;

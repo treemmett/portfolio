@@ -154,7 +154,7 @@ export class User extends BaseEntity {
       }
 
       // skip db lookup if user is pending an onboard
-      if (jwt.scp.every((s) => s === AuthorizationScopes.onboard)) {
+      if (jwt.scp.includes(AuthorizationScopes.onboard)) {
         logger.trace('Onboarding user, skipping db lookup');
         req.user = new User();
         req.user.id = jwt.sub;
@@ -186,7 +186,8 @@ export class User extends BaseEntity {
 
     const scp = new Set<AuthorizationScopes>();
 
-    if (Config.AUTHORIZED_USERS.split(',').includes(this.username)) {
+    // onboarding users don't have any perms
+    if (!scopes?.includes(AuthorizationScopes.onboard)) {
       scp.add(AuthorizationScopes.delete);
       scp.add(AuthorizationScopes.post);
     }
