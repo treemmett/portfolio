@@ -1,11 +1,10 @@
 import { Joi, celebrate } from 'celebrate';
 import { serialize } from 'cookie';
 import { User } from '@entities/User';
-import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
 
 export default nextConnect()
-  .use(connectToDatabaseMiddleware, User.authorize())
+  .use(User.authorize())
   .get(async (req, res) => {
     res.send(req.user);
   })
@@ -21,6 +20,7 @@ export default nextConnect()
       }
 
       await req.user.save();
+
       const { accessToken, expiration, signature } = await req.user.signAccessToken();
 
       res.setHeader(

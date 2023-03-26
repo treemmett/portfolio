@@ -2,11 +2,9 @@ import { celebrate, Joi } from 'celebrate';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Site } from '@entities/Site';
 import { User } from '@entities/User';
-import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
 
 export default nextConnect()
-  .use(connectToDatabaseMiddleware)
   .patch(
     User.authorize(AuthorizationScopes.post),
     celebrate(

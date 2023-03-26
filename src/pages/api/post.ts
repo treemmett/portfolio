@@ -2,13 +2,11 @@ import { Joi, celebrate } from 'celebrate';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { User } from '@entities/User';
-import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
 import { logger } from '@utils/logger';
 import { i18nRevalidate } from '@utils/revalidate';
 
 export default nextConnect()
-  .use(connectToDatabaseMiddleware)
   .get(
     celebrate({
       query: {
