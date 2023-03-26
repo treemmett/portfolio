@@ -13,7 +13,7 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
   const { t } = useTranslation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { isDeleting, isSaving, post, save, setPost, deleteTrigger } = usePost(id);
-  const { hasPermission } = useUser();
+  const { hasPermission, user } = useUser();
 
   const formHandler: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
@@ -23,7 +23,8 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
     [save]
   );
 
-  if (!post) return null;
+  if (!post || !user) return null;
+  if (post.owner.id !== user.id) return null;
 
   return (
     <form className={styles.form} onSubmit={formHandler}>
