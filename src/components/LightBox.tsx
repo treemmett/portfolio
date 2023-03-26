@@ -66,8 +66,10 @@ export const LightBox: FC = () => {
   }, [width, height, post?.photo, scaleImage]);
 
   const closeLightBox = useCallback(() => {
-    push({ query: {} }, undefined, { scroll: false, shallow: true });
-  }, [push]);
+    const q = { ...query };
+    delete q.post;
+    push({ query: q }, undefined, { scroll: false, shallow: true });
+  }, [push, query]);
 
   return (
     <Modal
