@@ -31,7 +31,8 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
       fallback: {
-        posts: posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : null,
+        [`posts/tregan`]:
+          posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : null,
         site: site.status === 'fulfilled' ? JSON.parse(JSON.stringify(site.value)) : null,
       },
       ...(await serverSideTranslations(locale || 'en', ['common'])),
