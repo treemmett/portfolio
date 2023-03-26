@@ -25,7 +25,8 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, query }) 
   return {
     props: {
       fallback: {
-        posts: posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : null,
+        [`posts/${query.username}`]:
+          posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : null,
         [`site/${query.username}`]:
           site.status === 'fulfilled' ? JSON.parse(JSON.stringify(site.value)) : null,
       },
