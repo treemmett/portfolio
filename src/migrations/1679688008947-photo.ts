@@ -4,6 +4,7 @@ export class photo1679688008947 implements MigrationInterface {
   name = 'photo1679688008947';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`CREATE TYPE "public"."photos_type_enum" AS ENUM('0')`);
     await queryRunner.query(
       `CREATE TABLE "photos" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "height" integer NOT NULL, "size" integer NOT NULL, "thumbnailURL" character varying NOT NULL, "type" "public"."photos_type_enum" NOT NULL, "width" integer NOT NULL, CONSTRAINT "PK_5220c45b8e32d49d767b9b3d725" PRIMARY KEY ("id"))`
     );
@@ -49,5 +50,6 @@ export class photo1679688008947 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "sites" ADD "description" text`);
     await queryRunner.query(`ALTER TABLE "sites" ALTER COLUMN "id" DROP DEFAULT`);
     await queryRunner.query(`DROP TABLE "photos"`);
+    await queryRunner.query(`DROP TYPE "public"."photos_type_enum"`);
   }
 }
