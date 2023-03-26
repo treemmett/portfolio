@@ -7,9 +7,10 @@ import { formatDate } from '@utils/date';
 
 export interface TileProps {
   post: IPost;
+  priority?: boolean;
 }
 
-export const Tile: FC<TileProps> = ({ post }) => {
+export const Tile: FC<TileProps> = ({ post, priority }) => {
   const label = [post.title, post.location, formatDate(post.created)].filter((i) => !!i).join(', ');
 
   return (
@@ -26,6 +27,7 @@ export const Tile: FC<TileProps> = ({ post }) => {
         className={styles.tile}
         height={post.photo.height}
         placeholder="blur"
+        priority={priority}
         sizes={new Array(12)
           .fill(null)
           .map((_, i) => `(max-width: ${(i + 1) * 260}px) ${Math.floor(100 / (i + 1))}vw`)

@@ -13,8 +13,8 @@ export const Mosaic: FC = () => {
 
   return (
     <div className={styles.mosaic}>
-      {posts?.map((post) => (
-        <Tile key={post.id} post={post} />
+      {posts?.map((post, i) => (
+        <Tile key={post.id} post={post} priority={i < 5} />
       ))}
     </div>
   );
