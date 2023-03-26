@@ -86,7 +86,9 @@ export const Settings: FC = () => {
             onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
             value={site.imdb || ''}
           />
-          <Button submit>{t('Save')}</Button>
+          <Button type="success" submit>
+            {t('Save')}
+          </Button>
         </form>
       ) : (
         'Loading...'
