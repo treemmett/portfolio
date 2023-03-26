@@ -2,7 +2,6 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
-import { ReactComponent as EditIcon } from '../icons/edit.svg';
 import { Anchor } from './Anchor';
 import styles from './Nav.module.scss';
 import { useSite } from '@lib/site';
@@ -17,16 +16,6 @@ export const Nav: FC = () => {
   return (
     <header className={styles.nav}>
       <h1>{site?.name}</h1>
-
-      {site?.owner.id === user?.id && (
-        <Link
-          className={styles.edit}
-          href={{ href: '/u/[username]', query: { ...query, settings: true } }}
-          shallow
-        >
-          <EditIcon />
-        </Link>
-      )}
 
       <nav>
         {site?.facebook && (
@@ -54,9 +43,20 @@ export const Nav: FC = () => {
           </Anchor>
         )}
         {user ? (
-          <button onClick={() => logout()} type="button">
-            {t('Logout')}
-          </button>
+          <>
+            {site?.owner.id === user.id ? (
+              <Link href={{ href: '/u/[username]', query: { ...query, settings: true } }} shallow>
+                {t('Settings')}
+              </Link>
+            ) : (
+              <Link href={{ href: '/u/[username]', query: { username: user.username } }}>
+                {t('My Site')}
+              </Link>
+            )}
+            <button onClick={() => logout()} type="button">
+              {t('Logout')}
+            </button>
+          </>
         ) : (
           <button onClick={() => login()} type="button">
             {t('Login')}
