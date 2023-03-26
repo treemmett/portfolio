@@ -20,12 +20,12 @@
 }
 
 .button {
-  @include shared.border;
   @include color;
 
   position: relative;
   padding: 0.8rem 1rem;
   border-width: 0;
+  border-radius: shared.$border-radius;
   color: shared.$text-light;
   cursor: pointer;
   font-family: inherit;

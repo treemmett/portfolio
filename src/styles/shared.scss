@@ -10,6 +10,7 @@ $shadow: 0 0 10px rgba(0, 0, 0, 30%);
 $danger: #d90429;
 $warning: #ffb86c;
 $success: #6fcf97;
+$border-radius: 0.8rem;
 
 @mixin dark-mode {
   @media (prefers-color-scheme: dark) {
@@ -43,10 +44,6 @@ $success: #6fcf97;
   @include dark-mode {
     @include light-theme;
   }
-}
-
-@mixin border {
-  border-radius: 1rem / 1.2rem;
 }
 
 @mixin glass($alpha: 0.3, $color: null) {
