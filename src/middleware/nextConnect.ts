@@ -21,6 +21,8 @@ export type ApiMiddleware = Middleware<ApiRequest, NextApiResponse>;
 export const nextConnect = () =>
   NC<ApiRequest, NextApiResponse>({
     onError: (err, req, res, next) => {
+      logger.error({ err }, 'Request error caught');
+
       if (isCelebrateError(err)) {
         // @ts-expect-error celebrate wasn't built for next
         // TODO
