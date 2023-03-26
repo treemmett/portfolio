@@ -7,6 +7,12 @@ import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@page
 import { trace } from '@utils/analytics';
 import { apiClient } from '@utils/apiClient';
 import { Config } from '@utils/config';
+import {
+  APIError,
+  BadCrossOriginError,
+  OAuthHandshakeError,
+  UnauthenticatedError,
+} from '@utils/errors';
 
 async function getUser(): Promise<IUser | null> {
   const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
@@ -24,7 +30,7 @@ async function getUser(): Promise<IUser | null> {
 
 export function useUser() {
   const [user, setUser] = useState<IUser>();
-  const { data } = useSWR<IUser | null>('user', getUser);
+  const { data, error } = useSWR<IUser | null, APIError>('user', getUser);
   useEffect(() => setUser(data || undefined), [data]);
 
   const hasPermission = useCallback(
@@ -35,7 +41,7 @@ export function useUser() {
     [data]
   );
 
-  const { trigger: login } = useSWRMutation<IUser | null>('user', async () => {
+  const { trigger: login } = useSWRMutation<IUser | null, APIError>('user', async () => {
     trace('begin-login');
 
     const popup = window.open(
@@ -60,7 +66,7 @@ export function useUser() {
           trace('login-failed', {
             type: 'cross-origin',
           });
-          throw new Error('Message failed cross-origin check');
+          throw new BadCrossOriginError();
         }
 
         clearInterval(intervalId);
@@ -72,11 +78,7 @@ export function useUser() {
         window.removeEventListener('message', messageHandler);
 
         if (event.data.type === 'OAUTH_ERROR') {
-          trace('login-failed', {
-            error: event.data.payload,
-            type: 'provider-rejected',
-          });
-          throw new Error(event.data.payload);
+          throw new OAuthHandshakeError();
         }
 
         if (event.data.type === 'OAUTH_CODE') {
@@ -94,7 +96,7 @@ export function useUser() {
     });
   });
 
-  const { trigger: logout } = useSWRMutation<IUser | null>(
+  const { trigger: logout } = useSWRMutation<IUser | null, APIError>(
     'user',
     async () => {
       localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
@@ -106,10 +108,10 @@ export function useUser() {
     }
   );
 
-  const { trigger: save } = useSWRMutation<IUser | null>(
+  const { trigger: save } = useSWRMutation<IUser | null, APIError>(
     'user',
     async () => {
-      if (!user) throw new Error('Unauthenticated');
+      if (!user) throw new UnauthenticatedError();
 
       const response = await apiClient.patch<{ user: IUser; accessToken: string }>('/user', {
         username: user?.username,
@@ -123,6 +125,7 @@ export function useUser() {
   );
 
   return {
+    error,
     hasPermission,
     login,
     logout,

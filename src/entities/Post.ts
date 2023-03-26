@@ -32,7 +32,7 @@ import { Photo, IPhoto } from './Photo';
 import { PhotoType } from './PhotoType';
 import { User } from './User';
 import { Config } from '@utils/config';
-import { APIError, ErrorCode } from '@utils/errors';
+import { BadUploadTokenError, NoFileReceivedError, PostNotFoundError } from '@utils/errors';
 import { logger } from '@utils/logger';
 import { s3 } from '@utils/s3';
 
@@ -107,7 +107,7 @@ export class Post extends BaseEntity {
     logger.info('Processing upload');
     if (!token) {
       logger.error('No upload token', { token });
-      throw new APIError(ErrorCode.no_upload_token);
+      throw new BadUploadTokenError('No upload token');
     }
 
     let payload: JWTPayload;
@@ -120,7 +120,7 @@ export class Post extends BaseEntity {
 
       payload = verification.payload;
     } catch {
-      throw new APIError(ErrorCode.bad_upload_token);
+      throw new BadUploadTokenError();
     }
 
     const { jti } = payload as {
@@ -137,13 +137,13 @@ export class Post extends BaseEntity {
         .promise();
     } catch (e) {
       if ((e as AWSError).code === 'NoSuchKey') {
-        throw new APIError(ErrorCode.no_file_received);
+        throw new NoFileReceivedError();
       }
 
       throw e;
     }
 
-    if (!object.Body) throw new APIError(ErrorCode.no_file_received);
+    if (!object.Body) throw new NoFileReceivedError();
 
     await s3.deleteObject({ Bucket: S3_BUCKET, Key: this.getProcessingKey(jti) }).promise();
 
@@ -230,7 +230,11 @@ export class Post extends BaseEntity {
       .leftJoinAndSelect('post.owner', 'user')
       .where('user.username = :username', { username: user.username })
       .andWhere('post.id = :id', { id })
-      .getOneOrFail();
+      .getOne();
+
+    if (!post) {
+      throw new PostNotFoundError();
+    }
 
     return transformAndValidate(Post, post);
   }

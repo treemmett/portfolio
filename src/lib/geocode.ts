@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { ServiceError } from '@utils/errors';
+import { logger } from '@utils/logger';
 
 interface GeocodeResponse {
   place_id: number;
@@ -30,7 +32,10 @@ export async function geocode(lng: number, lat: number): Promise<GeocodeResponse
     params: { lat, lon: lng },
   });
 
-  if (data.error) throw new Error(data.error);
+  if (data.error) {
+    logger.error(data.error, 'Geocode error');
+    throw new ServiceError('Geocoding failed');
+  }
 
   data.address.country_code = data.address.country_code.toUpperCase();
 

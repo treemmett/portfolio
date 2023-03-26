@@ -4,17 +4,18 @@ import useSWR from 'swr';
 import useSWRMutate from 'swr/mutation';
 import type { IPost } from '@entities/Post';
 import { apiClient } from '@utils/apiClient';
+import { APIError } from '@utils/errors';
 
 export function usePosts() {
   const { query } = useRouter();
-  const { data, isLoading, error } = useSWR(`posts`, async () => {
+  const { data, isLoading, error } = useSWR<IPost[], APIError>(`posts`, async () => {
     const response = await apiClient.get<IPost[]>('/post', {
       params: { username: query.username },
     });
     return response.data;
   });
 
-  const { trigger } = useSWRMutate<IPost, Error, string, IPost>(
+  const { trigger } = useSWRMutate<IPost, APIError, string, IPost>(
     `posts`,
     async (key, { arg }) => arg,
     {
@@ -49,7 +50,7 @@ export function usePost(id: string) {
     isMutating,
     trigger,
     error: mutationError,
-  } = useSWRMutate(
+  } = useSWRMutate<IPost, APIError>(
     `posts`,
     async () => {
       const response = await apiClient.patch<IPost>(`/post/${encodeURI(id)}`, post);

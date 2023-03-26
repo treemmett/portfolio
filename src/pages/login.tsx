@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
+import { BadCrossOriginError } from '@utils/errors';
 
 export interface OAuthSuccessMessage {
   type: 'OAUTH_CODE';
@@ -41,7 +42,7 @@ const Login: NextPage = () => {
 
   const successHandler = useCallback((e: MessageEvent<OAuthCloseMessage>) => {
     if (e.origin !== window.location.origin) {
-      throw new Error('Message failed cross-origin check');
+      throw new BadCrossOriginError();
     }
 
     if (e.data.type === 'OAUTH_CLOSE') window.close();

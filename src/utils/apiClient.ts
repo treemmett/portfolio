@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import * as Errors from './errors';
 import { ACCESS_TOKEN_STORAGE_KEY } from '@entities/Jwt';
 
 export interface ApiRequest {
@@ -24,4 +25,14 @@ apiClient.interceptors.request.use((req) => {
   }
 
   return req;
+});
+
+apiClient.interceptors.response.use(undefined, (err: AxiosError<{ error: Errors.APIError }>) => {
+  const errorCode = err.response?.data?.error?.code as keyof typeof Errors;
+  if (errorCode) {
+    const E = Errors[errorCode] || Errors.APIError;
+    throw new E(err.response?.data?.error?.message || 'An unknown error occurred');
+  } else {
+    throw new Errors.APIError();
+  }
 });

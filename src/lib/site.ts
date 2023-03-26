@@ -3,9 +3,10 @@ import useSWR from 'swr';
 import useSWRMutate from 'swr/mutation';
 import type { ISite } from '@entities/Site';
 import { apiClient } from '@utils/apiClient';
+import { APIError } from '@utils/errors';
 
 export function useSite() {
-  const { data, isLoading, error } = useSWR('site', async () => {
+  const { data, isLoading, error } = useSWR<ISite, APIError>('site', async () => {
     const response = await apiClient.get<ISite>('/site');
     return response.data;
   });
@@ -20,7 +21,7 @@ export function useSite() {
     isMutating,
     trigger,
     error: mutationError,
-  } = useSWRMutate(
+  } = useSWRMutate<ISite, APIError>(
     'site',
     async () => {
       const response = await apiClient.patch<ISite>('/site', site);

@@ -12,10 +12,6 @@ export default nextConnect()
   .delete(User.authorize(AuthorizationScopes.delete), async (req, res) => {
     const post = await Post.getOneFromUser(req.user, req.query.id as string);
 
-    if (!post) {
-      throw new Error('Post not found');
-    }
-
     await post.remove();
 
     logger.info('Post deleted, revalidating cache');

@@ -18,7 +18,12 @@ import { Post } from './Post';
 import { Site } from './Site';
 import { ApiMiddleware } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
-import { APIError, ErrorCode } from '@utils/errors';
+import {
+  BadAccessTokenError,
+  OAuthHandshakeError,
+  UnauthenticatedError,
+  UnauthorizedError,
+} from '@utils/errors';
 import { logger } from '@utils/logger';
 
 @Entity({ name: 'users' })
@@ -72,16 +77,16 @@ export class User extends BaseEntity {
 
     if (authResponse.status !== 200 || 'error' in authResponse.data) {
       if (!('error' in authResponse.data)) {
-        throw new APIError(ErrorCode.github_error);
+        throw new OAuthHandshakeError();
       }
 
       switch (authResponse.data?.error) {
         case 'incorrect_client_credentials':
-          throw new APIError(ErrorCode.invalid_auth_secret);
+          throw new OAuthHandshakeError('Bad OAuth secret');
         case 'bad_verification_code':
-          throw new APIError(ErrorCode.invalid_auth_code);
+          throw new OAuthHandshakeError('Bad OAuth code');
         default:
-          throw new APIError(ErrorCode.github_error);
+          throw new OAuthHandshakeError();
       }
     }
 
@@ -99,7 +104,7 @@ export class User extends BaseEntity {
     });
 
     if (status !== 200) {
-      throw new APIError(ErrorCode.github_error);
+      throw new OAuthHandshakeError();
     }
 
     let user = await User.findOneBy({ githubId: data.id });
@@ -118,7 +123,7 @@ export class User extends BaseEntity {
       const match = /^Bearer (\S+)/i.exec(req.headers.authorization || '');
 
       if (!signature || !match || !match[1]) {
-        throw new Error('Unauthenticated');
+        throw new UnauthenticatedError();
       }
 
       let jwt: Jwt;
@@ -130,11 +135,11 @@ export class User extends BaseEntity {
 
         jwt = result.payload as unknown as Jwt;
       } catch {
-        throw new APIError(ErrorCode.bad_access_token);
+        throw new BadAccessTokenError();
       }
 
       if (!scopes.every((s) => jwt.scp.includes(s))) {
-        throw new Error('Unauthorized');
+        throw new UnauthorizedError();
       }
 
       // skip db lookup if user is pending an onboard
