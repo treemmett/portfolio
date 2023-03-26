@@ -215,6 +215,7 @@ export class Post extends BaseEntity {
   public static async getAll(): Promise<Post[]> {
     const posts = await Post.find({
       relations: {
+        owner: true,
         photo: true,
       },
     });
@@ -226,7 +227,7 @@ export class Post extends BaseEntity {
     const posts = await Post.createQueryBuilder('post')
       .select()
       .leftJoinAndSelect('post.photo', 'photo')
-      .leftJoin('post.owner', 'user')
+      .leftJoinAndSelect('post.owner', 'user')
       .where('user.username = :username', { username })
       .getMany();
 

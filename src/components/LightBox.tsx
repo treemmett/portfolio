@@ -68,8 +68,8 @@ export const LightBox: FC = () => {
   const closeLightBox = useCallback(() => {
     const q = { ...query };
     delete q.post;
-    push({ query: q }, undefined, { scroll: false, shallow: true });
-  }, [push, query]);
+    push(post?.owner ? `/u/${post.owner.username}` : '/');
+  }, [post, push, query]);
 
   return (
     <Modal
