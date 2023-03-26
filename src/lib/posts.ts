@@ -8,7 +8,7 @@ import { apiClient } from '@utils/apiClient';
 import { APIError } from '@utils/errors';
 
 function getKey(site?: ISite) {
-  return site ? `posts/${encodeURIComponent(site.owner.username)}` : 'posts';
+  return site?.owner?.username ? `posts/${encodeURIComponent(site.owner.username)}` : 'posts';
 }
 
 export function usePosts() {
