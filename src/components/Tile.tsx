@@ -16,7 +16,7 @@ export const Tile: FC<TileProps> = ({ post, priority }) => {
   return (
     <Link
       aria-label={label}
-      href={`/u/${post.owner.username}/${post.id}`}
+      href={{ href: '/u/[username]', query: { post: post.id, username: post.owner.username } }}
       scroll={false}
       passHref
       shallow
