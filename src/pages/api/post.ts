@@ -1,3 +1,4 @@
+import { Joi, celebrate } from 'celebrate';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { User } from '@entities/User';
@@ -8,10 +9,17 @@ import { i18nRevalidate } from '@utils/revalidate';
 
 export default nextConnect()
   .use(connectToDatabaseMiddleware)
-  .get(async (req, res) => {
-    const posts = await Post.getAllFromUser((req.query.username as string) || 'treemmett');
-    res.send(posts);
-  })
+  .get(
+    celebrate({
+      query: {
+        username: Joi.string().optional(),
+      },
+    }),
+    async (req, res) => {
+      const posts = await Post.getAllFromUser((req.query.username as string) || 'treemmett');
+      res.send(posts);
+    }
+  )
   .patch(User.authorize(AuthorizationScopes.post), async (req, res) => {
     await i18nRevalidate('/', res);
   })
@@ -19,10 +27,18 @@ export default nextConnect()
     const token = await Post.requestUploadToken();
     res.send(token);
   })
-  .put(User.authorize(AuthorizationScopes.post), async (req, res) => {
-    const post = await Post.processUpload(req.body.token, req.user);
-    res.send(post);
-    logger.info('Post created, revalidating cache');
-    await i18nRevalidate('/', res);
-    logger.info('Cache revalidated');
-  });
+  .put(
+    User.authorize(AuthorizationScopes.post),
+    celebrate({
+      body: {
+        token: Joi.string().required(),
+      },
+    }),
+    async (req, res) => {
+      const post = await Post.processUpload(req.body.token, req.user);
+      res.send(post);
+      logger.info('Post created, revalidating cache');
+      await i18nRevalidate('/', res);
+      logger.info('Cache revalidated');
+    }
+  );

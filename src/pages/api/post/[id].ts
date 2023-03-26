@@ -7,8 +7,8 @@ import { nextConnect } from '@middleware/nextConnect';
 import { logger } from '@utils/logger';
 
 export default nextConnect()
-  .use(connectToDatabaseMiddleware)
   .use(celebrate({ query: { id: Joi.string().required() } }))
+  .use(connectToDatabaseMiddleware)
   .delete(User.authorize(AuthorizationScopes.delete), async (req, res) => {
     const post = await Post.getOneFromUser(req.user, req.query.id as string);
 
