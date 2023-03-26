@@ -62,3 +62,9 @@ export class BadCrossOriginError extends APIError {
     super(message, 701);
   }
 }
+
+export class UserNotFoundError extends APIError {
+  constructor(public message = 'User not found') {
+    super(message, 404);
+  }
+}

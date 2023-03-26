@@ -23,6 +23,7 @@ import {
   OAuthHandshakeError,
   UnauthenticatedError,
   UnauthorizedError,
+  UserNotFoundError,
 } from '@utils/errors';
 import { logger } from '@utils/logger';
 
@@ -117,6 +118,16 @@ export class User extends BaseEntity {
     return user.signAccessToken();
   }
 
+  public static async findById(id: string): Promise<User> {
+    logger.trace({ id }, 'Running user query');
+    const u = await User.findOneBy({ id });
+    logger.trace({ user: u }, 'User query returned');
+
+    if (!u) throw new UserNotFoundError();
+
+    return u;
+  }
+
   public static authorize(...scopes: AuthorizationScopes[]) {
     const middleware: ApiMiddleware = async (req, res, next) => {
       const signature = req.cookies['xsrf-token'];
@@ -143,15 +154,16 @@ export class User extends BaseEntity {
       }
 
       // skip db lookup if user is pending an onboard
-      if (scopes.every((s) => s === AuthorizationScopes.onboard)) {
+      if (jwt.scp.every((s) => s === AuthorizationScopes.onboard)) {
         logger.trace('Onboarding user, skipping db lookup');
         req.user = new User();
         req.user.id = jwt.sub;
         req.user.githubId = jwt.meta?.githubId;
         req.user.username = '';
       } else {
-        logger.trace('Looking up user');
-        req.user = await User.findOneByOrFail({ id: jwt.sub });
+        logger.trace({ jwt }, 'Looking up user');
+        req.user = await User.findById(jwt.sub);
+        logger.trace({ user: req.user }, 'User found');
       }
 
       req.user.scopes = jwt.scp;

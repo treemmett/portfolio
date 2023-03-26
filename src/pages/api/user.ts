@@ -5,7 +5,7 @@ import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
 
 export default nextConnect()
-  .use(User.authorize(), connectToDatabaseMiddleware)
+  .use(connectToDatabaseMiddleware, User.authorize())
   .get(async (req, res) => {
     res.send(req.user);
   })
