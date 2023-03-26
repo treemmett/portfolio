@@ -1,5 +1,7 @@
 import { Joi, celebrate } from 'celebrate';
 import { serialize } from 'cookie';
+import { AuthorizationScopes } from '@entities/Jwt';
+import { Site } from '@entities/Site';
 import { User } from '@entities/User';
 import { nextConnect } from '@middleware/nextConnect';
 
@@ -20,6 +22,16 @@ export default nextConnect()
       }
 
       await req.user.save();
+
+      if (req.user.scopes.includes(AuthorizationScopes.onboard)) {
+        let site = await Site.findOne({ where: { owner: { id: req.user.id } } });
+        if (!site) {
+          site = new Site();
+          site.owner = req.user;
+          site.name = req.user.username;
+          await site.save();
+        }
+      }
 
       const { accessToken, expiration, signature } = await req.user.signAccessToken();
 
