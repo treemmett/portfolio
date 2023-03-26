@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutate from 'swr/mutation';
@@ -5,13 +6,16 @@ import type { IPost } from '@entities/Post';
 import { apiClient } from '@utils/apiClient';
 
 export function usePosts() {
-  const { data, isLoading, error } = useSWR('posts', async () => {
-    const response = await apiClient.get<IPost[]>('/post');
+  const { query } = useRouter();
+  const { data, isLoading, error } = useSWR(`posts`, async () => {
+    const response = await apiClient.get<IPost[]>('/post', {
+      params: { username: query.username },
+    });
     return response.data;
   });
 
-  const { trigger } = useSWRMutate<IPost, Error, 'posts', IPost>(
-    'posts',
+  const { trigger } = useSWRMutate<IPost, Error, string, IPost>(
+    `posts`,
     async (key, { arg }) => arg,
     {
       populateCache(result: IPost, currentData: IPost[]) {
@@ -46,7 +50,7 @@ export function usePost(id: string) {
     trigger,
     error: mutationError,
   } = useSWRMutate(
-    'posts',
+    `posts`,
     async () => {
       const response = await apiClient.patch<IPost>(`/post/${encodeURI(id)}`, post);
       return response.data;
@@ -67,7 +71,7 @@ export function usePost(id: string) {
     trigger: deleteTrigger,
     error: deleteError,
   } = useSWRMutate(
-    'posts',
+    `posts`,
     async () => {
       await apiClient.delete(`/post/${encodeURI(id)}`);
       return post;

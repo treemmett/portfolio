@@ -222,6 +222,17 @@ export class Post extends BaseEntity {
     return transformAndValidate(Post, posts);
   }
 
+  public static async getAllFromUser(username: string): Promise<Post[]> {
+    const posts = await Post.createQueryBuilder('post')
+      .select()
+      .leftJoinAndSelect('post.photo', 'photo')
+      .leftJoin('post.owner', 'user')
+      .where('user.username = :username', { username })
+      .getMany();
+
+    return transformAndValidate(Post, posts);
+  }
+
   private static getProcessingKey(key: string): string {
     return `processing/${key}`;
   }
