@@ -1,14 +1,13 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
 import { LightBox } from '@components/LightBox';
+import { Meta } from '@components/Meta';
 import { Mosaic } from '@components/Mosaic';
 import { Nav } from '@components/Nav';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
-import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
 import { connectToDatabase } from '@middleware/database';
 
@@ -46,15 +45,11 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, req }) =>
 };
 
 export const Home: NextPage = () => {
-  const { site } = useSite();
   const { hasPermission } = useUser();
 
   return (
     <>
-      <Head>
-        {site?.title && <title>{site.title}</title>}
-        {site?.description && <meta content={site.description} name="description" />}
-      </Head>
+      <Meta />
 
       <Nav />
 
