@@ -9,6 +9,7 @@ import type { IPost, UploadToken } from '@entities/Post';
 import { ReactComponent as ChevronDown } from '@icons/chevron-down.svg';
 import { ReactComponent as ChevronUp } from '@icons/chevron-up.svg';
 import { usePosts } from '@lib/posts';
+import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
 import { apiClient } from '@utils/apiClient';
 import { UnauthenticatedError } from '@utils/errors';
@@ -61,8 +62,9 @@ export const ApiManager: FC = () => {
   const [requests, setRequests] = useState<ApiRequest[]>([]);
   const [collapsed, setCollapsed] = useState(false);
   const { addPost } = usePosts();
-  const { query, push } = useRouter();
+  const { push } = useRouter();
   const { user } = useUser();
+  const { site } = useSite();
 
   const dropHandler = useCallback(
     async (e: DragEvent) => {
@@ -75,7 +77,7 @@ export const ApiManager: FC = () => {
         throw new UnauthenticatedError();
       }
 
-      if (query.username !== user.username) {
+      if (site?.owner.id !== user.id) {
         push({ href: '/u/[username]', query: { username: user.username } });
         return;
       }
@@ -94,7 +96,7 @@ export const ApiManager: FC = () => {
 
       setRequests([...fileList, ...requests]);
     },
-    [push, query.username, requests, user]
+    [push, requests, site?.owner.id, user]
   );
 
   const dragHandler = useCallback((e: DragEvent) => {

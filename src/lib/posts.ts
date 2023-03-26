@@ -1,27 +1,27 @@
-import { ParsedUrlQuery } from 'querystring';
-import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutate from 'swr/mutation';
+import { useSite } from './site';
 import type { IPost } from '@entities/Post';
+import type { ISite } from '@entities/Site';
 import { apiClient } from '@utils/apiClient';
 import { APIError } from '@utils/errors';
 
-function getKey(query: ParsedUrlQuery) {
-  return query.username ? `posts/${encodeURIComponent(query.username as string)}` : 'posts';
+function getKey(site?: ISite) {
+  return site ? `posts/${encodeURIComponent(site.owner.username)}` : 'posts';
 }
 
 export function usePosts() {
-  const { query } = useRouter();
-  const { data, isLoading, error } = useSWR<IPost[], APIError>(getKey(query), async () => {
+  const { site } = useSite();
+  const { data, isLoading, error } = useSWR<IPost[], APIError>(getKey(site), async () => {
     const response = await apiClient.get<IPost[]>('/post', {
-      params: { username: query.username },
+      params: { username: site?.owner.username },
     });
     return response.data;
   });
 
   const { trigger } = useSWRMutate<IPost, APIError, string, IPost>(
-    getKey(query),
+    getKey(site),
     async (key, { arg }) => arg,
     {
       populateCache(result: IPost, currentData: IPost[]) {
@@ -44,7 +44,7 @@ export function usePosts() {
 }
 
 export function usePost(id: string) {
-  const { query } = useRouter();
+  const { site } = useSite();
   const { posts } = usePosts();
   const foundPost = useMemo(() => posts?.find((p) => p.id === id), [id, posts]);
   const [post, setPost] = useState<IPost | undefined>(foundPost);
@@ -57,7 +57,7 @@ export function usePost(id: string) {
     trigger,
     error: mutationError,
   } = useSWRMutate<IPost, APIError>(
-    getKey(query),
+    getKey(site),
     async () => {
       const response = await apiClient.patch<IPost>(`/post/${encodeURI(id)}`, post);
       return response.data;
@@ -78,7 +78,7 @@ export function usePost(id: string) {
     trigger: deleteTrigger,
     error: deleteError,
   } = useSWRMutate(
-    getKey(query),
+    getKey(site),
     async () => {
       await apiClient.delete(`/post/${encodeURI(id)}`);
       return post;

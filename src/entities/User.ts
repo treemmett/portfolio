@@ -52,7 +52,7 @@ export class User extends BaseEntity {
   @OneToOne('sites', 'owner')
   public site: Site;
 
-  public scopes: AuthorizationScopes[] = [];
+  public scopes: AuthorizationScopes[];
 
   public static async authorizeGitHub(code: string) {
     const authResponse = await axios.post<

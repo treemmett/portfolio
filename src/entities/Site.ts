@@ -39,9 +39,13 @@ export class Site extends BaseEntity {
   public facebook?: string;
 
   public static async getByUsername(username: string): Promise<Site> {
-    const site = await Site.findOne({
-      where: { owner: { username } },
-    });
+    const site = await Site.createQueryBuilder('site')
+      .select()
+      .leftJoin('site.owner', 'user')
+      .addSelect('user.id')
+      .addSelect('user.username')
+      .where('user.username = :username', { username })
+      .getOne();
 
     if (!site) throw new SiteNotFoundError();
 

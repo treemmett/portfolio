@@ -18,7 +18,7 @@ export const Nav: FC = () => {
     <header className={styles.nav}>
       <h1>{site?.name}</h1>
 
-      {query.username === user?.username && (
+      {site?.owner.id === user?.id && (
         <Link
           className={styles.edit}
           href={{ href: '/u/[username]', query: { ...query, settings: true } }}
