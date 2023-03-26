@@ -1,5 +1,6 @@
 import axios from 'axios';
 import cx from 'classnames';
+import { useRouter } from 'next/router';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { ulid } from 'ulid';
 import styles from './ApiManager.module.scss';
@@ -8,7 +9,9 @@ import type { IPost, UploadToken } from '@entities/Post';
 import { ReactComponent as ChevronDown } from '@icons/chevron-down.svg';
 import { ReactComponent as ChevronUp } from '@icons/chevron-up.svg';
 import { usePosts } from '@lib/posts';
+import { useUser } from '@lib/user';
 import { apiClient } from '@utils/apiClient';
+import { UnauthenticatedError } from '@utils/errors';
 
 interface ApiRequest {
   id: string;
@@ -58,6 +61,8 @@ export const ApiManager: FC = () => {
   const [requests, setRequests] = useState<ApiRequest[]>([]);
   const [collapsed, setCollapsed] = useState(false);
   const { addPost } = usePosts();
+  const { query, push } = useRouter();
+  const { user } = useUser();
 
   const dropHandler = useCallback(
     async (e: DragEvent) => {
@@ -65,6 +70,15 @@ export const ApiManager: FC = () => {
       e.preventDefault();
 
       if (!e.dataTransfer) return;
+
+      if (!user) {
+        throw new UnauthenticatedError();
+      }
+
+      if (query.username !== user.username) {
+        push({ href: '/u/[username]', query: { username: user.username } });
+        return;
+      }
 
       const { files } = e.dataTransfer;
 
@@ -80,7 +94,7 @@ export const ApiManager: FC = () => {
 
       setRequests([...fileList, ...requests]);
     },
-    [requests]
+    [push, query.username, requests, user]
   );
 
   const dragHandler = useCallback((e: DragEvent) => {
