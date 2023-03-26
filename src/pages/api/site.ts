@@ -24,11 +24,7 @@ export default nextConnect()
       { allowUnknown: true }
     ),
     async (req, res) => {
-      const [site] = await Site.find();
-      if (!site) {
-        res.status(404).end();
-        return;
-      }
+      const site = await Site.getByUsername(req.user.username);
 
       site.description = req.body.description || null;
       site.facebook = req.body.facebook || null;

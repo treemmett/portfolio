@@ -1,24 +1,29 @@
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import { ReactComponent as EditIcon } from '../icons/edit.svg';
 import { Anchor } from './Anchor';
 import styles from './Nav.module.scss';
-import { AuthorizationScopes } from '@entities/Jwt';
 import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
 
 export const Nav: FC = () => {
   const { t } = useTranslation();
   const { site } = useSite();
-  const { login, logout, hasPermission, user } = useUser();
+  const { login, logout, user } = useUser();
+  const { query } = useRouter();
 
   return (
     <header className={styles.nav}>
       <h1>{site?.name}</h1>
 
-      {hasPermission(AuthorizationScopes.post) && (
-        <Link className={styles.edit} href={{ query: { settings: true } }} shallow>
+      {query.username === user?.username && (
+        <Link
+          className={styles.edit}
+          href={{ href: '/u/[username]', query: { ...query, settings: true } }}
+          shallow
+        >
           <EditIcon />
         </Link>
       )}
