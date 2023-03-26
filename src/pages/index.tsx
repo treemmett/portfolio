@@ -5,7 +5,6 @@ import Head from 'next/head';
 import { LightBox } from '@components/LightBox';
 import { Mosaic } from '@components/Mosaic';
 import { Nav } from '@components/Nav';
-import { Welcome } from '@components/Welcome';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
@@ -18,6 +17,8 @@ const DynamicUploadManager = dynamic(() =>
 );
 
 const DynamicSettings = dynamic(() => import('@components/Settings').then((mod) => mod.Settings));
+
+const DynamicWelcome = dynamic(() => import('@components/Welcome').then((mod) => mod.Welcome));
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   await connectToDatabase();
@@ -55,7 +56,7 @@ export const Home: NextPage = () => {
 
       <LightBox />
 
-      <Welcome />
+      {hasPermission(AuthorizationScopes.onboard) && <DynamicWelcome />}
 
       {hasPermission(AuthorizationScopes.post) && (
         <>
