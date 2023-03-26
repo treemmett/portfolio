@@ -20,20 +20,25 @@ const DynamicSettings = dynamic(() => import('@components/Settings').then((mod) 
 
 const DynamicWelcome = dynamic(() => import('@components/Welcome').then((mod) => mod.Welcome));
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale, req }) => {
   await connectToDatabase();
 
-  const [posts, site] = await Promise.allSettled([
-    Post.getAllFromUser('tregan'),
-    Site.getByUsername('tregan'),
-  ]);
+  let site: Site | null = null;
+  if (req.headers.host) {
+    site = await Site.getByDomain(req.headers.host).catch(() => null);
+  }
+
+  if (!site) {
+    site = await Site.getByUsername('tregan');
+  }
+
+  const posts = await Post.getAllFromUser(site.owner.username);
 
   return {
     props: {
       fallback: {
-        [`posts/tregan`]:
-          posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : null,
-        site: site.status === 'fulfilled' ? JSON.parse(JSON.stringify(site.value)) : null,
+        [`posts/${site.owner.username}`]: JSON.parse(JSON.stringify(posts)),
+        site: JSON.parse(JSON.stringify(site)),
       },
       ...(await serverSideTranslations(locale || 'en', ['common'])),
     },

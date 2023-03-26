@@ -39,8 +39,15 @@ export default nextConnect()
       res.send(site);
     }
   )
-  .get(celebrate({ query: { username: Joi.string().default('tregan') } }), async (req, res) => {
-    const site = await Site.getByUsername(req.query.username as string);
+  .get(celebrate({ query: { username: Joi.string().optional() } }), async (req, res) => {
+    let site: Site;
+    if (req.query.username) {
+      site = await Site.getByUsername(req.query.username as string);
+    } else if (req.headers.host) {
+      site = await Site.getByDomain(req.headers.host);
+    } else {
+      site = await Site.getByUsername('treemmett');
+    }
 
     res.send(site);
   });

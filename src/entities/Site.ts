@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import type { User } from './User';
 import { SiteNotFoundError } from '@utils/errors';
 
@@ -10,6 +18,10 @@ export class Site extends BaseEntity {
   @OneToOne('users', 'site', { nullable: false })
   @JoinColumn()
   public owner: User;
+
+  @Column({ nullable: true, type: 'text' })
+  @Index({ unique: true })
+  public domain?: string | null;
 
   @Column({ nullable: true })
   public description?: string;
@@ -37,6 +49,20 @@ export class Site extends BaseEntity {
 
   @Column({ nullable: true })
   public facebook?: string;
+
+  public static async getByDomain(domain: string): Promise<Site> {
+    const site = await Site.createQueryBuilder('site')
+      .select()
+      .leftJoin('site.owner', 'user')
+      .addSelect('user.id')
+      .addSelect('user.username')
+      .where('site.domain = :domain', { domain })
+      .getOne();
+
+    if (!site) throw new SiteNotFoundError();
+
+    return site;
+  }
 
   public static async getByUsername(username: string): Promise<Site> {
     const site = await Site.createQueryBuilder('site')
