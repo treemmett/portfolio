@@ -223,6 +223,18 @@ export class Post extends BaseEntity {
     return transformAndValidate(Post, posts);
   }
 
+  public static async getOneFromUser(user: User, id: string): Promise<Post> {
+    const post = await Post.createQueryBuilder('post')
+      .select()
+      .leftJoinAndSelect('post.photo', 'photo')
+      .leftJoinAndSelect('post.owner', 'user')
+      .where('user.username = :username', { username: user.username })
+      .andWhere('post.id = :id', { id })
+      .getOneOrFail();
+
+    return transformAndValidate(Post, post);
+  }
+
   public static async getAllFromUser(username: string): Promise<Post[]> {
     const posts = await Post.createQueryBuilder('post')
       .select()

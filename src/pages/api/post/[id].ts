@@ -10,7 +10,7 @@ export default nextConnect()
   .use(connectToDatabaseMiddleware)
   .use(celebrate({ query: { id: Joi.string().required() } }))
   .delete(User.authorize(AuthorizationScopes.delete), async (req, res) => {
-    const post = await Post.getById(req.query.id as string);
+    const post = await Post.getOneFromUser(req.user, req.query.id as string);
 
     if (!post) {
       throw new Error('Post not found');
@@ -32,7 +32,7 @@ export default nextConnect()
     }),
     User.authorize(AuthorizationScopes.post),
     async (req, res) => {
-      const post = await Post.getById(req.query.id as string);
+      const post = await Post.getOneFromUser(req.user, req.query.id as string);
       post.created = req.body.created;
       post.location = req.body.location;
       post.title = req.body.title;
