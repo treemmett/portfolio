@@ -23,16 +23,16 @@ const DynamicWelcome = dynamic(() => import('@components/Welcome').then((mod) =>
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   await connectToDatabase();
 
-  const [posts, site] = await Promise.allSettled([Post.getAll(), Site.find()]);
+  const [posts, site] = await Promise.allSettled([
+    Post.getAllFromUser('tregan'),
+    Site.getByUsername('tregan'),
+  ]);
 
   return {
     props: {
       fallback: {
         posts: posts.status === 'fulfilled' ? JSON.parse(JSON.stringify(posts.value)) : null,
-        site:
-          site.status === 'fulfilled' && site.value.length
-            ? JSON.parse(JSON.stringify(site.value[0]))
-            : null,
+        site: site.status === 'fulfilled' ? JSON.parse(JSON.stringify(site.value)) : null,
       },
       ...(await serverSideTranslations(locale || 'en', ['common'])),
     },

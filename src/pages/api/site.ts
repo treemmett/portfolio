@@ -39,7 +39,7 @@ export default nextConnect()
       res.send(site);
     }
   )
-  .get(celebrate({ query: { username: Joi.string().required() } }), async (req, res) => {
+  .get(celebrate({ query: { username: Joi.string().default('tregan') } }), async (req, res) => {
     const site = await Site.getByUsername(req.query.username as string);
 
     res.send(site);
