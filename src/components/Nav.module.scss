@@ -1,6 +1,8 @@
 @use 'sass:color';
 @use '../styles/shared';
 
+$height: 4rem;
+
 .nav {
   @include shared.theme;
 

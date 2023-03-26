@@ -1,3 +1,5 @@
+@use './Nav.module' as nav;
+
 .mosaic {
   padding: 1rem;
   padding-top: 0;
@@ -8,4 +10,11 @@
       columns: $i;
     }
   }
+}
+
+.placeholder {
+  display: flex;
+  height: calc(100vh - nav.$height);
+  align-items: center;
+  justify-content: center;
 }
