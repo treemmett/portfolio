@@ -1,3 +1,4 @@
+import { serialize } from 'cookie';
 import { User } from '@entities/User';
 import { connectToDatabaseMiddleware } from '@middleware/database';
 import { nextConnect } from '@middleware/nextConnect';
@@ -13,6 +14,15 @@ export default nextConnect()
     }
 
     await req.user.save();
+    const { accessToken, expiration, signature } = await req.user.signAccessToken();
 
-    res.send(req.user);
+    res.setHeader(
+      'Set-Cookie',
+      serialize('xsrf-token', signature, {
+        expires: expiration,
+        httpOnly: true,
+        path: '/',
+      })
+    );
+    res.send({ accessToken, user: req.user });
   });

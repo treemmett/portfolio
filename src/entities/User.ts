@@ -109,13 +109,7 @@ export class User extends BaseEntity {
       return user.signAccessToken([AuthorizationScopes.onboard], { githubId: data.id });
     }
 
-    const scopes: AuthorizationScopes[] = [];
-
-    if (Config.AUTHORIZED_USERS.split(',').includes(data.login)) {
-      scopes.push(AuthorizationScopes.delete, AuthorizationScopes.post);
-    }
-
-    return user.signAccessToken(scopes);
+    return user.signAccessToken();
   }
 
   public static authorize(...scopes: AuthorizationScopes[]) {
@@ -169,11 +163,24 @@ export class User extends BaseEntity {
     return middleware;
   }
 
-  private async signAccessToken(scopes: AuthorizationScopes[], meta?: AccessTokenMeta) {
+  public async signAccessToken(scopes?: AuthorizationScopes[], meta?: AccessTokenMeta) {
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
 
-    const token = await new SignJWT({ meta, scp: scopes })
+    const scp = new Set<AuthorizationScopes>();
+
+    if (Config.AUTHORIZED_USERS.split(',').includes(this.username)) {
+      scp.add(AuthorizationScopes.delete);
+      scp.add(AuthorizationScopes.post);
+    }
+
+    if (scopes) {
+      scopes.forEach((s) => scp.add(s));
+    }
+
+    this.scopes = [...scp];
+
+    const token = await new SignJWT({ meta, scp: this.scopes })
       .setProtectedHeader({ alg: 'HS256' })
       .setExpirationTime(Math.floor(expiration.getTime() / 1000))
       .setSubject(this.id)

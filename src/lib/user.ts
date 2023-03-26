@@ -111,8 +111,13 @@ export function useUser() {
     async () => {
       if (!user) throw new Error('Unauthenticated');
 
-      const response = await apiClient.patch('/user', { username: user?.username });
-      return response.data;
+      const response = await apiClient.patch<{ user: IUser; accessToken: string }>('/user', {
+        username: user?.username,
+      });
+
+      localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, response.data.accessToken);
+
+      return response.data.user;
     },
     { populateCache: (result) => result, revalidate: false }
   );
