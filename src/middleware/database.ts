@@ -1,4 +1,4 @@
-import { ApiMiddleware } from './nextConnect';
+import type { ApiMiddleware } from './nextConnect';
 import { AppDataSource } from '@utils/dataSource';
 
 AppDataSource.initialize();

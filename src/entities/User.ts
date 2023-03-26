@@ -16,7 +16,7 @@ import { AccessTokenMeta, AuthorizationScopes, Jwt } from './Jwt';
 import { Photo } from './Photo';
 import { Post } from './Post';
 import { Site } from './Site';
-import { ApiMiddleware } from '@middleware/nextConnect';
+import type { ApiMiddleware } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
 import {
   BadAccessTokenError,

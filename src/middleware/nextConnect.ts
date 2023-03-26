@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import NC, { Middleware } from 'next-connect';
 import pinoHttp from 'pino-http';
 import { useAnalytics } from './analytics';
+import { connectToDatabaseMiddleware } from './database';
 import type { User } from '@entities/User';
 import { APIError } from '@utils/errors';
 import { logger } from '@utils/logger';
@@ -43,8 +44,6 @@ export const nextConnect = () =>
       res.status(404).json({ error: 'Route not found' });
     },
   })
+    .use(httpLogger)
     .use(useAnalytics)
-    .use((req, res, next) => {
-      httpLogger(req, res);
-      next();
-    });
+    .use(connectToDatabaseMiddleware);
