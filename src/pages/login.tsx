@@ -32,13 +32,13 @@ const Login: NextPage = () => {
       } as OAuthErrorMessage);
     }
 
-    if (query.code) {
+    if (query.accessToken) {
       window.opener.postMessage({
-        payload: query.code,
+        payload: query.accessToken,
         type: 'OAUTH_CODE',
       } as OAuthSuccessMessage);
     }
-  }, [query.code, query.error]);
+  }, [query.accessToken, query.error]);
 
   const successHandler = useCallback((e: MessageEvent<OAuthCloseMessage>) => {
     if (e.origin !== window.location.origin) {

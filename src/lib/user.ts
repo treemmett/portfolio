@@ -6,7 +6,6 @@ import type { IUser } from '@entities/User';
 import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@pages/login';
 import { trace } from '@utils/analytics';
 import { apiClient } from '@utils/apiClient';
-import { Config } from '@utils/config';
 import {
   APIError,
   BadCrossOriginError,
@@ -45,7 +44,7 @@ export function useUser() {
     trace('begin-login');
 
     const popup = window.open(
-      `https://github.com/login/oauth/authorize?client_id=${Config.NEXT_PUBLIC_GITHUB_CLIENT_ID}`,
+      '/api/login/oauth',
       'oauth',
       `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
     );
@@ -83,11 +82,7 @@ export function useUser() {
 
         if (event.data.type === 'OAUTH_CODE') {
           trace('login-granted');
-          const loginResponse = await apiClient.post<string>('/login', {
-            code: event.data.payload,
-          });
-
-          localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, loginResponse.data);
+          localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, event.data.payload);
           res(await getUser());
         }
       };

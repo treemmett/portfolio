@@ -77,6 +77,8 @@ export class User extends BaseEntity {
     );
 
     if (authResponse.status !== 200 || 'error' in authResponse.data) {
+      logger.error({ response: authResponse.data }, 'OAuth handshake failed');
+
       if (!('error' in authResponse.data)) {
         throw new OAuthHandshakeError();
       }
