@@ -57,32 +57,32 @@ export const Settings: FC = () => {
           />
           <h2>Social Media</h2>
           <Input
-            label={t('Twitter')}
+            label="Twitter"
             onChange={(e) => setSite({ ...site, twitter: e.currentTarget.value })}
             value={site.twitter || ''}
           />
           <Input
-            label={t('Instagram')}
+            label="Instagram"
             onChange={(e) => setSite({ ...site, instagram: e.currentTarget.value })}
             value={site.instagram || ''}
           />
           <Input
-            label={t('LinkedIn')}
+            label="LinkedIn"
             onChange={(e) => setSite({ ...site, linkedIn: e.currentTarget.value })}
             value={site.linkedIn || ''}
           />
           <Input
-            label={t('Facebook')}
+            label="Facebook"
             onChange={(e) => setSite({ ...site, facebook: e.currentTarget.value })}
             value={site.facebook || ''}
           />
           <Input
-            label={t('GitHub')}
+            label="GitHub"
             onChange={(e) => setSite({ ...site, github: e.currentTarget.value })}
             value={site.github || ''}
           />
           <Input
-            label={t('IMDb')}
+            label="IMDb"
             onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
             value={site.imdb || ''}
           />
