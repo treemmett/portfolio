@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosProgressEvent } from 'axios';
 import cx from 'classnames';
 import { useRouter } from 'next/router';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -126,13 +126,15 @@ export const ApiManager: FC = () => {
       ]);
 
       const { data: uploadToken } = await apiClient.post<UploadToken>('/post', {
-        onUploadProgress(progress: ProgressEvent) {
+        onUploadProgress(progress: AxiosProgressEvent) {
           setRequests((rs) => {
             const filtered = rs.filter((r) => r.id !== request.id);
             const thisRequest = rs.find((r) => r.id === request.id);
 
+            if (typeof progress.progress === 'undefined') return rs;
+
             return [
-              { ...thisRequest, progress: (progress.loaded / progress.total) * 0.05 } as ApiRequest,
+              { ...thisRequest, progress: progress.progress * 0.05 } as ApiRequest,
               ...filtered,
             ];
           });
@@ -143,15 +145,17 @@ export const ApiManager: FC = () => {
         headers: {
           'Content-Type': 'application/octet-stream',
         },
-        onUploadProgress(progress: ProgressEvent) {
+        onUploadProgress(progress: AxiosProgressEvent) {
           setRequests((rs) => {
             const filtered = rs.filter((r) => r.id !== request.id);
             const thisRequest = rs.find((r) => r.id === request.id);
 
+            if (typeof progress.progress === 'undefined') return rs;
+
             return [
               {
                 ...thisRequest,
-                progress: 0.05 + (progress.loaded / progress.total) * 0.9,
+                progress: 0.05 + progress.progress * 0.9,
               } as ApiRequest,
               ...filtered,
             ];
@@ -163,15 +167,17 @@ export const ApiManager: FC = () => {
         '/post',
         { token: uploadToken.token },
         {
-          onUploadProgress(progress: ProgressEvent) {
+          onUploadProgress(progress: AxiosProgressEvent) {
             setRequests((rs) => {
               const filtered = rs.filter((r) => r.id !== request.id);
               const thisRequest = rs.find((r) => r.id === request.id);
 
+              if (typeof progress.progress === 'undefined') return rs;
+
               return [
                 {
                   ...thisRequest,
-                  progress: 0.95 + (progress.loaded / progress.total) * 0.05,
+                  progress: 0.95 + progress.progress * 0.05,
                 } as ApiRequest,
                 ...filtered,
               ];
