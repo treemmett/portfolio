@@ -50,6 +50,8 @@ export class Site extends BaseEntity {
   @Column({ nullable: true })
   public facebook?: string;
 
+  public logoFile?: File;
+
   public static async getByDomain(domain: string): Promise<Site> {
     const site = await Site.createQueryBuilder('site')
       .select()

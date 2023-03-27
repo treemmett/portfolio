@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { FC, FormEventHandler, useCallback } from 'react';
+import { ChangeEvent, FC, FormEventHandler, useCallback } from 'react';
 import { Modal } from './Modal';
 import styles from './Settings.module.scss';
 import { Button } from '@components/Button';
@@ -54,6 +54,14 @@ export const Settings: FC = () => {
             onChange={(e) => setSite({ ...site, description: e.currentTarget.value })}
             type="textarea"
             value={site.description || ''}
+          />
+          <Input
+            file={site.logoFile}
+            label="Logo"
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setSite({ ...site, logoFile: e.target.files?.[0] })
+            }
+            type="file"
           />
           <h2>Social Media</h2>
           <Input

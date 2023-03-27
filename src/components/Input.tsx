@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { ChangeEventHandler, FC, HTMLInputTypeAttribute, useEffect, useState } from 'react';
 import styles from './Input.module.scss';
+import type { IPhoto } from '@entities/Photo';
 
 export interface InputProps {
   /** className passed to wrapper */
@@ -8,6 +9,7 @@ export interface InputProps {
   /** remove spacing reserved for label */
   collapseLabel?: boolean;
   defaultValue?: string;
+  file?: File | IPhoto;
   id?: string;
   label?: string;
   name?: string;
@@ -27,6 +29,7 @@ export const Input: FC<InputProps> = ({
   className,
   collapseLabel,
   defaultValue,
+  file,
   id,
   label,
   name,
@@ -39,6 +42,21 @@ export const Input: FC<InputProps> = ({
 }) => {
   const [realId, setRealId] = useState(id);
   useEffect(() => setRealId(id || randomId()), [id]);
+
+  const [imageData, setImageData] = useState<string>();
+  useEffect(() => {
+    if (!file) return;
+
+    if (!(file instanceof File)) return;
+
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => {
+      setImageData(reader.result as string);
+    });
+
+    reader.readAsDataURL(file);
+  }, [file]);
 
   return (
     <label className={cx(styles.wrapper, className)} htmlFor={realId}>
@@ -61,7 +79,13 @@ export const Input: FC<InputProps> = ({
           value={value}
         />
       )}
-      {type !== 'select' && type !== 'textarea' && (
+      {type === 'file' && (
+        <div className={cx(styles.input, styles.file)}>
+          <input accept="image/*" id={realId} onChange={onChange} type="file" />
+          {imageData && <img alt="Logo" src={imageData} />}
+        </div>
+      )}
+      {type !== 'select' && type !== 'textarea' && type !== 'file' && (
         <input
           className={styles.input}
           data-testid={testId}
