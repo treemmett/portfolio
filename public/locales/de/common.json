@@ -1,14 +1,19 @@
 {
+  "Create account": "Benutzerkonto erstellen",
   "Date": "Datum",
-  "Gallery": "Galerie",
-  "intro": "Hallo, ich bin {{name}}",
+  "Delete": "Löschen",
+  "Deleting": "Löschen",
+  "Description": "Beschreibung",
+  "Go back": "Geh zurück",
   "Location": "Ort",
-  "Map": "Karte",
-  "Pick an image": "Wählen Sie ein Bild aus",
-  "Post": "Post",
+  "Login": "Anmeldung",
+  "Logout": "Ausloggen",
+  "My Site": "Meine Seite",
+  "Name": "Name",
+  "Please enter a username": "Bitte geben Sie einen Benutzernamen ein",
   "Save": "Speichern",
+  "Settings": "Einstellungen",
   "Title": "Titel",
-  "Upload failed": "Upload fehlgeschlagen",
-  "Uploading...": "Hochladen...",
-  "Welcome back": "Willkommen zurück"
+  "Upload some photos to get started": "Laden Sie einige Fotos hoch, um loszulegen",
+  "Welcome!": "Willkommen!"
 }

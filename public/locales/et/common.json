@@ -1,14 +1,19 @@
 {
+  "Create account": "Loo konto",
   "Date": "Kuupäev",
-  "Gallery": "Galerii",
-  "intro": "Tere, ma olen {{name}}",
+  "Delete": "Kustuta",
+  "Deleting": "Kustutamine",
+  "Description": "Kirjeldus",
+  "Go back": "Mine tagasi",
   "Location": "Asukoht",
-  "Map": "Map",
-  "Pick an image": "Vali pilt",
-  "Post": "Postita",
+  "Login": "Logi sisse",
+  "Logout": "Logi välja",
+  "My Site": "Minu sait",
+  "Name": "Nimi",
+  "Please enter a username": "Palun sisesta kasutajanimi",
   "Save": "Salvesta",
+  "Settings": "Seaded",
   "Title": "Pealkiri",
-  "Upload failed": "Üleslaadimine ebaõnnestus",
-  "Uploading...": "Üleslaadimine...",
-  "Welcome back": "Tere tulemast tagasi"
+  "Upload some photos to get started": "Alustamiseks laadige üles mõned fotod",
+  "Welcome!": "Tere tulemast!"
 }

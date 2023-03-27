@@ -1325,11 +1325,6 @@
   resolved "https://registry.yarnpkg.com/@cspell/dict-dart/-/dict-dart-1.1.1.tgz#d4da9cf72e5df369b6d9ebe588f9c1474adf3556"
   integrity sha512-XBOCpezXrgFN18kGEwqMpTUGZdw4BjCoJrNOo6qBdcdZySCrEHLwELraLOkcSba2kM4stmTp0t59FkwtP8TKOA==
 
-"@cspell/dict-de-de@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-de-de/-/dict-de-de-2.1.0.tgz#cd21e6dd9182343125971c01553be7fb0b3d170a"
-  integrity sha512-RcKA9iRbk2nLehVr5ntrRE4DzFnRl3XrNQWeKnBFJvGKCmwVV8LmTmoCf7WKPdaucuXoZkbINSp+bgFHcjc0DA==
-
 "@cspell/dict-django@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@cspell/dict-django/-/dict-django-2.0.0.tgz#a5f5f693a686e5873f9dfb547ee3b3142ef760b1"
@@ -1360,11 +1355,6 @@
   resolved "https://registry.yarnpkg.com/@cspell/dict-en_us/-/dict-en_us-2.3.3.tgz#4b20b5aa91151a4fb6f40425436b3b4c54ddaef4"
   integrity sha512-csyKeaNktfpvMkmE2GOPTwsrQm3wWhLKVaDRaGU0qTcIjDiCvqv/iYgrVrKRkoddA3kdNTZ8YNCcix7lb6VkOg==
 
-"@cspell/dict-et-ee@^2.0.7":
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-et-ee/-/dict-et-ee-2.0.7.tgz#b356c7a190400e5f41b093beeeb8f3a74a1892ab"
-  integrity sha512-dkeg4Hce6YP1tEEmiEW/iBzBUYS9PuX++vBZkpiE6k7uBEJpGGohxtABP08wbYvh6Yy12cjoOlIA1bDvXaQFiA==
-
 "@cspell/dict-filetypes@^2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@cspell/dict-filetypes/-/dict-filetypes-2.1.1.tgz#f778ad814ff6d7050f81bbd7c856b6f555ba6bae"
@@ -1374,11 +1364,6 @@
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@cspell/dict-fonts/-/dict-fonts-2.1.0.tgz#89b32b41bc66a38b6fbf9c970540e2f7ebd6e8b1"
   integrity sha512-hk7xsbfWEUhc136Xj7I2TD7ouKAfWwzCVAQaHBxcVXAsVxu7bDOGj4FvE2jBzlkSUY8A9Ww8qS0GOFvowJshVg==
-
-"@cspell/dict-fr-fr@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-fr-fr/-/dict-fr-fr-2.1.1.tgz#95f23d1802851759537c700226ecdec609406765"
-  integrity sha512-rwU1Z0yZYIV8X/PSBXXbS+17lxtQADJqaXThXEUmWF3mMLqbddXkvBvWb0OOhqhDtMGjMqFYjavcVvg8lhX6YQ==
 
 "@cspell/dict-fullstack@^2.0.6":
   version "2.0.6"
@@ -1489,11 +1474,6 @@
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cspell/dict-sql/-/dict-sql-1.0.4.tgz#109fb8b65ab125af1b4d66654626592fd1f23330"
   integrity sha512-+9nMcwsCzdYH0tyv2LeuVvQ+DdecS2C1N+hw6sl0FTHWI5GwULHAGW840RBwcKw0s+dl7sc0WpZhS1EW7b0pXg==
-
-"@cspell/dict-sv@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@cspell/dict-sv/-/dict-sv-2.0.4.tgz#e85a0e238ec4e8107500e86efce2387d98b7cb1d"
-  integrity sha512-d42ROu/Oe0YgzT/qabiP43z5cPPLOEbJfRY/eSncIJoCjbX1EFpRUp/rNrBWdsVt/uSWDsZSGd8O3rIue1txNg==
 
 "@cspell/dict-swift@^1.0.3":
   version "1.0.3"
