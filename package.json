@@ -26,7 +26,7 @@
     "locale:gen": "i18next 'src/**/*' -c i18next-parser.config.ts"
   },
   "dependencies": {
-    "@next/bundle-analyzer": "^12.3.1",
+    "@next/bundle-analyzer": "^13.2.4",
     "@next/font": "^13.2.4",
     "@types/cookie": "^0.5.1",
     "@types/mapbox-gl": "^2.7.6",
