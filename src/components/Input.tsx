@@ -101,7 +101,7 @@ export const Input: FC<InputProps> = ({
       )}
       {type === 'checkbox' && (
         <div className={cx(styles.input, styles.checkbox)}>
-          <input checked={checked} id={realId} type="checkbox" />
+          <input checked={checked} id={realId} name={name} onChange={onChange} type="checkbox" />
           <Check />
         </div>
       )}
