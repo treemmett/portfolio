@@ -202,6 +202,9 @@ export class Photo extends BaseEntity {
     return Photo.addPhoto(image, user, payload.type, payload.jti);
   }
 
+  /**
+   * Delete photo from S3 and remove from database
+   */
   public async delete() {
     await s3.deleteObject({ Bucket: S3_BUCKET, Key: this.id }).promise();
     await this.remove();

@@ -17,6 +17,7 @@ import { siteLogo1680006548188 } from 'src/migrations/1680006548188-siteLogo';
 import { removeRGB1680010701198 } from 'src/migrations/1680010701198-removeRGB';
 import { favicons1680012322782 } from 'src/migrations/1680012322782-favicons';
 import { postPhotoCascade1680020863290 } from 'src/migrations/1680020863290-postPhotoCascade postPhotoCascade';
+import { siteLogoCascade1680021401636 } from 'src/migrations/1680021401636-siteLogoCascade';
 
 export const AppDataSource = new DataSource({
   database: Config.DB_DATABASE,
@@ -35,6 +36,7 @@ export const AppDataSource = new DataSource({
     removeRGB1680010701198,
     favicons1680012322782,
     postPhotoCascade1680020863290,
+    siteLogoCascade1680021401636,
   ],
   password: Config.DB_PASSWORD,
   port: Config.DB_PORT,

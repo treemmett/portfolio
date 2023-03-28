@@ -28,14 +28,14 @@ export class Site extends BaseEntity {
 
   @Type(() => Photo)
   @ValidateNested()
-  @OneToOne('photos', { nullable: true })
+  @OneToOne('photos', { nullable: true, onDelete: 'SET NULL' })
   @IsOptional()
   @JoinColumn()
   public logo?: Photo | null;
 
   @Type(() => Photo)
   @ValidateNested({ each: true })
-  @ManyToMany('photos')
+  @ManyToMany('photos', { onDelete: 'SET NULL' })
   @JoinTable()
   public favicons: Photo[];
 
@@ -113,6 +113,14 @@ export class Site extends BaseEntity {
   public async setLogo(photoToken: string): Promise<this> {
     const { image, photo } = await Photo.processUpload(this.owner, photoToken);
 
+    // remove existing logos
+    const existingLogos = this.favicons;
+    if (this.logo) {
+      existingLogos.push(this.logo);
+    }
+
+    await Promise.all(existingLogos.map((logo) => logo.delete()));
+
     // generate favicons
     const favicons = await Promise.all(
       [32, 60, 76, 120, 152, 196].map(async (size) => {
@@ -129,6 +137,7 @@ export class Site extends BaseEntity {
     this.logo = photo;
     this.favicons = favicons;
     await this.save();
+
     return this;
   }
 }
