@@ -1,11 +1,13 @@
 import cx from 'classnames';
 import { ChangeEventHandler, FC, HTMLInputTypeAttribute, useEffect, useState } from 'react';
+import { ReactComponent as Check } from '../icons/check.svg';
 import styles from './Input.module.scss';
 import type { IPhoto } from '@entities/Photo';
 
 export interface InputProps {
   /** className passed to wrapper */
   className?: string;
+  checked?: boolean;
   /** remove spacing reserved for label */
   collapseLabel?: boolean;
   defaultValue?: string;
@@ -27,6 +29,7 @@ function randomId() {
 
 export const Input: FC<InputProps> = ({
   className,
+  checked,
   collapseLabel,
   defaultValue,
   file,
@@ -63,8 +66,15 @@ export const Input: FC<InputProps> = ({
   }, [file]);
 
   return (
-    <label className={cx(styles.wrapper, className)} htmlFor={realId}>
-      {(!collapseLabel || label) && <div className={styles.label}>{label}</div>}
+    <label
+      className={cx(styles.wrapper, className, { [styles.inline]: type === 'checkbox' })}
+      htmlFor={realId}
+    >
+      {(!collapseLabel || label) && (
+        <label className={styles.label} htmlFor={realId}>
+          {label}
+        </label>
+      )}
       {type === 'select' && (
         <select className={styles.input} id={realId} name={name} onChange={onChange} value={value}>
           {options?.map((opt) => (
@@ -89,7 +99,13 @@ export const Input: FC<InputProps> = ({
           {imageData && <img alt="Logo" src={imageData} />}
         </div>
       )}
-      {type !== 'select' && type !== 'textarea' && type !== 'file' && (
+      {type === 'checkbox' && (
+        <div className={cx(styles.input, styles.checkbox)}>
+          <input checked={checked} id={realId} type="checkbox" />
+          <Check />
+        </div>
+      )}
+      {(!type || !['checkbox', 'file', 'select', 'textarea'].includes(type)) && (
         <input
           className={styles.input}
           data-testid={testId}
