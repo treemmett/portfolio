@@ -28,11 +28,6 @@ import { User } from './User';
 import { PostNotFoundError } from '@utils/errors';
 import { logger } from '@utils/logger';
 
-export interface UploadToken {
-  token: string;
-  url: string;
-}
-
 @Entity({ name: 'posts' })
 export class Post extends BaseEntity {
   @IsString()

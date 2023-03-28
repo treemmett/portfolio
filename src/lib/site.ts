@@ -1,8 +1,10 @@
 import { ParsedUrlQuery } from 'querystring';
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutate from 'swr/mutation';
+import type { UploadToken } from '@entities/Photo';
 import type { ISite } from '@entities/Site';
 import { apiClient } from '@utils/apiClient';
 import { APIError } from '@utils/errors';
@@ -32,6 +34,14 @@ export function useSite() {
   } = useSWRMutate<ISite, APIError>(
     getKey(query),
     async () => {
+      if (site?.logoFile) {
+        const uploadTokenResponse = await apiClient.post<UploadToken>('/site/logo');
+        await axios.put(uploadTokenResponse.data.url, site.logoFile, {
+          headers: { 'Content-Type': 'application/octet-stream' },
+        });
+        await apiClient.put<ISite>('/site/logo', { token: uploadTokenResponse.data.token });
+      }
+
       const response = await apiClient.patch<ISite>('/site', site);
       return response.data;
     },

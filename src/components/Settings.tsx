@@ -56,7 +56,7 @@ export const Settings: FC = () => {
             value={site.description || ''}
           />
           <Input
-            file={site.logoFile}
+            file={site.logoFile || site.logo}
             label="Logo"
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setSite({ ...site, logoFile: e.target.files?.[0] })

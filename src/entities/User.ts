@@ -15,7 +15,7 @@ import { v4 } from 'uuid';
 import { AccessTokenMeta, AuthorizationScopes, Jwt } from './Jwt';
 import { Photo } from './Photo';
 import { Post } from './Post';
-import { Site } from './Site';
+import type { Site } from './Site';
 import type { ApiMiddleware } from '@middleware/nextConnect';
 import { Config } from '@utils/config';
 import {

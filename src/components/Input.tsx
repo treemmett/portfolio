@@ -9,7 +9,7 @@ export interface InputProps {
   /** remove spacing reserved for label */
   collapseLabel?: boolean;
   defaultValue?: string;
-  file?: File | IPhoto;
+  file?: File | IPhoto | null;
   id?: string;
   label?: string;
   name?: string;
@@ -47,15 +47,19 @@ export const Input: FC<InputProps> = ({
   useEffect(() => {
     if (!file) return;
 
-    if (!(file instanceof File)) return;
+    if (file instanceof File) {
+      const reader = new FileReader();
 
-    const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        setImageData(reader.result as string);
+      });
 
-    reader.addEventListener('load', () => {
-      setImageData(reader.result as string);
-    });
+      reader.readAsDataURL(file);
+    }
 
-    reader.readAsDataURL(file);
+    if ('url' in file) {
+      setImageData(file.url);
+    }
   }, [file]);
 
   return (

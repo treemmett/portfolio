@@ -1,3 +1,6 @@
+import { Type } from 'class-transformer';
+import { transformAndValidate } from 'class-transformer-validator';
+import { IsOptional, ValidateNested } from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -7,6 +10,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Photo } from './Photo';
 import type { User } from './User';
 import { SiteNotFoundError } from '@utils/errors';
 
@@ -18,6 +22,13 @@ export class Site extends BaseEntity {
   @OneToOne('users', 'site', { nullable: false })
   @JoinColumn()
   public owner: User;
+
+  @Type(() => Photo)
+  @ValidateNested()
+  @OneToOne('photos', { nullable: true })
+  @IsOptional()
+  @JoinColumn()
+  public logo?: Photo | null;
 
   @Column({ nullable: true, type: 'text' })
   @Index({ unique: true })
@@ -56,6 +67,7 @@ export class Site extends BaseEntity {
     const site = await Site.createQueryBuilder('site')
       .select()
       .leftJoin('site.owner', 'user')
+      .leftJoinAndSelect('site.logo', 'logo')
       .addSelect('user.id')
       .addSelect('user.username')
       .where('site.domain = :domain', { domain })
@@ -63,13 +75,14 @@ export class Site extends BaseEntity {
 
     if (!site) throw new SiteNotFoundError();
 
-    return site;
+    return transformAndValidate(Site, site);
   }
 
   public static async getByUsername(username: string): Promise<Site> {
     const site = await Site.createQueryBuilder('site')
       .select()
       .leftJoin('site.owner', 'user')
+      .leftJoinAndSelect('site.logo', 'logo')
       .addSelect('user.id')
       .addSelect('user.username')
       .where('user.username = :username', { username })
@@ -77,7 +90,14 @@ export class Site extends BaseEntity {
 
     if (!site) throw new SiteNotFoundError();
 
-    return site;
+    return transformAndValidate(Site, site);
+  }
+
+  public async setLogo(photoToken: string): Promise<this> {
+    const { photo } = await Photo.processUpload(this.owner, photoToken);
+    this.logo = photo;
+    await this.save();
+    return this;
   }
 }
 
