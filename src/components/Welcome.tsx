@@ -9,7 +9,7 @@ import { useUser } from '@lib/user';
 
 export const Welcome: FC = () => {
   const { t } = useTranslation();
-  const { hasPermission, save, setUser, user } = useUser();
+  const { hasPermission, isSaving, save, setUser, user } = useUser();
 
   const submitHandler: FormEventHandler = useCallback(
     (e) => {
@@ -31,7 +31,7 @@ export const Welcome: FC = () => {
           value={user.username}
         />
         <Button type="success" submit>
-          {t('Create account')}
+          {isSaving ? `${t('Setting up account')}...` : t('Create account')}
         </Button>
       </form>
     </Modal>

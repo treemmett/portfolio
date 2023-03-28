@@ -40,56 +40,59 @@ export function useUser() {
     [data]
   );
 
-  const { trigger: login } = useSWRMutation<IUser | null, APIError>('user', async () => {
-    trace('begin-login');
+  const { trigger: login, isMutating: isLoggingIn } = useSWRMutation<IUser | null, APIError>(
+    'user',
+    async () => {
+      trace('begin-login');
 
-    const popup = window.open(
-      '/api/login/oauth',
-      'oauth',
-      `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
-    );
+      const popup = window.open(
+        '/api/login/oauth',
+        'oauth',
+        `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
+      );
 
-    return new Promise<IUser | null>((res) => {
-      const intervalId = setInterval(() => {
-        if (!popup || popup.closed) {
-          trace('login-closed');
+      return new Promise<IUser | null>((res) => {
+        const intervalId = setInterval(() => {
+          if (!popup || popup.closed) {
+            trace('login-closed');
+            clearInterval(intervalId);
+            res(null);
+          }
+        }, 100);
+
+        const messageHandler = async (
+          event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>
+        ) => {
+          if (event.origin !== window.location.origin) {
+            trace('login-failed', {
+              type: 'cross-origin',
+            });
+            throw new BadCrossOriginError();
+          }
+
           clearInterval(intervalId);
-          res(null);
-        }
-      }, 100);
 
-      const messageHandler = async (
-        event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>
-      ) => {
-        if (event.origin !== window.location.origin) {
-          trace('login-failed', {
-            type: 'cross-origin',
-          });
-          throw new BadCrossOriginError();
-        }
+          event.source?.postMessage({
+            type: 'OAUTH_CLOSE',
+          } as OAuthCloseMessage);
 
-        clearInterval(intervalId);
+          window.removeEventListener('message', messageHandler);
 
-        event.source?.postMessage({
-          type: 'OAUTH_CLOSE',
-        } as OAuthCloseMessage);
+          if (event.data.type === 'OAUTH_ERROR') {
+            throw new OAuthHandshakeError();
+          }
 
-        window.removeEventListener('message', messageHandler);
+          if (event.data.type === 'OAUTH_CODE') {
+            trace('login-granted');
+            localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, event.data.payload);
+            res(await getUser());
+          }
+        };
 
-        if (event.data.type === 'OAUTH_ERROR') {
-          throw new OAuthHandshakeError();
-        }
-
-        if (event.data.type === 'OAUTH_CODE') {
-          trace('login-granted');
-          localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, event.data.payload);
-          res(await getUser());
-        }
-      };
-
-      window.addEventListener('message', messageHandler);
-    });
-  });
+        window.addEventListener('message', messageHandler);
+      });
+    }
+  );
 
   const { trigger: logout } = useSWRMutation<IUser | null, APIError>(
     'user',
@@ -103,7 +106,7 @@ export function useUser() {
     }
   );
 
-  const { trigger: save } = useSWRMutation<IUser | null, APIError>(
+  const { trigger: save, isMutating: isSaving } = useSWRMutation<IUser | null, APIError>(
     'user',
     async () => {
       if (!user) throw new UnauthenticatedError();
@@ -122,6 +125,9 @@ export function useUser() {
   return {
     error,
     hasPermission,
+    isLoggingIn,
+    isMutating: isLoggingIn || isSaving,
+    isSaving,
     login,
     logout,
     save,
