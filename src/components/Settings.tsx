@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -63,6 +64,30 @@ export const Settings: FC = () => {
             }
             type="file"
           />
+          <Input label="Post watermark" type="checkbox" />
+          <span>Watermark position</span>
+          <div className={styles.quadrants}>
+            <Input
+              className={classNames(styles.checkbox, styles.tl)}
+              label="Top Left"
+              type="checkbox"
+            />
+            <Input
+              className={classNames(styles.checkbox, styles.tr)}
+              label="Top Right"
+              type="checkbox"
+            />
+            <Input
+              className={classNames(styles.checkbox, styles.bl)}
+              label="Bottom Left"
+              type="checkbox"
+            />
+            <Input
+              className={classNames(styles.checkbox, styles.br)}
+              label="Bottom Right"
+              type="checkbox"
+            />
+          </div>
           <h2>Social Media</h2>
           <Input
             label="Twitter"

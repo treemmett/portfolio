@@ -1,3 +1,5 @@
+@use '../styles/shared';
+
 .form {
   position: relative;
   width: 100%;
@@ -10,5 +12,50 @@
 
   button {
     width: 100%;
+  }
+}
+
+.quadrants {
+  @include shared.glass(0);
+
+  position: relative;
+  height: 10rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: shared.$border-radius;
+
+  .checkbox {
+    position: absolute;
+    margin: 0;
+
+    label {
+      margin-left: 0.25rem;
+    }
+
+    &.tl,
+    &.tr {
+      top: 0.5rem;
+    }
+
+    &.bl,
+    &.br {
+      bottom: 0.5rem;
+    }
+
+    &.tl,
+    &.bl {
+      left: 0.5rem;
+      flex-direction: row-reverse;
+    }
+
+    &.tr,
+    &.br {
+      right: 0.5rem;
+
+      label {
+        margin-right: 0.25rem;
+        margin-left: 0;
+      }
+    }
   }
 }

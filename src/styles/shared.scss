@@ -4,8 +4,8 @@ $background: #ecf8f8;
 $text: #1f271b;
 $text-light: $background;
 $background-dark: color.adjust($text, $lightness: -8%);
-$border-dark: color.adjust($text, $lightness: 10%);
-$border-light: color.adjust($text-light, $lightness: -30%);
+$border-dark: color.adjust($text, $lightness: -50%);
+$border-light: color.adjust($text-light, $lightness: -60%);
 $shadow: 0 0 10px rgba(0, 0, 0, 30%);
 $danger: #d90429;
 $warning: #ffb86c;
@@ -47,13 +47,13 @@ $border-radius: 0.8rem;
 }
 
 @mixin glass($alpha: 0.3, $color: null) {
-  border-color: color.change($border-light, $alpha: 0.3);
+  border-color: color.change($border-dark, $alpha: 0.5);
   backdrop-filter: blur(10px);
   background-color: color.change($background, $alpha: $alpha);
   box-shadow: $shadow;
 
   @include dark-mode {
-    border-color: color.change($border-dark, $alpha: 0.3);
+    border-color: color.change($border-light, $alpha: 0.5);
     color: $text-light;
   }
 
