@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import { FC, FormEventHandler, useCallback, useState } from 'react';
+import { FC, FormEventHandler, useCallback, useEffect, useState } from 'react';
 import { Button } from './Button';
 import styles from './Editor.module.scss';
 import { Input } from './Input';
@@ -9,11 +9,18 @@ import { usePost } from '@lib/posts';
 import { useUser } from '@lib/user';
 import { trimTime } from '@utils/date';
 
-export const Editor: FC<{ id: string }> = ({ id }) => {
+export const Editor: FC<{ id: string; setIsMutating: (isMutating: boolean) => void }> = ({
+  id,
+  setIsMutating,
+}) => {
   const { t } = useTranslation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const { isDeleting, isSaving, post, save, setPost, deleteTrigger } = usePost(id);
+  const { isDeleting, isMutating, isSaving, post, save, setPost, deleteTrigger } = usePost(id);
   const { hasPermission, user } = useUser();
+
+  useEffect(() => {
+    setIsMutating(!isMutating);
+  }, [isMutating, setIsMutating]);
 
   const formHandler: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
@@ -50,22 +57,28 @@ export const Editor: FC<{ id: string }> = ({ id }) => {
         type="date"
         value={trimTime(post.created) || ''}
       />
-      <Button className={styles.input} disabled={isSaving} type="success" submit>
-        {t('Save')}
+      <Button className={styles.input} disabled={isMutating} type="success" submit>
+        {isSaving ? `${t('Saving')}...` : t('Save')}
       </Button>
       {hasPermission(AuthorizationScopes.delete) && (
         <Button
           className={styles.input}
-          disabled={isDeleting}
+          disabled={isMutating}
           onClick={() => setShowDeleteConfirm(true)}
           type="danger"
         >
           {t('Delete')}
         </Button>
       )}
-      <Modal onClose={() => setShowDeleteConfirm(false)} open={showDeleteConfirm}>
-        <Button onClick={() => setShowDeleteConfirm(false)}>{t('Go back')}</Button>
-        <Button disabled={isDeleting} onClick={() => deleteTrigger()} type="danger">
+      <Modal
+        canClose={!isMutating}
+        onClose={() => setShowDeleteConfirm(false)}
+        open={showDeleteConfirm}
+      >
+        <Button disabled={isMutating} onClick={() => setShowDeleteConfirm(false)}>
+          {t('Go back')}
+        </Button>
+        <Button disabled={isMutating} onClick={() => deleteTrigger()} type="danger">
           {isDeleting ? `${t('Deleting')}...` : t('Delete')}
         </Button>
       </Modal>

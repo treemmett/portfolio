@@ -2,11 +2,11 @@ import classNames from 'classnames';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
-import { usePosts } from '@lib/posts';
+import { usePost } from '@lib/posts';
 import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
 import { trace } from '@utils/analytics';
@@ -20,11 +20,9 @@ const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor)
 
 export const LightBox: FC = () => {
   const { query, push } = useRouter();
-  const { posts } = usePosts();
+  const { post } = usePost(query.post as string);
   const { hasPermission } = useUser();
   const { site } = useSite();
-
-  const post = useMemo(() => posts?.find((p) => p.id === query.post), [query.post, posts]);
 
   const galleryRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>();
@@ -77,8 +75,11 @@ export const LightBox: FC = () => {
     push(site?.domain === window.location.host ? '/' : `/u/${post?.owner.username}/`);
   }, [post, push, query, site?.domain]);
 
+  const [canClose, setCanClose] = useState(true);
+
   return (
     <Modal
+      canClose={canClose}
       className={classNames(styles['light-box'], {
         [styles['panel-open']]: hasPermission(AuthorizationScopes.post),
       })}
@@ -107,7 +108,9 @@ export const LightBox: FC = () => {
               priority
             />
           </div>
-          {hasPermission(AuthorizationScopes.post) && <DynamicEditor id={post.id} />}
+          {hasPermission(AuthorizationScopes.post) && (
+            <DynamicEditor id={post.id} setIsMutating={setCanClose} />
+          )}
         </>
       )}
     </Modal>

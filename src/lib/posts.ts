@@ -53,7 +53,7 @@ export function usePost(id: string) {
   }, [foundPost]);
 
   const {
-    isMutating,
+    isMutating: isSaving,
     trigger,
     error: mutationError,
   } = useSWRMutate<IPost, APIError>(
@@ -98,7 +98,8 @@ export function usePost(id: string) {
     deleteError,
     deleteTrigger,
     isDeleting,
-    isSaving: isMutating,
+    isMutating: isDeleting || isSaving,
+    isSaving,
     mutationError,
     post,
     save: trigger,
