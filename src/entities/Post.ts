@@ -48,7 +48,7 @@ export class Post extends BaseEntity {
 
   @Type(() => Photo)
   @ValidateNested()
-  @OneToOne('photos')
+  @OneToOne('photos', { onDelete: 'CASCADE' })
   @JoinColumn()
   public photo: Photo;
 
@@ -129,6 +129,11 @@ export class Post extends BaseEntity {
       .getMany();
 
     return transformAndValidate(Post, posts);
+  }
+
+  public async delete() {
+    await this.photo.delete();
+    await this.remove();
   }
 }
 

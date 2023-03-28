@@ -201,6 +201,11 @@ export class Photo extends BaseEntity {
 
     return Photo.addPhoto(image, user, payload.type, payload.jti);
   }
+
+  public async delete() {
+    await s3.deleteObject({ Bucket: S3_BUCKET, Key: this.id }).promise();
+    await this.remove();
+  }
 }
 
 export type IPhoto = Omit<Photo, keyof BaseEntity | 'upload'>;

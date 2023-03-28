@@ -10,7 +10,7 @@ export default nextConnect()
   .delete(User.authorize(AuthorizationScopes.delete), async (req, res) => {
     const post = await Post.getOneFromUser(req.user, req.query.id as string);
 
-    await post.remove();
+    await post.delete();
 
     logger.info('Post deleted, revalidating cache');
     res.end();
