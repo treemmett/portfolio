@@ -11,6 +11,7 @@ export interface InputProps {
   /** remove spacing reserved for label */
   collapseLabel?: boolean;
   defaultValue?: string;
+  disabled?: boolean;
   file?: File | IPhoto | null;
   id?: string;
   label?: string;
@@ -32,6 +33,7 @@ export const Input: FC<InputProps> = ({
   checked,
   collapseLabel,
   defaultValue,
+  disabled,
   file,
   id,
   label,
@@ -76,7 +78,14 @@ export const Input: FC<InputProps> = ({
         </label>
       )}
       {type === 'select' && (
-        <select className={styles.input} id={realId} name={name} onChange={onChange} value={value}>
+        <select
+          className={styles.input}
+          disabled={disabled}
+          id={realId}
+          name={name}
+          onChange={onChange}
+          value={value}
+        >
           {options?.map((opt) => (
             <option key={opt.id} value={opt.id}>
               {opt.label}
@@ -87,6 +96,7 @@ export const Input: FC<InputProps> = ({
       {type === 'textarea' && (
         <textarea
           className={styles.input}
+          disabled={disabled}
           id={realId}
           name={name}
           onChange={onChange}
@@ -95,13 +105,20 @@ export const Input: FC<InputProps> = ({
       )}
       {type === 'file' && (
         <div className={cx(styles.input, styles.file)}>
-          <input accept="image/*" id={realId} onChange={onChange} type="file" />
+          <input accept="image/*" disabled={disabled} id={realId} onChange={onChange} type="file" />
           {imageData && <img alt="Logo" src={imageData} />}
         </div>
       )}
       {type === 'checkbox' && (
         <div className={cx(styles.input, styles.checkbox)}>
-          <input checked={checked} id={realId} name={name} onChange={onChange} type="checkbox" />
+          <input
+            checked={checked}
+            disabled={disabled}
+            id={realId}
+            name={name}
+            onChange={onChange}
+            type="checkbox"
+          />
           <Check />
         </div>
       )}
@@ -110,6 +127,7 @@ export const Input: FC<InputProps> = ({
           className={styles.input}
           data-testid={testId}
           defaultValue={defaultValue}
+          disabled={disabled}
           id={realId}
           name={name}
           onChange={onChange}

@@ -77,10 +77,15 @@ export const Settings: FC = () => {
             type="checkbox"
           />
           <span>Watermark position</span>
-          <div className={styles.quadrants}>
+          <div
+            className={classNames(styles.quadrants, {
+              [styles.disabled]: typeof site.watermarkPosition !== 'number',
+            })}
+          >
             <Input
               checked={site.watermarkPosition === WatermarkPosition.TOP_LEFT}
               className={classNames(styles.checkbox, styles.tl)}
+              disabled={typeof site.watermarkPosition !== 'number'}
               label="Top Left"
               onChange={() => setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_LEFT })}
               type="checkbox"
@@ -88,6 +93,7 @@ export const Settings: FC = () => {
             <Input
               checked={site.watermarkPosition === WatermarkPosition.TOP_RIGHT}
               className={classNames(styles.checkbox, styles.tr)}
+              disabled={typeof site.watermarkPosition !== 'number'}
               label="Top Right"
               onChange={() => setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_RIGHT })}
               type="checkbox"
@@ -95,6 +101,7 @@ export const Settings: FC = () => {
             <Input
               checked={site.watermarkPosition === WatermarkPosition.BOTTOM_LEFT}
               className={classNames(styles.checkbox, styles.bl)}
+              disabled={typeof site.watermarkPosition !== 'number'}
               label="Bottom Left"
               onChange={() =>
                 setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_LEFT })
@@ -104,6 +111,7 @@ export const Settings: FC = () => {
             <Input
               checked={site.watermarkPosition === WatermarkPosition.BOTTOM_RIGHT}
               className={classNames(styles.checkbox, styles.br)}
+              disabled={typeof site.watermarkPosition !== 'number'}
               label="Bottom Right"
               onChange={() =>
                 setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_RIGHT })

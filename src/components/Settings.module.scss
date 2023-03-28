@@ -24,6 +24,10 @@
   border-style: solid;
   border-radius: shared.$border-radius;
 
+  &.disabled {
+    opacity: 0.3;
+  }
+
   .checkbox {
     position: absolute;
     margin: 0;
