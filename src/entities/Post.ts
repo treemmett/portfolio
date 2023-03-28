@@ -1,16 +1,6 @@
 import { Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
-import {
-  IsDate,
-  IsInt,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Length,
-  Max,
-  Min,
-  ValidateNested,
-} from 'class-validator';
+import { IsDate, IsOptional, IsString, IsUUID, Length, ValidateNested } from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -62,24 +52,6 @@ export class Post extends BaseEntity {
   @JoinColumn()
   public photo: Photo;
 
-  @IsInt()
-  @Min(0)
-  @Max(255)
-  @Column({ type: 'smallint' })
-  public red: number;
-
-  @IsInt()
-  @Min(0)
-  @Max(255)
-  @Column({ type: 'smallint' })
-  public green: number;
-
-  @IsInt()
-  @Min(0)
-  @Max(255)
-  @Column({ type: 'smallint' })
-  public blue: number;
-
   @Length(0, 200)
   @IsString()
   @IsOptional()
@@ -96,13 +68,10 @@ export class Post extends BaseEntity {
     const post = await transformAndValidate(
       Post,
       {
-        blue: 0,
         created: new Date(),
-        green: 0,
         id,
         owner: user,
         photo,
-        red: 0,
         updated: new Date(),
       },
       { validator: { forbidUnknownValues: true } }
