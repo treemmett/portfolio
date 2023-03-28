@@ -3,6 +3,11 @@ import { forwardRef, PropsWithChildren, useEffect, useState } from 'react';
 import styles from './Modal.module.scss';
 
 export interface ModalProps extends PropsWithChildren {
+  /**
+   * Whether clicking outside the modal triggers the closing callback
+   * @default true
+   */
+  canClose?: boolean;
   className?: string;
   /**
    * Callback when modal finishes closing
@@ -13,7 +18,7 @@ export interface ModalProps extends PropsWithChildren {
 }
 
 export const Modal = forwardRef<HTMLDivElement, ModalProps>(
-  ({ className, children, onClose = () => null, open = false }, ref) => {
+  ({ canClose = true, className, children, onClose = () => null, open = false }, ref) => {
     const [openState, setOpen] = useState(open);
     useEffect(() => {
       setOpen(open);
@@ -27,7 +32,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
           [styles.open]: openState,
         })}
         onClick={(e) => {
-          if (e.currentTarget === e.target) setOpen(false);
+          if (e.currentTarget === e.target && canClose) setOpen(false);
         }}
         onTransitionEnd={() => {
           if (!openState && open) {

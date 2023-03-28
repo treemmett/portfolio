@@ -51,7 +51,7 @@ export function useSite() {
   return {
     error,
     isLoading,
-    isMutating,
+    isSaving: isMutating,
     mutationError,
     save: trigger,
     setSite,

@@ -16,7 +16,7 @@ export const getStaticProps: GetStaticProps = async () => ({
 
 export const Settings: FC = () => {
   const { t } = useTranslation();
-  const { isLoading, setSite, site, save } = useSite();
+  const { isLoading, isSaving, setSite, site, save } = useSite();
   const { query, push } = useRouter();
 
   const closeModal = useCallback(() => {
@@ -35,7 +35,7 @@ export const Settings: FC = () => {
   );
 
   return (
-    <Modal onClose={closeModal} open={query.settings === 'true'}>
+    <Modal canClose={!isSaving} onClose={closeModal} open={query.settings === 'true'}>
       {!isLoading && site ? (
         <form className={styles.form} onSubmit={onSubmit}>
           <h2>Site Information</h2>
@@ -94,8 +94,8 @@ export const Settings: FC = () => {
             onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
             value={site.imdb || ''}
           />
-          <Button type="success" submit>
-            {t('Save')}
+          <Button disabled={isSaving} type="success" submit>
+            {isSaving ? `${t('Saving')}...` : t('Save')}
           </Button>
         </form>
       ) : (
