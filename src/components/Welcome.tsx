@@ -22,7 +22,7 @@ export const Welcome: FC = () => {
   if (!user) return null;
 
   return (
-    <Modal open={hasPermission(AuthorizationScopes.onboard)}>
+    <Modal canClose={false} open={hasPermission(AuthorizationScopes.onboard)}>
       <form className={styles.welcome} onSubmit={submitHandler}>
         <h1>{t('Welcome!')}</h1>
         <Input
