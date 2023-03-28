@@ -1,5 +1,6 @@
 import Head from 'next/head';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
+import type { IPhoto } from '@entities/Photo';
 import { usePosts } from '@lib/posts';
 import { useSite } from '@lib/site';
 
@@ -7,15 +8,31 @@ export const Meta: FC = () => {
   const { site } = useSite();
   const { posts } = usePosts();
 
-  if (!site) return null;
+  const { title, description } = site || {};
 
-  const { title, description } = site;
+  const largestFavicon = useMemo(
+    () =>
+      site?.favicons.reduce((acc, cur) => {
+        if (!acc) return cur;
+
+        if (acc.width < cur.width) return cur;
+
+        return acc;
+      }, null as IPhoto | null),
+    [site?.favicons]
+  );
+
+  if (!site) return null;
 
   return (
     <Head>
-      <title>{title}</title>
-      <meta content={title} property="og:title" />
-      <meta content={title} name="twitter:title" />
+      {title && (
+        <>
+          <title>{title}</title>
+          <meta content={title} property="og:title" />
+          <meta content={title} name="twitter:title" />
+        </>
+      )}
       {description && (
         <>
           <meta content={description} name="description" />
@@ -29,6 +46,19 @@ export const Meta: FC = () => {
           <meta content={posts[0].photo.url} name="twitter:image" />
           <meta content={posts[0].photo.height.toString()} property="og:image:height" />
           <meta content={posts[0].photo.width.toString()} property="og:image:width" />
+        </>
+      )}
+      {site.favicons?.length && (
+        <>
+          {largestFavicon && <link href={largestFavicon.url} rel="icon" />}
+          {site.favicons.map((icon) => (
+            <link
+              href={icon.url}
+              key={icon.id}
+              rel="apple-touch-icon"
+              sizes={`${icon.width}x${icon.height}`}
+            />
+          ))}
         </>
       )}
       <meta content="summary_large_image" name="twitter:card" />

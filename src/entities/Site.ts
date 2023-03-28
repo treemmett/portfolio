@@ -7,11 +7,14 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Photo } from './Photo';
-import type { User } from './User';
+import { IPhoto, Photo } from './Photo';
+import { PhotoType } from './PhotoType';
+import type { IUser, User } from './User';
 import { SiteNotFoundError } from '@utils/errors';
 
 @Entity({ name: 'sites' })
@@ -29,6 +32,12 @@ export class Site extends BaseEntity {
   @IsOptional()
   @JoinColumn()
   public logo?: Photo | null;
+
+  @Type(() => Photo)
+  @ValidateNested({ each: true })
+  @ManyToMany('photos')
+  @JoinTable()
+  public favicons: Photo[];
 
   @Column({ nullable: true, type: 'text' })
   @Index({ unique: true })
@@ -68,6 +77,10 @@ export class Site extends BaseEntity {
       .select()
       .leftJoin('site.owner', 'user')
       .leftJoinAndSelect('site.logo', 'logo')
+      .leftJoin('site.favicons', 'favicon')
+      .addSelect('favicon.id')
+      .addSelect('favicon.height')
+      .addSelect('favicon.width')
       .addSelect('user.id')
       .addSelect('user.username')
       .where('site.domain = :domain', { domain })
@@ -83,6 +96,10 @@ export class Site extends BaseEntity {
       .select()
       .leftJoin('site.owner', 'user')
       .leftJoinAndSelect('site.logo', 'logo')
+      .leftJoin('site.favicons', 'favicon')
+      .addSelect('favicon.id')
+      .addSelect('favicon.height')
+      .addSelect('favicon.width')
       .addSelect('user.id')
       .addSelect('user.username')
       .where('user.username = :username', { username })
@@ -90,15 +107,38 @@ export class Site extends BaseEntity {
 
     if (!site) throw new SiteNotFoundError();
 
-    return transformAndValidate(Site, site);
+    return transformAndValidate(Site, site, { validator: { skipMissingProperties: true } });
   }
 
   public async setLogo(photoToken: string): Promise<this> {
-    const { photo } = await Photo.processUpload(this.owner, photoToken);
+    const { image, photo } = await Photo.processUpload(this.owner, photoToken);
+
+    // generate favicons
+    const favicons = await Promise.all(
+      [32, 60, 76, 120, 152, 196].map(async (size) => {
+        const icon = await Photo.addPhoto(
+          image.clone().resize(size, size, { fit: 'cover' }),
+          this.owner,
+          PhotoType.FAVICON
+        );
+
+        return icon.photo;
+      })
+    );
+
     this.logo = photo;
+    this.favicons = favicons;
     await this.save();
     return this;
   }
 }
 
-export type ISite = Omit<Site, keyof BaseEntity>;
+export interface ISite
+  extends Omit<
+    Site,
+    keyof BaseEntity | 'getByDomain' | 'getByUsername' | 'setLogo' | 'owner' | 'logo' | 'favicons'
+  > {
+  owner: IUser;
+  logo: IPhoto;
+  favicons: IPhoto[];
+}

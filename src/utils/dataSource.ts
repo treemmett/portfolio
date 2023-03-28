@@ -15,6 +15,7 @@ import { username1679784893697 } from 'src/migrations/1679784893697-username';
 import { domain1679867824621 } from 'src/migrations/1679867824621-domain';
 import { siteLogo1680006548188 } from 'src/migrations/1680006548188-siteLogo';
 import { removeRGB1680010701198 } from 'src/migrations/1680010701198-removeRGB';
+import { favicons1680012322782 } from 'src/migrations/1680012322782-favicons';
 
 export const AppDataSource = new DataSource({
   database: Config.DB_DATABASE,
@@ -31,6 +32,7 @@ export const AppDataSource = new DataSource({
     domain1679867824621,
     siteLogo1680006548188,
     removeRGB1680010701198,
+    favicons1680012322782,
   ],
   password: Config.DB_PASSWORD,
   port: Config.DB_PORT,

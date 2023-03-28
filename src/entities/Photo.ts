@@ -5,7 +5,7 @@ import { Transform, Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
 import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
 import { JWTPayload, SignJWT, jwtVerify } from 'jose';
-import sharp, { Metadata, OutputInfo, Sharp } from 'sharp';
+import sharp, { OutputInfo, Sharp } from 'sharp';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
@@ -96,13 +96,12 @@ export class Photo extends BaseEntity {
     user: User,
     type: PhotoType,
     id?: string
-  ): Promise<{ image: Sharp; imageInfo: OutputInfo; metadata: Metadata; photo: Photo }> {
+  ): Promise<{ image: Sharp; imageInfo: OutputInfo; photo: Photo }> {
     image.rotate().webp();
 
-    const [imageData, thumbnailBuffer, metadata] = await Promise.all([
+    const [imageData, thumbnailBuffer] = await Promise.all([
       image.toBuffer({ resolveWithObject: true }),
       image.clone().resize(20, 20, { fit: 'inside' }).webp().toBuffer(),
-      image.metadata(),
     ]);
 
     logger.trace('Photo processed');
@@ -112,7 +111,7 @@ export class Photo extends BaseEntity {
     const photo = await transformAndValidate(
       Photo,
       {
-        height: metadata.height,
+        height: imageData.info.height,
         id: realId,
         owner: user,
         size: imageData.info.size,
@@ -121,7 +120,7 @@ export class Photo extends BaseEntity {
         )}`,
         type,
         url: CDN_URL ? `${CDN_URL}/${realId}` : `${S3_URL}/${S3_BUCKET}/${realId}`,
-        width: metadata.width,
+        width: imageData.info.width,
       } as Photo,
       {
         validator: {
@@ -146,7 +145,6 @@ export class Photo extends BaseEntity {
     return {
       image,
       imageInfo: imageData.info,
-      metadata,
       photo: savedPhoto,
     };
   }
