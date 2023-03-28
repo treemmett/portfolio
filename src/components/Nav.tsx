@@ -10,7 +10,7 @@ import { useUser } from '@lib/user';
 export const Nav: FC = () => {
   const { t } = useTranslation();
   const { site } = useSite();
-  const { login, logout, user } = useUser();
+  const { isLoggingIn, login, logout, user } = useUser();
   const { query } = useRouter();
 
   return (
@@ -58,8 +58,8 @@ export const Nav: FC = () => {
             </button>
           </>
         ) : (
-          <button onClick={() => login()} type="button">
-            {t('Login')}
+          <button disabled={isLoggingIn} onClick={() => login()} type="button">
+            {isLoggingIn ? `${t('Logging in')}...` : t('Login')}
           </button>
         )}
       </nav>
