@@ -69,17 +69,16 @@ export class Photo extends BaseEntity {
   @Column()
   public width: number;
 
-  public static async getUploadToken(user: User, issuer: 'post'): Promise<UploadToken> {
+  public static async getUploadToken(user: User, type: PhotoType): Promise<UploadToken> {
     logger.trace('Creating upload token');
     const id = v4();
 
     const [token, url] = await Promise.all([
-      new SignJWT({})
+      new SignJWT({ type })
         .setProtectedHeader({ alg: 'HS256' })
         .setJti(id)
         .setSubject(user.id)
         .setIssuedAt()
-        .setIssuer(issuer)
         .setExpirationTime('3m')
         .sign(new TextEncoder().encode(Config.JWT_SECRET)),
       s3.getSignedUrlPromise('putObject', {
@@ -103,14 +102,14 @@ export class Photo extends BaseEntity {
       throw new BadUploadTokenError('No upload token');
     }
 
-    let payload: JWTPayload;
+    let payload: JWTPayload & { type: PhotoType };
 
     try {
       const verification = await jwtVerify(token, new TextEncoder().encode(Config.JWT_SECRET), {
         clockTolerance: '1 minute',
       });
 
-      payload = verification.payload;
+      payload = verification.payload as typeof payload;
     } catch {
       throw new BadUploadTokenError();
     }
@@ -165,7 +164,7 @@ export class Photo extends BaseEntity {
         thumbnailURL: `data:image/${imageData.info.format};base64,${thumbnailBuffer.toString(
           'base64'
         )}`,
-        type: PhotoType.ORIGINAL,
+        type: payload.type,
         url: CDN_URL ? `${CDN_URL}/${jti}` : `${S3_URL}/${S3_BUCKET}/${jti}`,
         width: metadata.width,
       } as Photo,
