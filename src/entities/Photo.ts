@@ -5,7 +5,7 @@ import { Transform, Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
 import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
 import { JWTPayload, SignJWT, jwtVerify } from 'jose';
-import sharp, { Metadata, OutputInfo } from 'sharp';
+import sharp, { Metadata, OutputInfo, Sharp } from 'sharp';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
@@ -91,10 +91,67 @@ export class Photo extends BaseEntity {
     return { token, url };
   }
 
-  public static async processUpload(
+  public static async addPhoto(
+    image: Sharp,
     user: User,
-    token: string
-  ): Promise<{ imageInfo: OutputInfo; metadata: Metadata; photo: Photo }> {
+    type: PhotoType,
+    id?: string
+  ): Promise<{ image: Sharp; imageInfo: OutputInfo; metadata: Metadata; photo: Photo }> {
+    image.rotate().webp();
+
+    const [imageData, thumbnailBuffer, metadata] = await Promise.all([
+      image.toBuffer({ resolveWithObject: true }),
+      image.clone().resize(20, 20, { fit: 'inside' }).webp().toBuffer(),
+      image.metadata(),
+    ]);
+
+    logger.trace('Photo processed');
+
+    const realId = id || v4();
+
+    const photo = await transformAndValidate(
+      Photo,
+      {
+        height: metadata.height,
+        id: realId,
+        owner: user,
+        size: imageData.info.size,
+        thumbnailURL: `data:image/${imageData.info.format};base64,${thumbnailBuffer.toString(
+          'base64'
+        )}`,
+        type,
+        url: CDN_URL ? `${CDN_URL}/${realId}` : `${S3_URL}/${S3_BUCKET}/${realId}`,
+        width: metadata.width,
+      } as Photo,
+      {
+        validator: {
+          forbidUnknownValues: true,
+        },
+      }
+    );
+
+    const [savedPhoto] = await Promise.all([
+      photo.save(),
+      s3
+        .upload({
+          ACL: 'public-read',
+          Body: imageData.data,
+          Bucket: S3_BUCKET,
+          ContentType: 'image/webp',
+          Key: realId,
+        })
+        .promise(),
+    ]);
+
+    return {
+      image,
+      imageInfo: imageData.info,
+      metadata,
+      photo: savedPhoto,
+    };
+  }
+
+  public static async processUpload(user: User, token: string) {
     logger.trace({ token, user }, 'Processing upload');
 
     if (!token) {
@@ -142,57 +199,9 @@ export class Photo extends BaseEntity {
 
     await s3.deleteObject({ Bucket: S3_BUCKET, Key: `processing/${jti}` }).promise();
 
-    const image = sharp(Buffer.from(object.Body.toString('base64'), 'base64'))
-      .rotate()
-      .webp();
+    const image = sharp(Buffer.from(object.Body.toString('base64'), 'base64'));
 
-    const [imageData, thumbnailBuffer, metadata] = await Promise.all([
-      image.toBuffer({ resolveWithObject: true }),
-      image.clone().resize(20, 20, { fit: 'inside' }).webp().toBuffer(),
-      image.metadata(),
-    ]);
-
-    logger.trace('Photo processed');
-
-    const photo = await transformAndValidate(
-      Photo,
-      {
-        height: metadata.height,
-        id: jti,
-        owner: user,
-        size: imageData.info.size,
-        thumbnailURL: `data:image/${imageData.info.format};base64,${thumbnailBuffer.toString(
-          'base64'
-        )}`,
-        type: payload.type,
-        url: CDN_URL ? `${CDN_URL}/${jti}` : `${S3_URL}/${S3_BUCKET}/${jti}`,
-        width: metadata.width,
-      } as Photo,
-      {
-        validator: {
-          forbidUnknownValues: true,
-        },
-      }
-    );
-
-    const [savedPhoto] = await Promise.all([
-      photo.save(),
-      s3
-        .upload({
-          ACL: 'public-read',
-          Body: imageData.data,
-          Bucket: S3_BUCKET,
-          ContentType: 'image/webp',
-          Key: jti,
-        })
-        .promise(),
-    ]);
-
-    return {
-      imageInfo: imageData.info,
-      metadata,
-      photo: savedPhoto,
-    };
+    return Photo.addPhoto(image, user, payload.type, payload.jti);
   }
 }
 
