@@ -1,6 +1,3 @@
-import { AWSError } from 'aws-sdk';
-import { GetObjectOutput } from 'aws-sdk/clients/s3';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import { Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
 import {
@@ -14,8 +11,6 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { JWTPayload, jwtVerify, SignJWT } from 'jose';
-import sharp from 'sharp';
 import {
   BaseEntity,
   Column,
@@ -29,16 +24,9 @@ import {
 } from 'typeorm';
 import { v4 } from 'uuid';
 import { Photo, IPhoto } from './Photo';
-import { PhotoType } from './PhotoType';
 import { User } from './User';
-import { Config } from '@utils/config';
-import { BadUploadTokenError, NoFileReceivedError, PostNotFoundError } from '@utils/errors';
+import { PostNotFoundError } from '@utils/errors';
 import { logger } from '@utils/logger';
-import { s3 } from '@utils/s3';
-
-const { JWT_SECRET, S3_BUCKET } = Config;
-
-const ISSUER = 'upload';
 
 export interface UploadToken {
   token: string;
@@ -105,70 +93,21 @@ export class Post extends BaseEntity {
 
   public static async processUpload(token: string, user: User): Promise<Post> {
     logger.info('Processing upload');
-    if (!token) {
-      logger.error('No upload token', { token });
-      throw new BadUploadTokenError('No upload token');
-    }
 
-    let payload: JWTPayload;
-
-    try {
-      const verification = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET), {
-        clockTolerance: '2 hours',
-        issuer: ISSUER,
-      });
-
-      payload = verification.payload;
-    } catch {
-      throw new BadUploadTokenError();
-    }
-
-    const { jti } = payload as {
-      jti: string;
-    };
-
-    let object: PromiseResult<GetObjectOutput, AWSError>;
-    try {
-      object = await s3
-        .getObject({
-          Bucket: S3_BUCKET,
-          Key: this.getProcessingKey(jti),
-        })
-        .promise();
-    } catch (e) {
-      if ((e as AWSError).code === 'NoSuchKey') {
-        throw new NoFileReceivedError();
-      }
-
-      throw e;
-    }
-
-    if (!object.Body) throw new NoFileReceivedError();
-
-    await s3.deleteObject({ Bucket: S3_BUCKET, Key: this.getProcessingKey(jti) }).promise();
-
-    const buffer = Buffer.from(object.Body.toString('base64'), 'base64');
-
-    const image = sharp(buffer);
-
-    const photo = await Photo.upload(image, user, PhotoType.ORIGINAL);
-
-    // get average color
-    const { channels } = await image.stats();
-    const [r, g, b] = channels.map((c) => Math.floor(c.mean));
+    const { photo } = await Photo.processUpload(user, token);
 
     const id = v4();
 
     const post = await transformAndValidate(
       Post,
       {
-        blue: b,
+        blue: 0,
         created: new Date(),
-        green: g,
+        green: 0,
         id,
         owner: user,
         photo,
-        red: r,
+        red: 0,
         updated: new Date(),
       },
       { validator: { forbidUnknownValues: true } }
@@ -183,28 +122,6 @@ export class Post extends BaseEntity {
     logger.info('Post added to index');
 
     return post;
-  }
-
-  public static async requestUploadToken(): Promise<UploadToken> {
-    logger.info('Creating upload token');
-    const id = v4();
-
-    const [token, url] = await Promise.all([
-      new SignJWT({})
-        .setProtectedHeader({ alg: 'HS256' })
-        .setJti(id)
-        .setIssuedAt()
-        .setIssuer(ISSUER)
-        .setExpirationTime('3m')
-        .sign(new TextEncoder().encode(JWT_SECRET)),
-      s3.getSignedUrlPromise('putObject', {
-        Bucket: S3_BUCKET,
-        Expires: 60 * 2,
-        Key: this.getProcessingKey(id),
-      }),
-    ]);
-
-    return { token, url };
   }
 
   public static async getById(id: string): Promise<Post> {
@@ -248,10 +165,6 @@ export class Post extends BaseEntity {
       .getMany();
 
     return transformAndValidate(Post, posts);
-  }
-
-  private static getProcessingKey(key: string): string {
-    return `processing/${key}`;
   }
 }
 
