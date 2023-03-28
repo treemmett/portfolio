@@ -7,6 +7,7 @@ import { Modal } from './Modal';
 import styles from './Settings.module.scss';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
+import { WatermarkPosition } from '@entities/WatermarkPosition';
 import { useSite } from '@lib/site';
 
 export const getStaticProps: GetStaticProps = async () => ({
@@ -64,27 +65,49 @@ export const Settings: FC = () => {
             }
             type="file"
           />
-          <Input label="Post watermark" type="checkbox" />
+          <Input
+            checked={typeof site.watermarkPosition === 'number'}
+            label="Post watermark"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setSite({
+                ...site,
+                watermarkPosition: e.currentTarget.checked ? WatermarkPosition.BOTTOM_RIGHT : null,
+              });
+            }}
+            type="checkbox"
+          />
           <span>Watermark position</span>
           <div className={styles.quadrants}>
             <Input
+              checked={site.watermarkPosition === WatermarkPosition.TOP_LEFT}
               className={classNames(styles.checkbox, styles.tl)}
               label="Top Left"
+              onChange={() => setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_LEFT })}
               type="checkbox"
             />
             <Input
+              checked={site.watermarkPosition === WatermarkPosition.TOP_RIGHT}
               className={classNames(styles.checkbox, styles.tr)}
               label="Top Right"
+              onChange={() => setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_RIGHT })}
               type="checkbox"
             />
             <Input
+              checked={site.watermarkPosition === WatermarkPosition.BOTTOM_LEFT}
               className={classNames(styles.checkbox, styles.bl)}
               label="Bottom Left"
+              onChange={() =>
+                setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_LEFT })
+              }
               type="checkbox"
             />
             <Input
+              checked={site.watermarkPosition === WatermarkPosition.BOTTOM_RIGHT}
               className={classNames(styles.checkbox, styles.br)}
               label="Bottom Right"
+              onChange={() =>
+                setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_RIGHT })
+              }
               type="checkbox"
             />
           </div>

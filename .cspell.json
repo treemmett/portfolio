@@ -1,6 +1,6 @@
 {
   "version": "0.2",
-  "ignorePaths": ["public/locales/**"],
+  "ignorePaths": ["public/locales/**", "src/migrations/**"],
   "language": "en",
   "dictionaries": ["typescript", "html"],
   "words": [

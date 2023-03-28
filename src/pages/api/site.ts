@@ -2,6 +2,7 @@ import { celebrate, Joi } from 'celebrate';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Site } from '@entities/Site';
 import { User } from '@entities/User';
+import { WatermarkPosition } from '@entities/WatermarkPosition';
 import { nextConnect } from '@middleware/nextConnect';
 
 export default nextConnect()
@@ -19,6 +20,7 @@ export default nextConnect()
           name: [Joi.string(), null, ''],
           title: [Joi.string(), null, ''],
           twitter: [Joi.string(), null, ''],
+          watermarkPosition: [Joi.number().valid(...Object.values(WatermarkPosition)), null],
         },
       },
       { allowUnknown: true }
@@ -35,6 +37,8 @@ export default nextConnect()
       site.name = req.body.name || null;
       site.title = req.body.title || null;
       site.twitter = req.body.twitter || null;
+      site.watermarkPosition =
+        typeof req.body.watermarkPosition === 'number' ? req.body.watermarkPosition : null;
       await site.save();
       res.send(site);
     }

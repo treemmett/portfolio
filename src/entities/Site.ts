@@ -15,6 +15,7 @@ import {
 import { IPhoto, Photo } from './Photo';
 import { PhotoType } from './PhotoType';
 import type { IUser, User } from './User';
+import { WatermarkPosition } from './WatermarkPosition';
 import { SiteNotFoundError } from '@utils/errors';
 
 @Entity({ name: 'sites' })
@@ -38,6 +39,13 @@ export class Site extends BaseEntity {
   @ManyToMany('photos', { onDelete: 'SET NULL' })
   @JoinTable()
   public favicons: Photo[];
+
+  @Column({
+    enum: WatermarkPosition,
+    nullable: true,
+    type: 'enum',
+  })
+  public watermarkPosition?: WatermarkPosition | null;
 
   @Column({ nullable: true, type: 'text' })
   @Index({ unique: true })
