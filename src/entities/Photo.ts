@@ -245,8 +245,7 @@ export class Photo extends BaseEntity {
       throw new NoFileReceivedError('Logo not found');
     }
 
-    const logoBuffer = Buffer.from(logoObject.Body.toString('base64'), 'base64');
-    const logoImage = sharp(logoBuffer);
+    const logoImage = sharp(Buffer.from(logoObject.Body.toString('base64'), 'base64'));
     const [imageMetadata, logoMeta] = await Promise.all([image.metadata(), logoImage.metadata()]);
 
     if (typeof imageMetadata.height !== 'number' || typeof imageMetadata.width !== 'number') {
@@ -295,12 +294,17 @@ export class Photo extends BaseEntity {
       throw new ImageProcessingError('Invalid gravity');
     }
 
+    logger.trace('Applying alpha');
+    const logoBuffer = await logoImage.ensureAlpha(0.5).webp().sharpen().toBuffer();
+
     logger.trace('Compositing');
 
     const compositedBuffer = await image
       .composite([{ input: logoBuffer, left, top }])
       .webp()
       .toBuffer();
+
+    logger.trace('Watermark applied');
 
     return sharp(compositedBuffer);
   }
