@@ -74,3 +74,9 @@ export class SiteNotFoundError extends APIError {
     super(message, 404);
   }
 }
+
+export class ImageProcessingError extends APIError {
+  constructor(public message = 'Unable to process image') {
+    super(message, 500);
+  }
+}

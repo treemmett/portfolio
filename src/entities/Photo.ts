@@ -1,4 +1,3 @@
-import { writeFileSync } from 'fs';
 import { AWSError } from 'aws-sdk';
 import { GetObjectOutput } from 'aws-sdk/clients/s3';
 import { PromiseResult } from 'aws-sdk/lib/request';
@@ -14,7 +13,12 @@ import { Site } from './Site';
 import { User } from './User';
 import { WatermarkPosition } from './WatermarkPosition';
 import { Config } from '@utils/config';
-import { BadUploadTokenError, NoFileReceivedError, UnauthorizedError } from '@utils/errors';
+import {
+  BadUploadTokenError,
+  ImageProcessingError,
+  NoFileReceivedError,
+  UnauthorizedError,
+} from '@utils/errors';
 import { logger } from '@utils/logger';
 import { s3 } from '@utils/s3';
 
@@ -208,62 +212,97 @@ export class Photo extends BaseEntity {
 
     if (includeWatermark) {
       logger.trace('Watermark requested');
-
-      const site = await Site.getByUsername(user.username);
-      const logo = site.favicons.find((f) => f.width === 196);
-
-      if (logo && typeof site.watermarkPosition === 'number') {
-        let gravity: string | null = null;
-        switch (site.watermarkPosition) {
-          case WatermarkPosition.BOTTOM_LEFT:
-            gravity = 'southwest';
-            break;
-
-          case WatermarkPosition.BOTTOM_RIGHT:
-            gravity = 'southeast';
-            break;
-
-          case WatermarkPosition.TOP_LEFT:
-            gravity = 'northwest';
-            break;
-
-          case WatermarkPosition.TOP_RIGHT:
-            gravity = 'northeast';
-            break;
-
-          default:
-            break;
-        }
-
-        logger.trace({ gravity }, 'Gravity computed');
-
-        const logoImage = await s3
-          .getObject({
-            Bucket: S3_BUCKET,
-            Key: logo.id,
-          })
-          .promise();
-
-        if (logoImage.Body) {
-          logger.trace('Compositing');
-          const logoBuffer = Buffer.from(logoImage.Body.toString('base64'), 'base64');
-
-          if (gravity && logoImage.Body) {
-            const compositedBuffer = await image
-              .composite([{ gravity, input: logoBuffer }])
-              .webp()
-              .toBuffer();
-
-            writeFileSync('test.webp', compositedBuffer);
-            writeFileSync('logo.webp', logoBuffer);
-
-            image = sharp(compositedBuffer);
-          }
-        }
-      }
+      image = await Photo.applyWatermark(image, user);
     }
 
     return Photo.addPhoto(image, user, payload.type, payload.jti);
+  }
+
+  private static async applyWatermark(image: Sharp, user: User): Promise<Sharp> {
+    logger.trace('Applying watermark');
+
+    const site = await Site.getByUsername(user.username);
+    const logo = site.favicons.find((f) => f.width === 196);
+
+    if (!logo) {
+      logger.trace('No logo, skipping watermark');
+      return image;
+    }
+
+    if (typeof site.watermarkPosition !== 'number') {
+      logger.trace('Watermark position not set, skipping');
+      return image;
+    }
+
+    const logoObject = await s3
+      .getObject({
+        Bucket: S3_BUCKET,
+        Key: logo.id,
+      })
+      .promise();
+
+    if (!logoObject.Body) {
+      throw new NoFileReceivedError('Logo not found');
+    }
+
+    const logoBuffer = Buffer.from(logoObject.Body.toString('base64'), 'base64');
+    const logoImage = sharp(logoBuffer);
+    const [imageMetadata, logoMeta] = await Promise.all([image.metadata(), logoImage.metadata()]);
+
+    if (typeof imageMetadata.height !== 'number' || typeof imageMetadata.width !== 'number') {
+      throw new ImageProcessingError('Unable to obtain image dimensions');
+    }
+
+    if (typeof logoMeta.height !== 'number' || typeof logoMeta.width !== 'number') {
+      throw new ImageProcessingError('Unable to obtain logo dimensions');
+    }
+
+    const PADDING = 40;
+
+    let gravity: string | null = null;
+    let top = 0;
+    let left = 0;
+    switch (site.watermarkPosition) {
+      case WatermarkPosition.BOTTOM_LEFT:
+        left = PADDING;
+        top = imageMetadata.height - logoMeta.height - PADDING;
+        gravity = 'southwest';
+        break;
+
+      case WatermarkPosition.BOTTOM_RIGHT:
+        left = imageMetadata.width - logoMeta.width - PADDING;
+        top = imageMetadata.height - logoMeta.height - PADDING;
+        gravity = 'southeast';
+        break;
+
+      case WatermarkPosition.TOP_LEFT:
+        left = PADDING;
+        top = PADDING;
+        gravity = 'northwest';
+        break;
+
+      case WatermarkPosition.TOP_RIGHT:
+        left = imageMetadata.width - logoMeta.width - PADDING;
+        top = PADDING;
+        gravity = 'northeast';
+        break;
+
+      default:
+        break;
+    }
+
+    if (!gravity) {
+      throw new ImageProcessingError('Invalid gravity');
+    }
+
+    logger.trace('Compositing');
+
+    const compositedBuffer = await image
+      .composite([{ input: logoBuffer, left, top }])
+      .webp()
+      .toBuffer();
+
+    return sharp(compositedBuffer);
   }
 
   /**
