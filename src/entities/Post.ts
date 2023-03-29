@@ -61,7 +61,7 @@ export class Post extends BaseEntity {
   public static async processUpload(token: string, user: User): Promise<Post> {
     logger.info('Processing upload');
 
-    const { photo } = await Photo.processUpload(user, token);
+    const { photo } = await Photo.processUpload(user, token, true);
 
     const id = v4();
 

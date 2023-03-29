@@ -1,3 +1,4 @@
+import { writeFileSync } from 'fs';
 import { AWSError } from 'aws-sdk';
 import { GetObjectOutput } from 'aws-sdk/clients/s3';
 import { PromiseResult } from 'aws-sdk/lib/request';
@@ -9,7 +10,9 @@ import sharp, { OutputInfo, Sharp } from 'sharp';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
+import { Site } from './Site';
 import { User } from './User';
+import { WatermarkPosition } from './WatermarkPosition';
 import { Config } from '@utils/config';
 import { BadUploadTokenError, NoFileReceivedError, UnauthorizedError } from '@utils/errors';
 import { logger } from '@utils/logger';
@@ -149,7 +152,7 @@ export class Photo extends BaseEntity {
     };
   }
 
-  public static async processUpload(user: User, token: string) {
+  public static async processUpload(user: User, token: string, includeWatermark?: boolean) {
     logger.trace({ token, user }, 'Processing upload');
 
     if (!token) {
@@ -195,9 +198,70 @@ export class Photo extends BaseEntity {
 
     if (!object.Body) throw new NoFileReceivedError();
 
+    logger.trace({ key: `processing/${jti}` }, 'Loading object');
+
     await s3.deleteObject({ Bucket: S3_BUCKET, Key: `processing/${jti}` }).promise();
 
-    const image = sharp(Buffer.from(object.Body.toString('base64'), 'base64'));
+    logger.trace('Object loaded');
+
+    let image = sharp(Buffer.from(object.Body.toString('base64'), 'base64'));
+
+    if (includeWatermark) {
+      logger.trace('Watermark requested');
+
+      const site = await Site.getByUsername(user.username);
+      const logo = site.favicons.find((f) => f.width === 196);
+
+      if (logo && typeof site.watermarkPosition === 'number') {
+        let gravity: string | null = null;
+        switch (site.watermarkPosition) {
+          case WatermarkPosition.BOTTOM_LEFT:
+            gravity = 'southwest';
+            break;
+
+          case WatermarkPosition.BOTTOM_RIGHT:
+            gravity = 'southeast';
+            break;
+
+          case WatermarkPosition.TOP_LEFT:
+            gravity = 'northwest';
+            break;
+
+          case WatermarkPosition.TOP_RIGHT:
+            gravity = 'northeast';
+            break;
+
+          default:
+            break;
+        }
+
+        logger.trace({ gravity }, 'Gravity computed');
+
+        const logoImage = await s3
+          .getObject({
+            Bucket: S3_BUCKET,
+            Key: logo.id,
+          })
+          .promise();
+
+        if (logoImage.Body) {
+          logger.trace('Compositing');
+          const logoBuffer = Buffer.from(logoImage.Body.toString('base64'), 'base64');
+
+          if (gravity && logoImage.Body) {
+            const compositedBuffer = await image
+              .composite([{ gravity, input: logoBuffer }])
+              .webp()
+              .toBuffer();
+
+            writeFileSync('test.webp', compositedBuffer);
+            writeFileSync('logo.webp', logoBuffer);
+
+            image = sharp(compositedBuffer);
+          }
+        }
+      }
+    }
 
     return Photo.addPhoto(image, user, payload.type, payload.jti);
   }
