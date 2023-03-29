@@ -222,9 +222,8 @@ export class Photo extends BaseEntity {
     logger.trace('Applying watermark');
 
     const site = await Site.getByUsername(user.username);
-    const logo = site.favicons.find((f) => f.width === 196);
 
-    if (!logo) {
+    if (!site.logo) {
       logger.trace('No logo, skipping watermark');
       return image;
     }
@@ -237,7 +236,7 @@ export class Photo extends BaseEntity {
     const logoObject = await s3
       .getObject({
         Bucket: S3_BUCKET,
-        Key: logo.id,
+        Key: site.logo.id,
       })
       .promise();
 
@@ -245,15 +244,15 @@ export class Photo extends BaseEntity {
       throw new NoFileReceivedError('Logo not found');
     }
 
-    const logoImage = sharp(Buffer.from(logoObject.Body.toString('base64'), 'base64'));
-    const [imageMetadata, logoMeta] = await Promise.all([image.metadata(), logoImage.metadata()]);
+    const [imageMetadata, logoImage] = await Promise.all([
+      image.metadata(),
+      sharp(Buffer.from(logoObject.Body.toString('base64'), 'base64'))
+        .resize(200, 200, { fit: 'inside' })
+        .toBuffer({ resolveWithObject: true }),
+    ]);
 
     if (typeof imageMetadata.height !== 'number' || typeof imageMetadata.width !== 'number') {
       throw new ImageProcessingError('Unable to obtain image dimensions');
-    }
-
-    if (typeof logoMeta.height !== 'number' || typeof logoMeta.width !== 'number') {
-      throw new ImageProcessingError('Unable to obtain logo dimensions');
     }
 
     const PADDING = 40;
@@ -264,13 +263,13 @@ export class Photo extends BaseEntity {
     switch (site.watermarkPosition) {
       case WatermarkPosition.BOTTOM_LEFT:
         left = PADDING;
-        top = imageMetadata.height - logoMeta.height - PADDING;
+        top = imageMetadata.height - logoImage.info.height - PADDING;
         gravity = 'southwest';
         break;
 
       case WatermarkPosition.BOTTOM_RIGHT:
-        left = imageMetadata.width - logoMeta.width - PADDING;
-        top = imageMetadata.height - logoMeta.height - PADDING;
+        left = imageMetadata.width - logoImage.info.width - PADDING;
+        top = imageMetadata.height - logoImage.info.height - PADDING;
         gravity = 'southeast';
         break;
 
@@ -281,7 +280,7 @@ export class Photo extends BaseEntity {
         break;
 
       case WatermarkPosition.TOP_RIGHT:
-        left = imageMetadata.width - logoMeta.width - PADDING;
+        left = imageMetadata.width - logoImage.info.width - PADDING;
         top = PADDING;
         gravity = 'northeast';
         break;
@@ -295,7 +294,7 @@ export class Photo extends BaseEntity {
     }
 
     logger.trace('Applying alpha');
-    const logoBuffer = await logoImage.ensureAlpha(0.5).webp().sharpen().toBuffer();
+    const logoBuffer = await sharp(logoImage.data).ensureAlpha(0.75).webp().sharpen().toBuffer();
 
     logger.trace('Compositing');
 
