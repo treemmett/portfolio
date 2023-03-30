@@ -66,7 +66,7 @@ export const LightBox: FC = () => {
   const closeLightBox = useCallback(() => {
     const q = { ...query };
     delete q.post;
-    push({ pathname, query: q });
+    push({ pathname, query: q }, undefined, { scroll: false, shallow: true });
   }, [pathname, push, query]);
 
   const [canClose, setCanClose] = useState(true);
