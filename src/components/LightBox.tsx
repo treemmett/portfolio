@@ -7,7 +7,6 @@ import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { usePost } from '@lib/posts';
-import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
 import { trace } from '@utils/analytics';
 import { formatDate } from '@utils/date';
@@ -19,10 +18,9 @@ const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor)
 });
 
 export const LightBox: FC = () => {
-  const { query, push } = useRouter();
+  const { query, pathname, push } = useRouter();
   const { post } = usePost(query.post as string);
   const { hasPermission } = useUser();
-  const { site } = useSite();
 
   const galleryRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>();
@@ -66,14 +64,10 @@ export const LightBox: FC = () => {
   }, [width, height, post?.photo, scaleImage]);
 
   const closeLightBox = useCallback(() => {
-    if (!post) {
-      push(query.username ? `/u/${query.owner}` : '/');
-    }
-
     const q = { ...query };
     delete q.post;
-    push(site?.domain === window.location.host ? '/' : `/u/${post?.owner.username}/`);
-  }, [post, push, query, site?.domain]);
+    push({ pathname, query: q });
+  }, [pathname, push, query]);
 
   const [canClose, setCanClose] = useState(true);
 

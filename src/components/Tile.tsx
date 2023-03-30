@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FC } from 'react';
 import styles from './Tile.module.scss';
 import type { IPost } from '@entities/Post';
@@ -11,12 +12,13 @@ export interface TileProps {
 }
 
 export const Tile: FC<TileProps> = ({ post, priority }) => {
+  const { pathname, query } = useRouter();
   const label = [post.title, post.location, formatDate(post.created)].filter((i) => !!i).join(', ');
 
   return (
     <Link
       aria-label={label}
-      href={{ href: '/u/[username]', query: { post: post.id, username: post.owner.username } }}
+      href={{ href: pathname, query: { ...query, post: post.id } }}
       scroll={false}
       passHref
       shallow
