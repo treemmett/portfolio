@@ -104,7 +104,7 @@ export class Photo extends BaseEntity {
     type: PhotoType,
     id?: string
   ): Promise<{ image: Sharp; imageInfo: OutputInfo; photo: Photo }> {
-    image.rotate().webp();
+    image.rotate().webp().sharpen({ m2: 2, sigma: 0.75 });
 
     const [imageData, thumbnailBuffer] = await Promise.all([
       image.toBuffer({ resolveWithObject: true }),
@@ -248,6 +248,7 @@ export class Photo extends BaseEntity {
       image.metadata(),
       sharp(Buffer.from(logoObject.Body.toString('base64'), 'base64'))
         .resize(200, 200, { fit: 'inside' })
+        .sharpen({ m2: 2, sigma: 0.75 })
         .toBuffer({ resolveWithObject: true }),
     ]);
 
@@ -294,13 +295,18 @@ export class Photo extends BaseEntity {
     }
 
     logger.trace('Applying alpha');
-    const logoBuffer = await sharp(logoImage.data).ensureAlpha(0.75).webp().sharpen().toBuffer();
+    const logoBuffer = await sharp(logoImage.data)
+      .ensureAlpha(0.75)
+      .webp()
+      .sharpen({ m2: 2, sigma: 0.75 })
+      .toBuffer();
 
     logger.trace('Compositing');
 
     const compositedBuffer = await image
       .composite([{ input: logoBuffer, left, top }])
       .webp()
+      .sharpen({ m2: 2, sigma: 0.75 })
       .toBuffer();
 
     logger.trace('Watermark applied');
