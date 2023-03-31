@@ -15,8 +15,46 @@
     margin-top: 1rem;
   }
 
+  .controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    pointer-events: none;
+
+    @include screen.md {
+      top: 50%;
+      bottom: unset;
+      transform: translateY(-50%);
+    }
+
+    a {
+      @include shared.glass;
+
+      display: flex;
+      width: 4rem;
+      height: 4rem;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4rem;
+      margin: 2rem;
+      pointer-events: all;
+
+      svg {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+  }
+
   &.panel-open {
     justify-content: start;
+
+    .controls {
+      position: absolute;
+    }
 
     @include screen.md {
       flex-direction: row;

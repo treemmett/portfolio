@@ -46,11 +46,11 @@ export function usePosts() {
 export function usePost(id: string) {
   const { site } = useSite();
   const { posts } = usePosts();
-  const foundPost = useMemo(() => posts?.find((p) => p.id === id), [id, posts]);
-  const [post, setPost] = useState<IPost | undefined>(foundPost);
+  const index = useMemo(() => posts?.findIndex((p) => p.id === id), [id, posts]);
+  const [post, setPost] = useState<IPost | undefined>(index ? posts?.[index] : undefined);
   useEffect(() => {
-    setPost(foundPost);
-  }, [foundPost]);
+    setPost(typeof index === 'number' ? posts?.[index] : undefined);
+  }, [index, posts]);
 
   const {
     isMutating: isSaving,
@@ -97,6 +97,7 @@ export function usePost(id: string) {
   return {
     deleteError,
     deleteTrigger,
+    index,
     isDeleting,
     isMutating: isDeleting || isSaving,
     isSaving,
