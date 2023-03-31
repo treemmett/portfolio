@@ -109,7 +109,9 @@ export class Post extends BaseEntity {
       .select()
       .leftJoinAndSelect('post.photo', 'photo')
       .leftJoinAndSelect('post.owner', 'user')
+      .leftJoin('photo.owner', 'photo_owner')
       .where('user.username = :username', { username: user.username })
+      .andWhere('photo_owner.username = :username', { username: user.username })
       .andWhere('post.id = :id', { id })
       .getOne();
 
@@ -125,7 +127,9 @@ export class Post extends BaseEntity {
       .select()
       .leftJoinAndSelect('post.photo', 'photo')
       .leftJoinAndSelect('post.owner', 'user')
+      .leftJoin('photo.owner', 'photo_owner')
       .where('user.username = :username', { username })
+      .andWhere('photo_owner.username = :username', { username })
       .getMany();
 
     return transformAndValidate(Post, posts);
