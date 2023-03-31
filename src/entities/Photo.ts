@@ -320,6 +320,7 @@ export class Photo extends BaseEntity {
       .select('SUM(photo.size)', 'size')
       .addSelect('COUNT(*)')
       .where('user.id = :id', { id: user.id })
+      .andWhere('photo.type = :type', { type: PhotoType.ORIGINAL })
       .getRawOne();
 
     return results;
