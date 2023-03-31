@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { forwardRef, PropsWithChildren, useEffect, useState } from 'react';
+import { forwardRef, PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import styles from './Modal.module.scss';
 
 export interface ModalProps extends PropsWithChildren {
@@ -23,6 +23,20 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
     useEffect(() => {
       setOpen(open);
     }, [open]);
+
+    const keyboardHandler = useCallback((e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+      }
+    }, []);
+
+    useEffect(() => {
+      if (open) {
+        window.addEventListener('keydown', keyboardHandler);
+      }
+
+      return () => window.addEventListener('keydown', keyboardHandler);
+    }, [keyboardHandler, open]);
 
     if (!open) return null;
 
