@@ -314,6 +314,17 @@ export class Photo extends BaseEntity {
     return sharp(compositedBuffer);
   }
 
+  public static async getStats(user: User): Promise<PhotoStats> {
+    const results = await Photo.createQueryBuilder('photo')
+      .leftJoin('photo.owner', 'user')
+      .select('SUM(photo.size)', 'size')
+      .addSelect('COUNT(*)')
+      .where('user.id = :id', { id: user.id })
+      .getRawOne();
+
+    return results;
+  }
+
   /**
    * Delete photo from S3 and remove from database
    */
@@ -324,3 +335,8 @@ export class Photo extends BaseEntity {
 }
 
 export type IPhoto = Omit<Photo, keyof BaseEntity | 'upload'>;
+
+export interface PhotoStats {
+  count: number;
+  size: number;
+}

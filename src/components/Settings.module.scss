@@ -1,5 +1,10 @@
 @use '../styles/shared';
 
+.modal {
+  height: 100dvh;
+  overflow-y: auto;
+}
+
 .form {
   position: relative;
   width: 100%;
@@ -12,6 +17,10 @@
 
   button {
     width: 100%;
+  }
+
+  section {
+    margin-bottom: 1rem;
   }
 }
 

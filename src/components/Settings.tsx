@@ -8,7 +8,9 @@ import styles from './Settings.module.scss';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { WatermarkPosition } from '@entities/WatermarkPosition';
+import { usePhotoStats } from '@lib/photoStats';
 import { useSite } from '@lib/site';
+import { formatBytes } from '@utils/bytes';
 
 export const getStaticProps: GetStaticProps = async () => ({
   props: {
@@ -19,6 +21,7 @@ export const getStaticProps: GetStaticProps = async () => ({
 export const Settings: FC = () => {
   const { t } = useTranslation();
   const { isLoading, isSaving, setSite, site, save } = useSite();
+  const { count, size } = usePhotoStats();
   const { query, push } = useRouter();
 
   const closeModal = useCallback(() => {
@@ -37,7 +40,12 @@ export const Settings: FC = () => {
   );
 
   return (
-    <Modal canClose={!isSaving} onClose={closeModal} open={query.settings === 'true'}>
+    <Modal
+      canClose={!isSaving}
+      className={styles.modal}
+      onClose={closeModal}
+      open={query.settings === 'true'}
+    >
       {!isLoading && site ? (
         <form className={styles.form} onSubmit={onSubmit}>
           <h2>Site Information</h2>
@@ -150,6 +158,14 @@ export const Settings: FC = () => {
             onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
             value={site.imdb || ''}
           />
+          <h2>Account Information</h2>
+          <section>
+            <div>Total Photos: {count}</div>
+          </section>
+          <section>
+            <div>Size: {formatBytes(size)}</div>
+          </section>
+
           <Button disabled={isSaving} type="success" submit>
             {isSaving ? `${t('Saving')}...` : t('Save')}
           </Button>
