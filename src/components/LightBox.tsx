@@ -63,7 +63,10 @@ export const LightBox: FC = () => {
     return () => window.removeEventListener('resize', scaleImage);
   }, [width, height, post?.photo, scaleImage]);
 
+  const [displayOverlay, setDisplayOverlay] = useState(true);
+
   const closeLightBox = useCallback(() => {
+    setDisplayOverlay(true);
     const q = { ...query };
     delete q.post;
     push({ pathname, query: q }, undefined, { scroll: false, shallow: true });
@@ -87,12 +90,33 @@ export const LightBox: FC = () => {
             <Image
               alt={post.title || formatDate(post.created)}
               blurDataURL={post.photo.thumbnailURL}
-              className={styles.img}
+              className={classNames(styles.img, styles.overlay)}
               height={post.photo.height}
               placeholder="blur"
-              sizes="95vw"
+              sizes={new Array(12)
+                .fill(null)
+                .map((_, i) => `(max-width: ${(i + 1) * 260}px) ${Math.floor(100 / (i + 1))}vw`)
+                .join(', ')}
               src={post.photo.url}
               style={{
+                display: displayOverlay ? 'block' : 'none',
+                height: toPx(height),
+                width: toPx(width),
+              }}
+              width={post.photo.width}
+              priority
+            />
+            <Image
+              alt={post.title || formatDate(post.created)}
+              blurDataURL={post.photo.thumbnailURL}
+              className={styles.img}
+              height={post.photo.height}
+              onLoadingComplete={() => setDisplayOverlay(false)}
+              placeholder="blur"
+              sizes="95w"
+              src={post.photo.url}
+              style={{
+                display: !displayOverlay ? 'block' : 'none',
                 height: toPx(height),
                 left: toPx(left),
                 top: toPx(top),
