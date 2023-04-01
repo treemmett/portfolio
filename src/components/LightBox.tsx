@@ -147,12 +147,12 @@ export const LightBox: FC = () => {
 
             <div className={styles.controls}>
               {prevPost && (
-                <Link href={{ pathname, query: { ...query, post: prevPost.id } }}>
+                <Link href={{ pathname, query: { ...query, post: prevPost.id } }} shallow>
                   <Left />
                 </Link>
               )}
               {nextPost && (
-                <Link href={{ pathname, query: { ...query, post: nextPost.id } }}>
+                <Link href={{ pathname, query: { ...query, post: nextPost.id } }} shallow>
                   <Right />
                 </Link>
               )}
