@@ -41,6 +41,7 @@ export const LightBox: FC = () => {
     return [posts[index - 1], posts[index + 1]];
   }, [index, posts]);
 
+  const [displayOverlay, setDisplayOverlay] = useState(true);
   const galleryRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState<number>();
   const [height, setHeight] = useState<number>();
@@ -48,6 +49,7 @@ export const LightBox: FC = () => {
   const [left, setLeft] = useState<number>();
   useEffect(() => {
     if (query.post) {
+      setDisplayOverlay(true);
       trace('photo-viewed', {
         id: toString(query.post),
       });
@@ -81,8 +83,6 @@ export const LightBox: FC = () => {
     window.addEventListener('resize', scaleImage);
     return () => window.removeEventListener('resize', scaleImage);
   }, [width, height, post?.photo, scaleImage]);
-
-  const [displayOverlay, setDisplayOverlay] = useState(true);
 
   const closeLightBox = useCallback(() => {
     setDisplayOverlay(true);
