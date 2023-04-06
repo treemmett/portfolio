@@ -14,12 +14,7 @@ $height: 4rem;
   width: 100vw;
   align-items: center;
   padding: 1rem;
-  background-color: color.adjust(shared.$background, $alpha: -0.2);
   overflow-x: auto;
-
-  @include shared.dark-mode {
-    background-color: color.adjust(shared.$background-dark, $alpha: -0.2);
-  }
 
   h1 {
     margin: 0;

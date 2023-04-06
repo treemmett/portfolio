@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -7,14 +8,14 @@ import styles from './Nav.module.scss';
 import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
 
-export const Nav: FC = () => {
+export const Nav: FC<{ className?: string }> = ({ className }) => {
   const { t } = useTranslation();
   const { site } = useSite();
   const { isLoggingIn, login, logout, user } = useUser();
   const { query } = useRouter();
 
   return (
-    <header className={styles.nav}>
+    <header className={classNames(styles.nav, className)}>
       <h1>{site?.name}</h1>
 
       <nav>
