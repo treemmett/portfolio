@@ -1,14 +1,16 @@
+import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
 import { useRouter } from 'next/router';
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { Button } from './Button';
 import styles from './GPSCheckIn.module.scss';
 import { Input } from './Input';
 import { geocode } from '@lib/geocode';
-import { apiClient } from '@utils/apiClient';
+import { useMarkers } from '@lib/markers';
 import { toLocalString } from '@utils/date';
 import { toString } from '@utils/queryParam';
 
-export const GPSCheckIn: FC = () => {
+export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
+  const { addMarker } = useMarkers();
   const { push, query, replace } = useRouter();
   const [loadingGeo, setLoadingGeo] = useState(false);
   const [city, setCity] = useState('');
@@ -33,26 +35,71 @@ export const GPSCheckIn: FC = () => {
         return;
       }
 
-      await apiClient.post('/marker', {
+      addMarker({
         city,
         country,
         date,
-        lat: toString(query.lat),
-        lng: toString(query.lng),
+        lat: parseFloat(toString(query.lat)),
+        lng: parseFloat(toString(query.lng)),
       });
 
       close();
     },
-    [city, close, country, date, query.lat, query.lng]
+    [addMarker, city, close, country, date, query.lat, query.lng]
   );
+
+  const mapClickHandler = useCallback(
+    (event: MapMouseEvent & EventData) => {
+      push({ query: { ...query, lat: event.lngLat.lat, lng: event.lngLat.lng } }, undefined, {
+        shallow: true,
+      });
+    },
+    [push, query]
+  );
+
+  useEffect(() => {
+    if (map) {
+      map.on('click', mapClickHandler);
+    }
+
+    return () => {
+      if (map) {
+        map.off('click', mapClickHandler);
+      }
+    };
+  }, [map, mapClickHandler]);
+
+  useEffect(() => {
+    const m = new Marker({ draggable: true });
+
+    if (map) {
+      if (query.lng && query.lat) {
+        const lng = parseFloat(toString(query.lng));
+        const lat = parseFloat(toString(query.lat));
+
+        if (!Number.isNaN(lng) && !Number.isNaN(lat)) {
+          m.setLngLat(new LngLat(lng, lat)).addTo(map);
+          m.on('dragend', () => {
+            push({ query: { ...query, ...m.getLngLat() } }, undefined, {
+              shallow: true,
+            });
+          });
+        }
+      }
+    }
+
+    return () => {
+      m.remove();
+    };
+  }, [map, push, query]);
 
   useEffect(() => {
     if (query.lng && query.lat) {
       setLoadingGeo(true);
       geocode(toString(query.lng), toString(query.lat))
         .then((data) => {
-          setCity(data.city);
-          setCountry(data.country_code);
+          setCity(data.city || '');
+          setCountry(data.country_code || '');
         })
         .catch(() => {
           setCity('');

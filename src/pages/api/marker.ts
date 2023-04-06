@@ -6,8 +6,14 @@ import { User } from '@entities/User';
 import { nextConnect } from '@middleware/nextConnect';
 
 export default nextConnect()
-  .use(User.authorize(AuthorizationScopes.post))
+  .get(async (req, res) => {
+    const site = await Site.getByDomain(req.headers.host as string);
+    const markers = await GPSMarker.getAllForSite(site);
+
+    res.send(markers);
+  })
   .post(
+    User.authorize(AuthorizationScopes.post),
     celebrate({
       body: {
         city: Joi.string().required(),

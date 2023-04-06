@@ -77,8 +77,18 @@ export class GPSMarker extends BaseEntity {
     await m.save();
     return m;
   }
+
+  public static async getAllForSite(site: Site): Promise<GPSMarker[]> {
+    const markers = await GPSMarker.createQueryBuilder('marker')
+      .select()
+      .leftJoin('marker.owner', 'site')
+      .where('site.id = :id', { id: site.id })
+      .getMany();
+
+    return transformAndValidate(GPSMarker, markers);
+  }
 }
 
-export interface IMarker extends Omit<GPSMarker, keyof BaseEntity | 'owner'> {
+export interface IMarker extends Omit<GPSMarker, keyof BaseEntity | 'checkIn' | 'owner'> {
   owner: ISite;
 }
