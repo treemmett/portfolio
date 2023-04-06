@@ -47,129 +47,147 @@ export const Settings: FC = () => {
       open={query.settings === 'true'}
     >
       {!isLoading && site ? (
-        <form className={styles.form} onSubmit={onSubmit}>
-          <h2>Site Information</h2>
-          <Input
-            label={t('Name')}
-            onChange={(e) => setSite({ ...site, name: e.currentTarget.value })}
-            value={site.name || ''}
-          />
-          <Input
-            label={t('Title')}
-            onChange={(e) => setSite({ ...site, title: e.currentTarget.value })}
-            value={site.title || ''}
-          />
-          <Input
-            label={t('Description')}
-            onChange={(e) => setSite({ ...site, description: e.currentTarget.value })}
-            type="textarea"
-            value={site.description || ''}
-          />
-          <Input
-            file={site.logoFile || site.logo}
-            label="Logo"
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setSite({ ...site, logoFile: e.target.files?.[0] })
-            }
-            type="file"
-          />
-          <Input
-            checked={typeof site.watermarkPosition === 'number'}
-            label="Post watermark"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              setSite({
-                ...site,
-                watermarkPosition: e.currentTarget.checked ? WatermarkPosition.BOTTOM_RIGHT : null,
-              });
-            }}
-            type="checkbox"
-          />
-          <span>Watermark position</span>
-          <div
-            className={classNames(styles.quadrants, {
-              [styles.disabled]: typeof site.watermarkPosition !== 'number',
-            })}
-          >
-            <Input
-              checked={site.watermarkPosition === WatermarkPosition.TOP_LEFT}
-              className={classNames(styles.checkbox, styles.tl)}
-              disabled={typeof site.watermarkPosition !== 'number'}
-              label="Top Left"
-              onChange={() => setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_LEFT })}
-              type="checkbox"
-            />
-            <Input
-              checked={site.watermarkPosition === WatermarkPosition.TOP_RIGHT}
-              className={classNames(styles.checkbox, styles.tr)}
-              disabled={typeof site.watermarkPosition !== 'number'}
-              label="Top Right"
-              onChange={() => setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_RIGHT })}
-              type="checkbox"
-            />
-            <Input
-              checked={site.watermarkPosition === WatermarkPosition.BOTTOM_LEFT}
-              className={classNames(styles.checkbox, styles.bl)}
-              disabled={typeof site.watermarkPosition !== 'number'}
-              label="Bottom Left"
-              onChange={() =>
-                setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_LEFT })
-              }
-              type="checkbox"
-            />
-            <Input
-              checked={site.watermarkPosition === WatermarkPosition.BOTTOM_RIGHT}
-              className={classNames(styles.checkbox, styles.br)}
-              disabled={typeof site.watermarkPosition !== 'number'}
-              label="Bottom Right"
-              onChange={() =>
-                setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_RIGHT })
-              }
-              type="checkbox"
-            />
-          </div>
-          <h2>Social Media</h2>
-          <Input
-            label="Twitter"
-            onChange={(e) => setSite({ ...site, twitter: e.currentTarget.value })}
-            value={site.twitter || ''}
-          />
-          <Input
-            label="Instagram"
-            onChange={(e) => setSite({ ...site, instagram: e.currentTarget.value })}
-            value={site.instagram || ''}
-          />
-          <Input
-            label="LinkedIn"
-            onChange={(e) => setSite({ ...site, linkedIn: e.currentTarget.value })}
-            value={site.linkedIn || ''}
-          />
-          <Input
-            label="Facebook"
-            onChange={(e) => setSite({ ...site, facebook: e.currentTarget.value })}
-            value={site.facebook || ''}
-          />
-          <Input
-            label="GitHub"
-            onChange={(e) => setSite({ ...site, github: e.currentTarget.value })}
-            value={site.github || ''}
-          />
-          <Input
-            label="IMDb"
-            onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
-            value={site.imdb || ''}
-          />
-          <h2>Account Information</h2>
-          <section>
-            <div>Total Photos: {count}</div>
-          </section>
-          <section>
-            <div>Size: {formatBytes(size)}</div>
-          </section>
+        <>
+          <nav className={styles.nav}>
+            <a href="#site-information">Site Information</a>
+            <a href="#social-media">Social Media</a>
+            <a href="#account-information">Account Information</a>
+          </nav>
 
-          <Button disabled={isSaving} type="success" submit>
-            {isSaving ? `${t('Saving')}...` : t('Save')}
-          </Button>
-        </form>
+          <div className={styles.form}>
+            <form onSubmit={onSubmit}>
+              <section id="site-information">
+                <h2>Site Information</h2>
+                <Input
+                  label={t('Name')}
+                  onChange={(e) => setSite({ ...site, name: e.currentTarget.value })}
+                  value={site.name || ''}
+                />
+                <Input
+                  label={t('Title')}
+                  onChange={(e) => setSite({ ...site, title: e.currentTarget.value })}
+                  value={site.title || ''}
+                />
+                <Input
+                  label={t('Description')}
+                  onChange={(e) => setSite({ ...site, description: e.currentTarget.value })}
+                  type="textarea"
+                  value={site.description || ''}
+                />
+                <Input
+                  file={site.logoFile || site.logo}
+                  label="Logo"
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setSite({ ...site, logoFile: e.target.files?.[0] })
+                  }
+                  type="file"
+                />
+                <Input
+                  checked={typeof site.watermarkPosition === 'number'}
+                  label="Post watermark"
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    setSite({
+                      ...site,
+                      watermarkPosition: e.currentTarget.checked
+                        ? WatermarkPosition.BOTTOM_RIGHT
+                        : null,
+                    });
+                  }}
+                  type="checkbox"
+                />
+                <span>Watermark position</span>
+                <div
+                  className={classNames(styles.quadrants, {
+                    [styles.disabled]: typeof site.watermarkPosition !== 'number',
+                  })}
+                >
+                  <Input
+                    checked={site.watermarkPosition === WatermarkPosition.TOP_LEFT}
+                    className={classNames(styles.checkbox, styles.tl)}
+                    disabled={typeof site.watermarkPosition !== 'number'}
+                    label="Top Left"
+                    onChange={() =>
+                      setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_LEFT })
+                    }
+                    type="checkbox"
+                  />
+                  <Input
+                    checked={site.watermarkPosition === WatermarkPosition.TOP_RIGHT}
+                    className={classNames(styles.checkbox, styles.tr)}
+                    disabled={typeof site.watermarkPosition !== 'number'}
+                    label="Top Right"
+                    onChange={() =>
+                      setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_RIGHT })
+                    }
+                    type="checkbox"
+                  />
+                  <Input
+                    checked={site.watermarkPosition === WatermarkPosition.BOTTOM_LEFT}
+                    className={classNames(styles.checkbox, styles.bl)}
+                    disabled={typeof site.watermarkPosition !== 'number'}
+                    label="Bottom Left"
+                    onChange={() =>
+                      setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_LEFT })
+                    }
+                    type="checkbox"
+                  />
+                  <Input
+                    checked={site.watermarkPosition === WatermarkPosition.BOTTOM_RIGHT}
+                    className={classNames(styles.checkbox, styles.br)}
+                    disabled={typeof site.watermarkPosition !== 'number'}
+                    label="Bottom Right"
+                    onChange={() =>
+                      setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_RIGHT })
+                    }
+                    type="checkbox"
+                  />
+                </div>
+              </section>
+              <section id="social-media">
+                <h2>Social Media</h2>
+                <Input
+                  label="Twitter"
+                  onChange={(e) => setSite({ ...site, twitter: e.currentTarget.value })}
+                  value={site.twitter || ''}
+                />
+                <Input
+                  label="Instagram"
+                  onChange={(e) => setSite({ ...site, instagram: e.currentTarget.value })}
+                  value={site.instagram || ''}
+                />
+                <Input
+                  label="LinkedIn"
+                  onChange={(e) => setSite({ ...site, linkedIn: e.currentTarget.value })}
+                  value={site.linkedIn || ''}
+                />
+                <Input
+                  label="Facebook"
+                  onChange={(e) => setSite({ ...site, facebook: e.currentTarget.value })}
+                  value={site.facebook || ''}
+                />
+                <Input
+                  label="GitHub"
+                  onChange={(e) => setSite({ ...site, github: e.currentTarget.value })}
+                  value={site.github || ''}
+                />
+                <Input
+                  label="IMDb"
+                  onChange={(e) => setSite({ ...site, imdb: e.currentTarget.value })}
+                  value={site.imdb || ''}
+                />
+              </section>
+              <section id="account-information">
+                <h2>Account Information</h2>
+                <div>Total Photos: {count}</div>
+                <div>Size: {formatBytes(size)}</div>
+              </section>
+
+              <Button disabled={isSaving} type="success" submit>
+                {isSaving ? `${t('Saving')}...` : t('Save')}
+              </Button>
+            </form>
+          </div>
+        </>
       ) : (
         'Loading...'
       )}
