@@ -92,6 +92,10 @@ export const LightBox: FC = () => {
   }, [pathname, push, query]);
 
   const [canClose, setCanClose] = useState(true);
+  const [open, setOpen] = useState(!!post);
+  useEffect(() => {
+    setOpen(!!post);
+  }, [post]);
 
   return (
     <Modal
@@ -100,7 +104,8 @@ export const LightBox: FC = () => {
         [styles['panel-open']]: hasPermission(AuthorizationScopes.post),
       })}
       onClose={closeLightBox}
-      open={!!post}
+      onReady={scaleImage}
+      open={open}
       ref={galleryRef}
     >
       {post && (

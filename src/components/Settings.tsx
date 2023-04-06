@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { ChangeEvent, FC, FormEventHandler, useCallback } from 'react';
+import { ChangeEvent, FC, FormEventHandler, useCallback, useEffect, useState } from 'react';
 import { Modal } from './Modal';
 import styles from './Settings.module.scss';
 import { Button } from '@components/Button';
@@ -39,22 +39,28 @@ export const Settings: FC = () => {
     [closeModal, save]
   );
 
-  return (
-    <Modal
-      canClose={!isSaving}
-      className={styles.modal}
-      onClose={closeModal}
-      open={query.settings === 'true'}
-    >
-      {!isLoading && site ? (
-        <>
-          <nav className={styles.nav}>
-            <a href="#site-information">Site Information</a>
-            <a href="#social-media">Social Media</a>
-            <a href="#account-information">Account Information</a>
-          </nav>
+  const [open, setOpen] = useState(query.settings === 'true');
+  useEffect(() => {
+    setOpen(query.settings === 'true');
+  }, [query.settings]);
 
-          <div className={styles.form}>
+  return (
+    <Modal canClose={!isSaving} className={styles.modal} onClose={closeModal} open={open}>
+      <>
+        <nav className={styles.nav}>
+          <a href="#site-information">Site Information</a>
+          <a href="#social-media">Social Media</a>
+          <a href="#account-information">Account Information</a>
+        </nav>
+
+        {!isLoading && site ? (
+          <div
+            className={styles.form}
+            onClick={(e) => {
+              if (e.currentTarget === e.target) setOpen(false);
+            }}
+            role="presentation"
+          >
             <form onSubmit={onSubmit}>
               <section id="site-information">
                 <h2>Site Information</h2>
@@ -185,12 +191,16 @@ export const Settings: FC = () => {
               <Button disabled={isSaving} type="success" submit>
                 {isSaving ? `${t('Saving')}...` : t('Save')}
               </Button>
+
+              <Button disabled={isSaving} onClick={() => setOpen(false)}>
+                Close
+              </Button>
             </form>
           </div>
-        </>
-      ) : (
-        'Loading...'
-      )}
+        ) : (
+          'Loading...'
+        )}
+      </>
     </Modal>
   );
 };

@@ -13,16 +13,37 @@ export interface ModalProps extends PropsWithChildren {
    * Callback when modal finishes closing
    */
   onClose?: () => void;
+  /**
+   * Callback when modal is rendered
+   */
+  onReady?: () => void;
   /** Modal is open */
   open?: boolean;
 }
 
 export const Modal = forwardRef<HTMLDivElement, ModalProps>(
-  ({ canClose = true, className, children, onClose = () => null, open = false }, ref) => {
+  ({ canClose = true, className, children, onClose = () => null, onReady, open = false }, ref) => {
+    const [rendered, setRendered] = useState(open);
     const [openState, setOpen] = useState(open);
     useEffect(() => {
-      setOpen(open);
+      if (open && onReady) {
+        setTimeout(onReady, 1);
+      }
+    }, [onReady, open]);
+
+    useEffect(() => {
+      if (open) {
+        setRendered(true);
+      } else {
+        setOpen(false);
+      }
     }, [open]);
+
+    useEffect(() => {
+      if (rendered) {
+        setTimeout(setOpen, 1, true);
+      }
+    }, [rendered]);
 
     const keyboardHandler = useCallback((e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -38,7 +59,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
       return () => window.addEventListener('keydown', keyboardHandler);
     }, [keyboardHandler, open]);
 
-    if (!open) return null;
+    if (!rendered) return null;
 
     return (
       <div
@@ -48,9 +69,12 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
         onClick={(e) => {
           if (e.currentTarget === e.target && canClose) setOpen(false);
         }}
-        onTransitionEnd={() => {
-          if (!openState && open) {
+        onTransitionEnd={(e) => {
+          if (e.currentTarget !== e.target) return;
+
+          if (!openState) {
             onClose();
+            setRendered(false);
           }
         }}
         ref={ref}
