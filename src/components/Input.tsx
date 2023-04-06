@@ -1,27 +1,27 @@
 import cx from 'classnames';
-import { ChangeEventHandler, FC, HTMLInputTypeAttribute, useEffect, useState } from 'react';
+import {
+  ChangeEventHandler,
+  DetailedHTMLProps,
+  FC,
+  HTMLInputTypeAttribute,
+  InputHTMLAttributes,
+  useEffect,
+  useState,
+} from 'react';
 import { ReactComponent as Check } from '../icons/check.svg';
 import styles from './Input.module.scss';
 import type { IPhoto } from '@entities/Photo';
 
-export interface InputProps {
-  /** className passed to wrapper */
-  className?: string;
-  checked?: boolean;
+export interface InputProps
+  extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   /** remove spacing reserved for label */
   collapseLabel?: boolean;
-  defaultValue?: string;
-  disabled?: boolean;
   file?: File | IPhoto | null;
-  id?: string;
   label?: string;
-  name?: string;
   onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
   options?: { id: string; label: string }[];
-  step?: number;
   testId?: string;
   type?: HTMLInputTypeAttribute | 'select' | 'textarea';
-  value?: string | number;
 }
 
 function randomId() {
