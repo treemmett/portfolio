@@ -1,0 +1,19 @@
+@use '../styles/shared';
+
+.form {
+  @include shared.glass;
+
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+  padding: 1rem;
+  border-radius: shared.$border-radius;
+
+  & > * + * {
+    margin-top: 1rem;
+  }
+
+  button {
+    width: 100%;
+  }
+}

@@ -31,3 +31,7 @@ export function trimTime(date: string | Date) {
 
   return d.split('T')[0];
 }
+
+export function toLocalString(date: Date) {
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+}

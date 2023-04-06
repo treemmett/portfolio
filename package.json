@@ -44,6 +44,7 @@
     "class-validator": "^0.14.0",
     "classnames": "^2.3.2",
     "cookie": "^0.5.0",
+    "geojson": "^0.5.0",
     "i18next-parser": "^7.7.0",
     "jose": "^4.10.0",
     "mapbox-gl": "^2.10.0",

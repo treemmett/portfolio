@@ -9,9 +9,11 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  // OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+// import { GPSMarker } from './GPSMarker';
 import { IPhoto, Photo } from './Photo';
 import { PhotoType } from './PhotoType';
 import type { IUser, User } from './User';
@@ -33,6 +35,9 @@ export class Site extends BaseEntity {
   @IsOptional()
   @JoinColumn()
   public logo?: Photo | null;
+
+  // @OneToMany('gps_markers', 'owner')
+  // public markers: GPSMarker[];
 
   @Type(() => Photo)
   @ValidateNested({ each: true })

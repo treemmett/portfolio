@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { ServiceError } from '@utils/errors';
-import { logger } from '@utils/logger';
 
 interface GeocodeResponse {
   place_id: number;
@@ -27,13 +26,15 @@ interface GeocodeResponse {
   boundingbox: string[];
 }
 
-export async function geocode(lng: number, lat: number): Promise<GeocodeResponse['address']> {
+export async function geocode(
+  lng: number | string,
+  lat: number | string
+): Promise<GeocodeResponse['address']> {
   const { data } = await axios.get<GeocodeResponse>('https://geocode.maps.co/reverse', {
     params: { lat, lon: lng },
   });
 
   if (data.error) {
-    logger.error(data.error, 'Geocode error');
     throw new ServiceError('Geocoding failed');
   }
 
