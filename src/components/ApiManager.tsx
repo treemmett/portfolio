@@ -79,7 +79,7 @@ export const ApiManager: FC = () => {
       }
 
       if (site?.owner.id !== user.id) {
-        push({ href: '/u/[username]', query: { username: user.username } });
+        push({ pathname: '/u/[username]', query: { username: user.username } });
         return;
       }
 

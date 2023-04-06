@@ -45,11 +45,14 @@ export const Nav: FC = () => {
         {user ? (
           <>
             {site?.owner.id === user.id ? (
-              <Link href={{ href: '/u/[username]', query: { ...query, settings: true } }} shallow>
+              <Link href={{ query: { ...query, settings: true } }} shallow>
                 {t('Settings')}
               </Link>
             ) : (
-              <Link href={{ href: '/u/[username]', query: { username: user.username } }}>
+              <Link
+                href={{ pathname: '/u/[username]', query: { username: user.username } }}
+                shallow
+              >
                 {t('My Site')}
               </Link>
             )}
