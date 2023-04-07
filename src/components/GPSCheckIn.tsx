@@ -1,4 +1,5 @@
 import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { Button } from './Button';
@@ -10,7 +11,8 @@ import { toLocalString } from '@utils/date';
 import { toString } from '@utils/queryParam';
 
 export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
-  const { addMarker } = useMarkers();
+  const { t } = useTranslation();
+  const { addMarker, isMutating } = useMarkers();
   const { push, query, replace } = useRouter();
   const [loadingGeo, setLoadingGeo] = useState(false);
   const [city, setCity] = useState('');
@@ -116,7 +118,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   return (
     <form className={styles.form} onSubmit={save}>
       <Input
-        label="Longitude"
+        label={t('Longitude')}
         onChange={(e) =>
           replace({ query: { ...query, lng: e.currentTarget.value } }, undefined, { shallow: true })
         }
@@ -125,7 +127,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
         value={toString(query.lng)}
       />
       <Input
-        label="Latitude"
+        label={t('Latitude')}
         onChange={(e) =>
           replace({ query: { ...query, lat: e.currentTarget.value } }, undefined, { shallow: true })
         }
@@ -135,27 +137,27 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
       />
       <Input
         disabled={loadingGeo}
-        label="City"
+        label={t('City')}
         onChange={(e) => setCity(e.currentTarget.value)}
         value={city}
       />
       <Input
         disabled={loadingGeo}
-        label="Country"
+        label={t('Country')}
         onChange={(e) => setCountry(e.currentTarget.value)}
         value={country}
       />
       <Input
-        label="Date"
+        label={t('Date')}
         onChange={(e) => setDate(new Date(e.currentTarget.value))}
         type="datetime-local"
         value={toLocalString(date)}
       />
-      <Button type="success" submit>
-        Save
+      <Button disabled={isMutating} type="success" submit>
+        {isMutating ? `${t('Saving')}...` : t('Save')}
       </Button>
-      <Button onClick={close} type="danger">
-        Cancel
+      <Button disabled={isMutating} onClick={close} type="danger">
+        {t('Cancel')}
       </Button>
     </form>
   );

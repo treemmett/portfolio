@@ -20,7 +20,7 @@ export function useMarkers() {
     return response.data;
   });
 
-  const { trigger } = useSWRMutate<
+  const { trigger, isMutating } = useSWRMutate<
     IMarker,
     APIError,
     string,
@@ -51,6 +51,7 @@ export function useMarkers() {
     addMarker,
     error,
     isLoading,
+    isMutating,
     markers: data,
   };
 }
