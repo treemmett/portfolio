@@ -20,7 +20,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const { hasPermission } = useUser();
 
   return (
-    <SWRConfig value={{ fallback: pageProps.fallback, revalidateOnFocus: false }}>
+    <SWRConfig value={{ fallback: pageProps.fallback || {}, revalidateOnFocus: false }}>
       <main className={josefin.className}>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <Component {...pageProps} />

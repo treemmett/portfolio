@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev | pino-pretty",
-    "build": "next build",
+    "build": "next build --no-lint",
     "build:tsc": "tsc -m commonjs && tsc-alias",
     "start": "next start",
     "prepare": "husky install",

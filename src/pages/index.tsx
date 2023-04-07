@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { LightBox } from '@components/LightBox';
@@ -15,19 +15,14 @@ const DynamicUploadManager = dynamic(() =>
   import('@components/ApiManager').then((mod) => mod.ApiManager)
 );
 
-export const getServerSideProps: GetServerSideProps = async ({ locale, req }) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   await connectToDatabase();
 
-  let site: Site | null = null;
-  if (req.headers.host) {
-    site = await Site.getByDomain(req.headers.host).catch(() => null);
-  }
+  const [site, posts] = await Promise.all([
+    Site.getByUsername('tregan'),
 
-  if (!site) {
-    site = await Site.getByUsername('tregan');
-  }
-
-  const posts = await Post.getAllFromUser(site.owner.username);
+    Post.getAllFromUser('tregan'),
+  ]);
 
   return {
     props: {
@@ -37,6 +32,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, req }) =>
       },
       ...(await serverSideTranslations(locale || 'en', ['common'])),
     },
+    revalidate: 60,
   };
 };
 

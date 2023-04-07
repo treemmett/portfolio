@@ -1,6 +1,6 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { LngLat, LngLatBounds, LngLatLike, Map as Mapbox, Marker } from 'mapbox-gl';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useEffect, useRef } from 'react';
@@ -15,17 +15,10 @@ import { connectToDatabase } from '@middleware/database';
 import { Config } from '@utils/config';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
 
-export const getServerSideProps: GetServerSideProps = async ({ locale, req }) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   await connectToDatabase();
 
-  let site: Site | null = null;
-  if (req.headers.host) {
-    site = await Site.getByDomain(req.headers.host).catch(() => null);
-  }
-
-  if (!site) {
-    site = await Site.getByUsername('tregan');
-  }
+  const site = await Site.getByUsername('tregan');
 
   const markers = await GPSMarker.getAllForSite(site);
 
@@ -37,6 +30,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, req }) =>
       },
       ...(await serverSideTranslations(locale || 'en', ['common'])),
     },
+    revalidate: 60,
   };
 };
 

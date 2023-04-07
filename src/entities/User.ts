@@ -182,6 +182,11 @@ export class User extends BaseEntity {
     return middleware;
   }
 
+  public static async getUserNames(): Promise<string[]> {
+    const users = await User.createQueryBuilder('user').select('user.username').getMany();
+    return users.map((u) => u.username);
+  }
+
   public async signAccessToken(scopes?: AuthorizationScopes[], meta?: AccessTokenMeta) {
     const expiration = new Date();
     expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
