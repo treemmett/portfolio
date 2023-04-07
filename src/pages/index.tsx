@@ -15,10 +15,6 @@ const DynamicUploadManager = dynamic(() =>
   import('@components/ApiManager').then((mod) => mod.ApiManager)
 );
 
-const DynamicSettings = dynamic(() => import('@components/Settings').then((mod) => mod.Settings));
-
-const DynamicWelcome = dynamic(() => import('@components/Welcome').then((mod) => mod.Welcome));
-
 export const getServerSideProps: GetServerSideProps = async ({ locale, req }) => {
   await connectToDatabase();
 
@@ -57,14 +53,7 @@ export const Home: NextPage = () => {
 
       <LightBox />
 
-      {hasPermission(AuthorizationScopes.onboard) && <DynamicWelcome />}
-
-      {hasPermission(AuthorizationScopes.post) && (
-        <>
-          <DynamicUploadManager />
-          <DynamicSettings />
-        </>
-      )}
+      {hasPermission(AuthorizationScopes.post) && <DynamicUploadManager />}
     </>
   );
 };
