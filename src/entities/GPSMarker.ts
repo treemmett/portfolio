@@ -83,6 +83,7 @@ export class GPSMarker extends BaseEntity {
       .select()
       .leftJoin('marker.owner', 'site')
       .where('site.id = :id', { id: site.id })
+      .orderBy('marker.date', 'DESC')
       .getMany();
 
     return transformAndValidate(GPSMarker, markers);

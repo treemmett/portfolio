@@ -1,5 +1,5 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { Map as Mapbox, Marker } from 'mapbox-gl';
+import { LngLat, LngLatBounds, LngLatLike, Map as Mapbox, Marker } from 'mapbox-gl';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -83,6 +83,20 @@ const Map: NextPage = () => {
           new Marker().setLngLat(marker.coordinate.coordinates as [number, number]).addTo(current)
         )
       );
+
+      const lastFourMarkers = markers.slice(0, 4);
+
+      if (lastFourMarkers.length >= 2) {
+        const lng = lastFourMarkers.map((m) => m.coordinate.coordinates[0]);
+        const lat = lastFourMarkers.map((m) => m.coordinate.coordinates[1]);
+        const sw = new LngLat(Math.min(...lng), Math.min(...lat));
+        const ne = new LngLat(Math.max(...lng), Math.max(...lat));
+
+        map.current.fitBounds(new LngLatBounds(sw, ne), { padding: 100 });
+      } else if (lastFourMarkers.length === 1) {
+        map.current.setCenter(lastFourMarkers[0].coordinate.coordinates as LngLatLike);
+        map.current.zoomTo(5);
+      }
     }
 
     return () => {
