@@ -82,7 +82,7 @@ export const Settings: FC = () => {
                 />
                 <Input
                   file={site.logoFile || site.logo}
-                  label="Logo"
+                  label={t('Logo')}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setSite({ ...site, logoFile: e.target.files?.[0] })
                   }
@@ -90,7 +90,7 @@ export const Settings: FC = () => {
                 />
                 <Input
                   checked={typeof site.watermarkPosition === 'number'}
-                  label="Post watermark"
+                  label={t('Post watermark')}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setSite({
                       ...site,
@@ -101,7 +101,7 @@ export const Settings: FC = () => {
                   }}
                   type="checkbox"
                 />
-                <span>Watermark position</span>
+                <span>{t('Watermark position')}</span>
                 <div
                   className={classNames(styles.quadrants, {
                     [styles.disabled]: typeof site.watermarkPosition !== 'number',
@@ -111,7 +111,7 @@ export const Settings: FC = () => {
                     checked={site.watermarkPosition === WatermarkPosition.TOP_LEFT}
                     className={classNames(styles.checkbox, styles.tl)}
                     disabled={typeof site.watermarkPosition !== 'number'}
-                    label="Top Left"
+                    label={t('Top Left')}
                     onChange={() =>
                       setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_LEFT })
                     }
@@ -121,7 +121,7 @@ export const Settings: FC = () => {
                     checked={site.watermarkPosition === WatermarkPosition.TOP_RIGHT}
                     className={classNames(styles.checkbox, styles.tr)}
                     disabled={typeof site.watermarkPosition !== 'number'}
-                    label="Top Right"
+                    label={t('Top Right')}
                     onChange={() =>
                       setSite({ ...site, watermarkPosition: WatermarkPosition.TOP_RIGHT })
                     }
@@ -131,7 +131,7 @@ export const Settings: FC = () => {
                     checked={site.watermarkPosition === WatermarkPosition.BOTTOM_LEFT}
                     className={classNames(styles.checkbox, styles.bl)}
                     disabled={typeof site.watermarkPosition !== 'number'}
-                    label="Bottom Left"
+                    label={t('Bottom Left')}
                     onChange={() =>
                       setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_LEFT })
                     }
@@ -141,7 +141,7 @@ export const Settings: FC = () => {
                     checked={site.watermarkPosition === WatermarkPosition.BOTTOM_RIGHT}
                     className={classNames(styles.checkbox, styles.br)}
                     disabled={typeof site.watermarkPosition !== 'number'}
-                    label="Bottom Right"
+                    label={t('Bottom Right')}
                     onChange={() =>
                       setSite({ ...site, watermarkPosition: WatermarkPosition.BOTTOM_RIGHT })
                     }
@@ -150,7 +150,7 @@ export const Settings: FC = () => {
                 </div>
               </section>
               <section id="social-media">
-                <h2>Social Media</h2>
+                <h2>{t('Social Media')}</h2>
                 <Input
                   label="Twitter"
                   onChange={(e) => setSite({ ...site, twitter: e.currentTarget.value })}
@@ -183,9 +183,13 @@ export const Settings: FC = () => {
                 />
               </section>
               <section id="account-information">
-                <h2>Account Information</h2>
-                <div>Total Photos: {count}</div>
-                <div>Size: {formatBytes(size)}</div>
+                <h2>{t('Account Information')}</h2>
+                <div>
+                  {t('Total Photos')}: {count}
+                </div>
+                <div>
+                  {t('Size')}: {formatBytes(size)}
+                </div>
               </section>
 
               <Button disabled={isSaving} type="success" submit>
@@ -193,7 +197,7 @@ export const Settings: FC = () => {
               </Button>
 
               <Button disabled={isSaving} onClick={() => setOpen(false)}>
-                Close
+                {t('Close')}
               </Button>
             </form>
           </div>
