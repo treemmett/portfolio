@@ -17,6 +17,7 @@ export interface InputProps
   /** remove spacing reserved for label */
   collapseLabel?: boolean;
   file?: File | IPhoto | null;
+  helperText?: string;
   label?: string;
   onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
   options?: { id: string; label: string }[];
@@ -35,6 +36,7 @@ export const Input: FC<InputProps> = ({
   defaultValue,
   disabled,
   file,
+  helperText,
   id,
   label,
   name,
@@ -74,7 +76,7 @@ export const Input: FC<InputProps> = ({
     >
       {(!collapseLabel || label) && (
         <label className={styles.label} htmlFor={realId}>
-          {label}
+          {helperText || label}
         </label>
       )}
       {type === 'select' && (

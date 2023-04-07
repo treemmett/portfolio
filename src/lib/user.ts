@@ -135,3 +135,8 @@ export function useUser() {
     user,
   };
 }
+
+export async function usernameAvailable(username: string): Promise<boolean> {
+  const response = await apiClient.get('/user/available', { params: { username } });
+  return response.data;
+}

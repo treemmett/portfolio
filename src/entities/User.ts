@@ -182,6 +182,15 @@ export class User extends BaseEntity {
     return middleware;
   }
 
+  public static async usernameAvailable(username: string): Promise<boolean> {
+    const count = await User.createQueryBuilder('user')
+      .select('user.id')
+      .where('user.username = :username', { username })
+      .getCount();
+
+    return count === 0;
+  }
+
   public static async getUserNames(): Promise<string[]> {
     const users = await User.createQueryBuilder('user').select('user.username').getMany();
     return users.map((u) => u.username);
@@ -225,5 +234,5 @@ export class User extends BaseEntity {
 
 export type IUser = Omit<
   User,
-  keyof BaseEntity | 'authorize' | 'authorizeGitHub' | 'signAccessToken'
+  keyof BaseEntity | 'authorize' | 'authorizeGitHub' | 'signAccessToken' | 'getUserNames'
 >;
