@@ -121,53 +121,32 @@ export const ApiManager: FC = () => {
 
   const uploadPhoto = useCallback(
     async (request: ApiRequest) => {
-      setRequests((rs) => [
-        { ...request, status: 'uploading' },
-        ...rs.filter((r) => r.id !== request.id),
-      ]);
+      try {
+        setRequests((rs) => [
+          { ...request, status: 'uploading' },
+          ...rs.filter((r) => r.id !== request.id),
+        ]);
 
-      const { data: uploadToken } = await apiClient.post<UploadToken>('/post', {
-        onUploadProgress(progress: AxiosProgressEvent) {
-          setRequests((rs) => {
-            const filtered = rs.filter((r) => r.id !== request.id);
-            const thisRequest = rs.find((r) => r.id === request.id);
+        const { data: uploadToken } = await apiClient.post<UploadToken>('/post', {
+          onUploadProgress(progress: AxiosProgressEvent) {
+            setRequests((rs) => {
+              const filtered = rs.filter((r) => r.id !== request.id);
+              const thisRequest = rs.find((r) => r.id === request.id);
 
-            if (typeof progress.progress === 'undefined') return rs;
+              if (typeof progress.progress === 'undefined') return rs;
 
-            return [
-              { ...thisRequest, progress: progress.progress * 0.05 } as ApiRequest,
-              ...filtered,
-            ];
-          });
-        },
-      });
+              return [
+                { ...thisRequest, progress: progress.progress * 0.05 } as ApiRequest,
+                ...filtered,
+              ];
+            });
+          },
+        });
 
-      await axios.put(uploadToken.url, request.file, {
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        onUploadProgress(progress: AxiosProgressEvent) {
-          setRequests((rs) => {
-            const filtered = rs.filter((r) => r.id !== request.id);
-            const thisRequest = rs.find((r) => r.id === request.id);
-
-            if (typeof progress.progress === 'undefined') return rs;
-
-            return [
-              {
-                ...thisRequest,
-                progress: 0.05 + progress.progress * 0.9,
-              } as ApiRequest,
-              ...filtered,
-            ];
-          });
-        },
-      });
-
-      const { data } = await apiClient.put<IPost>(
-        '/post',
-        { token: uploadToken.token },
-        {
+        await axios.put(uploadToken.url, request.file, {
+          headers: {
+            'Content-Type': 'application/octet-stream',
+          },
           onUploadProgress(progress: AxiosProgressEvent) {
             setRequests((rs) => {
               const filtered = rs.filter((r) => r.id !== request.id);
@@ -178,32 +157,70 @@ export const ApiManager: FC = () => {
               return [
                 {
                   ...thisRequest,
-                  progress: 0.95 + progress.progress * 0.05,
+                  progress: 0.05 + progress.progress * 0.9,
                 } as ApiRequest,
                 ...filtered,
               ];
             });
           },
-        }
-      );
+        });
 
-      addPost(data);
-
-      setRequests((rs) => {
-        const filtered = rs.filter((r) => r.id !== request.id);
-        const thisRequest = rs.find((r) => r.id === request.id);
-
-        return [
+        const { data } = await apiClient.put<IPost>(
+          '/post',
+          { token: uploadToken.token },
           {
-            ...thisRequest,
-            status: 'complete',
-          } as ApiRequest,
-          ...filtered,
-        ];
-      });
+            onUploadProgress(progress: AxiosProgressEvent) {
+              setRequests((rs) => {
+                const filtered = rs.filter((r) => r.id !== request.id);
+                const thisRequest = rs.find((r) => r.id === request.id);
+
+                if (typeof progress.progress === 'undefined') return rs;
+
+                return [
+                  {
+                    ...thisRequest,
+                    progress: 0.95 + progress.progress * 0.05,
+                  } as ApiRequest,
+                  ...filtered,
+                ];
+              });
+            },
+          }
+        );
+
+        addPost(data);
+
+        setRequests((rs) => {
+          const filtered = rs.filter((r) => r.id !== request.id);
+          const thisRequest = rs.find((r) => r.id === request.id);
+
+          return [
+            {
+              ...thisRequest,
+              status: 'complete',
+            } as ApiRequest,
+            ...filtered,
+          ];
+        });
+      } catch (err) {
+        setRequests((rs) => {
+          const filtered = rs.filter((r) => r.id !== request.id);
+          const thisRequest = rs.find((r) => r.id === request.id);
+
+          return [
+            {
+              ...thisRequest,
+              status: 'error',
+            } as ApiRequest,
+            ...filtered,
+          ];
+        });
+      }
     },
     [addPost]
   );
+
+  const [status, setStatus] = useState<'uploading' | 'complete' | 'error'>('uploading');
 
   useEffect(() => {
     const uploading = requests.filter((r) => r.status === 'uploading');
@@ -213,6 +230,11 @@ export const ApiManager: FC = () => {
 
       if (nextRequest) {
         uploadPhoto(nextRequest);
+        setStatus('uploading');
+      } else if (requests.find((f) => f.status === 'error')) {
+        setStatus('error');
+      } else {
+        setStatus('complete');
       }
     }
   }, [requests, uploadPhoto]);
@@ -222,7 +244,7 @@ export const ApiManager: FC = () => {
   return (
     <div className={styles.manager} data-testid="upload-manager">
       <header className={styles.header}>
-        <span>Uploading</span>
+        <span className={styles.status}>{status}</span>
         <Button
           className={styles['collapse-button']}
           onClick={() => setCollapsed(!collapsed)}
