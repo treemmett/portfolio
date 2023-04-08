@@ -88,22 +88,6 @@ export class Post extends BaseEntity {
     return post;
   }
 
-  public static async getById(id: string): Promise<Post> {
-    const post = await Post.findOneOrFail({ relations: { photo: true }, where: { id } });
-    return transformAndValidate(Post, post);
-  }
-
-  public static async getAll(): Promise<Post[]> {
-    const posts = await Post.find({
-      relations: {
-        owner: true,
-        photo: true,
-      },
-    });
-
-    return transformAndValidate(Post, posts);
-  }
-
   public static async getOneFromUser(user: User, id: string): Promise<Post> {
     const post = await Post.createQueryBuilder('post')
       .select()
@@ -145,7 +129,7 @@ export class Post extends BaseEntity {
 export interface IPost
   extends Omit<
     Post,
-    keyof BaseEntity | 'photo' | 'processUpload' | 'requestUploadToken' | 'getProcessingKey'
+    keyof BaseEntity | 'photo' | 'processUpload' | 'getOneFromUser' | 'getAllFromUser' | 'delete'
   > {
   photo: IPhoto;
 }
