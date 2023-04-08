@@ -15,6 +15,7 @@ import {
 import { v4 } from 'uuid';
 import { Photo, IPhoto } from './Photo';
 import { User } from './User';
+import { geocode } from '@lib/geocode';
 import { PostNotFoundError } from '@utils/errors';
 import { logger } from '@utils/logger';
 
@@ -33,7 +34,7 @@ export class Post extends BaseEntity {
   @IsDate()
   @Type(() => Date)
   @CreateDateColumn()
-  public created: string;
+  public created: Date;
 
   @Length(0, 200)
   @IsString()
@@ -61,21 +62,41 @@ export class Post extends BaseEntity {
   public static async processUpload(token: string, user: User): Promise<Post> {
     logger.info('Processing upload');
 
-    const { photo } = await Photo.processUpload(user, token, true);
+    const { photo, exifData } = await Photo.processUpload(user, token, true);
 
     const id = v4();
 
-    const post = await transformAndValidate(
-      Post,
-      {
-        created: new Date(),
-        id,
-        owner: user,
-        photo,
-        updated: new Date(),
-      },
-      { validator: { forbidUnknownValues: true } }
-    ).catch((err) => {
+    const postData: IPost = {
+      created: exifData.DateTimeOriginal || new Date(),
+      id,
+      owner: user,
+      photo,
+      updated: new Date(),
+    };
+
+    if (typeof exifData.latitude === 'number' && typeof exifData.longitude === 'number') {
+      const geoData = await geocode(exifData.longitude, exifData.latitude);
+
+      if (geoData.city) {
+        if (geoData.country) {
+          postData.location = `${geoData.city}, ${geoData.country}`;
+        } else {
+          postData.location = geoData.city;
+        }
+      } else if (geoData.county) {
+        if (geoData.country) {
+          postData.location = `${geoData.county}, ${geoData.country}`;
+        } else {
+          postData.location = geoData.county;
+        }
+      } else if (geoData.country) {
+        postData.location = geoData.country;
+      }
+    }
+
+    const post = await transformAndValidate(Post, postData, {
+      validator: { forbidUnknownValues: true },
+    }).catch((err) => {
       logger.error(err, 'Post failed validation');
       throw err;
     });

@@ -15,7 +15,8 @@ interface GeocodeResponse {
     house_number: string;
     road: string;
     suburb: string;
-    city: string;
+    city?: string;
+    county?: string;
     municipality: string;
     state: string;
     postcode: string;

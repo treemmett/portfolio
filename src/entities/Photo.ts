@@ -4,6 +4,7 @@ import { PromiseResult } from 'aws-sdk/lib/request';
 import { Transform, Type } from 'class-transformer';
 import { transformAndValidate } from 'class-transformer-validator';
 import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
+import { parse as parseExif } from 'exifr';
 import { JWTPayload, SignJWT, jwtVerify } from 'jose';
 import sharp, { OutputInfo, Sharp } from 'sharp';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -206,16 +207,27 @@ export class Photo extends BaseEntity {
 
     await s3.deleteObject({ Bucket: S3_BUCKET, Key: `processing/${jti}` }).promise();
 
+    const uploadedPhoto = object.Body as Buffer;
+
     logger.trace('Object loaded');
 
-    let image = sharp(Buffer.from(object.Body.toString('base64'), 'base64'));
+    let image = sharp(uploadedPhoto);
 
     if (includeWatermark) {
       logger.trace('Watermark requested');
       image = await Photo.applyWatermark(image, user);
     }
 
-    return Photo.addPhoto(image, user, payload.type, payload.jti);
+    const [photo, exifData] = await Promise.all([
+      Photo.addPhoto(image, user, payload.type, payload.jti),
+      parseExif(uploadedPhoto) as {
+        DateTimeOriginal?: Date;
+        latitude?: number;
+        longitude?: number;
+      },
+    ]);
+
+    return { ...photo, exifData };
   }
 
   private static async applyWatermark(image: Sharp, user: User): Promise<Sharp> {

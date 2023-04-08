@@ -12,6 +12,8 @@
     "csstree",
     "daguerrio",
     "env",
+    "exif",
+    "exifr",
     "geocode",
     "Googlebot",
     "heic",

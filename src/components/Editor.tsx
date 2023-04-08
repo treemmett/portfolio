@@ -53,7 +53,7 @@ export const Editor: FC<{ id: string; setIsMutating: (isMutating: boolean) => vo
         className={styles.input}
         label={t('Date')}
         name="date"
-        onChange={(e) => setPost({ ...post, created: e.currentTarget.value })}
+        onChange={(e) => setPost({ ...post, created: new Date(e.currentTarget.value) })}
         type="date"
         value={trimTime(post.created) || ''}
       />
