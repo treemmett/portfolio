@@ -130,6 +130,7 @@ export class Post extends BaseEntity {
       .leftJoin('photo.owner', 'photo_owner')
       .where('user.username = :username', { username })
       .andWhere('photo_owner.username = :username', { username })
+      .orderBy('post.created', 'DESC')
       .getMany();
 
     return transformAndValidate(Post, posts);
