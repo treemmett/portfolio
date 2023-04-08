@@ -53,3 +53,17 @@ export const AppDataSource = new DataSource({
   type: 'postgres',
   username: Config.DB_USERNAME,
 });
+
+export enum Constraints {
+  domain = 'IDX_4578b679503e1b86cc1c2531b9',
+  githubId = 'IDX_42148de213279d66bf94b363bf',
+  username = 'IDX_fe0bb3f6520ee0469504521e71',
+}
+
+interface ConstraintError {
+  constraint: Constraints;
+}
+
+export function errHasConstraint(err: unknown): err is ConstraintError {
+  return !!err && !!(err as ConstraintError).constraint;
+}

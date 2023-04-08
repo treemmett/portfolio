@@ -4,6 +4,8 @@ import { AuthorizationScopes } from '@entities/Jwt';
 import { Site } from '@entities/Site';
 import { User } from '@entities/User';
 import { nextConnect } from '@middleware/nextConnect';
+import { Constraints, errHasConstraint } from '@utils/dataSource';
+import { ConflictError } from '@utils/errors';
 
 export default nextConnect()
   .use(User.authorize())
@@ -19,9 +21,16 @@ export default nextConnect()
     async (req, res) => {
       if (req.body.username) {
         req.user.username = req.body.username;
-      }
 
-      await req.user.save();
+        try {
+          await req.user.save();
+        } catch (err) {
+          if (errHasConstraint(err) && err.constraint === Constraints.username) {
+            throw new ConflictError('Username already exists');
+          }
+          throw err;
+        }
+      }
 
       if (req.user.scopes.includes(AuthorizationScopes.onboard)) {
         let site = await Site.findOne({ where: { owner: { id: req.user.id } } });

@@ -81,3 +81,9 @@ export class ImageProcessingError extends APIError {
     super(message, 500);
   }
 }
+
+export class ConflictError extends APIError {
+  constructor(public message = 'Conflict in the request') {
+    super(message, 409);
+  }
+}
