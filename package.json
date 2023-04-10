@@ -80,7 +80,7 @@
     "eslint": "^8.26.0",
     "eslint-config-treemmett": "^0.5.2",
     "husky": "^7.0.4",
-    "lint-staged": "^13.0.3",
+    "lint-staged": "^13.2.1",
     "pino-pretty": "^9.1.1",
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
