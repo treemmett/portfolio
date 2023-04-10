@@ -31,7 +31,7 @@
     "@types/cookie": "^0.5.1",
     "@types/mapbox-gl": "^2.7.6",
     "@types/react": "^18.0.20",
-    "@types/react-dom": "^18.0.8",
+    "@types/react-dom": "^18.0.11",
     "@types/request-ip": "^0.0.37",
     "@types/sharp": "^0.31.1",
     "@types/uuid": "^9.0.1",
