@@ -85,7 +85,7 @@
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
     "sass": "^1.54.8",
-    "start-server-and-test": "^1.14.0",
+    "start-server-and-test": "^2.0.0",
     "stylelint": "^15.5.0",
     "stylelint-config-idiomatic-order": "^9.0.0",
     "stylelint-config-prettier": "^9.0.5",
