@@ -3,6 +3,7 @@ import { LngLat, LngLatBounds, LngLatLike, Map as Mapbox, Marker } from 'mapbox-
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 import styles from './map.module.scss';
 import { Nav } from '@components/Nav';
@@ -43,6 +44,7 @@ const Map: NextPage = () => {
   const map = useRef<Mapbox>();
   const { markers } = useMarkers();
   const { hasPermission } = useUser();
+  const { query } = useRouter();
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -80,23 +82,25 @@ const Map: NextPage = () => {
 
       const lastFourMarkers = markers.slice(0, 4);
 
-      if (lastFourMarkers.length >= 2) {
-        const lng = lastFourMarkers.map((m) => m.coordinate.coordinates[0]);
-        const lat = lastFourMarkers.map((m) => m.coordinate.coordinates[1]);
-        const sw = new LngLat(Math.min(...lng), Math.min(...lat));
-        const ne = new LngLat(Math.max(...lng), Math.max(...lat));
+      if (!query.lng && !query.lat) {
+        if (lastFourMarkers.length >= 2) {
+          const lng = lastFourMarkers.map((m) => m.coordinate.coordinates[0]);
+          const lat = lastFourMarkers.map((m) => m.coordinate.coordinates[1]);
+          const sw = new LngLat(Math.min(...lng), Math.min(...lat));
+          const ne = new LngLat(Math.max(...lng), Math.max(...lat));
 
-        map.current.fitBounds(new LngLatBounds(sw, ne), { padding: 100 });
-      } else if (lastFourMarkers.length === 1) {
-        map.current.setCenter(lastFourMarkers[0].coordinate.coordinates as LngLatLike);
-        map.current.zoomTo(5);
+          map.current.fitBounds(new LngLatBounds(sw, ne), { padding: 100 });
+        } else if (lastFourMarkers.length === 1) {
+          map.current.setCenter(lastFourMarkers[0].coordinate.coordinates as LngLatLike);
+          map.current.zoomTo(5);
+        }
       }
     }
 
     return () => {
       placedMarkers?.forEach((m) => m.remove());
     };
-  }, [markers]);
+  }, [markers, query.lat, query.lng]);
 
   return (
     <>

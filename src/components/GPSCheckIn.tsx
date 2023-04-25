@@ -2,6 +2,7 @@ import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
+import { ReactComponent as MapPin } from '../icons/map-pin.svg';
 import { Button } from './Button';
 import styles from './GPSCheckIn.module.scss';
 import { Input } from './Input';
@@ -80,12 +81,17 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
         const lat = parseFloat(toString(query.lat));
 
         if (!Number.isNaN(lng) && !Number.isNaN(lat)) {
-          m.setLngLat(new LngLat(lng, lat)).addTo(map);
-          m.on('dragend', () => {
-            push({ query: { ...query, ...m.getLngLat() } }, undefined, {
-              shallow: true,
+          const coords = new LngLat(lng, lat);
+
+          m.setLngLat(coords)
+            .addTo(map)
+            .on('dragend', () => {
+              push({ query: { ...query, ...m.getLngLat() } }, undefined, {
+                shallow: true,
+              });
             });
-          });
+
+          map.setCenter(coords).setZoom(13);
         }
       }
     }
@@ -111,54 +117,81 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
           setLoadingGeo(false);
         });
     }
-  }, [query.lat, query.lng]);
+  }, [map, query.lat, query.lng]);
 
-  if (!query.lng || !query.lat) return null;
+  const [gettingGPS, setGettingGPS] = useState(false);
 
   return (
-    <form className={styles.form} onSubmit={save}>
-      <Input
-        label={t('Longitude')}
-        onChange={(e) =>
-          replace({ query: { ...query, lng: e.currentTarget.value } }, undefined, { shallow: true })
-        }
-        step={0.0000001}
-        type="number"
-        value={toString(query.lng)}
-      />
-      <Input
-        label={t('Latitude')}
-        onChange={(e) =>
-          replace({ query: { ...query, lat: e.currentTarget.value } }, undefined, { shallow: true })
-        }
-        step={0.0000001}
-        type="number"
-        value={toString(query.lat)}
-      />
-      <Input
-        disabled={loadingGeo}
-        label={t('City')}
-        onChange={(e) => setCity(e.currentTarget.value)}
-        value={city}
-      />
-      <Input
-        disabled={loadingGeo}
-        label={t('Country')}
-        onChange={(e) => setCountry(e.currentTarget.value)}
-        value={country}
-      />
-      <Input
-        label={t('Date')}
-        onChange={(e) => setDate(new Date(e.currentTarget.value))}
-        type="datetime-local"
-        value={toLocalString(date)}
-      />
-      <Button disabled={isMutating} type="success" submit>
-        {isMutating ? `${t('Saving')}...` : t('Save')}
+    <>
+      <Button
+        className={styles.gps}
+        disabled={gettingGPS}
+        onClick={() => {
+          setGettingGPS(true);
+          navigator.geolocation.getCurrentPosition(
+            ({ coords }) => {
+              setGettingGPS(false);
+              push({ query: { ...query, lat: coords.latitude, lng: coords.longitude } });
+            },
+            () => {
+              setGettingGPS(false);
+            }
+          );
+        }}
+      >
+        <MapPin />
       </Button>
-      <Button disabled={isMutating} onClick={close} type="danger">
-        {t('Cancel')}
-      </Button>
-    </form>
+
+      {query.lng && query.lat && (
+        <form className={styles.form} onSubmit={save}>
+          <Input
+            label={t('Longitude')}
+            onChange={(e) =>
+              replace({ query: { ...query, lng: e.currentTarget.value } }, undefined, {
+                shallow: true,
+              })
+            }
+            step={0.0000001}
+            type="number"
+            value={toString(query.lng)}
+          />
+          <Input
+            label={t('Latitude')}
+            onChange={(e) =>
+              replace({ query: { ...query, lat: e.currentTarget.value } }, undefined, {
+                shallow: true,
+              })
+            }
+            step={0.0000001}
+            type="number"
+            value={toString(query.lat)}
+          />
+          <Input
+            disabled={loadingGeo}
+            label={t('City')}
+            onChange={(e) => setCity(e.currentTarget.value)}
+            value={city}
+          />
+          <Input
+            disabled={loadingGeo}
+            label={t('Country')}
+            onChange={(e) => setCountry(e.currentTarget.value)}
+            value={country}
+          />
+          <Input
+            label={t('Date')}
+            onChange={(e) => setDate(new Date(e.currentTarget.value))}
+            type="datetime-local"
+            value={toLocalString(date)}
+          />
+          <Button disabled={isMutating} type="success" submit>
+            {isMutating ? `${t('Saving')}...` : t('Save')}
+          </Button>
+          <Button disabled={isMutating} onClick={close} type="danger">
+            {t('Cancel')}
+          </Button>
+        </form>
+      )}
+    </>
   );
 };
