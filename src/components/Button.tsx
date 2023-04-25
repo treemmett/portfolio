@@ -34,13 +34,17 @@ export const Button: FC<ButtonProps> = ({
 }) => (
   <button
     aria-label={label}
-    className={cx(styles.button, className, {
-      [styles.inverted]: inverted,
-      [styles.danger]: type === 'danger',
-      [styles.warning]: type === 'warning',
-      [styles.success]: type === 'success',
-      [styles.small]: size === 'small',
-    })}
+    className={cx(
+      styles.button,
+      {
+        [styles.inverted]: inverted,
+        [styles.danger]: type === 'danger',
+        [styles.warning]: type === 'warning',
+        [styles.success]: type === 'success',
+        [styles.small]: size === 'small',
+      },
+      className
+    )}
     data-testid={testId}
     disabled={disabled}
     onClick={onClick}
