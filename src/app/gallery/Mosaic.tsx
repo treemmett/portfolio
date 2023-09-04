@@ -1,17 +1,13 @@
-import { LightBox } from '../../components/LightBox';
 import styles from './Mosaic.module.scss';
 import { Tile } from './Tile';
-import { Post } from '@entities/Post';
+import { getPosts } from '@lib/getPosts';
 
 export async function Mosaic() {
-  const posts = await Post.getAllFromUser('tregan');
+  const posts = await getPosts('tregan');
 
   return (
-    <>
-      <div className={styles.mosaic}>
-        {posts?.map((post, i) => <Tile key={post.id} post={post} priority={i < 5} />)}
-      </div>
-      <LightBox posts={posts} />
-    </>
+    <div className={styles.mosaic}>
+      {posts?.map((post, i) => <Tile key={post.id} post={post} priority={i < 5} />)}
+    </div>
   );
 }

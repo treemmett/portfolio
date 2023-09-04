@@ -2,10 +2,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 import styles from './Tile.module.scss';
-import type { IPost } from '@entities/Post';
 
 export interface TileProps {
-  post: IPost;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  post: any;
   priority?: boolean;
 }
 
