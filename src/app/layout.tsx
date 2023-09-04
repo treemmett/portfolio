@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import './global.scss';
 import { Josefin_Sans as JosefinSans } from '@next/font/google';
 import { FC, PropsWithChildren } from 'react';
 
