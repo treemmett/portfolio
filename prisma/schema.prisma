@@ -104,14 +104,14 @@ model users {
 }
 
 enum photos_type_enum {
-  // 0 @map("0")
-  // 1 @map("1")
-  // 2 @map("2")
+  ORIGINAL
+  LOGO
+  FAVICON
 }
 
 enum sites_watermarkposition_enum {
-  // 0 @map("0")
-  // 1 @map("1")
-  // 2 @map("2")
-  // 3 @map("3")
+  TOP_LEFT
+  TOP_RIGHT
+  BOTTOM_LEFT
+  BOTTOM_RIGHT
 }
