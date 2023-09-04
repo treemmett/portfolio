@@ -1,0 +1,23 @@
+@use '../../../styles/screen';
+@use '../../../styles/shared';
+
+.photo {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  .img {
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 0 38px 2px rgba(0, 0, 0, 46%);
+    box-shadow: shared.$shadow;
+    pointer-events: all;
+
+    &.overlay {
+      position: absolute;
+    }
+  }
+}
