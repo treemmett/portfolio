@@ -9,7 +9,7 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
   if (!post || !post.photo || !post.photo.url) return notFound();
 
   return (
-    <div className="fixed w-screen h-screen p-2">
+    <div className="fixed w-screen h-screen p-6 bg-neutral-900/90">
       <ScrollLock />
       <div
         className="max-w-full max-h-full bg-contain object-contain"
