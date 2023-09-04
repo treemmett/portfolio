@@ -16,8 +16,10 @@ import { v4 } from 'uuid';
 import { Photo, IPhoto } from './Photo';
 import { User } from './User';
 import { geocode } from '@lib/geocode';
+import { Config } from '@utils/config';
 import { PostNotFoundError } from '@utils/errors';
 import { logger } from '@utils/logger';
+import { prisma } from '@utils/prisma';
 
 @Entity({ name: 'posts' })
 export class Post extends BaseEntity {
@@ -128,17 +130,20 @@ export class Post extends BaseEntity {
   }
 
   public static async getAllFromUser(username: string): Promise<Post[]> {
-    const posts = await Post.createQueryBuilder('post')
-      .select()
-      .leftJoinAndSelect('post.photo', 'photo')
-      .leftJoinAndSelect('post.owner', 'user')
-      .leftJoin('photo.owner', 'photo_owner')
-      .where('user.username = :username', { username })
-      .andWhere('photo_owner.username = :username', { username })
-      .orderBy('post.created', 'DESC')
-      .getMany();
+    const posts = await prisma.posts.findMany({
+      include: { photo: true, user: true },
+      where: { user: { username } },
+    });
 
-    return transformAndValidate(Post, posts);
+    const transformedPosts = await transformAndValidate(Post, posts, { transformer: {} });
+    for (let i = 0; i < transformedPosts.length; i += 1) {
+      const post = transformedPosts[i];
+
+      post.photo.url = Config.CDN_URL
+        ? `${Config.CDN_URL}/${post.photo.id}`
+        : `${Config.S3_URL}/${Config.S3_BUCKET}/${post.photo.id}`;
+    }
+    return transformedPosts;
   }
 
   public async delete() {

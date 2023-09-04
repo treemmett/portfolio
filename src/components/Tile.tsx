@@ -1,10 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { FC } from 'react';
 import styles from './Tile.module.scss';
 import type { IPost } from '@entities/Post';
-import { formatDate } from '@utils/date';
 
 export interface TileProps {
   post: IPost;
@@ -12,17 +10,12 @@ export interface TileProps {
 }
 
 export const Tile: FC<TileProps> = ({ post, priority }) => {
-  const { pathname, query } = useRouter();
-  const label = [post.title, post.location, formatDate(post.created)].filter((i) => !!i).join(', ');
+  const label = [post.title, post.location, post.created.toISOString()]
+    .filter((i) => !!i)
+    .join(', ');
 
   return (
-    <Link
-      aria-label={label}
-      href={{ pathname, query: { ...query, post: post.id } }}
-      scroll={false}
-      passHref
-      shallow
-    >
+    <Link aria-label={label} href="/" scroll={false} passHref shallow>
       <Image
         alt={label}
         blurDataURL={post.photo.thumbnailURL}

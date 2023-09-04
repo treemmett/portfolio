@@ -6,7 +6,6 @@ import { transformAndValidate } from 'class-transformer-validator';
 import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
 import { parse as parseExif } from 'exifr';
 import { JWTPayload, SignJWT, jwtVerify } from 'jose';
-import sharp, { OutputInfo, Sharp } from 'sharp';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
@@ -22,6 +21,13 @@ import {
 } from '@utils/errors';
 import { logger } from '@utils/logger';
 import { s3 } from '@utils/s3';
+
+// import sharp, { OutputInfo, Sharp } from 'sharp';
+function sharp(...args: any[]) {
+  return {} as Sharp;
+}
+type OutputInfo = any;
+type Sharp = any;
 
 const { CDN_URL, S3_BUCKET, S3_URL } = Config;
 
@@ -69,7 +75,7 @@ export class Photo extends BaseEntity {
   public type: PhotoType;
 
   @Transform(({ obj }: { obj: Photo }) =>
-    CDN_URL ? `${CDN_URL}/${obj.id}` : `${S3_URL}/${S3_BUCKET}/${obj.id}`
+    CDN_URL ? `${CDN_URL}/${obj.id}` : `${S3_URL}/${S3_BUCKET}/${obj.id}`,
   )
   public url = '';
 
@@ -103,7 +109,7 @@ export class Photo extends BaseEntity {
     image: Sharp,
     user: User,
     type: PhotoType,
-    id?: string
+    id?: string,
   ): Promise<{ image: Sharp; imageInfo: OutputInfo; photo: Photo }> {
     image.rotate().webp().sharpen({ m2: 2, sigma: 0.75 });
 
@@ -124,7 +130,7 @@ export class Photo extends BaseEntity {
         owner: user,
         size: imageData.info.size,
         thumbnailURL: `data:image/${imageData.info.format};base64,${thumbnailBuffer.toString(
-          'base64'
+          'base64',
         )}`,
         type,
         url: CDN_URL ? `${CDN_URL}/${realId}` : `${S3_URL}/${S3_BUCKET}/${realId}`,
@@ -134,7 +140,7 @@ export class Photo extends BaseEntity {
         validator: {
           forbidUnknownValues: true,
         },
-      }
+      },
     );
 
     const [savedPhoto] = await Promise.all([
