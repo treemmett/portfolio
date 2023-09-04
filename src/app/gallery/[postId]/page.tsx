@@ -1,7 +1,5 @@
-import classNames from 'classnames';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import styles from './gallery.module.scss';
 import { getPost } from '@lib/getPost';
 
 export default async function GalleryPostPage({ params }: { params: { postId: string } }) {
@@ -10,9 +8,9 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
   if (!post || !post.photo || !post.photo.url) return notFound();
 
   return (
-    <div className={styles.overlay}>
+    <div className="fixed w-screen h-screen p-2">
       <div
-        className={styles.photo}
+        className="max-w-full max-h-full bg-contain object-contain"
         style={{
           aspectRatio: `auto ${post.photo.width} / ${post.photo.height}`,
           height: post.photo.height,
@@ -22,7 +20,7 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
         <Image
           alt={post.title || post.created.toISOString()}
           blurDataURL={post.photo.thumbnailURL}
-          className={classNames(styles.img)}
+          className="max-w-full max-h-full bg-contain object-contain"
           height={post.photo.height}
           placeholder="blur"
           src={post.photo.url}
