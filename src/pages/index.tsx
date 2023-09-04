@@ -1,7 +1,6 @@
 import { GetStaticProps, NextPage } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
-import { LightBox } from '@components/LightBox';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Meta } from '@components/Meta';
 import { Mosaic } from '@components/Mosaic';
 import { Nav } from '@components/Nav';
@@ -12,7 +11,7 @@ import { useUser } from '@lib/user';
 import { connectToDatabase } from '@middleware/database';
 
 const DynamicUploadManager = dynamic(() =>
-  import('@components/ApiManager').then((mod) => mod.ApiManager)
+  import('@components/ApiManager').then((mod) => mod.ApiManager),
 );
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
@@ -46,8 +45,6 @@ export const Home: NextPage = () => {
       <Nav />
 
       <Mosaic />
-
-      <LightBox />
 
       {hasPermission(AuthorizationScopes.post) && <DynamicUploadManager />}
     </>

@@ -15,7 +15,7 @@ export const Tile: FC<TileProps> = ({ post, priority }) => {
     .join(', ');
 
   return (
-    <Link aria-label={label} href="/" scroll={false} passHref shallow>
+    <Link aria-label={label} href={`/gallery?post=${post.id}`} scroll={false} passHref shallow>
       <Image
         alt={label}
         blurDataURL={post.photo.thumbnailURL}

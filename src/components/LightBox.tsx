@@ -1,18 +1,19 @@
+'use client';
+
 import classNames from 'classnames';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactComponent as Left } from '../icons/chevron-left.svg';
 import { ReactComponent as Right } from '../icons/chevron-right.svg';
 import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
-import { usePost, usePosts } from '@lib/posts';
+import { IPost } from '@entities/Post';
 import { useUser } from '@lib/user';
 import { trace } from '@utils/analytics';
-import { formatDate } from '@utils/date';
 import { scaleDimensions, toPx } from '@utils/pixels';
 import { toString } from '@utils/queryParam';
 
@@ -20,11 +21,22 @@ const DynamicEditor = dynamic(() => import('./Editor').then((mod) => mod.Editor)
   loading: () => <span>Loading...</span>,
 });
 
-export const LightBox: FC = () => {
-  const { query, pathname, push } = useRouter();
-  const { posts } = usePosts();
-  const { post, index } = usePost(query.post as string);
+export const LightBox: FC<{ posts: IPost[] }> = ({ posts }) => {
+  const { push } = useRouter();
+  const query = useSearchParams();
+  const postId = query?.get('post');
   const { hasPermission } = useUser();
+
+  const post = useMemo(() => {
+    if (!postId) return undefined;
+    return posts?.find((p) => p.id === postId);
+  }, [postId, posts]);
+
+  const index = useMemo(() => {
+    if (!postId) return undefined;
+    return posts?.findIndex((p) => p.id === postId);
+  }, [postId, posts]);
+
   const [prevPost, nextPost] = useMemo(() => {
     if (typeof index === 'undefined' || !posts?.length) {
       return [undefined, undefined];
@@ -48,20 +60,20 @@ export const LightBox: FC = () => {
   const [top, setTop] = useState<number>();
   const [left, setLeft] = useState<number>();
   useEffect(() => {
-    if (query.post) {
+    if (postId) {
       setDisplayOverlay(true);
       trace('photo-viewed', {
-        id: toString(query.post),
+        id: toString(postId),
       });
     }
 
-    if (!query.post) {
+    if (!postId) {
       setWidth(0);
       setHeight(0);
       setLeft(0);
       setTop(0);
     }
-  }, [query.post]);
+  }, [postId]);
 
   const scaleImage = useCallback(() => {
     if (!post?.photo) return;
@@ -70,7 +82,7 @@ export const LightBox: FC = () => {
       post.photo.width,
       post.photo.height,
       { h: post.photo.height },
-      galleryRef.current
+      galleryRef.current,
     );
     setWidth(w);
     setHeight(h);
@@ -86,10 +98,8 @@ export const LightBox: FC = () => {
 
   const closeLightBox = useCallback(() => {
     setDisplayOverlay(true);
-    const q = { ...query };
-    delete q.post;
-    push({ pathname, query: q }, undefined, { scroll: false, shallow: true });
-  }, [pathname, push, query]);
+    push('../');
+  }, [push]);
 
   const [canClose, setCanClose] = useState(true);
   const [open, setOpen] = useState(!!post);
@@ -112,7 +122,7 @@ export const LightBox: FC = () => {
         <>
           <div className={styles.photo}>
             <Image
-              alt={post.title || formatDate(post.created)}
+              alt={post.title || post.created.toISOString()}
               blurDataURL={post.photo.thumbnailURL}
               className={classNames(styles.img, styles.overlay)}
               height={post.photo.height}
@@ -131,7 +141,7 @@ export const LightBox: FC = () => {
               priority
             />
             <Image
-              alt={post.title || formatDate(post.created)}
+              alt={post.title || post.created.toISOString()}
               blurDataURL={post.photo.thumbnailURL}
               className={styles.img}
               height={post.photo.height}
@@ -152,12 +162,12 @@ export const LightBox: FC = () => {
 
             <div className={styles.controls}>
               {prevPost && (
-                <Link href={{ pathname, query: { ...query, post: prevPost.id } }} shallow>
+                <Link href={`/gallery/${prevPost.id}`} shallow>
                   <Left />
                 </Link>
               )}
               {nextPost && (
-                <Link href={{ pathname, query: { ...query, post: nextPost.id } }} shallow>
+                <Link href={`/gallery/${nextPost.id}`} shallow>
                   <Right />
                 </Link>
               )}
