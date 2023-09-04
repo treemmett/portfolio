@@ -2,3 +2,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .button {
+    @apply text-white border border-transparent rounded-md p-1 backdrop-blur-md bg-white/20 hover:border-white;
+  }
+}
