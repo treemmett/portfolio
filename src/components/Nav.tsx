@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
@@ -7,6 +6,7 @@ import { Anchor } from './Anchor';
 import styles from './Nav.module.scss';
 import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
+import { useTranslation } from '@utils/translation';
 
 export const Nav: FC<{ className?: string }> = ({ className }) => {
   const { t } = useTranslation();

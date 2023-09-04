@@ -1,12 +1,10 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer');
 const { withAxiom } = require('next-axiom');
-const { i18n } = require('./next-i18next.config');
 
 const IS_VERCEL = typeof process.env.VERCEL !== 'undefined';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  i18n,
   images: {
     domains: [
       !IS_VERCEL && '127.0.0.1',
@@ -49,5 +47,5 @@ const nextConfig = {
 };
 
 module.exports = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(
-  withAxiom(nextConfig)
+  withAxiom(nextConfig),
 );

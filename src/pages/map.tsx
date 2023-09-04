@@ -1,7 +1,6 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { LngLat, LngLatBounds, LngLatLike, Map as Mapbox, Marker } from 'mapbox-gl';
 import { GetStaticProps, NextPage } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
@@ -16,7 +15,7 @@ import { connectToDatabase } from '@middleware/database';
 import { Config } from '@utils/config';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async () => {
   await connectToDatabase();
 
   const site = await Site.getByUsername('tregan');
@@ -29,14 +28,13 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
         [`markers/${site.owner.username}`]: JSON.parse(JSON.stringify(markers)),
         site: JSON.parse(JSON.stringify(site)),
       },
-      ...(await serverSideTranslations(locale || 'en', ['common'])),
     },
     revalidate: 60,
   };
 };
 
 const DynamicGPSCheckIn = dynamic(() =>
-  import('@components/GPSCheckIn').then((mod) => mod.GPSCheckIn)
+  import('@components/GPSCheckIn').then((mod) => mod.GPSCheckIn),
 );
 
 const Map: NextPage = () => {
@@ -63,10 +61,10 @@ const Map: NextPage = () => {
         if (!map.current) return;
 
         map.current?.setStyle(
-          darkMode ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11'
+          darkMode ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11',
         );
       }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -76,8 +74,8 @@ const Map: NextPage = () => {
       const { current } = map;
       placedMarkers.push(
         ...markers.map((marker) =>
-          new Marker().setLngLat(marker.coordinate.coordinates as [number, number]).addTo(current)
-        )
+          new Marker().setLngLat(marker.coordinate.coordinates as [number, number]).addTo(current),
+        ),
       );
 
       const lastFourMarkers = markers.slice(0, 4);

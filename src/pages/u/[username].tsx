@@ -1,5 +1,4 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
 import { User } from '@entities/User';
@@ -9,7 +8,7 @@ import { SiteNotFoundError } from '@utils/errors';
 // eslint-disable-next-line no-restricted-exports
 export { default } from '@pages/.';
 
-export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   await connectToDatabase();
 
   const [posts, site] = await Promise.allSettled([
@@ -31,7 +30,6 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
         [`site/${params?.username}`]:
           site.status === 'fulfilled' ? JSON.parse(JSON.stringify(site.value)) : null,
       },
-      ...(await serverSideTranslations(locale || 'en', ['common'])),
     },
     revalidate: 60,
   };

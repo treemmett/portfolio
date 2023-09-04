@@ -98,7 +98,7 @@ export const LightBox: FC<{ posts: IPost[] }> = ({ posts }) => {
 
   const closeLightBox = useCallback(() => {
     setDisplayOverlay(true);
-    push('../');
+    push('/gallery');
   }, [push]);
 
   const [canClose, setCanClose] = useState(true);

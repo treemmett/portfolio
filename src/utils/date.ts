@@ -1,5 +1,3 @@
-import { i18n } from 'next-i18next';
-
 export const months = [
   'January',
   'February',
@@ -21,9 +19,7 @@ export function formatDate(date: Date | string): string {
     throw new Error('Invalid date');
   }
 
-  if (!i18n) return date.toLocaleString();
-
-  return `${d.getUTCDate()} ${i18n.t(months[d.getUTCMonth()])}, ${d.getUTCFullYear()}`;
+  return d.toISOString();
 }
 
 export function trimTime(date: string | Date) {

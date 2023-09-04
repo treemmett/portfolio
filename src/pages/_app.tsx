@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { Josefin_Sans as JosefinSans } from '@next/font/google';
-import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { FC } from 'react';
@@ -35,6 +34,6 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default appWithTranslation(MyApp);
+export default MyApp;
 
 export { reportWebVitals } from 'next-axiom';

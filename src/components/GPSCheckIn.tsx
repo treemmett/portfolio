@@ -1,5 +1,4 @@
 import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
-import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as MapPin } from '../icons/map-pin.svg';
@@ -10,6 +9,7 @@ import { geocode } from '@lib/geocode';
 import { useMarkers } from '@lib/markers';
 import { toLocalString } from '@utils/date';
 import { toString } from '@utils/queryParam';
+import { useTranslation } from '@utils/translation';
 
 export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   const { t } = useTranslation();
@@ -48,7 +48,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
 
       close();
     },
-    [addMarker, city, close, country, date, query.lat, query.lng]
+    [addMarker, city, close, country, date, query.lat, query.lng],
   );
 
   const mapClickHandler = useCallback(
@@ -57,7 +57,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
         shallow: true,
       });
     },
-    [push, query]
+    [push, query],
   );
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
             },
             () => {
               setGettingGPS(false);
-            }
+            },
           );
         }}
       >

@@ -1,4 +1,3 @@
-import { useTranslation } from 'next-i18next';
 import { FC, FormEventHandler, useCallback, useEffect, useState } from 'react';
 import { Button } from './Button';
 import styles from './Editor.module.scss';
@@ -8,6 +7,7 @@ import { AuthorizationScopes } from '@entities/Jwt';
 import { usePost } from '@lib/posts';
 import { useUser } from '@lib/user';
 import { trimTime } from '@utils/date';
+import { useTranslation } from '@utils/translation';
 
 export const Editor: FC<{ id: string; setIsMutating: (isMutating: boolean) => void }> = ({
   id,
@@ -27,7 +27,7 @@ export const Editor: FC<{ id: string; setIsMutating: (isMutating: boolean) => vo
       e.preventDefault();
       await save();
     },
-    [save]
+    [save],
   );
 
   if (!post || !user) return null;

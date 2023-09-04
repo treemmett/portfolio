@@ -1,4 +1,3 @@
-import { useTranslation } from 'next-i18next';
 import { ChangeEvent, FC, FormEventHandler, useCallback, useMemo, useState } from 'react';
 import { Button } from './Button';
 import { Input } from './Input';
@@ -7,6 +6,7 @@ import styles from './Welcome.module.scss';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { useUser, usernameAvailable } from '@lib/user';
 import { debounce } from '@utils/debounce';
+import { useTranslation } from '@utils/translation';
 
 export const Welcome: FC = () => {
   const { t } = useTranslation();
@@ -18,7 +18,7 @@ export const Welcome: FC = () => {
       e.preventDefault();
       save();
     },
-    [save]
+    [save],
   );
 
   const debouncedCheckUsername = useMemo(
@@ -29,7 +29,7 @@ export const Welcome: FC = () => {
         const available = await usernameAvailable(username);
         setNameAvailable(available);
       }, 1000),
-    []
+    [],
   );
 
   const update = useCallback(
@@ -40,7 +40,7 @@ export const Welcome: FC = () => {
       setNameAvailable(undefined);
       debouncedCheckUsername(e.currentTarget.value);
     },
-    [debouncedCheckUsername, setUser, user]
+    [debouncedCheckUsername, setUser, user],
   );
 
   if (!user) return null;

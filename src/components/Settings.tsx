@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import { GetStaticProps } from 'next';
-import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { ChangeEvent, FC, FormEventHandler, useCallback, useEffect, useState } from 'react';
 import { Modal } from './Modal';
@@ -11,6 +10,7 @@ import { WatermarkPosition } from '@entities/WatermarkPosition';
 import { usePhotoStats } from '@lib/photoStats';
 import { useSite } from '@lib/site';
 import { formatBytes } from '@utils/bytes';
+import { useTranslation } from '@utils/translation';
 
 export const getStaticProps: GetStaticProps = async () => ({
   props: {
@@ -36,7 +36,7 @@ export const Settings: FC = () => {
       await save();
       closeModal();
     },
-    [closeModal, save]
+    [closeModal, save],
   );
 
   const [open, setOpen] = useState(query.settings === 'true');
