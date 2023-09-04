@@ -1,7 +1,6 @@
 import { GetStaticProps, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { Meta } from '@components/Meta';
-import { Nav } from '@components/Nav';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
@@ -38,8 +37,6 @@ export const Home: NextPage = () => {
   return (
     <>
       <Meta />
-
-      <Nav />
 
       {hasPermission(AuthorizationScopes.post) && <DynamicUploadManager />}
     </>

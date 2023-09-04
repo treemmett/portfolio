@@ -5,8 +5,12 @@ import { X } from 'react-feather';
 import { ScrollLock } from '@components/ScrollLock';
 import { getPost } from '@lib/getPost';
 
-export default async function GalleryPostPage({ params }: { params: { postId: string } }) {
-  const post = await getPost(params.postId, 'tregan');
+export default async function GalleryPostPage({
+  params,
+}: {
+  params: { postId: string; username: string };
+}) {
+  const post = await getPost(params.postId, params.username);
 
   if (!post || !post.photo || !post.photo.url) return notFound();
 
