@@ -10,32 +10,26 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
   if (!post || !post.photo || !post.photo.url) return notFound();
 
   return (
-    <div className={styles.photo}>
-      <Image
-        alt={post.title || post.created.toISOString()}
-        blurDataURL={post.photo.thumbnailURL}
-        className={classNames(styles.img, styles.overlay)}
-        height={post.photo.height}
-        placeholder="blur"
-        sizes={new Array(12)
-          .fill(null)
-          .map((_, i) => `(max-width: ${(i + 1) * 260}px) ${Math.floor(100 / (i + 1))}vw`)
-          .join(', ')}
-        src={post.photo.url}
-        width={post.photo.width}
-        priority
-      />
-      <Image
-        alt={post.title || post.created.toISOString()}
-        blurDataURL={post.photo.thumbnailURL}
-        className={styles.img}
-        height={post.photo.height}
-        placeholder="blur"
-        sizes="95w"
-        src={post.photo.url}
-        width={post.photo.width}
-        priority
-      />
+    <div className={styles.overlay}>
+      <div
+        className={styles.photo}
+        style={{
+          aspectRatio: `auto ${post.photo.width} / ${post.photo.height}`,
+          height: post.photo.height,
+          width: post.photo.width,
+        }}
+      >
+        <Image
+          alt={post.title || post.created.toISOString()}
+          blurDataURL={post.photo.thumbnailURL}
+          className={classNames(styles.img)}
+          height={post.photo.height}
+          placeholder="blur"
+          src={post.photo.url}
+          width={post.photo.width}
+          priority
+        />
+      </div>
     </div>
   );
 }
