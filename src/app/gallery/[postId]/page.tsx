@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { ScrollLock } from '@components/ScrollLock';
 import { getPost } from '@lib/getPost';
 
 export default async function GalleryPostPage({ params }: { params: { postId: string } }) {
@@ -9,6 +10,7 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
 
   return (
     <div className="fixed w-screen h-screen p-2">
+      <ScrollLock />
       <div
         className="max-w-full max-h-full bg-contain object-contain"
         style={{
