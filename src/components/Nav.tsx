@@ -1,18 +1,13 @@
 import classNames from 'classnames';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import React from 'react';
 import { Anchor } from './Anchor';
 import styles from './Nav.module.scss';
-import { useSite } from '@lib/site';
-import { useUser } from '@lib/user';
+import { getSite } from '@lib/getSite';
 import { useTranslation } from '@utils/translation';
 
-export const Nav: FC<{ className?: string }> = ({ className }) => {
+export async function Nav({ className }: { className?: string }) {
+  const site = await getSite();
   const { t } = useTranslation();
-  const { site } = useSite();
-  const { isLoggingIn, login, logout, user } = useUser();
-  const { query } = useRouter();
 
   return (
     <header className={classNames(styles.nav, className)}>
@@ -43,30 +38,8 @@ export const Nav: FC<{ className?: string }> = ({ className }) => {
             LinkedIn
           </Anchor>
         )}
-        {user ? (
-          <>
-            {site?.owner.id === user.id ? (
-              <Link href={{ query: { ...query, settings: true } }} shallow>
-                {t('Settings')}
-              </Link>
-            ) : (
-              <Link
-                href={{ pathname: '/u/[username]', query: { username: user.username } }}
-                shallow
-              >
-                {t('My Site')}
-              </Link>
-            )}
-            <button onClick={() => logout()} type="button">
-              {t('Logout')}
-            </button>
-          </>
-        ) : (
-          <button disabled={isLoggingIn} onClick={() => login()} type="button">
-            {isLoggingIn ? `${t('Logging in')}...` : t('Login')}
-          </button>
-        )}
+        <button type="button">{t('Login')}</button>
       </nav>
     </header>
   );
-};
+}

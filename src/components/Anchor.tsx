@@ -1,3 +1,5 @@
+'use client';
+
 import cx from 'classnames';
 import { FC, PropsWithChildren } from 'react';
 import styles from './Button.module.scss';
