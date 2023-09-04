@@ -1,5 +1,5 @@
 export enum PhotoType {
-  ORIGINAL,
-  LOGO,
-  FAVICON,
+  ORIGINAL = 'ORIGINAL',
+  LOGO = 'LOGO',
+  FAVICON = 'FAVICON',
 }

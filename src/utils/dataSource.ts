@@ -21,6 +21,7 @@ import { postPhotoCascade1680020863290 } from 'src/migrations/1680020863290-post
 import { siteLogoCascade1680021401636 } from 'src/migrations/1680021401636-siteLogoCascade';
 import { watermark1680031902838 } from 'src/migrations/1680031902838-watermark';
 import { gpsMarker1680819562321 } from 'src/migrations/1680819562321-gpsMarker';
+import { enumRename1693817754134 } from 'src/migrations/1693817754134-enumRename';
 
 export const AppDataSource = new DataSource({
   database: Config.DB_DATABASE,
@@ -42,6 +43,7 @@ export const AppDataSource = new DataSource({
     siteLogoCascade1680021401636,
     watermark1680031902838,
     gpsMarker1680819562321,
+    enumRename1693817754134,
   ],
   password: Config.DB_PASSWORD,
   port: Config.DB_PORT,
