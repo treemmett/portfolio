@@ -1,4 +1,4 @@
-/* cspell:dictionaries fr-fr, et-ee, de-de, sv */
+/* cspell:disable */
 
 describe('locales', () => {
   it('displays german', () => {
