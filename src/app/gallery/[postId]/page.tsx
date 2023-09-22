@@ -19,7 +19,7 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
         </Link>
       </div>
       <div
-        className="max-w-full max-h-full bg-contain object-contain"
+        className="max-w-full max-h-full"
         style={{
           aspectRatio: `auto ${post.photo.width} / ${post.photo.height}`,
           height: post.photo.height,
@@ -29,7 +29,7 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
         <Image
           alt={post.title || post.created.toISOString()}
           blurDataURL={post.photo.thumbnailURL}
-          className="max-w-full max-h-full bg-contain object-contain"
+          className="max-w-full max-h-full !bg-contain object-contain"
           height={post.photo.height}
           placeholder="blur"
           src={post.photo.url}
