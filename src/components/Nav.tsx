@@ -5,8 +5,8 @@ import styles from './Nav.module.scss';
 import { getSite } from '@lib/getSite';
 import { useTranslation } from '@utils/translation';
 
-export async function Nav({ className, username }: { className?: string; username: string }) {
-  const site = await getSite(username);
+export async function Nav({ className }: { className?: string }) {
+  const site = await getSite();
   const { t } = useTranslation();
 
   return (

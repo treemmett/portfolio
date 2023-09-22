@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 import styles from './map.module.scss';
+import { Nav } from '@components/Nav';
 import { GPSMarker } from '@entities/GPSMarker';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { Site } from '@entities/Site';
@@ -101,6 +102,8 @@ const Map: NextPage = () => {
 
   return (
     <>
+      <Nav className={styles.nav} />
+
       <div className={styles.map} ref={mapContainer} />
 
       {hasPermission(AuthorizationScopes.post) && <DynamicGPSCheckIn map={map.current} />}
