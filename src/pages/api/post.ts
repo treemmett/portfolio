@@ -6,6 +6,7 @@ import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
 import { User } from '@entities/User';
 import { nextConnect } from '@middleware/nextConnect';
+import { Config } from '@utils/config';
 import { logger } from '@utils/logger';
 import { i18nRevalidate } from '@utils/revalidate';
 
@@ -24,7 +25,7 @@ export default nextConnect()
         const site = await Site.getByDomain(req.headers.host);
         posts = await Post.getAllFromUser(site.owner.username);
       } else {
-        posts = await Post.getAllFromUser('tregan');
+        posts = await Post.getAllFromUser(Config.DEFAULT_USER);
       }
 
       res.send(posts);

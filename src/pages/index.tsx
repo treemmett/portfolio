@@ -10,6 +10,7 @@ import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
 import { useUser } from '@lib/user';
 import { connectToDatabase } from '@middleware/database';
+import { Config } from '@utils/config';
 
 const DynamicUploadManager = dynamic(() =>
   import('@components/ApiManager').then((mod) => mod.ApiManager)
@@ -19,9 +20,9 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   await connectToDatabase();
 
   const [site, posts] = await Promise.all([
-    Site.getByUsername('tregan'),
+    Site.getByUsername(Config.DEFAULT_USER),
 
-    Post.getAllFromUser('tregan'),
+    Post.getAllFromUser(Config.DEFAULT_USER),
   ]);
 
   return {

@@ -19,7 +19,7 @@ import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   await connectToDatabase();
 
-  const site = await Site.getByUsername('tregan');
+  const site = await Site.getByUsername(Config.DEFAULT_USER);
 
   const markers = await GPSMarker.getAllForSite(site);
 
