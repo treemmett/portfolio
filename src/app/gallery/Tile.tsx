@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
-import styles from './Tile.module.scss';
 
 export interface TileProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,7 +18,7 @@ export const Tile: FC<TileProps> = ({ post, priority }) => {
       <Image
         alt={label}
         blurDataURL={post.photo.thumbnailURL}
-        className={styles.tile}
+        className="block w-full h-auto mb-4 select-none"
         height={post.photo.height}
         placeholder="blur"
         priority={priority}
