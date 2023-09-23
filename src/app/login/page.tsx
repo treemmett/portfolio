@@ -22,13 +22,13 @@ export default nextConnect().get(
 
       const result = await jwtVerify(
         req.query.state as string,
-        new TextEncoder().encode(Config.JWT_SECRET)
+        new TextEncoder().encode(Config.JWT_SECRET),
       );
 
       if (result.payload.iss && result.payload.iss !== req.headers.host) {
         const site = await Site.getByDomain(result.payload.iss);
         const url = new URL(
-          `${Config.NODE_ENV === 'production' ? 'https' : 'http'}://${site.domain}/api/login/oauth`
+          `${Config.NODE_ENV === 'production' ? 'https' : 'http'}://${site.domain}/api/login/oauth`,
         );
         url.searchParams.set('code', req.query.code as string);
         url.searchParams.set('state', req.query.state as string);
@@ -37,7 +37,7 @@ export default nextConnect().get(
       }
 
       const { accessToken, expiration, signature } = await User.authorizeGitHub(
-        req.query.code as string
+        req.query.code as string,
       );
 
       res.setHeader(
@@ -46,11 +46,11 @@ export default nextConnect().get(
           expires: expiration,
           httpOnly: true,
           path: '/',
-        })
+        }),
       );
 
       const url = new URL(
-        `${Config.NODE_ENV === 'production' ? 'https' : 'http'}://${req.headers.host}/login`
+        `${Config.NODE_ENV === 'production' ? 'https' : 'http'}://${req.headers.host}/login`,
       );
       url.searchParams.append('accessToken', accessToken);
       res.redirect(307, url.toString());
@@ -75,9 +75,9 @@ export default nextConnect().get(
     url.searchParams.append('client_id', Config.NEXT_PUBLIC_GITHUB_CLIENT_ID);
     url.searchParams.append(
       'state',
-      await stateToken.sign(new TextEncoder().encode(Config.JWT_SECRET))
+      await stateToken.sign(new TextEncoder().encode(Config.JWT_SECRET)),
     );
 
     res.redirect(307, url.toString());
-  }
+  },
 );
