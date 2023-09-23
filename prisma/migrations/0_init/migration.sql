@@ -1,4 +1,8 @@
--- cspell:word datasource autoincrement eedea ffaf fcec eccb dfde srid srtext dbgenerated watermarkposition 
+-- cspell:word datasource autoincrement eedea ffaf fcec eccb dfde ossp postgis srid srtext dbgenerated watermarkposition 
+CREATE EXTENSION IF NOT EXISTS Postgis;
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- CreateEnum
 CREATE TYPE "photos_type_enum" AS ENUM ('ORIGINAL', 'LOGO', 'FAVICON');
 

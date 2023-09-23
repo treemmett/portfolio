@@ -16,7 +16,8 @@ model GpsMarker {
   created    DateTime                 @default(now()) @db.Timestamp(6)
   updated    DateTime                 @default(now()) @db.Timestamp(6)
   date       DateTime                 @db.Timestamp(6)
-  coordinate Unsupported("geography")
+  latitude   Float
+  longitude  Float
   country    String                   @db.VarChar(2)
   city       String                   @db.VarChar
   ownerId    String                   @db.Uuid
