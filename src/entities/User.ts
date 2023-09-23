@@ -73,7 +73,7 @@ export class User extends BaseEntity {
         client_secret: Config.GITHUB_CLIENT_SECRET,
         code,
       },
-      { headers: { Accept: 'application/json' }, validateStatus: () => true }
+      { headers: { Accept: 'application/json' }, validateStatus: () => true },
     );
 
     if (authResponse.status !== 200 || 'error' in authResponse.data) {
@@ -143,12 +143,12 @@ export class User extends BaseEntity {
       try {
         const result = await jwtVerify(
           match[1] + signature,
-          new TextEncoder().encode(Config.JWT_SECRET)
+          new TextEncoder().encode(Config.JWT_SECRET),
         );
 
         jwt = result.payload as unknown as Jwt;
       } catch {
-        throw new BadAccessTokenError();
+        throw new BadAccessTokenError(signature);
       }
 
       if (!scopes.every((s) => jwt.scp.includes(s))) {

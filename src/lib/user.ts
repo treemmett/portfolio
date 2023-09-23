@@ -37,7 +37,7 @@ export function useUser() {
       if (!data) return false;
       return perms.every((p) => data.scopes.includes(p));
     },
-    [data]
+    [data],
   );
 
   const { trigger: login, isMutating: isLoggingIn } = useSWRMutation<IUser | null, APIError>(
@@ -48,7 +48,7 @@ export function useUser() {
       const popup = window.open(
         '/api/login/oauth',
         'oauth',
-        `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`
+        `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`,
       );
 
       return new Promise<IUser | null>((res) => {
@@ -61,8 +61,12 @@ export function useUser() {
         }, 100);
 
         const messageHandler = async (
-          event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>
+          event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>,
         ) => {
+          if (!['OAUTH_ERROR', 'OAUTH_CODE'].includes(event.data.type)) {
+            return;
+          }
+
           if (event.origin !== window.location.origin) {
             trace('login-failed', {
               type: 'cross-origin',
@@ -91,7 +95,7 @@ export function useUser() {
 
         window.addEventListener('message', messageHandler);
       });
-    }
+    },
   );
 
   const { trigger: logout } = useSWRMutation<IUser | null, APIError>(
@@ -103,7 +107,7 @@ export function useUser() {
     {
       populateCache: () => null,
       revalidate: false,
-    }
+    },
   );
 
   const { trigger: save, isMutating: isSaving } = useSWRMutation<IUser | null, APIError>(
@@ -119,7 +123,7 @@ export function useUser() {
 
       return response.data.user;
     },
-    { populateCache: (result) => result, revalidate: false }
+    { populateCache: (result) => result, revalidate: false },
   );
 
   return {

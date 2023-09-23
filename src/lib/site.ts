@@ -45,7 +45,7 @@ export function useSite() {
       const response = await apiClient.patch<ISite>('/site', site);
       return response.data;
     },
-    { populateCache: (s) => s, revalidate: false }
+    { populateCache: (s) => s, revalidate: false },
   );
 
   return {

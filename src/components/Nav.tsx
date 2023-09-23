@@ -2,12 +2,11 @@ import classNames from 'classnames';
 import React from 'react';
 import { Anchor } from './Anchor';
 import styles from './Nav.module.scss';
+import { UserButton } from './UserButton';
 import { getSite } from '@lib/getSite';
-import { useTranslation } from '@utils/translation';
 
 export async function Nav({ className }: { className?: string }) {
   const site = await getSite();
-  const { t } = useTranslation();
 
   return (
     <header className={classNames(styles.nav, className)}>
@@ -38,7 +37,7 @@ export async function Nav({ className }: { className?: string }) {
             LinkedIn
           </Anchor>
         )}
-        <button type="button">{t('Login')}</button>
+        <UserButton site={site} />
       </nav>
     </header>
   );

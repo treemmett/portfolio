@@ -50,8 +50,8 @@ export default nextConnect()
           expires: expiration,
           httpOnly: true,
           path: '/',
-        })
+        }),
       );
       res.send({ accessToken, user: req.user });
-    }
+    },
   );
