@@ -21,7 +21,8 @@ export class Config {
 
   public static JWT_SECRET = process.env.JWT_SECRET || 'hello';
 
-  public static NEXT_PUBLIC_GITHUB_CLIENT_ID?: string = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
+  public static NEXT_PUBLIC_GITHUB_CLIENT_ID: string = process.env
+    .NEXT_PUBLIC_GITHUB_CLIENT_ID as string;
 
   public static NEXT_PUBLIC_MAPBOX_TOKEN?: string = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 

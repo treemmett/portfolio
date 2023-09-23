@@ -20,6 +20,7 @@
     "experimentalDecorators": true,
     "baseUrl": "./",
     "paths": {
+      "@app/*": ["src/app/*"],
       "@components/*": ["src/components/*"],
       "@entities/*": ["src/entities/*"],
       "@icons/*": ["src/icons/*"],

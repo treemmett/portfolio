@@ -3,7 +3,7 @@ import './global.scss';
 import { Josefin_Sans as JosefinSans } from '@next/font/google';
 import { FC, PropsWithChildren } from 'react';
 
-const josefin = JosefinSans({ subsets: ['latin'], weight: ['300', '400'] });
+const josefin = JosefinSans({ subsets: ['latin'], weight: ['300', '400', '700'] });
 
 const RootLayout: FC<PropsWithChildren> = ({ children }) => (
   <html lang="en">

@@ -5,6 +5,9 @@ const IS_VERCEL = typeof process.env.VERCEL !== 'undefined';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: true,
+  },
   images: {
     domains: [
       !IS_VERCEL && '127.0.0.1',
@@ -18,7 +21,6 @@ const nextConfig = {
     ].filter(Boolean),
   },
   productionBrowserSourceMaps: true,
-  reactStrictMode: true,
   serverRuntimeConfig: {
     root: __dirname,
   },

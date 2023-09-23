@@ -1,28 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { ACCESS_TOKEN_STORAGE_KEY, AuthorizationScopes } from '@entities/Jwt';
+import { AuthorizationScopes } from '@entities/Jwt';
 import type { IUser } from '@entities/User';
-import { OAuthCloseMessage, OAuthErrorMessage, OAuthSuccessMessage } from '@pages/login';
 import { trace } from '@utils/analytics';
 import { apiClient } from '@utils/apiClient';
-import {
-  APIError,
-  BadCrossOriginError,
-  OAuthHandshakeError,
-  UnauthenticatedError,
-} from '@utils/errors';
+import { APIError, UnauthenticatedError } from '@utils/errors';
 
 async function getUser(): Promise<IUser | null> {
-  const token = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
-
-  if (!token) return null;
-
-  const { data } = await apiClient.get<IUser>('/user', {
-    headers: {
-      authorization: `Bearer ${token}`,
-    },
-  });
+  const { data } = await apiClient.get<IUser>('/user');
 
   return data;
 }
@@ -45,63 +31,20 @@ export function useUser() {
     async () => {
       trace('begin-login');
 
-      const popup = window.open(
-        '/api/login/oauth',
+      window.open(
+        '/login',
         'oauth',
         `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`,
       );
 
-      return new Promise<IUser | null>((res) => {
-        const intervalId = setInterval(() => {
-          if (!popup || popup.closed) {
-            trace('login-closed');
-            clearInterval(intervalId);
-            res(null);
-          }
-        }, 100);
-
-        const messageHandler = async (
-          event: MessageEvent<OAuthSuccessMessage | OAuthErrorMessage>,
-        ) => {
-          if (!['OAUTH_ERROR', 'OAUTH_CODE'].includes(event.data.type)) {
-            return;
-          }
-
-          if (event.origin !== window.location.origin) {
-            trace('login-failed', {
-              type: 'cross-origin',
-            });
-            throw new BadCrossOriginError();
-          }
-
-          clearInterval(intervalId);
-
-          event.source?.postMessage({
-            type: 'OAUTH_CLOSE',
-          } as OAuthCloseMessage);
-
-          window.removeEventListener('message', messageHandler);
-
-          if (event.data.type === 'OAUTH_ERROR') {
-            throw new OAuthHandshakeError();
-          }
-
-          if (event.data.type === 'OAUTH_CODE') {
-            trace('login-granted');
-            localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, event.data.payload);
-            res(await getUser());
-          }
-        };
-
-        window.addEventListener('message', messageHandler);
-      });
+      return null;
     },
   );
 
   const { trigger: logout } = useSWRMutation<IUser | null, APIError>(
     'user',
     async () => {
-      localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+      alert('shit still broken');
       return null;
     },
     {
@@ -118,8 +61,6 @@ export function useUser() {
       const response = await apiClient.patch<{ user: IUser; accessToken: string }>('/user', {
         username: user?.username,
       });
-
-      localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, response.data.accessToken);
 
       return response.data.user;
     },

@@ -132,17 +132,16 @@ export class User extends BaseEntity {
 
   public static authorize(...scopes: AuthorizationScopes[]) {
     const middleware: ApiMiddleware = async (req, res, next) => {
-      const signature = req.cookies['xsrf-token'];
-      const match = /^Bearer (\S+)/i.exec(req.headers.authorization || '');
+      const { accessToken, signature } = req.cookies;
 
-      if (!signature || !match || !match[1]) {
+      if (!signature || !accessToken) {
         throw new UnauthenticatedError();
       }
 
       let jwt: Jwt;
       try {
         const result = await jwtVerify(
-          match[1] + signature,
+          accessToken + signature,
           new TextEncoder().encode(Config.JWT_SECRET),
         );
 
@@ -151,12 +150,12 @@ export class User extends BaseEntity {
         throw new BadAccessTokenError(signature);
       }
 
-      if (!scopes.every((s) => jwt.scp.includes(s))) {
+      if (!scopes.every((s) => jwt.scp?.includes(s))) {
         throw new UnauthorizedError();
       }
 
       // skip db lookup if user is pending an onboard
-      if (jwt.scp.includes(AuthorizationScopes.onboard)) {
+      if (jwt.scp?.includes(AuthorizationScopes.onboard)) {
         logger.trace('Onboarding user, skipping db lookup');
         req.user = new User();
         req.user.id = jwt.sub;
