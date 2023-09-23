@@ -4,7 +4,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { GpsMarker } from '@prisma/client';
 import { LngLat, LngLatBounds, Map as Mapbox, Marker } from 'mapbox-gl';
 import { FC, useEffect, useRef } from 'react';
-import styles from './map.module.scss';
 import { Config } from '@utils/config';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
 
@@ -66,7 +65,7 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
     };
   }, [markers]);
 
-  return <div className={styles.map} ref={mapContainer} />;
+  return <div className="h-screen" ref={mapContainer} />;
 };
 
 export default Map;
