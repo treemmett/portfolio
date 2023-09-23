@@ -23,12 +23,6 @@ model GpsMarker {
   sites      Site                    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7cce4c3c533871d1a20010213be")
 }
 
-model migrations {
-  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
-  timestamp BigInt
-  name      String @db.VarChar
-}
-
 model Photo {
   @@map("photos")
 
