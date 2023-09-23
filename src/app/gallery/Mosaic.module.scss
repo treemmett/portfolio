@@ -1,19 +1,7 @@
-@use '../../components/Nav.module' as nav;
-
 .mosaic {
-  padding: 1rem;
-  gap: 1rem;
-
   @for $i from 1 through 12 {
-    @media screen and (min-width: $i * 260px) {
+    @media screen and (min-width: #{$i * 260px}) {
       columns: $i;
     }
   }
-}
-
-.placeholder {
-  display: flex;
-  height: calc(100vh - nav.$height);
-  align-items: center;
-  justify-content: center;
 }
