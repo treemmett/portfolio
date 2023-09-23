@@ -1,12 +1,12 @@
 'use client';
 
-import { sites } from '@prisma/client';
+import { Site } from '@prisma/client';
 import Link from 'next/link';
 import { FC } from 'react';
 import { useUser } from '@lib/user';
 import { useTranslation } from '@utils/translation';
 
-export const UserButton: FC<{ site?: sites | null }> = ({ site }) => {
+export const UserButton: FC<{ site?: Site | null }> = ({ site }) => {
   const { isLoggingIn, login, logout, user } = useUser();
   const { t } = useTranslation();
 

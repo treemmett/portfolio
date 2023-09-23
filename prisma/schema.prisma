@@ -9,7 +9,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model gps_markers {
+model GpsMarker {
+  @@map("gps_markers")
+
   id         String                   @id(map: "PK_c244f86d053d66d22ed6d19f7cd") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created    DateTime                 @default(now()) @db.Timestamp(6)
   updated    DateTime                 @default(now()) @db.Timestamp(6)
@@ -18,7 +20,7 @@ model gps_markers {
   country    String                   @db.VarChar(2)
   city       String                   @db.VarChar
   ownerId    String                   @db.Uuid
-  sites      sites                    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7cce4c3c533871d1a20010213be")
+  sites      Site                    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7cce4c3c533871d1a20010213be")
 }
 
 model migrations {
@@ -27,7 +29,9 @@ model migrations {
   name      String @db.VarChar
 }
 
-model photos {
+model Photo {
+  @@map("photos")
+
   id                    String                  @id(map: "PK_5220c45b8e32d49d767b9b3d725") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   height                Int
   size                  Int
@@ -35,13 +39,15 @@ model photos {
   type                  photos_type_enum
   width                 Int
   ownerId               String                  @db.Uuid
-  user                  users                   @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_556eedea27ffaf50a4ee0c0a058")
-  post                  posts?
-  site                  sites?
-  sites_favicons_photos sites_favicons_photos[]
+  user                  User                   @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_556eedea27ffaf50a4ee0c0a058")
+  post                  Post?
+  site                  Site?
+  sites_favicons_photos SiteFaviconPhoto[]
 }
 
-model posts {
+model Post {
+  @@map("posts")
+
   id       String   @id(map: "PK_2829ac61eff60fcec60d7274b9e") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created  DateTime @default(now()) @db.Timestamp(6)
   location String?  @db.VarChar
@@ -49,11 +55,13 @@ model posts {
   title    String?  @db.VarChar
   photoId  String?  @unique(map: "REL_c0e6e8c4bd59e6e015fe7cb307") @db.Uuid
   ownerId  String   @db.Uuid
-  user     users    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_0e33434a2d18c89a149c8ad6d86")
-  photo    photos?  @relation(fields: [photoId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_c0e6e8c4bd59e6e015fe7cb307e")
+  user     User    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_0e33434a2d18c89a149c8ad6d86")
+  photo    Photo?  @relation(fields: [photoId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_c0e6e8c4bd59e6e015fe7cb307e")
 }
 
-model sites {
+model Site {
+  @@map("sites")
+
   id                    String                        @id(map: "PK_4f5eccb1dfde10c9170502595a7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   description           String?                       @db.VarChar
   name                  String?                       @db.VarChar
@@ -68,17 +76,19 @@ model sites {
   domain                String?                       @unique(map: "IDX_4578b679503e1b86cc1c2531b9")
   logoId                String?                       @unique(map: "UQ_30a2845f272f4b824a171ecd3be") @db.Uuid
   watermarkPosition     sites_watermarkposition_enum?
-  gps_markers           gps_markers[]
-  photos                photos?                       @relation(fields: [logoId], references: [id], onUpdate: NoAction, map: "FK_30a2845f272f4b824a171ecd3be")
-  users                 users                         @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b00408635dde2a3b0cb6e57de17")
-  sites_favicons_photos sites_favicons_photos[]
+  gps_markers           GpsMarker[]
+  photos                Photo?                       @relation(fields: [logoId], references: [id], onUpdate: NoAction, map: "FK_30a2845f272f4b824a171ecd3be")
+  users                 User                         @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b00408635dde2a3b0cb6e57de17")
+  sites_favicons_photos SiteFaviconPhoto[]
 }
 
-model sites_favicons_photos {
+model SiteFaviconPhoto {
+  @@map("sites_favicons_photos")
+
   sitesId  String @db.Uuid
   photosId String @db.Uuid
-  sites    sites  @relation(fields: [sitesId], references: [id], onDelete: SetNull, map: "FK_644cbd25b5502c11c9a4f4c37a4")
-  photos   photos @relation(fields: [photosId], references: [id], onDelete: Cascade, map: "FK_9266cd2ed6671dd63050807ddc8")
+  sites    Site  @relation(fields: [sitesId], references: [id], onDelete: SetNull, map: "FK_644cbd25b5502c11c9a4f4c37a4")
+  photos   Photo @relation(fields: [photosId], references: [id], onDelete: Cascade, map: "FK_9266cd2ed6671dd63050807ddc8")
 
   @@id([sitesId, photosId], map: "PK_0c1914a234ab0a8474933f67af3")
   @@index([sitesId], map: "IDX_644cbd25b5502c11c9a4f4c37a")
@@ -94,13 +104,15 @@ model spatial_ref_sys {
   proj4text String? @db.VarChar(2048)
 }
 
-model users {
+model User {
+  @@map("users")
+
   id       String   @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   githubId Int?     @unique(map: "IDX_42148de213279d66bf94b363bf")
   username String   @unique(map: "IDX_fe0bb3f6520ee0469504521e71") @db.VarChar
-  photos   photos[]
-  posts    posts[]
-  sites    sites?
+  photos   Photo[]
+  posts    Post[]
+  sites    Site?
 }
 
 enum photos_type_enum {

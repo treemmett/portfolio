@@ -130,7 +130,7 @@ export class Post extends BaseEntity {
   }
 
   public static async getAllFromUser(username: string): Promise<Post[]> {
-    const posts = await prisma.posts.findMany({
+    const posts = await prisma.post.findMany({
       include: { photo: true, user: true },
       where: { user: { username } },
     });

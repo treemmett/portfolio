@@ -2,7 +2,7 @@ import { Config } from '@utils/config';
 import { prisma } from '@utils/prisma';
 
 export async function getPost(id: string, username: string) {
-  const post = await prisma.posts.findFirst({
+  const post = await prisma.post.findFirst({
     include: { photo: true, user: true },
     where: { id, user: { username } },
   });
