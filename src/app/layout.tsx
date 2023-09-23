@@ -7,7 +7,7 @@ const josefin = JosefinSans({ subsets: ['latin'], weight: ['300', '400'] });
 
 const RootLayout: FC<PropsWithChildren> = ({ children }) => (
   <html lang="en">
-    <body className="bg-white dark:bg-black">
+    <body className="bg-white text-black dark:bg-black dark:text-white">
       <main className={josefin.className}>{children}</main>
     </body>
   </html>
