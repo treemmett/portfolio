@@ -28,7 +28,7 @@
   "dependencies": {
     "@next/bundle-analyzer": "^13.2.4",
     "@next/font": "^13.3.0",
-    "@prisma/client": "^5.2.0",
+    "@prisma/client": "^5.3.1",
     "@types/cookie": "^0.5.1",
     "@types/mapbox-gl": "^2.7.6",
     "@types/react": "^18.2.21",
@@ -57,7 +57,7 @@
     "pg": "^8.10.0",
     "pino": "^8.11.0",
     "pino-http": "^8.3.3",
-    "prisma": "^5.2.0",
+    "prisma": "^5.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.10",
