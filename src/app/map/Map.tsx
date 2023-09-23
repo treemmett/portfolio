@@ -1,48 +1,16 @@
+'use client';
+
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { LngLat, LngLatBounds, LngLatLike, Map as Mapbox, Marker } from 'mapbox-gl';
-import { GetStaticProps, NextPage } from 'next';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import { useEffect, useRef } from 'react';
+import { GpsMarker } from '@prisma/client';
+import { LngLat, LngLatBounds, Map as Mapbox, Marker } from 'mapbox-gl';
+import { FC, useEffect, useRef } from 'react';
 import styles from './map.module.scss';
-import { Nav } from '@components/Nav';
-import { GPSMarker } from '@entities/GPSMarker';
-import { AuthorizationScopes } from '@entities/Jwt';
-import { Site } from '@entities/Site';
-import { useMarkers } from '@lib/markers';
-import { useUser } from '@lib/user';
-import { connectToDatabase } from '@middleware/database';
 import { Config } from '@utils/config';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
 
-export const getStaticProps: GetStaticProps = async () => {
-  await connectToDatabase();
-
-  const site = await Site.getByUsername('tregan');
-
-  const markers = await GPSMarker.getAllForSite(site);
-
-  return {
-    props: {
-      fallback: {
-        [`markers/${site.owner.username}`]: JSON.parse(JSON.stringify(markers)),
-        site: JSON.parse(JSON.stringify(site)),
-      },
-    },
-    revalidate: 60,
-  };
-};
-
-const DynamicGPSCheckIn = dynamic(() =>
-  import('@components/GPSCheckIn').then((mod) => mod.GPSCheckIn),
-);
-
-const Map: NextPage = () => {
+const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<Mapbox>();
-  const { markers } = useMarkers();
-  const { hasPermission } = useUser();
-  const { query } = useRouter();
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -74,41 +42,31 @@ const Map: NextPage = () => {
       const { current } = map;
       placedMarkers.push(
         ...markers.map((marker) =>
-          new Marker().setLngLat(marker.coordinate.coordinates as [number, number]).addTo(current),
+          new Marker().setLngLat([marker.longitude, marker.latitude]).addTo(current),
         ),
       );
 
       const lastFourMarkers = markers.slice(0, 4);
 
-      if (!query.lng && !query.lat) {
-        if (lastFourMarkers.length >= 2) {
-          const lng = lastFourMarkers.map((m) => m.coordinate.coordinates[0]);
-          const lat = lastFourMarkers.map((m) => m.coordinate.coordinates[1]);
-          const sw = new LngLat(Math.min(...lng), Math.min(...lat));
-          const ne = new LngLat(Math.max(...lng), Math.max(...lat));
+      if (lastFourMarkers.length >= 2) {
+        const lng = lastFourMarkers.map((m) => m.longitude);
+        const lat = lastFourMarkers.map((m) => m.latitude);
+        const sw = new LngLat(Math.min(...lng), Math.min(...lat));
+        const ne = new LngLat(Math.max(...lng), Math.max(...lat));
 
-          map.current.fitBounds(new LngLatBounds(sw, ne), { padding: 100 });
-        } else if (lastFourMarkers.length === 1) {
-          map.current.setCenter(lastFourMarkers[0].coordinate.coordinates as LngLatLike);
-          map.current.zoomTo(5);
-        }
+        map.current.fitBounds(new LngLatBounds(sw, ne), { padding: 100 });
+      } else if (lastFourMarkers.length === 1) {
+        map.current.setCenter([lastFourMarkers[0].longitude, lastFourMarkers[0].latitude]);
+        map.current.zoomTo(5);
       }
     }
 
     return () => {
       placedMarkers?.forEach((m) => m.remove());
     };
-  }, [markers, query.lat, query.lng]);
+  }, [markers]);
 
-  return (
-    <>
-      <Nav className={styles.nav} />
-
-      <div className={styles.map} ref={mapContainer} />
-
-      {hasPermission(AuthorizationScopes.post) && <DynamicGPSCheckIn map={map.current} />}
-    </>
-  );
+  return <div className={styles.map} ref={mapContainer} />;
 };
 
 export default Map;
