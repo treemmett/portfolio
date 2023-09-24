@@ -1,10 +1,12 @@
+'use client';
+
 import axios, { AxiosProgressEvent } from 'axios';
 import cx from 'classnames';
 import { useRouter } from 'next/router';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { ulid } from 'ulid';
 import styles from './ApiManager.module.scss';
-import { Button } from './Button';
+import { Button } from '@components/Button';
 import type { UploadToken } from '@entities/Photo';
 import type { IPost } from '@entities/Post';
 import { ReactComponent as ChevronDown } from '@icons/chevron-down.svg';
@@ -92,12 +94,12 @@ export const ApiManager: FC = () => {
           }
 
           return acc;
-        }, [] as Promise<ApiRequest>[])
+        }, [] as Promise<ApiRequest>[]),
       );
 
       setRequests([...fileList, ...requests]);
     },
-    [push, requests, site?.owner.id, user]
+    [push, requests, site?.owner.id, user],
   );
 
   const dragHandler = useCallback((e: DragEvent) => {
@@ -185,7 +187,7 @@ export const ApiManager: FC = () => {
                 ];
               });
             },
-          }
+          },
         );
 
         addPost(data);
@@ -217,7 +219,7 @@ export const ApiManager: FC = () => {
         });
       }
     },
-    [addPost]
+    [addPost],
   );
 
   const [status, setStatus] = useState<'uploading' | 'complete' | 'error'>('uploading');
