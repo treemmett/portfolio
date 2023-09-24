@@ -14,8 +14,8 @@ import type { IPhoto } from '@entities/Photo';
 
 export interface InputProps
   extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+  error?: string;
   file?: File | IPhoto | null;
-  helperText?: string;
   label?: string;
   onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
   options?: { id: string; label: string }[];
@@ -32,8 +32,8 @@ export const Input: FC<InputProps> = ({
   checked,
   defaultValue,
   disabled,
+  error,
   file,
-  helperText,
   id,
   label,
   name,
@@ -73,7 +73,7 @@ export const Input: FC<InputProps> = ({
     >
       {label && (
         <label className={styles.label} htmlFor={realId}>
-          {helperText || label}
+          {label}
         </label>
       )}
       {type === 'select' && (
@@ -135,6 +135,7 @@ export const Input: FC<InputProps> = ({
           value={value}
         />
       )}
+      {error && <span className="text-red-500">{error}</span>}
     </label>
   );
 };
