@@ -69,14 +69,18 @@ export class Post extends BaseEntity {
     const id = v4();
 
     const postData: IPost = {
-      created: exifData.DateTimeOriginal || new Date(),
+      created: exifData?.DateTimeOriginal || new Date(),
       id,
       owner: user,
       photo,
       updated: new Date(),
     };
 
-    if (typeof exifData.latitude === 'number' && typeof exifData.longitude === 'number') {
+    if (
+      exifData &&
+      typeof exifData.latitude === 'number' &&
+      typeof exifData.longitude === 'number'
+    ) {
       const geoData = await geocode(exifData.longitude, exifData.latitude);
 
       if (geoData.city) {

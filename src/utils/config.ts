@@ -15,6 +15,8 @@ export class Config {
 
   public static DB_USERNAME = process.env.DB_USERNAME;
 
+  public static DEFAULT_USER = process.env.DEFAULT_USER || 'tregan';
+
   public static GITHUB_CLIENT_SECRET?: string = process.env.GITHUB_CLIENT_SECRET;
 
   public static GEOLOCATION_KEY = process.env.GEOLOCATION_KEY;
