@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import './global.scss';
-import { Josefin_Sans as JosefinSans } from '@next/font/google';
+import { Josefin_Sans as JosefinSans } from 'next/font/google';
 import { FC, PropsWithChildren } from 'react';
 
 const josefin = JosefinSans({ subsets: ['latin'], weight: ['300', '400', '700'] });

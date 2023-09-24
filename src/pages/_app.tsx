@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { Josefin_Sans as JosefinSans } from '@next/font/google';
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
+import { Josefin_Sans as JosefinSans } from 'next/font/google';
 import { FC } from 'react';
 import { SWRConfig } from 'swr';
 import './_app.scss';
