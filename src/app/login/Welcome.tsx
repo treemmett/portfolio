@@ -45,23 +45,11 @@ export const Welcome: FC = () => {
 
   if (!user) return null;
 
-  let helperText = '';
-  if (nameAvailable === true) {
-    helperText = t('That name is available!');
-  } else if (nameAvailable === false) {
-    helperText = t('That name is taken');
-  }
-
   return (
     <Modal canClose={false} open={hasPermission(AuthorizationScopes.onboard)}>
       <form className={styles.welcome} onSubmit={submitHandler}>
         <h1>{t('Welcome!')}</h1>
-        <Input
-          helperText={helperText}
-          label={t('Please enter a username')}
-          onChange={update}
-          value={user.username}
-        />
+        <Input label={t('Please enter a username')} onChange={update} value={user.username} />
         <Button disabled={isSaving || nameAvailable === false} type="success" submit>
           {isSaving ? `${t('Setting up account')}...` : t('Create account')}
         </Button>
