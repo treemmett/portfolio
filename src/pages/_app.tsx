@@ -13,8 +13,6 @@ const josefin = JosefinSans({ subsets: ['latin'], weight: ['300', '400'] });
 
 const DynamicSettings = dynamic(() => import('@components/Settings').then((mod) => mod.Settings));
 
-const DynamicWelcome = dynamic(() => import('@components/Welcome').then((mod) => mod.Welcome));
-
 const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const { hasPermission } = useUser();
 
@@ -27,8 +25,6 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         <Analytics />
 
         {hasPermission(AuthorizationScopes.post) && <DynamicSettings />}
-
-        {hasPermission(AuthorizationScopes.onboard) && <DynamicWelcome />}
       </main>
     </SWRConfig>
   );

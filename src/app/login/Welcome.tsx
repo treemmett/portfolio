@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, FormEventHandler, useCallback, useMemo, useState } from 'react';
-import { Button } from './Button';
-import { Input } from './Input';
-import { Modal } from './Modal';
+import { Button } from '../../components/Button';
+import { Input } from '../../components/Input';
+import { Modal } from '../../components/Modal';
 import styles from './Welcome.module.scss';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { useUser, usernameAvailable } from '@lib/user';
