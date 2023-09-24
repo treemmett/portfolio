@@ -10,19 +10,21 @@ export async function signAccessToken(
   const expiration = new Date();
   expiration.setDate(expiration.getDate() + Config.NODE_ENV === 'production' ? 1 : 365);
 
-  const scp = new Set<AuthorizationScopes>();
+  const scopeSet = new Set<AuthorizationScopes>(scopes);
 
   // onboarding users don't have any perms
   if (!scopes?.includes(AuthorizationScopes.onboard)) {
-    scp.add(AuthorizationScopes.delete);
-    scp.add(AuthorizationScopes.post);
+    scopeSet.add(AuthorizationScopes.delete);
+    scopeSet.add(AuthorizationScopes.post);
   }
 
   if (scopes) {
-    scopes.forEach((s) => scp.add(s));
+    scopes.forEach((s) => scopeSet.add(s));
   }
 
-  const token = await new SignJWT({ meta, scp: scopes })
+  const scp = [...scopeSet];
+
+  const token = await new SignJWT({ meta, scp })
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime(Math.floor(expiration.getTime() / 1000))
     .setSubject(id)
@@ -35,6 +37,7 @@ export async function signAccessToken(
   return {
     accessToken: accessTokenParts.join('.'),
     expiration,
+    scope: scp,
     signature,
   };
 }
