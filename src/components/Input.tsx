@@ -14,8 +14,6 @@ import type { IPhoto } from '@entities/Photo';
 
 export interface InputProps
   extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
-  /** remove spacing reserved for label */
-  collapseLabel?: boolean;
   file?: File | IPhoto | null;
   helperText?: string;
   label?: string;
@@ -32,7 +30,6 @@ function randomId() {
 export const Input: FC<InputProps> = ({
   className,
   checked,
-  collapseLabel,
   defaultValue,
   disabled,
   file,
@@ -74,7 +71,7 @@ export const Input: FC<InputProps> = ({
       className={cx(styles.wrapper, className, { [styles.inline]: type === 'checkbox' })}
       htmlFor={realId}
     >
-      {(!collapseLabel || label) && (
+      {label && (
         <label className={styles.label} htmlFor={realId}>
           {helperText || label}
         </label>
