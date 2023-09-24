@@ -18,7 +18,7 @@ export const UserButton: FC<{ site?: Site | null }> = ({ site }) => {
             {t('Settings')}
           </Link>
         ) : (
-          <Link href={{ pathname: '/u/[username]', query: { username: user.username } }} shallow>
+          <Link href={`/u/${encodeURIComponent(user.username)}`} shallow>
             {t('My Site')}
           </Link>
         )}
