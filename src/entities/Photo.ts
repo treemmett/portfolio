@@ -6,6 +6,7 @@ import { transformAndValidate } from 'class-transformer-validator';
 import { IsDataURI, IsEnum, IsInt, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
 import { parse as parseExif } from 'exifr';
 import { JWTPayload, SignJWT, jwtVerify } from 'jose';
+import sharp, { OutputInfo, Sharp } from 'sharp';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { PhotoType } from './PhotoType';
@@ -21,13 +22,6 @@ import {
 } from '@utils/errors';
 import { logger } from '@utils/logger';
 import { s3 } from '@utils/s3';
-
-// import sharp, { OutputInfo, Sharp } from 'sharp';
-function sharp(...args: any[]) {
-  return {} as Sharp;
-}
-type OutputInfo = any;
-type Sharp = any;
 
 const { CDN_URL, S3_BUCKET, S3_URL } = Config;
 

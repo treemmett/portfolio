@@ -2,10 +2,9 @@
 
 import axios, { AxiosProgressEvent } from 'axios';
 import cx from 'classnames';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { ulid } from 'ulid';
-import styles from './ApiManager.module.scss';
 import { Button } from '@components/Button';
 import type { UploadToken } from '@entities/Photo';
 import type { IPost } from '@entities/Post';
@@ -81,7 +80,7 @@ export const ApiManager: FC = () => {
       }
 
       if (site?.owner.id !== user.id) {
-        push({ pathname: '/u/[username]', query: { username: user.username } });
+        push(`/u/${encodeURIComponent(user.username)}`);
         return;
       }
 
@@ -244,31 +243,43 @@ export const ApiManager: FC = () => {
   if (!requests.length) return null;
 
   return (
-    <div className={styles.manager} data-testid="upload-manager">
-      <header className={styles.header}>
-        <span className={styles.status}>{status}</span>
-        <Button
-          className={styles['collapse-button']}
-          onClick={() => setCollapsed(!collapsed)}
-          size="small"
-          inverted
-        >
+    <div
+      className="fixed backdrop-blur-sm dark:bg-zinc-900/50 drop-shadow-lg overflow-hidden w-[calc(100%-1.5rem)] max-w-lg rounded-lg bottom-0 sm:bottom-3 left-3"
+      data-testid="upload-manager"
+    >
+      <header className="flex justify-between align-center p-4">
+        <span className="capitalize">{status}</span>
+        <Button onClick={() => setCollapsed(!collapsed)} size="small" inverted>
           {collapsed ? <ChevronUp /> : <ChevronDown />}
         </Button>
       </header>
-      <div className={cx(styles.list, { [styles.collapsed]: collapsed })}>
+      <div
+        className={cx(
+          'max-h-60 overflow-y-auto transition-[max-height] border-t border-black dark:border-white',
+          {
+            'max-h-0 border-t-0': collapsed,
+          },
+        )}
+      >
         {requests.map((r) => (
-          <div className={styles.item} key={r.id}>
+          <div
+            className="flex items-center p-4 border-t border-black dark:border-white first:border-0"
+            key={r.id}
+          >
             {r.thumbnailUrl && (
-              <img alt="Uploading thumbnail" className={styles.thumbnail} src={r.thumbnailUrl} />
+              <img
+                alt="Uploading thumbnail"
+                className="max-w-8 max-h-6 mr-4"
+                src={r.thumbnailUrl}
+              />
             )}
             {r.status === 'uploading' ? (
-              <span>{Math.floor(r.progress * 100)}%</span>
+              <span className="mx-0.5">{Math.floor(r.progress * 100)}%</span>
             ) : (
-              <span className={styles.status}>{r.status}</span>
+              <span className="mx-0.5 capitalize">{r.status}</span>
             )}
 
-            <span className={styles.name}>{r.name}</span>
+            <span className="ml-auto text-right">{r.name}</span>
           </div>
         ))}
       </div>

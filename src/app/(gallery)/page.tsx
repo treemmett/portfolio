@@ -1,3 +1,5 @@
+import { DynamicApiManager } from './DynamicApiManager';
+
 export default async function GalleryPage() {
-  return null;
+  return <DynamicApiManager />;
 }

@@ -1,6 +1,5 @@
-import { ParsedUrlQuery } from 'querystring';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutate from 'swr/mutation';
@@ -9,15 +8,15 @@ import type { ISite } from '@entities/Site';
 import { apiClient } from '@utils/apiClient';
 import { APIError } from '@utils/errors';
 
-function getKey(query: ParsedUrlQuery) {
-  return query.username ? `site/${encodeURIComponent(query.username as string)}` : 'site';
+function getKey(query: Record<string, string | string[]> | null) {
+  return query?.username ? `site/${encodeURIComponent(query.username as string)}` : 'site';
 }
 
 export function useSite() {
-  const { query } = useRouter();
+  const query = useParams();
 
   const { data, isLoading, error } = useSWR<ISite, APIError>(getKey(query), async () => {
-    const response = await apiClient.get<ISite>('/site', { params: { username: query.username } });
+    const response = await apiClient.get<ISite>('/site', { params: { username: query?.username } });
     return response.data;
   });
 
