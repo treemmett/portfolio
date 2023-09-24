@@ -19,21 +19,21 @@ export function scaleDimensions(
   h: number,
   scale: { h: number },
   constrainToElement?: HTMLElement | null,
-  padding?: number
+  padding?: number,
 ): [w: number, h: number];
 export function scaleDimensions(
   w: number,
   h: number,
   scale: { w: number },
   constrainToElement?: HTMLElement | null,
-  padding?: number
+  padding?: number,
 ): [w: number, h: number];
 export function scaleDimensions(
   w: number,
   h: number,
   scale: { h?: number; w?: number },
   constrainToElement?: HTMLElement | null,
-  padding = 0
+  padding = 0,
 ): [w: number, h: number] {
   let width = w;
   let height = h;

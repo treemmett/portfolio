@@ -10,7 +10,7 @@ export async function axiom(dataset: string, data: Record<string, unknown>): Pro
         headers: {
           authorization: `Bearer ${Config.AXIOM_TOKEN}`,
         },
-      }
+      },
     );
   }
 }

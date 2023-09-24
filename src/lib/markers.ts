@@ -38,13 +38,13 @@ export function useMarkers() {
         return [result, ...currentData];
       },
       revalidate: false,
-    }
+    },
   );
 
   const addMarker = useCallback(
     (marker: Pick<IMarker, 'city' | 'country' | 'date'> & { lng: number; lat: number }) =>
       trigger(marker),
-    [trigger]
+    [trigger],
   );
 
   return {

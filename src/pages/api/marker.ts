@@ -28,5 +28,5 @@ export default nextConnect()
       const site = await Site.getByUsername(req.user.username);
       const marker = await GPSMarker.checkIn(site, date, lat, lng, country, city);
       res.status(201).send(marker);
-    }
+    },
   );

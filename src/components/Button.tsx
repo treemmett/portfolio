@@ -43,7 +43,7 @@ export const Button: FC<ButtonProps> = ({
         [styles.success]: type === 'success',
         [styles.small]: size === 'small',
       },
-      className
+      className,
     )}
     data-testid={testId}
     disabled={disabled}

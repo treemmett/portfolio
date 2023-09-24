@@ -32,5 +32,5 @@ export default nextConnect()
       post.title = req.body.title;
       await post.save();
       res.send(post);
-    }
+    },
   );

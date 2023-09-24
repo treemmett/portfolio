@@ -3,6 +3,7 @@ import { join } from 'path';
 import { GetStaticProps, NextPage } from 'next';
 import getConfig from 'next/config';
 import { FC, PropsWithChildren } from 'react';
+// eslint-disable-next-line import/no-unresolved
 import { Resume as ResumeType } from 'resume';
 import styles from './resume.module.scss';
 import { Anchor } from '@components/Anchor';
@@ -145,11 +146,7 @@ const Resume: NextPage<ResumeProps> = ({ resume }) => (
             </Anchor>
           </h4>
           <h5>{work.position}</h5>
-          <ul>
-            {work.highlights?.map((highlight) => (
-              <li key={highlight}>{highlight}</li>
-            ))}
-          </ul>
+          <ul>{work.highlights?.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>
         </div>
       ))}
     </Section>

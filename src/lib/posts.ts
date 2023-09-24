@@ -30,7 +30,7 @@ export function usePosts() {
         return [result, ...currentData];
       },
       revalidate: false,
-    }
+    },
   );
 
   const addPost = useCallback((post: IPost) => trigger(post), [trigger]);
@@ -70,7 +70,7 @@ export function usePost(id: string) {
         return [...filteredData, result];
       },
       revalidate: false,
-    }
+    },
   );
 
   const {
@@ -91,7 +91,7 @@ export function usePost(id: string) {
         return [...filteredData];
       },
       revalidate: false,
-    }
+    },
   );
 
   return {

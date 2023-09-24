@@ -5,10 +5,10 @@ export class watermark1680031902838 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TYPE "public"."sites_watermarkposition_enum" AS ENUM('0', '1', '2', '3')`
+      `CREATE TYPE "public"."sites_watermarkposition_enum" AS ENUM('0', '1', '2', '3')`,
     );
     await queryRunner.query(
-      `ALTER TABLE "sites" ADD "watermarkPosition" "public"."sites_watermarkposition_enum"`
+      `ALTER TABLE "sites" ADD "watermarkPosition" "public"."sites_watermarkposition_enum"`,
     );
   }
 

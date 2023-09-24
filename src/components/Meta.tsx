@@ -12,14 +12,17 @@ export const Meta: FC = () => {
 
   const largestFavicon = useMemo(
     () =>
-      site?.favicons.reduce((acc, cur) => {
-        if (!acc) return cur;
+      site?.favicons.reduce(
+        (acc, cur) => {
+          if (!acc) return cur;
 
-        if (acc.width < cur.width) return cur;
+          if (acc.width < cur.width) return cur;
 
-        return acc;
-      }, null as IPhoto | null),
-    [site?.favicons]
+          return acc;
+        },
+        null as IPhoto | null,
+      ),
+    [site?.favicons],
   );
 
   if (!site) return null;

@@ -2,7 +2,7 @@
 
 export function debounce(
   func: (...params: any[]) => void,
-  wait: number
+  wait: number,
 ): (...params: any[]) => void {
   let timeout: NodeJS.Timeout;
 

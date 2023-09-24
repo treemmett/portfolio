@@ -57,7 +57,7 @@ export class site1679621988878 implements MigrationInterface {
           },
         ],
         name: 'sites',
-      })
+      }),
     );
   }
 

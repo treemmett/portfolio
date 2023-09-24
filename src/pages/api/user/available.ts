@@ -7,5 +7,5 @@ export default nextConnect().get(
   async (req, res) => {
     const available = await User.usernameAvailable(req.query.username as string);
     res.send(available);
-  }
+  },
 );

@@ -140,11 +140,11 @@ export class Site extends BaseEntity {
         const icon = await Photo.addPhoto(
           image.clone().resize(size, size, { fit: 'cover' }),
           this.owner,
-          PhotoType.FAVICON
+          PhotoType.FAVICON,
         );
 
         return icon.photo;
-      })
+      }),
     );
 
     this.logo = photo;

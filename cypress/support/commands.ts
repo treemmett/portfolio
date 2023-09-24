@@ -36,6 +36,7 @@
 //   }
 // }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
   interface Chainable {
     login(username?: string): Chainable;
@@ -51,7 +52,7 @@ Cypress.Commands.add('login', (username = 'treemmett') => {
   cy.get('[data-testid=login]').click();
   cy.get('@windowOpen').should(
     'be.calledWithMatch',
-    /https:\/\/github.com\/login\/oauth\/authorize\?client_id=/
+    /https:\/\/github.com\/login\/oauth\/authorize\?client_id=/,
   );
   cy.window().then((win) => {
     win.postMessage({

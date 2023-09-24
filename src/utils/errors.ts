@@ -3,7 +3,10 @@
 export class APIError extends Error {
   public code: string;
 
-  constructor(public message = 'An error occurred', public status = 500) {
+  constructor(
+    public message = 'An error occurred',
+    public status = 500,
+  ) {
     super(message);
     this.code = this.constructor.name;
     this.name = this.code;

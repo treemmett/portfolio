@@ -6,7 +6,7 @@ export class domain1679867824621 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`ALTER TABLE "sites" ADD "domain" text`);
     await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_4578b679503e1b86cc1c2531b9" ON "sites" ("domain") `
+      `CREATE UNIQUE INDEX "IDX_4578b679503e1b86cc1c2531b9" ON "sites" ("domain") `,
     );
   }
 

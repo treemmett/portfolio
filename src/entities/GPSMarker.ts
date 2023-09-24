@@ -60,7 +60,7 @@ export class GPSMarker extends BaseEntity {
     lat: number,
     lng: number,
     country: string,
-    city: string
+    city: string,
   ): Promise<GPSMarker> {
     const marker = new GPSMarker();
     marker.id = v4();

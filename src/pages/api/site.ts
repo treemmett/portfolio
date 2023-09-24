@@ -23,7 +23,7 @@ export default nextConnect()
           watermarkPosition: [Joi.number().valid(...Object.values(WatermarkPosition)), null],
         },
       },
-      { allowUnknown: true }
+      { allowUnknown: true },
     ),
     async (req, res) => {
       const site = await Site.getByUsername(req.user.username);
@@ -41,7 +41,7 @@ export default nextConnect()
         typeof req.body.watermarkPosition === 'number' ? req.body.watermarkPosition : null;
       await site.save();
       res.send(site);
-    }
+    },
   )
   .get(celebrate({ query: { username: Joi.string().optional() } }), async (req, res) => {
     let site: Site;

@@ -29,7 +29,7 @@ interface GeocodeResponse {
 
 export async function geocode(
   lng: number | string,
-  lat: number | string
+  lat: number | string,
 ): Promise<GeocodeResponse['address']> {
   const { data } = await axios.get<GeocodeResponse>('https://geocode.maps.co/reverse', {
     params: { lat, lon: lng },

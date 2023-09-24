@@ -22,5 +22,5 @@ export default nextConnect()
       const site = await Site.getByUsername(req.user.username);
       await site.setLogo(req.body.token);
       res.send(site);
-    }
+    },
   );
