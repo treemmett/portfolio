@@ -90,3 +90,9 @@ export class ConflictError extends APIError {
     super(message, 409);
   }
 }
+
+export class NoSiteError extends APIError {
+  constructor(public message = 'User has no site associated') {
+    super(message, 404);
+  }
+}

@@ -1,64 +1,46 @@
 import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
-import { useRouter } from 'next/router';
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
-import { ReactComponent as MapPin } from '../icons/map-pin.svg';
-import { Button } from './Button';
-import styles from './GPSCheckIn.module.scss';
-import { Input } from './Input';
+import { checkIn } from './actions';
+import { Button } from '@components/Button';
+import { Input } from '@components/Input';
+import { ReactComponent as MapPin } from '@icons/map-pin.svg';
 import { geocode } from '@lib/geocode';
-import { useMarkers } from '@lib/markers';
 import { toLocalString } from '@utils/date';
-import { toString } from '@utils/queryParam';
 import { useTranslation } from '@utils/translation';
 
 export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   const { t } = useTranslation();
-  const { addMarker, isMutating } = useMarkers();
-  const { push, query, replace } = useRouter();
   const [loadingGeo, setLoadingGeo] = useState(false);
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
   const [date, setDate] = useState(new Date());
+  const [lngLat, setLngLat] = useState<LngLat>();
 
   const close = useCallback(() => {
-    const q = { ...query };
-    delete q.lng;
-    delete q.lat;
-    push({ query: q }, undefined, { shallow: true });
     setCity('');
     setCountry('');
     setDate(new Date());
-  }, [push, query]);
+    setLngLat(undefined);
+  }, []);
 
   const save = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
 
-      if (!query.lng || !query.lat) {
+      if (!lngLat) {
         return;
       }
 
-      addMarker({
-        city,
-        country,
-        date,
-        lat: parseFloat(toString(query.lat)),
-        lng: parseFloat(toString(query.lng)),
-      });
+      await checkIn(lngLat.lng, lngLat.lat, city, country, date);
 
       close();
     },
-    [addMarker, city, close, country, date, query.lat, query.lng],
+    [city, close, country, date, lngLat],
   );
 
-  const mapClickHandler = useCallback(
-    (event: MapMouseEvent & EventData) => {
-      push({ query: { ...query, lat: event.lngLat.lat, lng: event.lngLat.lng } }, undefined, {
-        shallow: true,
-      });
-    },
-    [push, query],
-  );
+  const mapClickHandler = useCallback((event: MapMouseEvent & EventData) => {
+    setLngLat(event.lngLat);
+  }, []);
 
   useEffect(() => {
     if (map) {
@@ -75,36 +57,31 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   useEffect(() => {
     const m = new Marker({ draggable: true });
 
-    if (map) {
-      if (query.lng && query.lat) {
-        const lng = parseFloat(toString(query.lng));
-        const lat = parseFloat(toString(query.lat));
+    if (map && lngLat) {
+      const { lng, lat } = lngLat;
 
-        if (!Number.isNaN(lng) && !Number.isNaN(lat)) {
-          const coords = new LngLat(lng, lat);
+      if (!Number.isNaN(lng) && !Number.isNaN(lat)) {
+        const coords = new LngLat(lng, lat);
 
-          m.setLngLat(coords)
-            .addTo(map)
-            .on('dragend', () => {
-              push({ query: { ...query, ...m.getLngLat() } }, undefined, {
-                shallow: true,
-              });
-            });
+        m.setLngLat(coords)
+          .addTo(map)
+          .on('dragend', () => {
+            setLngLat(m.getLngLat());
+          });
 
-          map.setCenter(coords).setZoom(13);
-        }
+        map.setCenter(coords).setZoom(13);
       }
     }
 
     return () => {
       m.remove();
     };
-  }, [map, push, query]);
+  }, [map, lngLat]);
 
   useEffect(() => {
-    if (query.lng && query.lat) {
+    if (lngLat) {
       setLoadingGeo(true);
-      geocode(toString(query.lng), toString(query.lat))
+      geocode(lngLat.lng.toString(), lngLat.lat.toString())
         .then((data) => {
           setCity(data.city || '');
           setCountry(data.country_code || '');
@@ -117,21 +94,21 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
           setLoadingGeo(false);
         });
     }
-  }, [map, query.lat, query.lng]);
+  }, [lngLat, map]);
 
   const [gettingGPS, setGettingGPS] = useState(false);
 
   return (
     <>
       <Button
-        className={styles.gps}
+        className="!fixed z-10 right-4 bottom-4"
         disabled={gettingGPS}
         onClick={() => {
           setGettingGPS(true);
           navigator.geolocation.getCurrentPosition(
             ({ coords }) => {
               setGettingGPS(false);
-              push({ query: { ...query, lat: coords.latitude, lng: coords.longitude } });
+              setLngLat(new LngLat(coords.longitude, coords.latitude));
             },
             () => {
               setGettingGPS(false);
@@ -139,32 +116,27 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
           );
         }}
       >
-        <MapPin />
+        <MapPin className="h-6" />
       </Button>
 
-      {query.lng && query.lat && (
-        <form className={styles.form} onSubmit={save}>
+      {lngLat && (
+        <form
+          className="backdrop-blur-sm dark:bg-zinc-900/50 fixed z-10 right-8 bottom-8 p-4 rounded-lg"
+          onSubmit={save}
+        >
           <Input
             label={t('Longitude')}
-            onChange={(e) =>
-              replace({ query: { ...query, lng: e.currentTarget.value } }, undefined, {
-                shallow: true,
-              })
-            }
+            onChange={(e) => setLngLat(new LngLat(parseFloat(e.currentTarget.value), lngLat.lat))}
             step={0.0000001}
             type="number"
-            value={toString(query.lng)}
+            value={lngLat?.lng.toString()}
           />
           <Input
             label={t('Latitude')}
-            onChange={(e) =>
-              replace({ query: { ...query, lat: e.currentTarget.value } }, undefined, {
-                shallow: true,
-              })
-            }
+            onChange={(e) => setLngLat(new LngLat(lngLat.lng, parseFloat(e.currentTarget.value)))}
             step={0.0000001}
             type="number"
-            value={toString(query.lat)}
+            value={lngLat?.lat.toString()}
           />
           <Input
             disabled={loadingGeo}
@@ -184,10 +156,10 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
             type="datetime-local"
             value={toLocalString(date)}
           />
-          <Button disabled={isMutating} type="success" submit>
-            {isMutating ? `${t('Saving')}...` : t('Save')}
+          <Button type="success" submit>
+            {t('Save')}
           </Button>
-          <Button disabled={isMutating} onClick={close} type="danger">
+          <Button onClick={close} type="danger">
             {t('Cancel')}
           </Button>
         </form>

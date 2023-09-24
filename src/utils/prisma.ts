@@ -1,8 +1,10 @@
+/* eslint-disable no-underscore-dangle */
+
 import { PrismaClient } from '@prisma/client';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
-  var prisma: PrismaClient | undefined;
+  var _prisma: PrismaClient;
 }
 
 let db: PrismaClient;
@@ -12,10 +14,10 @@ if (process.env.NODE_ENV === 'production') {
   db = new PrismaClient();
 } else {
   // check if there is already a connection to the database
-  if (!global.prisma) {
-    global.prisma = new PrismaClient();
+  if (!global._prisma) {
+    global._prisma = new PrismaClient();
   }
-  db = global.prisma;
+  db = global._prisma;
 }
 
 export const prisma = db;

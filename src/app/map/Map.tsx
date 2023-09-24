@@ -3,13 +3,19 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GpsMarker } from '@prisma/client';
 import { LngLat, LngLatBounds, Map as Mapbox, Marker } from 'mapbox-gl';
+import dynamic from 'next/dynamic';
 import { FC, useEffect, useRef } from 'react';
+import { AuthorizationScopes } from '@entities/Jwt';
+import { useUser } from '@lib/user';
 import { Config } from '@utils/config';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
+
+const DynamicCheckIn = dynamic(() => import('./GPSCheckIn').then((m) => m.GPSCheckIn));
 
 const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<Mapbox>();
+  const { hasPermission } = useUser();
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -65,7 +71,12 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
     };
   }, [markers]);
 
-  return <div className="h-screen" ref={mapContainer} />;
+  return (
+    <>
+      {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn />}
+      <div className="h-screen" ref={mapContainer} />
+    </>
+  );
 };
 
 export default Map;

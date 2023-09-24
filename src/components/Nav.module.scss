@@ -7,8 +7,8 @@ $height: 4rem;
   @include shared.theme;
   @include shared.glass;
 
-  position: sticky;
-  z-index: 0;
+  position: fixed;
+  z-index: 10;
   top: 0;
   display: flex;
   width: 100vw;
