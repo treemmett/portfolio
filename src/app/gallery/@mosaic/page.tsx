@@ -3,7 +3,7 @@ import styles from './Mosaic.module.scss';
 import { Tile } from './Tile';
 import { getPosts } from '@lib/getPosts';
 
-export async function Mosaic() {
+export default async function Mosaic() {
   const posts = await getPosts('tregan');
 
   return (

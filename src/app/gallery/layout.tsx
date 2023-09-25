@@ -1,13 +1,15 @@
-import { PropsWithChildren } from 'react';
-import { Mosaic } from '@app/gallery/Mosaic';
+import { PropsWithChildren, ReactNode } from 'react';
 import { Nav } from '@components/Nav';
 
-export default async function GalleryPage({ children }: PropsWithChildren) {
+export default async function GalleryPage({
+  children,
+  mosaic,
+}: PropsWithChildren<{ mosaic: ReactNode }>) {
   return (
     <>
       <Nav />
       {children}
-      <Mosaic />
+      {mosaic}
     </>
   );
 }
