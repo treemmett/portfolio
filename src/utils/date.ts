@@ -19,7 +19,7 @@ export function formatDate(date: Date | string): string {
     throw new Error('Invalid date');
   }
 
-  return d.toISOString();
+  return `${d.getUTCDate()} ${months[d.getUTCMonth()]}, ${d.getFullYear()}`;
 }
 
 export function trimTime(date: string | Date) {
