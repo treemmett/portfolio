@@ -19,10 +19,7 @@
     "lint:format": "prettier -c .",
     "lint:spelling": "cspell \"**/*\" --gitignore",
     "lint:style": "stylelint **/*.{scss,css}",
-    "seed:up": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedUp",
-    "seed:down": "ts-node -O '{\"module\":\"commonjs\"}' src/scripts/seedDown",
-    "seed:create": "cd src/migrations && typeorm migration:create",
-    "seed:gen": "yarn build:tsc && cd src/migrations && typeorm migration:generate foo -d ../../build/src/utils/dataSource.js",
+    "migrate": "prisma migrate deploy",
     "locale:gen": "i18next 'src/**/*' -c i18next-parser.config.ts"
   },
   "dependencies": {
