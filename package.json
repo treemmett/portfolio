@@ -12,6 +12,7 @@
     "build:tsc": "tsc -m commonjs && tsc-alias",
     "start": "next start",
     "prepare": "husky install",
+    "postinstall": "prisma generate",
     "test": "start-server-and-test 'yarn dev' http://localhost:3000 'yarn cypress open'",
     "analyze": "ANALYZE=true next build",
     "lint": "concurrently yarn:lint:*",
