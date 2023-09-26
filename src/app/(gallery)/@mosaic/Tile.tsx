@@ -19,7 +19,7 @@ export const Tile: FC<TileProps> = ({ post, priority }) => {
     : `${Config.S3_URL}/${Config.S3_BUCKET}/${post.photo?.id}`;
 
   return (
-    <Link aria-label={label} href={`/gallery/${post.id}`} scroll={false} passHref shallow>
+    <Link aria-label={label} href={`/${post.id}`} scroll={false} passHref shallow>
       <Image
         alt={label}
         blurDataURL={post.photo.thumbnailURL}
