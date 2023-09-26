@@ -10,7 +10,6 @@ datasource db {
 }
 
 model GpsMarker {
-
   id        String   @id(map: "PK_c244f86d053d66d22ed6d19f7cd") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created   DateTime @default(now()) @db.Timestamp(6)
   updated   DateTime @default(now()) @db.Timestamp(6)
@@ -26,7 +25,6 @@ model GpsMarker {
 }
 
 model Photo {
-
   id                    String             @id(map: "PK_5220c45b8e32d49d767b9b3d725") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   height                Int
   size                  Int
@@ -35,30 +33,28 @@ model Photo {
   width                 Int
   ownerId               String             @db.Uuid
   user                  User               @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_556eedea27ffaf50a4ee0c0a058")
-  post                  Post?
   site                  Site?
   sites_favicons_photos SiteFaviconPhoto[]
+  Post                  Post?
 
   @@map("photos")
 }
 
 model Post {
-
   id       String   @id(map: "PK_2829ac61eff60fcec60d7274b9e") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created  DateTime @default(now()) @db.Timestamp(6)
   location String?  @db.VarChar
   updated  DateTime @default(now()) @db.Timestamp(6)
   title    String?  @db.VarChar
-  photoId  String?  @unique(map: "REL_c0e6e8c4bd59e6e015fe7cb307") @db.Uuid
+  photoId  String   @unique(map: "REL_c0e6e8c4bd59e6e015fe7cb307") @db.Uuid
   ownerId  String   @db.Uuid
   user     User     @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_0e33434a2d18c89a149c8ad6d86")
-  photo    Photo?   @relation(fields: [photoId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_c0e6e8c4bd59e6e015fe7cb307e")
+  photo    Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_c0e6e8c4bd59e6e015fe7cb307e")
 
   @@map("posts")
 }
 
 model Site {
-
   id                    String                        @id(map: "PK_4f5eccb1dfde10c9170502595a7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   description           String?                       @db.VarChar
   name                  String?                       @db.VarChar
@@ -82,10 +78,9 @@ model Site {
 }
 
 model SiteFaviconPhoto {
-
   sitesId  String @db.Uuid
   photosId String @db.Uuid
-  sites    Site   @relation(fields: [sitesId], references: [id], onDelete: SetNull, map: "FK_644cbd25b5502c11c9a4f4c37a4")
+  sites    Site   @relation(fields: [sitesId], references: [id], onDelete: Cascade, map: "FK_644cbd25b5502c11c9a4f4c37a4")
   photos   Photo  @relation(fields: [photosId], references: [id], onDelete: Cascade, map: "FK_9266cd2ed6671dd63050807ddc8")
 
   @@id([sitesId, photosId], map: "PK_0c1914a234ab0a8474933f67af3")
@@ -104,7 +99,6 @@ model spatial_ref_sys {
 }
 
 model User {
-
   id       String  @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   githubId Int?    @unique(map: "IDX_42148de213279d66bf94b363bf")
   username String  @unique(map: "IDX_fe0bb3f6520ee0469504521e71") @db.VarChar
