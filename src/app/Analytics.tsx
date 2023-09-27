@@ -1,18 +1,19 @@
 'use client';
 
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { FC, useEffect } from 'react';
 import { trace } from '@utils/analytics';
 
 export const Analytics: FC = () => {
-  const { asPath, locale } = useRouter();
+  const path = usePathname();
 
   useEffect(() => {
-    trace('page-view', {
-      locale,
-      path: asPath,
-    });
-  }, [asPath, locale]);
+    if (path) {
+      trace('page-view', {
+        path,
+      });
+    }
+  }, [path]);
 
   return null;
 };
