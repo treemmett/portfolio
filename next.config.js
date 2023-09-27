@@ -24,28 +24,6 @@ const nextConfig = {
   serverRuntimeConfig: {
     root: __dirname,
   },
-  /**
-   *
-   * @param {import('webpack').Configuration} c
-   */
-  webpack: (c) => {
-    const config = c;
-    config.experiments.topLevelAwait = true;
-    config.module.rules.push({
-      issuer: { and: [/\.(js|ts)x?$/] },
-      test: /\.svg$/,
-      use: [
-        {
-          loader: '@svgr/webpack',
-          options: {
-            exportType: 'named',
-            svgo: false,
-          },
-        },
-      ],
-    });
-    return config;
-  },
 };
 
 module.exports = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(

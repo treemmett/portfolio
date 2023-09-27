@@ -1,9 +1,9 @@
 import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
+import { MapPin } from 'react-feather';
 import { checkIn } from './actions';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
-import { ReactComponent as MapPin } from '@icons/map-pin.svg';
 import { geocode } from '@lib/geocode';
 import { toLocalString } from '@utils/date';
 import { useTranslation } from '@utils/translation';

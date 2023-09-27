@@ -8,7 +8,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { ReactComponent as Check } from '../icons/check.svg';
+import { Check } from 'react-feather';
 import styles from './Input.module.scss';
 import type { IPhoto } from '@entities/Photo';
 

@@ -2,17 +2,18 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import getConfig from 'next/config';
 import { FC, PropsWithChildren } from 'react';
+import {
+  AtSign,
+  ExternalLink as ExternalLinkIcon,
+  GitHub,
+  Instagram,
+  Linkedin,
+  Twitter,
+} from 'react-feather';
 // eslint-disable-next-line import/no-unresolved
 import { Resume as ResumeType } from 'resume';
 import styles from './resume.module.scss';
 import { Anchor } from '@components/Anchor';
-import { ReactComponent as At } from '@icons/at-sign.svg';
-import { ReactComponent as ExternalLinkIcon } from '@icons/external-link.svg';
-import { ReactComponent as GitHub } from '@icons/github.svg';
-import { ReactComponent as Instagram } from '@icons/instagram.svg';
-import { ReactComponent as LinkIcon } from '@icons/link.svg';
-import { ReactComponent as LinkedIn } from '@icons/linkedin.svg';
-import { ReactComponent as Twitter } from '@icons/twitter.svg';
 
 const Section: FC<PropsWithChildren<{ className?: string; name?: string }>> = ({
   children,
@@ -46,7 +47,7 @@ export default async function Resume() {
           {resume.basics?.email && (
             <Anchor href={`mailto:${resume.basics.email}`}>
               <h5>
-                <At />
+                <AtSign />
                 {resume.basics.email}
                 <ExternalLink />
               </h5>
@@ -55,7 +56,7 @@ export default async function Resume() {
           {resume.basics?.url && (
             <Anchor href={resume.basics.url}>
               <h5>
-                <LinkIcon />
+                <ExternalLinkIcon />
                 {resume.basics.url}
                 <ExternalLink />
               </h5>
@@ -76,7 +77,7 @@ export default async function Resume() {
                 break;
 
               case 'linkedin':
-                Icon = LinkedIn;
+                Icon = Linkedin;
                 break;
 
               case 'twitter':

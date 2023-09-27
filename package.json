@@ -71,7 +71,6 @@
     "@commitlint/cli": "^17.5.1",
     "@commitlint/config-conventional": "^17.4.4",
     "@faker-js/faker": "^7.5.0",
-    "@svgr/webpack": "^7.0.0",
     "@types/node": "^17.0.8",
     "autoprefixer": "^10.4.15",
     "concurrently": "^7.4.0",

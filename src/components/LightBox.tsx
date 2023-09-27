@@ -6,8 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ReactComponent as Left } from '../icons/chevron-left.svg';
-import { ReactComponent as Right } from '../icons/chevron-right.svg';
+import { ChevronRight, ChevronLeft } from 'react-feather';
 import styles from './LightBox.module.scss';
 import { Modal } from './Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
@@ -163,12 +162,12 @@ export const LightBox: FC<{ posts: IPost[] }> = ({ posts }) => {
             <div className={styles.controls}>
               {prevPost && (
                 <Link href={`/gallery/${prevPost.id}`} shallow>
-                  <Left />
+                  <ChevronLeft />
                 </Link>
               )}
               {nextPost && (
                 <Link href={`/gallery/${nextPost.id}`} shallow>
-                  <Right />
+                  <ChevronRight />
                 </Link>
               )}
             </div>
