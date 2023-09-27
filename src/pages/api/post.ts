@@ -1,7 +1,5 @@
 import { Joi, celebrate } from 'celebrate';
 import { AuthorizationScopes } from '@entities/Jwt';
-import { Photo } from '@entities/Photo';
-import { PhotoType } from '@entities/PhotoType';
 import { Post } from '@entities/Post';
 import { Site } from '@entities/Site';
 import { User } from '@entities/User';
@@ -33,10 +31,6 @@ export default nextConnect()
   )
   .patch(User.authorize(AuthorizationScopes.post), async (_, res) => {
     await i18nRevalidate('/', res);
-  })
-  .post(User.authorize(AuthorizationScopes.post), async (req, res) => {
-    const token = await Photo.getUploadToken(req.user, PhotoType.ORIGINAL);
-    res.send(token);
   })
   .put(
     User.authorize(AuthorizationScopes.post),

@@ -6,13 +6,10 @@ import { useRouter } from 'next/navigation';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, UploadCloud } from 'react-feather';
 import { ulid } from 'ulid';
+import { getUploadToken, processPhoto } from './actions';
 import { Button } from '@components/Button';
-import type { UploadToken } from '@entities/Photo';
-import type { IPost } from '@entities/Post';
-import { usePosts } from '@lib/posts';
 import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
-import { apiClient } from '@utils/apiClient';
 import { UnauthenticatedError } from '@utils/errors';
 
 interface ApiRequest {
@@ -62,7 +59,6 @@ async function loadFile(file: File): Promise<ApiRequest> {
 export const ApiManager: FC = () => {
   const [requests, setRequests] = useState<ApiRequest[]>([]);
   const [collapsed, setCollapsed] = useState(false);
-  const { addPost } = usePosts();
   const { push } = useRouter();
   const { user } = useUser();
   const { site } = useSite();
@@ -126,106 +122,66 @@ export const ApiManager: FC = () => {
     };
   }, [dragHandler, dropHandler]);
 
-  const uploadPhoto = useCallback(
-    async (request: ApiRequest) => {
-      try {
-        setRequests((rs) => [
-          { ...request, status: 'uploading' },
-          ...rs.filter((r) => r.id !== request.id),
-        ]);
+  const uploadPhoto = useCallback(async (request: ApiRequest) => {
+    try {
+      setRequests((rs) => [
+        { ...request, status: 'uploading' },
+        ...rs.filter((r) => r.id !== request.id),
+      ]);
 
-        const { data: uploadToken } = await apiClient.post<UploadToken>('/post', {
-          onUploadProgress(progress: AxiosProgressEvent) {
-            setRequests((rs) => {
-              const filtered = rs.filter((r) => r.id !== request.id);
-              const thisRequest = rs.find((r) => r.id === request.id);
+      const uploadToken = await getUploadToken();
 
-              if (typeof progress.progress === 'undefined') return rs;
+      await axios.put(uploadToken.url, request.file, {
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        onUploadProgress(progress: AxiosProgressEvent) {
+          setRequests((rs) => {
+            const filtered = rs.filter((r) => r.id !== request.id);
+            const thisRequest = rs.find((r) => r.id === request.id);
 
-              return [
-                { ...thisRequest, progress: progress.progress * 0.05 } as ApiRequest,
-                ...filtered,
-              ];
-            });
-          },
-        });
+            if (typeof progress.progress === 'undefined') return rs;
 
-        await axios.put(uploadToken.url, request.file, {
-          headers: {
-            'Content-Type': 'application/octet-stream',
-          },
-          onUploadProgress(progress: AxiosProgressEvent) {
-            setRequests((rs) => {
-              const filtered = rs.filter((r) => r.id !== request.id);
-              const thisRequest = rs.find((r) => r.id === request.id);
+            return [
+              {
+                ...thisRequest,
+                progress: 0.05 + progress.progress * 0.95,
+              } as ApiRequest,
+              ...filtered,
+            ];
+          });
+        },
+      });
 
-              if (typeof progress.progress === 'undefined') return rs;
+      await processPhoto(uploadToken.token);
 
-              return [
-                {
-                  ...thisRequest,
-                  progress: 0.05 + progress.progress * 0.9,
-                } as ApiRequest,
-                ...filtered,
-              ];
-            });
-          },
-        });
+      setRequests((rs) => {
+        const filtered = rs.filter((r) => r.id !== request.id);
+        const thisRequest = rs.find((r) => r.id === request.id);
 
-        const { data } = await apiClient.put<IPost>(
-          '/post',
-          { token: uploadToken.token },
+        return [
           {
-            onUploadProgress(progress: AxiosProgressEvent) {
-              setRequests((rs) => {
-                const filtered = rs.filter((r) => r.id !== request.id);
-                const thisRequest = rs.find((r) => r.id === request.id);
+            ...thisRequest,
+            status: 'complete',
+          } as ApiRequest,
+          ...filtered,
+        ];
+      });
+    } catch (err) {
+      setRequests((rs) => {
+        const filtered = rs.filter((r) => r.id !== request.id);
+        const thisRequest = rs.find((r) => r.id === request.id);
 
-                if (typeof progress.progress === 'undefined') return rs;
-
-                return [
-                  {
-                    ...thisRequest,
-                    progress: 0.95 + progress.progress * 0.05,
-                  } as ApiRequest,
-                  ...filtered,
-                ];
-              });
-            },
-          },
-        );
-
-        addPost(data);
-
-        setRequests((rs) => {
-          const filtered = rs.filter((r) => r.id !== request.id);
-          const thisRequest = rs.find((r) => r.id === request.id);
-
-          return [
-            {
-              ...thisRequest,
-              status: 'complete',
-            } as ApiRequest,
-            ...filtered,
-          ];
-        });
-      } catch (err) {
-        setRequests((rs) => {
-          const filtered = rs.filter((r) => r.id !== request.id);
-          const thisRequest = rs.find((r) => r.id === request.id);
-
-          return [
-            {
-              ...thisRequest,
-              status: 'error',
-            } as ApiRequest,
-            ...filtered,
-          ];
-        });
-      }
-    },
-    [addPost],
-  );
+        return [
+          {
+            ...thisRequest,
+            status: 'error',
+          } as ApiRequest,
+          ...filtered,
+        ];
+      });
+    }
+  }, []);
 
   const [status, setStatus] = useState<'uploading' | 'complete' | 'error'>('uploading');
 
