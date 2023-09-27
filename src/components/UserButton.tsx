@@ -14,13 +14,9 @@ export const UserButton: FC<{ site?: Site | null }> = ({ site }) => {
     return (
       <>
         {site?.ownerId === user.id ? (
-          <Link href="?settings=true" shallow>
-            {t('Settings')}
-          </Link>
+          <Link href="/settings">{t('Settings')}</Link>
         ) : (
-          <Link href={`/u/${encodeURIComponent(user.username)}`} shallow>
-            {t('My Site')}
-          </Link>
+          <Link href={`/u/${encodeURIComponent(user.username)}`}>{t('My Site')}</Link>
         )}
         <button onClick={() => logout()} type="button">
           {t('Logout')}
