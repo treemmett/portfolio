@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from 'next/router';
 import { FC, useEffect } from 'react';
 import { trace } from '@utils/analytics';

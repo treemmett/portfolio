@@ -5,7 +5,7 @@ import { Josefin_Sans as JosefinSans } from 'next/font/google';
 import { FC } from 'react';
 import { SWRConfig } from 'swr';
 import './_app.scss';
-import { Analytics } from '@components/Analytics';
+import { Analytics } from '@app/Analytics';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { useUser } from '@lib/user';
 
