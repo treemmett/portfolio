@@ -4,7 +4,7 @@ import axios, { AxiosProgressEvent } from 'axios';
 import cx from 'classnames';
 import { useRouter } from 'next/navigation';
 import { FC, useCallback, useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp } from 'react-feather';
+import { ChevronDown, ChevronUp, UploadCloud } from 'react-feather';
 import { ulid } from 'ulid';
 import { Button } from '@components/Button';
 import type { UploadToken } from '@entities/Photo';
@@ -67,6 +67,23 @@ export const ApiManager: FC = () => {
   const { user } = useUser();
   const { site } = useSite();
 
+  const addFiles = useCallback(
+    async (files: FileList) => {
+      const fileList = await Promise.all(
+        [...files].reduce((acc, file) => {
+          if (file.type.startsWith('image/')) {
+            acc.push(loadFile(file));
+          }
+
+          return acc;
+        }, [] as Promise<ApiRequest>[]),
+      );
+
+      setRequests([...fileList, ...requests]);
+    },
+    [requests],
+  );
+
   const dropHandler = useCallback(
     async (e: DragEvent) => {
       e.stopPropagation();
@@ -85,19 +102,9 @@ export const ApiManager: FC = () => {
 
       const { files } = e.dataTransfer;
 
-      const fileList = await Promise.all(
-        [...files].reduce((acc, file) => {
-          if (file.type.startsWith('image/')) {
-            acc.push(loadFile(file));
-          }
-
-          return acc;
-        }, [] as Promise<ApiRequest>[]),
-      );
-
-      setRequests([...fileList, ...requests]);
+      await addFiles(files);
     },
-    [push, requests, site?.owner.id, user],
+    [addFiles, push, site?.owner.id, user],
   );
 
   const dragHandler = useCallback((e: DragEvent) => {
@@ -239,49 +246,71 @@ export const ApiManager: FC = () => {
     }
   }, [requests, uploadPhoto]);
 
-  if (!requests.length) return null;
-
   return (
-    <div
-      className="fixed backdrop-blur-sm dark:bg-zinc-900/50 drop-shadow-lg overflow-hidden w-[calc(100%-1.5rem)] max-w-lg rounded-lg bottom-0 sm:bottom-3 left-3"
-      data-testid="upload-manager"
-    >
-      <header className="flex justify-between align-center p-4">
-        <span className="capitalize">{status}</span>
-        <Button onClick={() => setCollapsed(!collapsed)} size="small" inverted>
-          {collapsed ? <ChevronUp /> : <ChevronDown />}
-        </Button>
-      </header>
-      <div
-        className={cx(
-          'max-h-60 overflow-y-auto transition-[max-height] border-t border-black dark:border-white',
-          {
-            'max-h-0 border-t-0': collapsed,
-          },
-        )}
+    <div className="fixed bottom-0 sm:bottom-3 left-3">
+      <label
+        className="inline-flex cursor-pointer items-center backdrop-blur-sm dark:bg-zinc-900/50 drop-shadow-lg p-2 rounded-lg"
+        htmlFor="file-selector"
       >
-        {requests.map((r) => (
-          <div
-            className="flex items-center p-4 border-t border-black dark:border-white first:border-0"
-            key={r.id}
-          >
-            {r.thumbnailUrl && (
-              <img
-                alt="Uploading thumbnail"
-                className="max-w-8 max-h-6 mr-4"
-                src={r.thumbnailUrl}
-              />
-            )}
-            {r.status === 'uploading' ? (
-              <span className="mx-0.5">{Math.floor(r.progress * 100)}%</span>
-            ) : (
-              <span className="mx-0.5 capitalize">{r.status}</span>
-            )}
+        <UploadCloud className="mr-2" strokeWidth={1} />
+        Upload
+        <input
+          accept="image/*"
+          className="hidden"
+          id="file-selector"
+          onChange={(e) => {
+            const { files } = e.currentTarget;
+            if (!files) return;
+            addFiles(files);
+          }}
+          type="file"
+        />
+      </label>
 
-            <span className="ml-auto text-right">{r.name}</span>
+      {!!requests.length && (
+        <div
+          className="mt-2 backdrop-blur-sm dark:bg-zinc-900/50 drop-shadow-lg overflow-hidden w-[calc(100%-1.5rem)] max-w-lg rounded-lg"
+          data-testid="upload-manager"
+        >
+          <header className="flex justify-between align-center p-4">
+            <span className="capitalize">{status}</span>
+            <Button onClick={() => setCollapsed(!collapsed)} size="small" inverted>
+              {collapsed ? <ChevronUp /> : <ChevronDown />}
+            </Button>
+          </header>
+          <div
+            className={cx(
+              'overflow-y-auto transition-[max-height] border-t border-black dark:border-white',
+              {
+                'max-h-0 border-t-0': collapsed,
+                'max-h-60': !collapsed,
+              },
+            )}
+          >
+            {requests.map((r) => (
+              <div
+                className="flex items-center p-4 border-t border-black dark:border-white first:border-0"
+                key={r.id}
+              >
+                {r.thumbnailUrl && (
+                  <img
+                    alt="Uploading thumbnail"
+                    className="max-w-8 max-h-6 mr-4"
+                    src={r.thumbnailUrl}
+                  />
+                )}
+                {r.status === 'uploading' ? (
+                  <span className="mx-0.5">{Math.floor(r.progress * 100)}%</span>
+                ) : (
+                  <span className="mx-0.5 capitalize">{r.status}</span>
+                )}
+
+                <span className="ml-auto text-right">{r.name}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
