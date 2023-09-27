@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
+import { logout as logoutAction } from '../app/login/actions';
 import { AuthorizationScopes } from '@entities/Jwt';
 import type { IUser } from '@entities/User';
 import { trace } from '@utils/analytics';
@@ -8,14 +9,25 @@ import { apiClient } from '@utils/apiClient';
 import { APIError, UnauthenticatedError } from '@utils/errors';
 
 async function getUser(): Promise<IUser | null> {
-  const { data } = await apiClient.get<IUser>('/user');
+  if (!document.cookie) return null;
 
+  const cookies = Object.fromEntries(
+    document.cookie.split(';').map((cookie) => {
+      const [name, value] = cookie.split('=');
+      return [name.trim(), value.trim()];
+    }),
+  );
+
+  const { accessToken } = cookies;
+  if (!accessToken) return null;
+
+  const { data } = await apiClient.get<IUser>('/user');
   return data;
 }
 
 export function useUser() {
   const [user, setUser] = useState<IUser>();
-  const { data, error } = useSWR<IUser | null, APIError>('user', getUser);
+  const { data, error } = useSWR<IUser | null, APIError>('user', getUser, { refreshInterval: 0 });
   useEffect(() => setUser(data || undefined), [data]);
 
   const hasPermission = useCallback(
@@ -31,20 +43,31 @@ export function useUser() {
     async () => {
       trace('begin-login');
 
-      window.open(
+      const popup = window.open(
         '/login',
         'oauth',
         `popup,width=500,height=750,left=${global.screen.width / 2 - 250}`,
       );
 
-      return null;
+      if (!popup) return null;
+
+      await new Promise<void>((res) => {
+        const i = setInterval(() => {
+          if (popup.closed) {
+            clearInterval(i);
+            res();
+          }
+        }, 100);
+      });
+
+      return getUser();
     },
   );
 
   const { trigger: logout } = useSWRMutation<IUser | null, APIError>(
     'user',
     async () => {
-      alert('shit still broken');
+      logoutAction();
       return null;
     },
     {

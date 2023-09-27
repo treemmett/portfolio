@@ -25,6 +25,12 @@ export default function LoginPage({ searchParams }: { searchParams?: Record<stri
       });
   }, [searchParams?.code, searchParams?.state]);
 
+  useEffect(() => {
+    if (state === 'success') {
+      window.close();
+    }
+  }, [state]);
+
   if (state instanceof Error) {
     return (
       <div className="text-center py-8">

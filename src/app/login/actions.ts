@@ -38,3 +38,8 @@ export async function login(code?: string, state?: string) {
   cookies().set({ expires: expiration, httpOnly: true, name: 'signature', value: signature });
   return true;
 }
+
+export async function logout() {
+  cookies().delete('accessToken');
+  cookies().delete('signature');
+}
