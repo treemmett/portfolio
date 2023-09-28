@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { v4 } from 'uuid';
 import { signAccessToken } from './signAccessToken';
-import { AuthorizationScopes } from '@entities/Jwt';
+import { AuthorizationScopes } from '@app/scopes';
 import { Config } from '@utils/config';
 import { OAuthHandshakeError } from '@utils/errors';
 import { logger } from '@utils/logger';

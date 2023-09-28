@@ -3,7 +3,7 @@
 import { Site } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import { FC } from 'react';
-import { AuthorizationScopes } from '@entities/Jwt';
+import { AuthorizationScopes } from '@app/scopes';
 import { useUser } from '@lib/user';
 
 const Dynamic = dynamic(() => import('./ApiManager').then((m) => m.ApiManager));

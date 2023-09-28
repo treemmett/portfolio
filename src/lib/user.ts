@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { getCurrentUser, logout as logoutAction } from '../app/login/actions';
-import { AuthorizationScopes } from '@entities/Jwt';
+import { AuthorizationScopes } from '@app/scopes';
 import { APIError } from '@utils/errors';
 
 interface User {

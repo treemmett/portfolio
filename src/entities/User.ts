@@ -12,7 +12,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { v4 } from 'uuid';
-import { AccessTokenMeta, AuthorizationScopes, Jwt } from './Jwt';
+import { AccessTokenMeta, AuthorizationScopes, Jwt } from '../app/scopes';
 import { Photo } from './Photo';
 import { Post } from './Post';
 import type { Site } from './Site';

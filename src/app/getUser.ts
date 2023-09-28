@@ -1,6 +1,6 @@
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
-import { AuthorizationScopes, Jwt } from '@entities/Jwt';
+import { AuthorizationScopes, Jwt } from '@app/scopes';
 import { Config } from '@utils/config';
 import {
   BadAccessTokenError,

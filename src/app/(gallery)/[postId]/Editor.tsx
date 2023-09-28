@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation';
 import { FC, useCallback, useState } from 'react';
 import styles from './Editor.module.scss';
 import { deletePost, updatePost } from './actions';
+import { AuthorizationScopes } from '@app/scopes';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { Modal } from '@components/Modal';
-import { AuthorizationScopes } from '@entities/Jwt';
 import { useUser } from '@lib/user';
 import { useTranslation } from '@utils/translation';
 

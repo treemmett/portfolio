@@ -10,7 +10,7 @@ import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
 import { v4 } from 'uuid';
 import { getUser } from '@app/getUser';
-import { AuthorizationScopes } from '@entities/Jwt';
+import { AuthorizationScopes } from '@app/scopes';
 import { PhotoType } from '@entities/PhotoType';
 import { geocode } from '@lib/geocode';
 import { Config } from '@utils/config';

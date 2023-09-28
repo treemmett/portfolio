@@ -5,7 +5,7 @@ import { GpsMarker } from '@prisma/client';
 import { LngLat, LngLatBounds, Map as Mapbox, Marker } from 'mapbox-gl';
 import dynamic from 'next/dynamic';
 import { FC, useEffect, useRef } from 'react';
-import { AuthorizationScopes } from '@entities/Jwt';
+import { AuthorizationScopes } from '@app/scopes';
 import { useUser } from '@lib/user';
 import { Config } from '@utils/config';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';

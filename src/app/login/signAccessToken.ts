@@ -1,5 +1,5 @@
 import { SignJWT } from 'jose';
-import { AccessTokenMeta, AuthorizationScopes } from '@entities/Jwt';
+import { AccessTokenMeta, AuthorizationScopes } from '@app/scopes';
 import { Config } from '@utils/config';
 
 export async function signAccessToken(
