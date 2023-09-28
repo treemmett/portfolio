@@ -9,13 +9,15 @@ import { updateSettings } from '@app/(settings)/actions';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { WatermarkPosition } from '@entities/WatermarkPosition';
-import { usePhotoStats } from '@lib/photoStats';
 import { formatBytes } from '@utils/bytes';
 import { useTranslation } from '@utils/translation';
 
-export const SettingsForm: FC<{ site: Site }> = ({ site }) => {
+export const SettingsForm: FC<{ count: number | null; site: Site; size: number | null }> = ({
+  count,
+  size,
+  site,
+}) => {
   const { t } = useTranslation();
-  const { count, size } = usePhotoStats();
   const [isSaving, setSaving] = useState(false);
 
   const form = useForm({
@@ -120,12 +122,16 @@ export const SettingsForm: FC<{ site: Site }> = ({ site }) => {
         </section>
         <section id="account-information">
           <h2>{t('Account Information')}</h2>
-          <div>
-            {t('Total Photos')}: {count}
-          </div>
-          <div>
-            {t('Size')}: {formatBytes(size)}
-          </div>
+          {typeof size === 'number' && (
+            <div>
+              {t('Total Photos')}: {count}
+            </div>
+          )}
+          {typeof size === 'number' && (
+            <div>
+              {t('Size')}: {formatBytes(size)}
+            </div>
+          )}
         </section>
 
         <Button disabled={isSaving} type="success" submit>

@@ -179,4 +179,5 @@ export async function processPhoto(token: string) {
   logger.info('Post added to index');
 
   revalidatePath('/', 'layout');
+  revalidatePath('/settings');
 }
