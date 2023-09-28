@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { DynamicEditor } from './DynamicEditor';
 import { getPost } from '@lib/getPost';
 
 export default async function GalleryPostPage({ params }: { params: { postId: string } }) {
@@ -24,6 +25,7 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
         width={post.photo.width}
         priority
       />
+      <DynamicEditor post={post} />
     </div>
   );
 }

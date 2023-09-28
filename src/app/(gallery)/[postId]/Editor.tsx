@@ -1,69 +1,67 @@
-import { FC, FormEventHandler, useCallback, useEffect, useState } from 'react';
+import { useForm } from '@mantine/form';
+import { Post } from '@prisma/client';
+import { FC, useState } from 'react';
 import styles from './Editor.module.scss';
+import { updatePost } from './actions';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { Modal } from '@components/Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
-import { usePost } from '@lib/posts';
 import { useUser } from '@lib/user';
-import { trimTime } from '@utils/date';
 import { useTranslation } from '@utils/translation';
 
-export const Editor: FC<{ id: string; setIsMutating: (isMutating: boolean) => void }> = ({
-  id,
-  setIsMutating,
-}) => {
+export const Editor: FC<{ post: Post }> = ({ post }) => {
   const { t } = useTranslation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const { isDeleting, isMutating, isSaving, post, save, setPost, deleteTrigger } = usePost(id);
-  const { hasPermission, user } = useUser();
+  const { hasPermission } = useUser();
+  const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    setIsMutating(!isMutating);
-  }, [isMutating, setIsMutating]);
-
-  const formHandler: FormEventHandler<HTMLFormElement> = useCallback(
-    async (e) => {
-      e.preventDefault();
-      await save();
+  const form = useForm({
+    initialValues: {
+      created: post.created || '',
+      location: post.location || '',
+      title: post.title || '',
     },
-    [save],
-  );
-
-  if (!post || !user) return null;
-  if (post.owner.id !== user.id) return null;
+  });
 
   return (
-    <form className={styles.form} onSubmit={formHandler}>
+    <form
+      className={styles.form}
+      onSubmit={form.onSubmit(async (values) => {
+        try {
+          setIsSaving(true);
+          await updatePost(post.id, values);
+        } finally {
+          setIsSaving(false);
+        }
+      })}
+    >
       <Input
         className={styles.input}
         label={t('Title')}
         name="title"
-        onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
-        value={post.title || ''}
+        {...form.getInputProps('title')}
       />
       <Input
         className={styles.input}
         label={t('Location')}
         name="location"
-        onChange={(e) => setPost({ ...post, location: e.currentTarget.value })}
-        value={post.location || ''}
+        {...form.getInputProps('location')}
       />
       <Input
         className={styles.input}
         label={t('Date')}
         name="date"
-        onChange={(e) => setPost({ ...post, created: new Date(e.currentTarget.value) })}
         type="date"
-        value={trimTime(post.created) || ''}
+        {...form.getInputProps('created')}
       />
-      <Button className={styles.input} disabled={isMutating} type="success" submit>
+      <Button className={styles.input} disabled={isSaving} type="success" submit>
         {isSaving ? `${t('Saving')}...` : t('Save')}
       </Button>
       {hasPermission(AuthorizationScopes.delete) && (
         <Button
           className={styles.input}
-          disabled={isMutating}
+          disabled={isSaving}
           onClick={() => setShowDeleteConfirm(true)}
           type="danger"
         >
@@ -71,15 +69,15 @@ export const Editor: FC<{ id: string; setIsMutating: (isMutating: boolean) => vo
         </Button>
       )}
       <Modal
-        canClose={!isMutating}
+        canClose={!isSaving}
         onClose={() => setShowDeleteConfirm(false)}
         open={showDeleteConfirm}
       >
-        <Button disabled={isMutating} onClick={() => setShowDeleteConfirm(false)}>
+        <Button disabled={isSaving} onClick={() => setShowDeleteConfirm(false)}>
           {t('Go back')}
         </Button>
-        <Button disabled={isMutating} onClick={() => deleteTrigger()} type="danger">
-          {isDeleting ? `${t('Deleting')}...` : t('Delete')}
+        <Button disabled={isSaving} type="danger">
+          {isSaving ? `${t('Deleting')}...` : t('Delete')}
         </Button>
       </Modal>
     </form>
