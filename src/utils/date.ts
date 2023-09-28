@@ -22,12 +22,6 @@ export function formatDate(date: Date | string): string {
   return `${d.getUTCDate()} ${months[d.getUTCMonth()]}, ${d.getFullYear()}`;
 }
 
-export function trimTime(date: string | Date) {
-  const d = date instanceof Date ? date.toISOString() : date;
-
-  return d.split('T')[0];
-}
-
 export function toLocalString(date: Date) {
   return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
 }
