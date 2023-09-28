@@ -14,8 +14,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 // import { GPSMarker } from './GPSMarker';
+import { PhotoType } from '../app/(gallery)/PhotoType';
 import { IPhoto, Photo } from './Photo';
-import { PhotoType } from './PhotoType';
 import type { IUser, User } from './User';
 import { WatermarkPosition } from './WatermarkPosition';
 import { SiteNotFoundError } from '@utils/errors';
