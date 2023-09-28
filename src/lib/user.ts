@@ -1,14 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { logout as logoutAction } from '../app/login/actions';
+import { getCurrentUser, logout as logoutAction } from '../app/login/actions';
 import { AuthorizationScopes } from '@entities/Jwt';
-import type { IUser } from '@entities/User';
 import { trace } from '@utils/analytics';
-import { apiClient } from '@utils/apiClient';
-import { APIError, UnauthenticatedError } from '@utils/errors';
+import { APIError } from '@utils/errors';
 
-async function getUser(): Promise<IUser | null> {
+interface User {
+  id: string;
+  scopes: AuthorizationScopes[];
+  username: string;
+}
+
+async function getUser(): Promise<User | null> {
   if (!document.cookie) return null;
 
   const cookies = Object.fromEntries(
@@ -21,13 +25,25 @@ async function getUser(): Promise<IUser | null> {
   const { accessToken } = cookies;
   if (!accessToken) return null;
 
-  const { data } = await apiClient.get<IUser>('/user');
-  return data;
+  const [, payload] = accessToken.split('.');
+  let body: { sub: string; scp: AuthorizationScopes[] };
+  try {
+    body = JSON.parse(atob(payload));
+  } catch {
+    return null;
+  }
+
+  const user = await getCurrentUser();
+
+  return {
+    ...user,
+    scopes: body.scp,
+  };
 }
 
 export function useUser() {
-  const [user, setUser] = useState<IUser>();
-  const { data, error } = useSWR<IUser | null, APIError>('user', getUser, { refreshInterval: 0 });
+  const [user, setUser] = useState<User>();
+  const { data, error } = useSWR<User | null, APIError>('user', getUser, { refreshInterval: 0 });
   useEffect(() => setUser(data || undefined), [data]);
 
   const hasPermission = useCallback(
@@ -38,7 +54,7 @@ export function useUser() {
     [data],
   );
 
-  const { trigger: login, isMutating: isLoggingIn } = useSWRMutation<IUser | null, APIError>(
+  const { trigger: login, isMutating: isLoggingIn } = useSWRMutation<User | null, APIError>(
     'user',
     async () => {
       trace('begin-login');
@@ -64,7 +80,7 @@ export function useUser() {
     },
   );
 
-  const { trigger: logout } = useSWRMutation<IUser | null, APIError>(
+  const { trigger: logout } = useSWRMutation<null, APIError>(
     'user',
     async () => {
       logoutAction();
@@ -76,35 +92,13 @@ export function useUser() {
     },
   );
 
-  const { trigger: save, isMutating: isSaving } = useSWRMutation<IUser | null, APIError>(
-    'user',
-    async () => {
-      if (!user) throw new UnauthenticatedError();
-
-      const response = await apiClient.patch<{ user: IUser; accessToken: string }>('/user', {
-        username: user?.username,
-      });
-
-      return response.data.user;
-    },
-    { populateCache: (result) => result, revalidate: false },
-  );
-
   return {
     error,
     hasPermission,
     isLoggingIn,
-    isMutating: isLoggingIn || isSaving,
-    isSaving,
     login,
     logout,
-    save,
     setUser,
     user,
   };
-}
-
-export async function usernameAvailable(username: string): Promise<boolean> {
-  const response = await apiClient.get('/user/available', { params: { username } });
-  return response.data;
 }

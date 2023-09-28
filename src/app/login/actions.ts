@@ -4,8 +4,14 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { authorizeGithub } from './authorizeGithub';
+import { getUser } from '@app/getUser';
 import { Config } from '@utils/config';
 import { OAuthHandshakeError } from '@utils/errors';
+
+export async function getCurrentUser() {
+  const user = await getUser();
+  return { id: user.id, username: user.username };
+}
 
 export async function login(code?: string, state?: string) {
   if (!code) {
