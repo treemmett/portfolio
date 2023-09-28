@@ -5,6 +5,10 @@
 
 @layer components {
   .button {
-    @apply text-white border border-transparent rounded-md p-1 backdrop-blur-md bg-white/20 hover:border-white;
+    @apply text-center text-white border border-transparent rounded-md p-1 backdrop-blur-md bg-black/10 dark:bg-white/10 hover:border-white;
+
+    &:not(.action) {
+      @apply py-2;
+    }
   }
 }

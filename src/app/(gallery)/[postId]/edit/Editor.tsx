@@ -1,20 +1,19 @@
+'use client';
+
 import { useForm } from '@mantine/form';
 import { Post } from '@prisma/client';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FC, useCallback, useState } from 'react';
+import { deletePost, updatePost } from '../actions';
 import styles from './Editor.module.scss';
-import { deletePost, updatePost } from './actions';
-import { AuthorizationScopes } from '@app/scopes';
-import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { Modal } from '@components/Modal';
-import { useUser } from '@lib/user';
 import { useTranslation } from '@utils/translation';
 
 export const Editor: FC<{ post: Post }> = ({ post }) => {
   const { t } = useTranslation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const { hasPermission } = useUser();
   const [isSaving, setIsSaving] = useState(false);
   const { push } = useRouter();
 
@@ -67,30 +66,38 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
         type="date"
         {...form.getInputProps('created')}
       />
-      <Button className={styles.input} disabled={isSaving} type="success" submit>
+      <button className="button mt-3 w-full bg-green-700/50" disabled={isSaving} type="submit">
         {isSaving ? `${t('Saving')}...` : t('Save')}
-      </Button>
-      {hasPermission(AuthorizationScopes.delete) && (
-        <Button
-          className={styles.input}
-          disabled={isSaving}
-          onClick={() => setShowDeleteConfirm(true)}
-          type="danger"
-        >
-          {t('Delete')}
-        </Button>
-      )}
+      </button>
+      <button
+        className="button mt-3 w-full bg-red-800/50"
+        disabled={isSaving}
+        onClick={() => setShowDeleteConfirm(true)}
+      >
+        {t('Delete')}
+      </button>
+      <Link className="button block mt-3 w-full" href={`/${post.id}`}>
+        Cancel
+      </Link>
       <Modal
         canClose={!isSaving}
         onClose={() => setShowDeleteConfirm(false)}
         open={showDeleteConfirm}
       >
-        <Button disabled={isSaving} onClick={() => setShowDeleteConfirm(false)}>
+        <button
+          className="button w-full"
+          disabled={isSaving}
+          onClick={() => setShowDeleteConfirm(false)}
+        >
           {t('Go back')}
-        </Button>
-        <Button disabled={isSaving} onClick={deleteCallback} type="danger">
+        </button>
+        <button
+          className="button mt-3 w-full bg-red-800/50"
+          disabled={isSaving}
+          onClick={deleteCallback}
+        >
           {isSaving ? `${t('Deleting')}...` : t('Delete')}
-        </Button>
+        </button>
       </Modal>
     </form>
   );

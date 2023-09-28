@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import { Config } from '@utils/config';
 import { prisma } from '@utils/prisma';
 
@@ -7,7 +8,7 @@ export async function getPost(id: string, username: string) {
     where: { id, user: { username } },
   });
 
-  if (!post) return null;
+  if (!post) return notFound();
 
   return {
     ...post,
