@@ -1,8 +1,8 @@
 import { FC, FormEventHandler, useCallback, useEffect, useState } from 'react';
-import { Button } from './Button';
 import styles from './Editor.module.scss';
-import { Input } from './Input';
-import { Modal } from './Modal';
+import { Button } from '@components/Button';
+import { Input } from '@components/Input';
+import { Modal } from '@components/Modal';
 import { AuthorizationScopes } from '@entities/Jwt';
 import { usePost } from '@lib/posts';
 import { useUser } from '@lib/user';
