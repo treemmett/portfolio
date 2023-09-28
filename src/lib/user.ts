@@ -3,7 +3,6 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { getCurrentUser, logout as logoutAction } from '../app/login/actions';
 import { AuthorizationScopes } from '@entities/Jwt';
-import { trace } from '@utils/analytics';
 import { APIError } from '@utils/errors';
 
 interface User {
@@ -57,8 +56,6 @@ export function useUser() {
   const { trigger: login, isMutating: isLoggingIn } = useSWRMutation<User | null, APIError>(
     'user',
     async () => {
-      trace('begin-login');
-
       const popup = window.open(
         '/login',
         'oauth',

@@ -3,7 +3,6 @@
 import cx from 'classnames';
 import { FC, PropsWithChildren } from 'react';
 import styles from './Button.module.scss';
-import { trace } from '@utils/analytics';
 
 export interface AnchorProps extends PropsWithChildren {
   className?: string;
@@ -21,11 +20,6 @@ export const Anchor: FC<AnchorProps> = ({ className, children, button, href, lab
       [styles.button]: button,
     })}
     href={href}
-    onClick={() => {
-      trace('external-link-click', {
-        href,
-      });
-    }}
     rel="noreferrer"
     target="_blank"
   >
