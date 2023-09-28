@@ -10,9 +10,9 @@ import sharp, { OutputInfo, Sharp } from 'sharp';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 } from 'uuid';
 import { PhotoType } from '../app/(gallery)/PhotoType';
+import { WatermarkPosition } from '../app/(settings)/WatermarkPosition';
 import { Site } from './Site';
 import { User } from './User';
-import { WatermarkPosition } from './WatermarkPosition';
 import { Config } from '@utils/config';
 import {
   BadUploadTokenError,

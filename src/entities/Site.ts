@@ -15,9 +15,9 @@ import {
 } from 'typeorm';
 // import { GPSMarker } from './GPSMarker';
 import { PhotoType } from '../app/(gallery)/PhotoType';
+import { WatermarkPosition } from '../app/(settings)/WatermarkPosition';
 import { IPhoto, Photo } from './Photo';
 import type { IUser, User } from './User';
-import { WatermarkPosition } from './WatermarkPosition';
 import { SiteNotFoundError } from '@utils/errors';
 
 @Entity({ name: 'sites' })

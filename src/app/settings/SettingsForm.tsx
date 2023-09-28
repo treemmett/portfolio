@@ -5,10 +5,10 @@ import { Site } from '@prisma/client';
 import classNames from 'classnames';
 import { ChangeEvent, FC, useState } from 'react';
 import styles from './Settings.module.scss';
+import { WatermarkPosition } from '@app/(settings)/WatermarkPosition';
 import { updateSettings } from '@app/(settings)/actions';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
-import { WatermarkPosition } from '@entities/WatermarkPosition';
 import { formatBytes } from '@utils/bytes';
 import { useTranslation } from '@utils/translation';
 
