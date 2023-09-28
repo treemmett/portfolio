@@ -1,5 +1,6 @@
 'use client';
 
+import { Site } from '@prisma/client';
 import axios, { AxiosProgressEvent } from 'axios';
 import cx from 'classnames';
 import { useRouter } from 'next/navigation';
@@ -8,7 +9,6 @@ import { ChevronDown, ChevronUp, UploadCloud } from 'react-feather';
 import { ulid } from 'ulid';
 import { getUploadToken, processPhoto } from './actions';
 import { Button } from '@components/Button';
-import { useSite } from '@lib/site';
 import { useUser } from '@lib/user';
 import { UnauthenticatedError } from '@utils/errors';
 
@@ -56,12 +56,11 @@ async function loadFile(file: File): Promise<ApiRequest> {
   }
 }
 
-export const ApiManager: FC = () => {
+export const ApiManager: FC<{ site: Site }> = ({ site }) => {
   const [requests, setRequests] = useState<ApiRequest[]>([]);
   const [collapsed, setCollapsed] = useState(false);
   const { push } = useRouter();
   const { user } = useUser();
-  const { site } = useSite();
 
   const addFiles = useCallback(
     async (files: FileList) => {
@@ -91,7 +90,7 @@ export const ApiManager: FC = () => {
         throw new UnauthenticatedError();
       }
 
-      if (site?.owner.id !== user.id) {
+      if (site.ownerId !== user.id) {
         push(`/u/${encodeURIComponent(user.username)}`);
         return;
       }
@@ -100,7 +99,7 @@ export const ApiManager: FC = () => {
 
       await addFiles(files);
     },
-    [addFiles, push, site?.owner.id, user],
+    [addFiles, push, site.ownerId, user],
   );
 
   const dragHandler = useCallback((e: DragEvent) => {

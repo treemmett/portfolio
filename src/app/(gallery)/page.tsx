@@ -1,5 +1,10 @@
 import { DynamicApiManager } from './DynamicApiManager';
+import { getSite } from '@lib/getSite';
 
 export default async function GalleryPage() {
-  return <DynamicApiManager />;
+  const site = await getSite();
+
+  if (!site) return null;
+
+  return <DynamicApiManager site={site} />;
 }
