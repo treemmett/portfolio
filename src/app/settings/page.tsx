@@ -8,9 +8,9 @@ export const dynamic = 'force-dynamic';
 export default async function SettingsPage() {
   const [user, site] = await Promise.all([getUser().catch(() => {}), getSite()]);
 
-  if (site?.ownerId !== user?.id) {
+  if (!site || site?.ownerId !== user?.id) {
     notFound();
   }
 
-  return <SettingsForm />;
+  return <SettingsForm site={site} />;
 }

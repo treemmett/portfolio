@@ -24,6 +24,7 @@
     "locale:gen": "i18next 'src/**/*' -c i18next-parser.config.ts"
   },
   "dependencies": {
+    "@mantine/form": "^7.0.2",
     "@next/bundle-analyzer": "^13.5.3",
     "@prisma/client": "^5.3.1",
     "@types/cookie": "^0.5.1",
