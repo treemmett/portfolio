@@ -10,12 +10,11 @@ import {
 } from 'react';
 import { Check } from 'react-feather';
 import styles from './Input.module.scss';
-import type { IPhoto } from '@entities/Photo';
 
 export interface InputProps
   extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   error?: string;
-  file?: File | IPhoto | null;
+  file?: File | null;
   label?: string;
   onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
   options?: { id: string; label: string }[];
@@ -59,10 +58,6 @@ export const Input: FC<InputProps> = ({
       });
 
       reader.readAsDataURL(file);
-    }
-
-    if ('url' in file) {
-      setImageData(file.url);
     }
   }, [file]);
 
