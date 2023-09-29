@@ -21,6 +21,12 @@ const nextConfig = {
     ].filter(Boolean),
   },
   productionBrowserSourceMaps: true,
+  rewrites: async () => [
+    {
+      destination: '/_vercel/insights/:*rest',
+      source: '/va/:*rest',
+    },
+  ],
   serverRuntimeConfig: {
     root: __dirname,
   },
