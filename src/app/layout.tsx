@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import './global.scss';
+import { Analytics } from '@vercel/analytics/react';
 import { Josefin_Sans as JosefinSans } from 'next/font/google';
 import { FC, PropsWithChildren } from 'react';
 
@@ -9,6 +10,7 @@ const RootLayout: FC<PropsWithChildren> = ({ children }) => (
   <html lang="en">
     <body className="bg-white text-black dark:bg-black dark:text-white font-light">
       <main className={josefin.className}>{children}</main>
+      <Analytics />
     </body>
   </html>
 );
