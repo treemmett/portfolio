@@ -23,8 +23,8 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   rewrites: async () => [
     {
-      destination: '/_vercel/insights/:*rest',
-      source: '/va/:*rest',
+      destination: '/_vercel/insights/:rest*',
+      source: '/va/:rest*',
     },
   ],
   serverRuntimeConfig: {
