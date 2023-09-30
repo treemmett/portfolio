@@ -1,8 +1,11 @@
 import { notFound } from 'next/navigation';
+import validator from 'validator';
 import { Config } from '@utils/config';
 import { prisma } from '@utils/prisma';
 
 export async function getPost(id: string, username: string) {
+  if (!validator.isUUID(id)) return notFound();
+
   const post = await prisma.post.findFirst({
     include: { photo: true, user: true },
     where: { id, user: { username } },
