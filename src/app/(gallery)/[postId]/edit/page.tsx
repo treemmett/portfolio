@@ -9,7 +9,7 @@ export default async function PostEditPage({ params }: { params: { postId: strin
   const [user, site, post] = await Promise.all([
     getUser().catch(() => {}),
     getSite(),
-    getPost(params.postId, 'tregan'),
+    getPost(params.postId),
   ]);
 
   if (!site || site?.ownerId !== user?.id) {

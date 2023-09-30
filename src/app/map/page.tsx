@@ -3,7 +3,7 @@ import { Nav } from '@components/Nav';
 import { getGpsMarkers } from '@lib/getGpsMarkers';
 
 export default async function MapPage() {
-  const markers = await getGpsMarkers('tregan');
+  const markers = await getGpsMarkers();
 
   return (
     <>

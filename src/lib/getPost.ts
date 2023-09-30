@@ -3,12 +3,12 @@ import validator from 'validator';
 import { Config } from '@utils/config';
 import { prisma } from '@utils/prisma';
 
-export async function getPost(id: string, username: string) {
+export async function getPost(id: string) {
   if (!validator.isUUID(id)) return notFound();
 
   const post = await prisma.post.findFirst({
     include: { photo: true, user: true },
-    where: { id, user: { username } },
+    where: { id, user: { username: Config.DEFAULT_USER } },
   });
 
   if (!post) return notFound();

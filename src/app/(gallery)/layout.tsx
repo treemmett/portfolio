@@ -6,7 +6,7 @@ import { Nav } from '@components/Nav';
 import { getPosts } from '@lib/getPosts';
 
 export default async function GalleryPage({ children }: PropsWithChildren) {
-  const posts = await getPosts('tregan');
+  const posts = await getPosts();
 
   return (
     <>

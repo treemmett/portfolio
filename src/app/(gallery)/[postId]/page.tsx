@@ -5,7 +5,7 @@ import { EditButton } from './EditButton';
 import { getPost } from '@lib/getPost';
 
 export default async function GalleryPostPage({ params }: { params: { postId: string } }) {
-  const post = await getPost(params.postId, 'tregan');
+  const post = await getPost(params.postId);
 
   return (
     <div
