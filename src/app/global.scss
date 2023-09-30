@@ -11,4 +11,8 @@
       @apply py-2;
     }
   }
+
+  .skeleton {
+    @apply animate-pulse rounded bg-gray-400;
+  }
 }
