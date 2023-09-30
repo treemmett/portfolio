@@ -96,3 +96,9 @@ export class NoSiteError extends APIError {
     super(message, 404);
   }
 }
+
+export class ValidationError extends APIError {
+  constructor(public message = 'Validation failed') {
+    super(message, 400);
+  }
+}

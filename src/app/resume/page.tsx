@@ -1,6 +1,4 @@
-import { readFile } from 'fs/promises';
-import { join } from 'path';
-import getConfig from 'next/config';
+import { notFound } from 'next/navigation';
 import { FC, PropsWithChildren } from 'react';
 import {
   AtSign,
@@ -14,6 +12,7 @@ import {
 import { Resume as ResumeType } from 'resume';
 import styles from './resume.module.scss';
 import { Anchor } from '@components/Anchor';
+import { getSite } from '@lib/getSite';
 
 const Section: FC<PropsWithChildren<{ className?: string; name?: string }>> = ({
   children,
@@ -30,10 +29,14 @@ const Section: FC<PropsWithChildren<{ className?: string; name?: string }>> = ({
 const ExternalLink: FC = () => <ExternalLinkIcon className={styles['external-link']} />;
 
 export default async function Resume() {
-  const { root } = getConfig().serverRuntimeConfig;
+  const site = await getSite();
 
-  const resumeText = await readFile(join(root, 'public/resume.json'), 'utf-8');
-  const resume = JSON.parse(resumeText) as ResumeType;
+  if (!site.resumeUrl) notFound();
+
+  const response = await fetch(site.resumeUrl, { next: { tags: ['resume'] } });
+  if (!response.ok) notFound();
+
+  const resume: ResumeType = await response.json();
 
   return (
     <div className={styles.page}>

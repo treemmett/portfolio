@@ -69,6 +69,7 @@ model Site {
   ownerId               String                        @unique(map: "UQ_b00408635dde2a3b0cb6e57de17") @db.Uuid
   domain                String?                       @unique(map: "IDX_4578b679503e1b86cc1c2531b9")
   logoId                String?                       @unique(map: "UQ_30a2845f272f4b824a171ecd3be") @db.Uuid
+  resumeUrl             String?                       @db.VarChar
   watermarkPosition     sites_watermarkposition_enum?
   gps_markers           GpsMarker[]
   photos                Photo?                        @relation(fields: [logoId], references: [id], onUpdate: NoAction, map: "FK_30a2845f272f4b824a171ecd3be")

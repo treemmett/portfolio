@@ -4,9 +4,10 @@ import { useForm } from '@mantine/form';
 import { Site } from '@prisma/client';
 import classNames from 'classnames';
 import { ChangeEvent, FC, useState } from 'react';
+import { RefreshCw } from 'react-feather';
 import styles from './Settings.module.scss';
 import { WatermarkPosition } from '@app/(settings)/WatermarkPosition';
-import { updateSettings } from '@app/(settings)/actions';
+import { revalidateResume, updateSettings } from '@app/(settings)/actions';
 import { Button } from '@components/Button';
 import { Input } from '@components/Input';
 import { formatBytes } from '@utils/bytes';
@@ -29,6 +30,7 @@ export const SettingsForm: FC<{ count: number | null; site: Site; size: number |
       instagram: site.instagram || '',
       linkedIn: site.linkedIn || '',
       name: site.name || '',
+      resumeUrl: site.resumeUrl || '',
       title: site.title || '',
       twitter: site.twitter || '',
       watermarkPosition: site.watermarkPosition,
@@ -59,6 +61,15 @@ export const SettingsForm: FC<{ count: number | null; site: Site; size: number |
           <Input label={t('Name')} {...form.getInputProps('name')} />
           <Input label={t('Title')} {...form.getInputProps('title')} />
           <Input label={t('Description')} type="textarea" {...form.getInputProps('description')} />
+          <Input label={t('Resume URL')} {...form.getInputProps('resumeUrl')} />
+          <button
+            className="button flex items-center justify-center"
+            onClick={() => revalidateResume()}
+            title={t('Revalidate cache if upstream source has changed.')}
+            type="button"
+          >
+            {t('Update resume cache')} <RefreshCw className="ml-2" size="1rem" />
+          </button>
           {/* TODO this is broken */}
           <Input label={t('Logo - BROKEN')} type="file" disabled />
           <Input
