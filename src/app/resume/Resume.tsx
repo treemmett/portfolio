@@ -1,7 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { FC, PropsWithChildren } from 'react';
 import {
   AtSign,
+  Code,
   ExternalLink as ExternalLinkIcon,
   GitHub,
   Instagram,
@@ -30,6 +34,9 @@ const ExternalLink: FC = () => <ExternalLinkIcon className={styles['external-lin
 
 export const Resume: FC<{ resume: ResumeType }> = ({ resume }) => {
   const { t } = useTranslation();
+  const pathname = usePathname();
+
+  const isCanonical = pathname === '/resume';
 
   return (
     <div className={styles.page}>
@@ -137,10 +144,20 @@ export const Resume: FC<{ resume: ResumeType }> = ({ resume }) => {
         ))}
       </Section>
       <div className="sticky bottom-2 flex justify-center print:hidden">
-        <div className="glass p-2">
+        <div className="glass flex gap-2 p-2">
           <Link className="button green text-xs" href="/resume/custom">
             {t('Generate your own resume')}
           </Link>
+
+          {isCanonical && (
+            <Link
+              className="button action flex items-center px-2"
+              href="/resume.json"
+              title="View resume.json"
+            >
+              <Code size={16} />
+            </Link>
+          )}
         </div>
       </div>
     </div>
