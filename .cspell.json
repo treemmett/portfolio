@@ -22,7 +22,6 @@
     "pino",
     "preconnect",
     "preload",
-    "stylelint",
     "swc",
     "tailwindcss",
     "testid",
