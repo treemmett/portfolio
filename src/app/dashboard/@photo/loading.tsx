@@ -2,7 +2,7 @@ import { Spinner } from '@components/Spinner';
 
 export default async function DashboardPhotoLoading() {
   return (
-    <div className="p-12 flex justify-center align-center">
+    <div className="align-center flex justify-center p-12">
       <Spinner />
     </div>
   );

@@ -33,8 +33,8 @@ export default function LoginPage({ searchParams }: { searchParams?: Record<stri
 
   if (state instanceof Error) {
     return (
-      <div className="text-center py-8">
-        <div className="text-red-500 font-bold">{t('Error')}</div>
+      <div className="py-8 text-center">
+        <div className="font-bold text-red-500">{t('Error')}</div>
         <div>{state.message}</div>
       </div>
     );
@@ -42,7 +42,7 @@ export default function LoginPage({ searchParams }: { searchParams?: Record<stri
 
   if (state === 'success') {
     return (
-      <div className="text-center py-8">
+      <div className="py-8 text-center">
         <div>{t('Successfully logged in.')}</div>
         <div className="text-xs">{t('You may now close this window.')}</div>
       </div>

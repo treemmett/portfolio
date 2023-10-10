@@ -14,7 +14,7 @@ export default async function DashboardLayout({ photo }: { photo: ReactNode }) {
             <h2>Latest Photo</h2>
             <Link href="/gallery">All Photos {'>'}</Link>
           </div>
-          <div className="rounded-lg overflow-hidden relative">{photo}</div>
+          <div className="relative overflow-hidden rounded-lg">{photo}</div>
         </div>
       )}
     </div>

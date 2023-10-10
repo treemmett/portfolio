@@ -101,7 +101,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   return (
     <>
       <Button
-        className="!fixed z-10 right-4 bottom-4"
+        className="!fixed bottom-4 right-4 z-10"
         disabled={gettingGPS}
         onClick={() => {
           setGettingGPS(true);
@@ -121,7 +121,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
 
       {lngLat && (
         <form
-          className="backdrop-blur-sm dark:bg-zinc-900/50 fixed z-10 right-8 bottom-8 p-4 rounded-lg"
+          className="fixed bottom-8 right-8 z-10 rounded-lg p-4 backdrop-blur-sm dark:bg-zinc-900/50"
           onSubmit={save}
         >
           <Input

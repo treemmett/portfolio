@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 export const Spinner: FC = () => (
   <svg
-    className="animate-spin h-5 w-5 text-white"
+    className="h-5 w-5 animate-spin text-white"
     fill="none"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"

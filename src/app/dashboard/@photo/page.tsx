@@ -17,7 +17,7 @@ export default async function DashboardPhoto() {
       <Image
         alt={[post.title, post.location, post.created.toISOString()].filter((i) => !!i).join(', ')}
         blurDataURL={post.photo.thumbnailURL}
-        className="block w-full h-auto select-none"
+        className="block h-auto w-full select-none"
         height={post.photo.height}
         placeholder="blur"
         src={
@@ -29,10 +29,10 @@ export default async function DashboardPhoto() {
         priority
       />
       {(post.title || post.location || post.created) && (
-        <div className="absolute bottom-0 left-0 w-full p-2 backdrop-blur-sm bg-neutral-200/30 dark:bg-neutral-900/50 drop-shadow-lg">
+        <div className="absolute bottom-0 left-0 w-full bg-neutral-200/30 p-2 drop-shadow-lg backdrop-blur-sm dark:bg-neutral-900/50">
           {post.title && <div className="text-base sm:text-lg">{post.title}</div>}
           {(post.location || post.created) && (
-            <div className="text-xs sm:text-sm flex justify-between">
+            <div className="flex justify-between text-xs sm:text-sm">
               <span>{post.location}</span>
               <span>{formatDate(post.created)}</span>
             </div>

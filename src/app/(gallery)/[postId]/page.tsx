@@ -9,12 +9,12 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
 
   return (
     <div
-      className="max-w-full max-h-full"
+      className="max-h-full max-w-full"
       style={{
         aspectRatio: `auto ${post.photo.width} / ${post.photo.height}`,
       }}
     >
-      <div className="fixed left-0 top-0 py-6 px-8 left-0 flex justify-end w-full gap-2">
+      <div className="fixed left-0 left-0 top-0 flex w-full justify-end gap-2 px-8 py-6">
         <EditButton />
         <Link className="button action" href="/">
           <X strokeWidth={1} />
@@ -23,7 +23,7 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
       <Image
         alt={post.title || post.created.toISOString()}
         blurDataURL={post.photo.thumbnailURL}
-        className="max-w-full max-h-full !bg-contain object-contain"
+        className="max-h-full max-w-full !bg-contain object-contain"
         height={post.photo.height}
         placeholder="blur"
         src={post.photo.url}

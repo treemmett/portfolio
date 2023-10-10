@@ -13,10 +13,10 @@ export default async function Mosaic() {
     <>
       <Nav />
 
-      <div className={cx('p-4 gap-4', styles.mosaic)}>
+      <div className={cx('gap-4 p-4', styles.mosaic)}>
         {new Array(25).fill(null).map((_, i) => (
           <div
-            className="bg-red-400 max-w-full max-h-full mb-4 flex justify-center items-center"
+            className="mb-4 flex max-h-full max-w-full items-center justify-center bg-red-400"
             // eslint-disable-next-line react/no-array-index-key
             key={i}
             style={{

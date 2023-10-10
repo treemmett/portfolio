@@ -20,7 +20,7 @@ export const Input: FC<
         placeholder="https://raw.github.com/..."
         {...rest}
       />
-      {error && <div className="text-red-500 text-xs">{error}</div>}
+      {error && <div className="text-xs text-red-500">{error}</div>}
     </label>
   );
 };

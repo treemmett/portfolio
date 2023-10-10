@@ -52,7 +52,7 @@ export const ResumeForm: FC = () => {
         {...form.getInputProps('link')}
       />
 
-      <button className="green mt-5 w-full button">Generate</button>
+      <button className="green button mt-5 w-full">Generate</button>
     </form>
   );
 };

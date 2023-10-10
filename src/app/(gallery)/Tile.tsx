@@ -23,7 +23,7 @@ export const Tile: FC<TileProps> = ({ post, priority }) => {
       <Image
         alt={label}
         blurDataURL={post.photo.thumbnailURL}
-        className="block w-full h-auto mb-4 select-none"
+        className="mb-4 block h-auto w-full select-none"
         height={post.photo.height}
         placeholder="blur"
         priority={priority}

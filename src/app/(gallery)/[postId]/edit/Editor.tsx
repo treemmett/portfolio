@@ -76,7 +76,7 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
       >
         {t('Delete')}
       </button>
-      <Link className="button block mt-3 w-full" href={`/${post.id}`}>
+      <Link className="button mt-3 block w-full" href={`/${post.id}`}>
         Cancel
       </Link>
       <Modal

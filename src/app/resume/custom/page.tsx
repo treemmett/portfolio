@@ -24,8 +24,8 @@ export default async function CustomResume({
   return (
     <>
       <ResumeLoading animated={false} />
-      <div className="fixed pointer-events-none bg-black/80 py-8 flex items-center justify-center w-screen h-screen max-h-screen top-0 left-0">
-        <div className="pointer-events-auto	w-5/6 sm:w-3/4 md:w-4/6 max-h-full glass p-8 overflow-auto">
+      <div className="pointer-events-none fixed left-0 top-0 flex h-screen max-h-screen w-screen items-center justify-center bg-black/80 py-8">
+        <div className="glass	pointer-events-auto max-h-full w-5/6 overflow-auto p-8 sm:w-3/4 md:w-4/6">
           <ResumeForm />
         </div>
       </div>

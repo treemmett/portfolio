@@ -11,7 +11,7 @@ const RootLayout: FC<PropsWithChildren> = ({ children }) => (
   <html lang="en">
     <body
       className={cx(
-        'bg-white text-black dark:bg-black dark:text-white font-light',
+        'bg-white font-light text-black dark:bg-black dark:text-white',
         josefin.className,
       )}
     >

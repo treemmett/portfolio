@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Spinner } from '@components/Spinner';
 
 export const PostLoading: FC = () => (
-  <div className="h-full flex justify-center items-center">
+  <div className="flex h-full items-center justify-center">
     <Spinner />
   </div>
 );

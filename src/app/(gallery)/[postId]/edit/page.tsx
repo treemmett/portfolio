@@ -17,12 +17,12 @@ export default async function PostEditPage({ params }: { params: { postId: strin
   }
 
   return (
-    <div className="w-full h-full flex items-center md:gap-8 m-4 flex-col overflow-auto md:flex-row">
-      <div className="flex grow justify-center items-center relative h-1/2 md:h-full md:w-1/2">
+    <div className="m-4 flex h-full w-full flex-col items-center overflow-auto md:flex-row md:gap-8">
+      <div className="relative flex h-1/2 grow items-center justify-center md:h-full md:w-1/2">
         <Image
           alt={post.title || post.created.toISOString()}
           blurDataURL={post.photo.thumbnailURL}
-          className="max-w-full max-h-full !bg-contain object-contain"
+          className="max-h-full max-w-full !bg-contain object-contain"
           height={post.photo.height}
           placeholder="blur"
           src={post.photo.url}

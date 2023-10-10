@@ -24,7 +24,7 @@ export default async function ResumeLoading(
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={`${skeleton} h-4 w-1/2`} />
-        <div className={`${skeleton} h-4 w-3/4 mt-2`} />
+        <div className={`${skeleton} mt-2 h-4 w-3/4`} />
       </header>
 
       <Section className={styles.contact} name="Contact">
@@ -32,7 +32,7 @@ export default async function ResumeLoading(
           {new Array(6).fill(null).map((_, i) => (
             <div className="flex items-center" key={i}>
               <div className={`rounded-full ${skeleton} h-8 w-8`} />
-              <div className={`inline-block ml-2 ${skeleton} w-1/2 h-4`} />
+              <div className={`ml-2 inline-block ${skeleton} h-4 w-1/2`} />
             </div>
           ))}
         </div>
@@ -55,9 +55,9 @@ export default async function ResumeLoading(
       <Section className={cx(styles.languages, 'relative')} name="Languages">
         <div className={styles.list}>
           {new Array(3).fill(null).map((_, i) => (
-            <div className={cx(styles.language, 'w-full mt-2')} key={i}>
+            <div className={cx(styles.language, 'mt-2 w-full')} key={i}>
               <div className={`${skeleton} h-3 w-1/3`} />
-              <div className={`${skeleton} h-2 mt-3 w-1/5`} />
+              <div className={`${skeleton} mt-3 h-2 w-1/5`} />
             </div>
           ))}
         </div>

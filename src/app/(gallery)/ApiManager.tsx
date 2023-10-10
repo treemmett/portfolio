@@ -202,9 +202,9 @@ export const ApiManager: FC<{ site: Site }> = ({ site }) => {
   }, [requests, uploadPhoto]);
 
   return (
-    <div className="fixed bottom-0 sm:bottom-3 left-3">
+    <div className="fixed bottom-0 left-3 sm:bottom-3">
       <label
-        className="inline-flex cursor-pointer items-center backdrop-blur-sm dark:bg-zinc-900/50 drop-shadow-lg p-2 rounded-lg"
+        className="inline-flex cursor-pointer items-center rounded-lg p-2 drop-shadow-lg backdrop-blur-sm dark:bg-zinc-900/50"
         htmlFor="file-selector"
       >
         <UploadCloud className="mr-2" strokeWidth={1} />
@@ -224,10 +224,10 @@ export const ApiManager: FC<{ site: Site }> = ({ site }) => {
 
       {!!requests.length && (
         <div
-          className="mt-2 backdrop-blur-sm dark:bg-zinc-900/50 drop-shadow-lg overflow-hidden w-[calc(100%-1.5rem)] max-w-lg rounded-lg"
+          className="mt-2 w-[calc(100%-1.5rem)] max-w-lg overflow-hidden rounded-lg drop-shadow-lg backdrop-blur-sm dark:bg-zinc-900/50"
           data-testid="upload-manager"
         >
-          <header className="flex justify-between align-center p-4">
+          <header className="align-center flex justify-between p-4">
             <span className="capitalize">{status}</span>
             <Button onClick={() => setCollapsed(!collapsed)} size="small" inverted>
               {collapsed ? <ChevronUp /> : <ChevronDown />}
@@ -235,7 +235,7 @@ export const ApiManager: FC<{ site: Site }> = ({ site }) => {
           </header>
           <div
             className={cx(
-              'overflow-y-auto transition-[max-height] border-t border-black dark:border-white',
+              'overflow-y-auto border-t border-black transition-[max-height] dark:border-white',
               {
                 'max-h-0 border-t-0': collapsed,
                 'max-h-60': !collapsed,
@@ -244,13 +244,13 @@ export const ApiManager: FC<{ site: Site }> = ({ site }) => {
           >
             {requests.map((r) => (
               <div
-                className="flex items-center p-4 border-t border-black dark:border-white first:border-0"
+                className="flex items-center border-t border-black p-4 first:border-0 dark:border-white"
                 key={r.id}
               >
                 {r.thumbnailUrl && (
                   <img
                     alt="Uploading thumbnail"
-                    className="max-w-8 max-h-6 mr-4"
+                    className="max-w-8 mr-4 max-h-6"
                     src={r.thumbnailUrl}
                   />
                 )}

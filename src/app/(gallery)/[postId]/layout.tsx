@@ -2,7 +2,7 @@ import { FC, PropsWithChildren } from 'react';
 import { ScrollLock } from '@components/ScrollLock';
 
 const PostsLayout: FC<PropsWithChildren> = ({ children }) => (
-  <div className="fixed z-20 left-0 top-0 w-screen h-screen p-4 bg-neutral-900/90 backdrop-blur-sm flex justify-center items-center">
+  <div className="fixed left-0 top-0 z-20 flex h-screen w-screen items-center justify-center bg-neutral-900/90 p-4 backdrop-blur-sm">
     <ScrollLock />
     {children}
   </div>

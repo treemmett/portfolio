@@ -12,7 +12,7 @@ export default async function GalleryPage({ children }: PropsWithChildren) {
     <>
       <Nav />
       {children}
-      <div className={cx('p-4 gap-4', styles.mosaic)}>
+      <div className={cx('gap-4 p-4', styles.mosaic)}>
         {posts?.map((post, i) => <Tile key={post.id} post={post} priority={i < 5} />)}
       </div>
     </>
