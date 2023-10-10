@@ -1,5 +1,4 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer');
-const { withAxiom } = require('next-axiom');
 
 const IS_VERCEL = typeof process.env.VERCEL !== 'undefined';
 
@@ -32,6 +31,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(
-  withAxiom(nextConfig),
-);
+module.exports = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(nextConfig);
