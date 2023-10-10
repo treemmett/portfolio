@@ -36,7 +36,6 @@ export async function updateSettings(data: Partial<Site>) {
 
 export async function revalidateResume() {
   revalidatePath('/resume');
-  revalidatePath('/resume.pdf');
   revalidatePath('/resume.json');
   revalidateTag('resume');
 }

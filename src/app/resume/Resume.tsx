@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { FC, PropsWithChildren } from 'react';
 import {
   AtSign,
@@ -36,7 +36,6 @@ const ExternalLink: FC = () => <ExternalLinkIcon className={styles['external-lin
 export const Resume: FC<{ resume: ResumeType }> = ({ resume }) => {
   const { t } = useTranslation();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const isCanonical = pathname === '/resume';
 
@@ -153,15 +152,14 @@ export const Resume: FC<{ resume: ResumeType }> = ({ resume }) => {
             {t('Generate your own resume')}
           </Link>
 
-          <a
+          <button
             className="button action flex items-center px-2"
-            href={isCanonical ? '/resume.pdf' : `/resume/custom.pdf?${searchParams.toString()}`}
-            rel="noopener noreferrer"
-            target="_blank"
+            onClick={() => window.print()}
             title="Download PDF"
+            type="button"
           >
             <Download size={16} />
-          </a>
+          </button>
 
           {isCanonical && (
             <Link
