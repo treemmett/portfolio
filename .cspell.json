@@ -4,6 +4,7 @@
   "language": "en",
   "dictionaries": ["typescript", "html"],
   "words": [
+    "browserless",
     "cdn",
     "chainable",
     "commitlint",

@@ -1,4 +1,6 @@
 export class Config {
+  public static BROWSERLESS_TOKEN = process.env.BROWSERLESS_TOKEN as string;
+
   public static CDN_URL?: string = process.env.CDN_URL;
 
   public static DEFAULT_USER = process.env.DEFAULT_USER || 'tregan';

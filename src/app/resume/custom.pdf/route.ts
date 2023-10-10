@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { launch } from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import { Config } from '@utils/config';
 
 export async function GET(request: NextRequest) {
   const link = request.nextUrl.searchParams.get('link');
   const json = request.nextUrl.searchParams.get('json');
 
-  const browser = await launch({ headless: 'new' });
+  const browser = await puppeteer.connect({
+    browserWSEndpoint: `wss://chrome.browserless.io?token=${Config.BROWSERLESS_TOKEN}`,
+  });
+
   const page = await browser.newPage();
   await page.goto(
     `${request.nextUrl.protocol}//${request.nextUrl.host}/resume/custom?${[

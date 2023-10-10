@@ -6,6 +6,7 @@ const IS_VERCEL = typeof process.env.VERCEL !== 'undefined';
 const nextConfig = {
   experimental: {
     serverActions: true,
+    serverComponentsExternalPackages: ['puppeteer-core'],
   },
   images: {
     domains: [

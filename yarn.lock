@@ -964,6 +964,14 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz#8be36a1f66f3265389e90b5f9c9962146758f728"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
 
+"@sparticuz/chromium@^117.0.0":
+  version "117.0.0"
+  resolved "https://registry.yarnpkg.com/@sparticuz/chromium/-/chromium-117.0.0.tgz#fc7f1ed22339415921fbb8eecd45deaea305a4ef"
+  integrity sha512-MXvxLgGt7e1bjOu6AwpemRnhrF+wxLxsHpkiOuJOLsfHAtT0VNlsnhAULQZ7hNXGhr37cTM2sCifUHwgrVH+sA==
+  dependencies:
+    follow-redirects "^1.15.2"
+    tar-fs "^3.0.4"
+
 "@swc/helpers@0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@swc/helpers/-/helpers-0.5.2.tgz#85ea0c76450b61ad7d10a37050289eded783c27d"
@@ -2111,16 +2119,6 @@ cosmiconfig@8.0.0:
     import-fresh "^3.2.1"
     js-yaml "^4.1.0"
     parse-json "^5.0.0"
-    path-type "^4.0.0"
-
-cosmiconfig@8.3.6:
-  version "8.3.6"
-  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.3.6.tgz#060a2b871d66dba6c8538ea1118ba1ac16f5fae3"
-  integrity sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==
-  dependencies:
-    import-fresh "^3.3.0"
-    js-yaml "^4.1.0"
-    parse-json "^5.2.0"
     path-type "^4.0.0"
 
 cosmiconfig@^8.0.0:
@@ -3354,6 +3352,11 @@ follow-redirects@^1.15.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
+
+follow-redirects@^1.15.2:
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.3.tgz#fe2f3ef2690afce7e82ed0b44db08165b207123a"
+  integrity sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==
 
 for-each@^0.3.3:
   version "0.3.3"
@@ -5210,7 +5213,7 @@ parent-module@^2.0.0:
   dependencies:
     callsites "^3.1.0"
 
-parse-json@^5.0.0, parse-json@^5.2.0:
+parse-json@^5.0.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/parse-json/-/parse-json-5.2.0.tgz#c76fc66dee54231c962b22bcc8a72cf2f99753cd"
   integrity sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==
@@ -5630,7 +5633,7 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-puppeteer-core@21.3.8:
+puppeteer-core@^21.3.8:
   version "21.3.8"
   resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-21.3.8.tgz#7ac4879c9f73e8426431d8ca4c58680e517a4b08"
   integrity sha512-yv12E/+zZ7Lei5tJB4sUkSrsuqKibuYpYxLGbmtLUjjYIqGE5HKz9OUI2I/RFHEvF+pHi2bTbv5bWydeCGJ6Mw==
@@ -5641,15 +5644,6 @@ puppeteer-core@21.3.8:
     debug "4.3.4"
     devtools-protocol "0.0.1179426"
     ws "8.14.2"
-
-puppeteer@^21.3.8:
-  version "21.3.8"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-21.3.8.tgz#986f95fef0a0f74381053fade8cb7a3595144fbf"
-  integrity sha512-4OrInVIAtDgcznENUV4Du4gYSZhRmbCkckvOoPstXrUH4JsQ3atSegY+9f/tOKCDB2qh7sXaszDcFEn+RymY0g==
-  dependencies:
-    "@puppeteer/browsers" "1.7.1"
-    cosmiconfig "8.3.6"
-    puppeteer-core "21.3.8"
 
 querystring@0.2.0:
   version "0.2.0"
