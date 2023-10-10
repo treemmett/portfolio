@@ -4,12 +4,20 @@
 @tailwind utilities;
 
 @layer components {
+  .active {
+    @apply focus:outline outline-offset-2 focus:outline-white/80;
+  }
+
   .glass {
     @apply border border-transparent rounded-md p-1 backdrop-blur-md bg-black/10 dark:bg-white/10;
   }
 
   .button {
-    @apply glass text-center text-white hover:border-white;
+    @apply glass text-center text-white active;
+
+    &.green {
+      @apply bg-green-700/50;
+    }
 
     &:not(.action) {
       @apply py-2;
@@ -22,5 +30,10 @@
     &:not(.reduce) {
       @apply animate-pulse bg-gray-400;
     }
+  }
+
+  input,
+  textarea {
+    @apply glass active m-0;
   }
 }

@@ -33,17 +33,6 @@ export const Resume: FC<{ resume: ResumeType }> = ({ resume }) => (
       {resume.basics?.label && <h2>{resume.basics.label}</h2>}
     </header>
 
-    <div className="flex space-x-4">
-      <div className="rounded-full skeleton h-12 w-12" />
-      <div className="flex-1 space-y-4 py-1">
-        <div className="h-4 skeleton rounded w-3/4" />
-        <div className="space-y-2">
-          <div className="h-4 skeleton rounded" />
-          <div className="h-4 skeleton rounded w-5/6" />
-        </div>
-      </div>
-    </div>
-
     <Section className={styles.contact} name="Contact">
       <div className={styles.dual}>
         {resume.basics?.email && (
