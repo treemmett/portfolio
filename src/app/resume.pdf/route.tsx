@@ -1,3 +1,4 @@
+import ms from 'ms';
 import { NextRequest, NextResponse } from 'next/server';
 import { launch } from 'puppeteer';
 import { getSite } from '@lib/getSite';
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
 
   return new NextResponse(pdf, {
     headers: {
-      'Cache-Control': `public, max-age=${60 * 60 * 24 * 30}`,
+      'Cache-Control': `public, max-age=${Math.floor(ms('30d') / 1000)}`,
       'Content-Disposition': `inline;filename="${site.name?.replaceAll(' ', '_')}-resume.pdf"`,
       'Content-Length': pdf.byteLength.toString(),
       'Content-Type': 'application/pdf',
