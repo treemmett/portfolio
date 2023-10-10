@@ -1,7 +1,7 @@
 'use server';
 
 import { Site } from '@prisma/client';
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import validator from 'validator';
 import { getUser } from '@app/getUser';
 import { ValidationError } from '@utils/errors';
@@ -35,5 +35,8 @@ export async function updateSettings(data: Partial<Site>) {
 }
 
 export async function revalidateResume() {
+  revalidatePath('/resume');
+  revalidatePath('/resume.pdf');
+  revalidatePath('/resume.json');
   revalidateTag('resume');
 }
