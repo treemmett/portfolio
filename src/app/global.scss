@@ -17,6 +17,10 @@
   }
 
   .skeleton {
-    @apply animate-pulse rounded bg-gray-400;
+    @apply rounded bg-gray-500;
+
+    &:not(.reduce) {
+      @apply animate-pulse bg-gray-400;
+    }
   }
 }
