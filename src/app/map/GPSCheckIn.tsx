@@ -4,6 +4,7 @@ import { MapPin } from 'react-feather';
 import { checkIn, deleteCheckIn, updateCheckIn } from './actions';
 import { useMap } from './context';
 import { Input } from '@components/Input';
+import { openConfirmModal } from '@components/ModalManager';
 import { Spinner } from '@components/Spinner';
 import { geocode } from '@lib/geocode';
 import { toLocalString } from '@utils/date';
@@ -192,7 +193,18 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
         {t('Save')}
       </button>
       {markerToEdit && (
-        <button className="button red" onClick={() => deleteMarker(markerToEdit.id)} type="button">
+        <button
+          className="button red"
+          onClick={() =>
+            openConfirmModal({
+              confirmClassName: 'red',
+              confirmText: t('Delete'),
+              message: t("Are you sure you want to delete this marker? This can't be undone."),
+              onConfirm: () => deleteMarker(markerToEdit.id),
+            })
+          }
+          type="button"
+        >
           {t('Delete')}
         </button>
       )}
