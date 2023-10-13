@@ -40,7 +40,10 @@ export const Menu: FC<{ className?: string; site: Site }> = ({ className, site }
       >
         <MenuIcon strokeWidth={1} />
       </button>
-      <h1>{site.name}</h1>
+
+      <Link href="/">
+        <h1>{site.name}</h1>
+      </Link>
 
       <nav
         className={classNames(
