@@ -12,14 +12,9 @@ export const Input: FC<
   const id = useId();
 
   return (
-    <label className={cx(className, 'block')} htmlFor={id}>
+    <label className={cx(className, 'block rounded-md')} htmlFor={id}>
       {label && <div className={labelClassName}>{label}</div>}
-      <input
-        className={inputClassName}
-        id={id}
-        placeholder="https://raw.github.com/..."
-        {...rest}
-      />
+      <input className={cx(inputClassName, 'block w-full rounded-md p-2')} id={id} {...rest} />
       {error && <div className="text-xs text-red-500">{error}</div>}
     </label>
   );
