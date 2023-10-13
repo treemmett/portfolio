@@ -15,6 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     description: site.description,
+    openGraph: {
+      images: ['/og'],
+    },
     title: site.title,
   };
 }
