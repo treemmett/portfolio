@@ -4,7 +4,6 @@ import { Site } from '@prisma/client';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { FC } from 'react';
-import styles from './Nav.module.scss';
 import { Anchor } from '@components/Anchor';
 import { useUser } from '@lib/user';
 import { useTranslation } from '@utils/translation';
@@ -14,10 +13,15 @@ export const Menu: FC<{ className?: string; site: Site }> = ({ className, site }
   const { isLoggingIn, login, logout, user } = useUser();
 
   return (
-    <header className={classNames(styles.nav, className)}>
+    <header
+      className={classNames(
+        'glass fixed top-0 z-10 flex w-screen items-center gap-4 rounded-none p-4',
+        className,
+      )}
+    >
       <h1>{site.name}</h1>
 
-      <nav>
+      <nav className="ml-auto flex gap-4">
         {site.resumeUrl && <Link href="/resume">{t('Resume')}</Link>}
         {site.facebook && (
           <Anchor href={`https://facebook.com/${encodeURIComponent(site.facebook)}`}>
