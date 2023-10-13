@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { FC, useCallback, useState } from 'react';
 import { deletePost, updatePost } from '../actions';
 import styles from './Editor.module.scss';
-import { Input } from '@components/Input';
+import { Input } from '@app/Input';
 import { Modal } from '@components/Modal';
 import { useTranslation } from '@utils/translation';
 

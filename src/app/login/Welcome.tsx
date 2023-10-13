@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { Button } from '../../components/Button';
-import { Input } from '../../components/Input';
 import { Modal } from '../../components/Modal';
 import styles from './Welcome.module.scss';
+import { Input } from '@app/Input';
 import { AuthorizationScopes } from '@app/scopes';
 import { useUser } from '@lib/user';
 import { useTranslation } from '@utils/translation';

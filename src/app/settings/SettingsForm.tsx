@@ -8,8 +8,8 @@ import { RefreshCw } from 'react-feather';
 import styles from './Settings.module.scss';
 import { WatermarkPosition } from '@app/(settings)/WatermarkPosition';
 import { revalidateResume, updateSettings } from '@app/(settings)/actions';
+import { Input } from '@app/Input';
 import { Button } from '@components/Button';
-import { Input } from '@components/Input';
 import { formatBytes } from '@utils/bytes';
 import { useTranslation } from '@utils/translation';
 
