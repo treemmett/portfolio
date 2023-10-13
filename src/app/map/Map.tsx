@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { FC, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { MapMarker } from './MapMarker';
+import { MapProvider } from './context';
 import { AuthorizationScopes } from '@app/scopes';
 import { useUser } from '@lib/user';
 import { Config } from '@utils/config';
@@ -80,13 +81,13 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
   }, [markers]);
 
   return (
-    <>
+    <MapProvider>
       {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn map={map.current} />}
       {placedMarkers.map(({ checkIn, marker }) =>
         createPortal(<MapMarker marker={checkIn} />, marker.getElement()),
       )}
       <div className="h-screen" ref={mapContainer} />
-    </>
+    </MapProvider>
   );
 };
 
