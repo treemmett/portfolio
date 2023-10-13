@@ -2,6 +2,7 @@ import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { MapPin } from 'react-feather';
 import { checkIn } from './actions';
+import { useMap } from './context';
 import { Input } from '@app/Input';
 import { Spinner } from '@components/Spinner';
 import { geocode } from '@lib/geocode';
@@ -15,6 +16,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   const [country, setCountry] = useState('');
   const [date, setDate] = useState(new Date());
   const [lngLat, setLngLat] = useState<LngLat>();
+  const { markerDetails } = useMap();
 
   const close = useCallback(() => {
     setCity('');
@@ -38,9 +40,14 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
     [city, close, country, date, lngLat],
   );
 
-  const mapClickHandler = useCallback((event: MapMouseEvent & EventData) => {
-    setLngLat(event.lngLat);
-  }, []);
+  const mapClickHandler = useCallback(
+    (event: MapMouseEvent & EventData) => {
+      if (markerDetails) return;
+
+      setLngLat(event.lngLat);
+    },
+    [markerDetails],
+  );
 
   useEffect(() => {
     if (map) {
