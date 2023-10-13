@@ -4,7 +4,9 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { GpsMarker } from '@prisma/client';
 import { LngLat, LngLatBounds, Map as Mapbox, Marker } from 'mapbox-gl';
 import dynamic from 'next/dynamic';
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { MapMarker } from './MapMarker';
 import { AuthorizationScopes } from '@app/scopes';
 import { useUser } from '@lib/user';
 import { Config } from '@utils/config';
@@ -40,15 +42,19 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
     [],
   );
 
+  const [placedMarkers, setPlacedMarkers] = useState<{ marker: Marker; checkIn: GpsMarker }[]>([]);
   useEffect(() => {
-    const placedMarkers: Marker[] = [];
+    const markersToAdd: typeof placedMarkers = [];
 
     if (map.current && markers) {
       const { current } = map;
-      placedMarkers.push(
-        ...markers.map((marker) =>
-          new Marker().setLngLat([marker.longitude, marker.latitude]).addTo(current),
-        ),
+      markersToAdd.push(
+        ...markers.map((marker) => ({
+          checkIn: marker,
+          marker: new Marker({ anchor: 'bottom', element: document.createElement('div') })
+            .setLngLat([marker.longitude, marker.latitude])
+            .addTo(current),
+        })),
       );
 
       const lastFourMarkers = markers.slice(0, 4);
@@ -64,16 +70,21 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
         map.current.setCenter([lastFourMarkers[0].longitude, lastFourMarkers[0].latitude]);
         map.current.zoomTo(5);
       }
+
+      setPlacedMarkers(markersToAdd);
     }
 
     return () => {
-      placedMarkers?.forEach((m) => m.remove());
+      markersToAdd?.forEach((m) => m.marker.remove());
     };
   }, [markers]);
 
   return (
     <>
       {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn map={map.current} />}
+      {placedMarkers.map(({ checkIn, marker }) =>
+        createPortal(<MapMarker marker={checkIn} />, marker.getElement()),
+      )}
       <div className="h-screen" ref={mapContainer} />
     </>
   );
