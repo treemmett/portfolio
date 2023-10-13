@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { getUser } from '@app/getUser';
 import { NoSiteError } from '@utils/errors';
 import { prisma } from '@utils/prisma';
@@ -26,4 +27,6 @@ export async function checkIn(lng: number, lat: number, city: string, country: s
       },
     },
   });
+
+  revalidatePath('/map');
 }

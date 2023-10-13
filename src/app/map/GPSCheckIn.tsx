@@ -2,8 +2,8 @@ import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { MapPin } from 'react-feather';
 import { checkIn } from './actions';
-import { Button } from '@components/Button';
-import { Input } from '@components/Input';
+import { Input } from '@app/Input';
+import { Spinner } from '@components/Spinner';
 import { geocode } from '@lib/geocode';
 import { toLocalString } from '@utils/date';
 import { useTranslation } from '@utils/translation';
@@ -98,10 +98,10 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
 
   const [gettingGPS, setGettingGPS] = useState(false);
 
-  return (
-    <>
-      <Button
-        className="!fixed bottom-4 right-4 z-10"
+  if (!lngLat) {
+    return (
+      <button
+        className="button action fixed bottom-4 right-4 z-10 p-2"
         disabled={gettingGPS}
         onClick={() => {
           setGettingGPS(true);
@@ -116,54 +116,54 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
           );
         }}
       >
-        <MapPin className="h-6" />
-      </Button>
+        {gettingGPS ? <Spinner /> : <MapPin className="h-6" strokeWidth={1} />}
+      </button>
+    );
+  }
 
-      {lngLat && (
-        <form
-          className="fixed bottom-8 right-8 z-10 rounded-lg p-4 backdrop-blur-sm dark:bg-zinc-900/50"
-          onSubmit={save}
-        >
-          <Input
-            label={t('Longitude')}
-            onChange={(e) => setLngLat(new LngLat(parseFloat(e.currentTarget.value), lngLat.lat))}
-            step={0.0000001}
-            type="number"
-            value={lngLat?.lng.toString()}
-          />
-          <Input
-            label={t('Latitude')}
-            onChange={(e) => setLngLat(new LngLat(lngLat.lng, parseFloat(e.currentTarget.value)))}
-            step={0.0000001}
-            type="number"
-            value={lngLat?.lat.toString()}
-          />
-          <Input
-            disabled={loadingGeo}
-            label={t('City')}
-            onChange={(e) => setCity(e.currentTarget.value)}
-            value={city}
-          />
-          <Input
-            disabled={loadingGeo}
-            label={t('Country')}
-            onChange={(e) => setCountry(e.currentTarget.value)}
-            value={country}
-          />
-          <Input
-            label={t('Date')}
-            onChange={(e) => setDate(new Date(e.currentTarget.value))}
-            type="datetime-local"
-            value={toLocalString(date)}
-          />
-          <Button type="success" submit>
-            {t('Save')}
-          </Button>
-          <Button onClick={close} type="danger">
-            {t('Cancel')}
-          </Button>
-        </form>
-      )}
-    </>
+  return (
+    <form
+      className="fixed bottom-8 right-8 z-10 flex max-h-[40vh] flex-col gap-2 overflow-auto rounded-lg p-4 backdrop-blur-sm dark:bg-zinc-900/50"
+      onSubmit={save}
+    >
+      <Input
+        label={t('Longitude')}
+        onChange={(e) => setLngLat(new LngLat(parseFloat(e.currentTarget.value), lngLat.lat))}
+        step={0.0000001}
+        type="number"
+        value={lngLat?.lng.toString()}
+      />
+      <Input
+        label={t('Latitude')}
+        onChange={(e) => setLngLat(new LngLat(lngLat.lng, parseFloat(e.currentTarget.value)))}
+        step={0.0000001}
+        type="number"
+        value={lngLat?.lat.toString()}
+      />
+      <Input
+        disabled={loadingGeo}
+        label={t('City')}
+        onChange={(e) => setCity(e.currentTarget.value)}
+        value={city}
+      />
+      <Input
+        disabled={loadingGeo}
+        label={t('Country')}
+        onChange={(e) => setCountry(e.currentTarget.value)}
+        value={country}
+      />
+      <Input
+        label={t('Date')}
+        onChange={(e) => setDate(new Date(e.currentTarget.value))}
+        type="datetime-local"
+        value={toLocalString(date)}
+      />
+      <button className="button green" type="submit">
+        {t('Save')}
+      </button>
+      <button className="button" onClick={close}>
+        {t('Cancel')}
+      </button>
+    </form>
   );
 };

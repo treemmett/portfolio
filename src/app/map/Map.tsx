@@ -73,7 +73,7 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
 
   return (
     <>
-      {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn />}
+      {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn map={map.current} />}
       <div className="h-screen" ref={mapContainer} />
     </>
   );
