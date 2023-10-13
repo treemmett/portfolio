@@ -1,5 +1,5 @@
 import Map from './Map';
-import { Nav } from '@components/Nav';
+import { Nav } from '@app/navbar/Nav';
 import { getGpsMarkers } from '@lib/getGpsMarkers';
 
 export default async function MapPage() {

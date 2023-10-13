@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import Link from 'next/link';
 import React from 'react';
-import { Anchor } from './Anchor';
+import { Anchor } from '../../components/Anchor';
+import { UserButton } from '../../components/UserButton';
 import styles from './Nav.module.scss';
-import { UserButton } from './UserButton';
 import { getSite } from '@lib/getSite';
 import { useTranslation } from '@utils/translation';
 

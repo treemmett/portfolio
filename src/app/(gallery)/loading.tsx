@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import styles from './Mosaic.module.scss';
-import { Nav } from '@components/Nav';
+import { Nav } from '@app/navbar/Nav';
 import { Spinner } from '@components/Spinner';
 import { toPx } from '@utils/pixels';
 
