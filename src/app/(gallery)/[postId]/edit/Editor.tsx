@@ -70,7 +70,7 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
         {isSaving ? `${t('Saving')}...` : t('Save')}
       </button>
       <button
-        className="button mt-3 w-full bg-red-800/50"
+        className="button red mt-3 w-full"
         disabled={isSaving}
         onClick={() => setShowDeleteConfirm(true)}
       >
@@ -91,11 +91,7 @@ export const Editor: FC<{ post: Post }> = ({ post }) => {
         >
           {t('Go back')}
         </button>
-        <button
-          className="button mt-3 w-full bg-red-800/50"
-          disabled={isSaving}
-          onClick={deleteCallback}
-        >
+        <button className="button red mt-3 w-full" disabled={isSaving} onClick={deleteCallback}>
           {isSaving ? `${t('Deleting')}...` : t('Delete')}
         </button>
       </Modal>

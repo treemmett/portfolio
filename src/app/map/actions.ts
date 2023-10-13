@@ -63,3 +63,22 @@ export async function updateCheckIn(
 
   revalidatePath('/map');
 }
+
+export async function deleteCheckIn(id: string) {
+  const user = await getUser();
+
+  if (!user.sites) {
+    throw new NoSiteError();
+  }
+
+  await prisma.gpsMarker.delete({
+    where: {
+      id,
+      sites: {
+        id: user.sites.id,
+      },
+    },
+  });
+
+  revalidatePath('/map');
+}

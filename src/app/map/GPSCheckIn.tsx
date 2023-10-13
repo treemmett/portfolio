@@ -1,7 +1,7 @@
 import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { MapPin } from 'react-feather';
-import { checkIn, updateCheckIn } from './actions';
+import { checkIn, deleteCheckIn, updateCheckIn } from './actions';
 import { useMap } from './context';
 import { Input } from '@app/Input';
 import { Spinner } from '@components/Spinner';
@@ -58,9 +58,10 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
     (event: MapMouseEvent & EventData) => {
       if (markerDetails) return;
 
+      setMarkerToEdit(null);
       setLngLat(event.lngLat);
     },
-    [markerDetails],
+    [markerDetails, setMarkerToEdit],
   );
 
   useEffect(() => {
@@ -98,6 +99,14 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
       m.remove();
     };
   }, [map, lngLat]);
+
+  const deleteMarker = useCallback(
+    async (id: string) => {
+      await deleteCheckIn(id);
+      close();
+    },
+    [close],
+  );
 
   useEffect(() => {
     if (lngLat) {
@@ -182,7 +191,12 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
       <button className="button green" type="submit">
         {t('Save')}
       </button>
-      <button className="button" onClick={close}>
+      {markerToEdit && (
+        <button className="button red" onClick={() => deleteMarker(markerToEdit.id)} type="button">
+          {t('Delete')}
+        </button>
+      )}
+      <button className="button" onClick={close} type="button">
         {t('Cancel')}
       </button>
     </form>

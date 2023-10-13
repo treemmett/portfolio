@@ -18,6 +18,10 @@
       @apply bg-green-700/50;
     }
 
+    &.red {
+      @apply bg-red-800/50;
+    }
+
     &:not(.action) {
       @apply py-2;
     }
