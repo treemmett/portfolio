@@ -9,7 +9,6 @@ import styles from './Settings.module.scss';
 import { WatermarkPosition } from '@app/(settings)/WatermarkPosition';
 import { revalidateResume, updateSettings } from '@app/(settings)/actions';
 import { Input } from '@app/Input';
-import { Button } from '@components/Button';
 import { formatBytes } from '@utils/bytes';
 import { useTranslation } from '@utils/translation';
 
@@ -145,9 +144,9 @@ export const SettingsForm: FC<{ count: number | null; site: Site; size: number |
           )}
         </section>
 
-        <Button disabled={isSaving} type="success" submit>
+        <button className="button green" disabled={isSaving} type="submit">
           {isSaving ? `${t('Saving')}...` : t('Save')}
-        </Button>
+        </button>
       </form>
     </>
   );

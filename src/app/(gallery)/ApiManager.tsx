@@ -8,7 +8,6 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, UploadCloud } from 'react-feather';
 import { ulid } from 'ulid';
 import { getUploadToken, processPhoto } from './actions';
-import { Button } from '@components/Button';
 import { useUser } from '@lib/user';
 import { UnauthenticatedError } from '@utils/errors';
 
@@ -229,9 +228,9 @@ export const ApiManager: FC<{ site: Site }> = ({ site }) => {
         >
           <header className="align-center flex justify-between p-4">
             <span className="capitalize">{status}</span>
-            <Button onClick={() => setCollapsed(!collapsed)} size="small" inverted>
+            <button className="button action" onClick={() => setCollapsed(!collapsed)}>
               {collapsed ? <ChevronUp /> : <ChevronDown />}
-            </Button>
+            </button>
           </header>
           <div
             className={cx(

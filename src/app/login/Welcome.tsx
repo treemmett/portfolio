@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { Button } from '../../components/Button';
 import { Modal } from '../../components/Modal';
 import styles from './Welcome.module.scss';
 import { Input } from '@app/Input';
@@ -18,9 +17,9 @@ export const Welcome: FC = () => {
       <form className={styles.welcome}>
         <h1>{t('Welcome!')}</h1>
         <Input label={t('Please enter a username')} />
-        <Button type="success" submit>
+        <button className="button green" type="submit">
           {t('Create account')}
-        </Button>
+        </button>
       </form>
     </Modal>
   );
