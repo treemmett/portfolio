@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { DynamicApiManager } from './DynamicApiManager';
 import { getSite } from '@lib/getSite';
 
@@ -7,4 +8,13 @@ export default async function GalleryPage() {
   if (!site) return null;
 
   return <DynamicApiManager site={site} />;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSite();
+
+  return {
+    description: site.description,
+    title: site.title,
+  };
 }

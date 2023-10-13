@@ -1,10 +1,16 @@
+import { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { X } from 'react-feather';
 import { EditButton } from './EditButton';
 import { getPost } from '@lib/getPost';
+import { getSite } from '@lib/getSite';
 
-export default async function GalleryPostPage({ params }: { params: { postId: string } }) {
+interface Props {
+  params: { postId: string };
+}
+
+export default async function GalleryPostPage({ params }: Props) {
   const post = await getPost(params.postId);
 
   return (
@@ -32,4 +38,20 @@ export default async function GalleryPostPage({ params }: { params: { postId: st
       />
     </div>
   );
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const { postId } = params;
+  const [post, site, existing] = await Promise.all([getPost(postId), getSite(), parent]);
+
+  return {
+    description: site.description,
+    openGraph: {
+      images: [post.photo.url, ...(existing.openGraph?.images || [])],
+    },
+    title: post.title || site.title,
+  };
 }
