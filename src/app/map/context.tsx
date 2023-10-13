@@ -1,7 +1,10 @@
+import { GpsMarker } from '@prisma/client';
 import {
+  Dispatch,
   FC,
   MouseEvent,
   PropsWithChildren,
+  SetStateAction,
   createContext,
   useCallback,
   useContext,
@@ -12,14 +15,19 @@ import {
 
 const mapContext = createContext<{
   markerDetails: string | null;
+  markerToEdit: GpsMarker | null;
   setMarkerDetails: (id: string) => (e: MouseEvent) => void;
+  setMarkerToEdit: Dispatch<SetStateAction<GpsMarker | null>>;
 }>({
   markerDetails: null,
+  markerToEdit: null,
   setMarkerDetails: () => () => null,
+  setMarkerToEdit: () => null,
 });
 
 export const MapProvider: FC<PropsWithChildren> = ({ children }) => {
   const [markerDetails, setMarkerDetailsState] = useState<string | null>(null);
+  const [markerToEdit, setMarkerToEdit] = useState<GpsMarker | null>(null);
 
   const setMarkerDetails = useCallback(
     (id: string) => (e: MouseEvent) => {
@@ -53,8 +61,8 @@ export const MapProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [closeHandler, keyHandler]);
 
   const value = useMemo(
-    () => ({ markerDetails, setMarkerDetails }),
-    [markerDetails, setMarkerDetails],
+    () => ({ markerDetails, markerToEdit, setMarkerDetails, setMarkerToEdit }),
+    [markerDetails, markerToEdit, setMarkerDetails],
   );
 
   return <mapContext.Provider value={value}>{children}</mapContext.Provider>;

@@ -1,7 +1,7 @@
 import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
 import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { MapPin } from 'react-feather';
-import { checkIn } from './actions';
+import { checkIn, updateCheckIn } from './actions';
 import { useMap } from './context';
 import { Input } from '@app/Input';
 import { Spinner } from '@components/Spinner';
@@ -16,14 +16,24 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   const [country, setCountry] = useState('');
   const [date, setDate] = useState(new Date());
   const [lngLat, setLngLat] = useState<LngLat>();
-  const { markerDetails } = useMap();
+  const { markerDetails, markerToEdit, setMarkerToEdit } = useMap();
+
+  useEffect(() => {
+    if (markerToEdit) {
+      setCity(markerToEdit.city);
+      setCountry(markerToEdit.country);
+      setDate(new Date(markerToEdit.date));
+      setLngLat(new LngLat(markerToEdit.longitude, markerToEdit.latitude));
+    }
+  }, [markerToEdit]);
 
   const close = useCallback(() => {
     setCity('');
     setCountry('');
     setDate(new Date());
     setLngLat(undefined);
-  }, []);
+    setMarkerToEdit(null);
+  }, [setMarkerToEdit]);
 
   const save = useCallback(
     async (e: FormEvent) => {
@@ -33,11 +43,15 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
         return;
       }
 
-      await checkIn(lngLat.lng, lngLat.lat, city, country, date);
+      if (markerToEdit) {
+        await updateCheckIn(markerToEdit.id, lngLat.lng, lngLat.lat, city, country, date);
+      } else {
+        await checkIn(lngLat.lng, lngLat.lat, city, country, date);
+      }
 
       close();
     },
-    [city, close, country, date, lngLat],
+    [city, close, country, date, lngLat, markerToEdit],
   );
 
   const mapClickHandler = useCallback(

@@ -30,3 +30,36 @@ export async function checkIn(lng: number, lat: number, city: string, country: s
 
   revalidatePath('/map');
 }
+
+export async function updateCheckIn(
+  id: string,
+  lng: number,
+  lat: number,
+  city: string,
+  country: string,
+  date: Date,
+) {
+  const user = await getUser();
+
+  if (!user.sites) {
+    throw new NoSiteError();
+  }
+
+  await prisma.gpsMarker.update({
+    data: {
+      city,
+      country,
+      date,
+      latitude: parseFloat(lat.toFixed(15)),
+      longitude: parseFloat(lng.toFixed(15)),
+    },
+    where: {
+      id,
+      sites: {
+        id: user.sites.id,
+      },
+    },
+  });
+
+  revalidatePath('/map');
+}
