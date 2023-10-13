@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { AWSError } from 'aws-sdk';
 import { GetObjectOutput } from 'aws-sdk/clients/s3';
 import { PromiseResult } from 'aws-sdk/lib/request';
-import { parse as parseExif } from 'exifr';
+import { parse as parseExif } from 'exifr/dist/full.esm.mjs';
 import { JWTPayload, SignJWT, jwtVerify } from 'jose';
 import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
