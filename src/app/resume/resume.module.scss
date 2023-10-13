@@ -1,12 +1,6 @@
 @use '../../styles/screen';
 
 .page {
-  display: grid;
-  width: 100%;
-  max-width: 70rem;
-  padding: 2rem;
-  margin: auto;
-  gap: 3rem 2rem;
   grid-template-areas:
     'header'
     'contact'
@@ -15,7 +9,7 @@
     'skills';
   grid-template-columns: 1fr;
 
-  @include screen.md {
+  @media (min-width: 768px) {
     grid-template-areas:
       'header header'
       'contact contact'
@@ -25,25 +19,6 @@
     grid-template-columns: 30% 1fr;
     grid-template-rows: auto auto auto auto 1fr;
   }
-
-  h1,
-  h2,
-  h3 {
-    margin: 0;
-  }
-}
-
-.dual {
-  display: grid;
-  padding-top: 0.75rem;
-  gap: 1rem;
-  grid-template-columns: 1fr 1fr;
-
-  h5 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    font-weight: 400;
-  }
 }
 
 .header {
@@ -52,100 +27,16 @@
 
 .contact {
   grid-area: contact;
-
-  a {
-    h5 {
-      display: flex;
-      align-items: center;
-    }
-
-    svg:first-child {
-      margin-right: 0.5rem;
-    }
-  }
-
-  .dual {
-    h5 {
-      margin-bottom: 0.5rem;
-    }
-
-    @include screen.md {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-  }
-}
-
-.external-link {
-  width: 0.75rem;
-  height: 0.75rem;
-  margin-bottom: auto;
-  margin-left: 0.25rem;
-
-  @media print {
-    display: none;
-  }
 }
 
 .languages {
   grid-area: languages;
-
-  .list {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .language {
-    h5,
-    span {
-      margin: 0;
-    }
-
-    h5 {
-      margin: 0.5rem 0;
-    }
-
-    span {
-      font-size: 0.75rem;
-    }
-  }
 }
 
 .skills {
   grid-area: skills;
-
-  .skill {
-    margin-top: 0;
-  }
-
-  section + section {
-    margin-top: 3rem;
-  }
 }
 
 .experience {
   grid-area: experience;
-
-  .work {
-    h4 {
-      margin: 0;
-
-      a {
-        display: flex;
-        align-items: center;
-      }
-    }
-
-    h5 {
-      margin-top: 0;
-    }
-
-    h6 {
-      margin-bottom: 0;
-      text-align: right;
-    }
-
-    & + .work {
-      margin-top: 3rem;
-    }
-  }
 }

@@ -31,6 +31,10 @@
     }
   }
 
+  a {
+    @apply active rounded;
+  }
+
   input,
   textarea {
     @apply glass active m-0;
