@@ -3,7 +3,7 @@ import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
 import { MapPin } from 'react-feather';
 import { checkIn, deleteCheckIn, updateCheckIn } from './actions';
 import { useMap } from './context';
-import { Input } from '@app/Input';
+import { Input } from '@components/Input';
 import { Spinner } from '@components/Spinner';
 import { geocode } from '@lib/geocode';
 import { toLocalString } from '@utils/date';

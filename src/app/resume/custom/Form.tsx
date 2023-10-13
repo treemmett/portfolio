@@ -3,8 +3,8 @@
 import { useForm } from '@mantine/form';
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
-import { Input } from '@app/Input';
-import { TextArea } from '@app/TextArea';
+import { Input } from '@components/Input';
+import { TextArea } from '@components/TextArea';
 import { useTranslation } from '@utils/translation';
 
 export const ResumeForm: FC = () => {

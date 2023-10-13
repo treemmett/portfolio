@@ -1,4 +1,5 @@
 interface PageViewEvent {
+  // cspell:word pageview
   type: 'pageview';
   url: string;
 }

@@ -36,7 +36,9 @@ function inject(
   const script = document.createElement('script');
   script.src = src;
   script.defer = true;
+  // cspell:word sdkn
   script.setAttribute('data-sdkn', '@vercel/analytics');
+  // cspell:word sdkv
   script.setAttribute('data-sdkv', '1.0.2');
 
   script.onerror = (): void => {
