@@ -21,3 +21,10 @@ const RootLayout: FC<PropsWithChildren> = ({ children }) => (
   </html>
 );
 export default RootLayout;
+
+export const metadata = {
+  metadataBase: new URL('https://tregan.me'),
+  openGraph: {
+    images: '/og-image.png',
+  },
+};
