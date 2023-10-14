@@ -1,4 +1,5 @@
 import { useForm } from '@mantine/form';
+import { GpsMarker } from '@prisma/client';
 import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { MapPin } from 'react-feather';
@@ -10,20 +11,21 @@ import { Spinner } from '@components/Spinner';
 import { geocode } from '@lib/geocode';
 import { useTranslation } from '@utils/translation';
 
-const defaultValues = {
-  city: '',
-  country: '',
-  date: new Date(),
-  latitude: 0,
-  longitude: 0,
-};
-
-export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
+const CheckInForm: FC<{
+  lngLat: LngLat | null;
+  markerToEdit: null | GpsMarker;
+  onClose: () => void;
+}> = ({ lngLat, markerToEdit, onClose }) => {
   const { t } = useTranslation();
-  const [loadingGeo, setLoadingGeo] = useState(false);
-  const { markerDetails, markerToEdit, setMarkerToEdit } = useMap();
-  const { getInputProps, onSubmit, setInitialValues, setValues, values } = useForm({
-    initialValues: defaultValues,
+
+  const { getInputProps, onSubmit, setValues, values } = useForm({
+    initialValues: markerToEdit || {
+      city: '',
+      country: '',
+      date: new Date(),
+      latitude: lngLat?.lat || 0,
+      longitude: lngLat?.lng || 0,
+    },
     validate: {
       latitude: (value) => {
         if (!value) return t('Latitude is required.');
@@ -36,75 +38,20 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
 
   useEffect(() => {
     if (markerToEdit) {
-      setInitialValues(markerToEdit);
+      setValues(markerToEdit);
     }
-  }, [setInitialValues, markerToEdit]);
+  }, [setValues, markerToEdit]);
 
-  const close = useCallback(() => {
-    setInitialValues({ ...defaultValues, date: new Date() });
-    setValues({ ...defaultValues, date: new Date() });
-    setMarkerToEdit(null);
-  }, [setInitialValues, setMarkerToEdit, setValues]);
-
-  const mapClickHandler = useCallback(
-    (event: MapMouseEvent & EventData) => {
-      if (markerDetails) return;
-
-      setMarkerToEdit(null);
+  useEffect(() => {
+    if (lngLat) {
       setValues({
-        latitude: event.lngLat.lat,
-        longitude: event.lngLat.lng,
+        latitude: lngLat.lat,
+        longitude: lngLat.lng,
       });
-    },
-    [markerDetails, setMarkerToEdit, setValues],
-  );
-
-  useEffect(() => {
-    if (map) {
-      map.on('click', mapClickHandler);
     }
+  }, [lngLat, setValues]);
 
-    return () => {
-      if (map) {
-        map.off('click', mapClickHandler);
-      }
-    };
-  }, [map, mapClickHandler]);
-
-  useEffect(() => {
-    const m = new Marker({ draggable: true });
-
-    if (map && values.longitude && values.latitude) {
-      if (!Number.isNaN(values.longitude) && !Number.isNaN(values.latitude)) {
-        const coords = new LngLat(values.longitude, values.latitude);
-
-        m.setLngLat(coords)
-          .addTo(map)
-          .on('dragend', () => {
-            const lngLat = m.getLngLat();
-            setValues({
-              latitude: lngLat.lng,
-              longitude: lngLat.lng,
-            });
-          });
-
-        map.setCenter(coords).setZoom(13);
-      }
-    }
-
-    return () => {
-      m.remove();
-    };
-  }, [map, setValues, values.latitude, values.longitude]);
-
-  const deleteMarker = useCallback(
-    async (id: string) => {
-      await deleteCheckIn(id);
-      close();
-    },
-    [close],
-  );
-
+  const [loadingGeo, setLoadingGeo] = useState(false);
   useEffect(() => {
     if (values.longitude && values.latitude) {
       setLoadingGeo(true);
@@ -125,36 +72,15 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
           setLoadingGeo(false);
         });
     }
-  }, [map, setValues, values.latitude, values.longitude]);
+  }, [setValues, values.latitude, values.longitude]);
 
-  const [gettingGPS, setGettingGPS] = useState(false);
-
-  if (!values.latitude || !values.longitude) {
-    return (
-      <button
-        className="button action ml-auto flex items-center gap-1 p-2"
-        disabled={gettingGPS}
-        onClick={() => {
-          setGettingGPS(true);
-          navigator.geolocation.getCurrentPosition(
-            ({ coords }) => {
-              setGettingGPS(false);
-              setValues({
-                latitude: coords.latitude,
-                longitude: coords.longitude,
-              });
-            },
-            () => {
-              setGettingGPS(false);
-            },
-          );
-        }}
-      >
-        {gettingGPS ? <Spinner /> : <MapPin className="h-6" strokeWidth={1} />}
-        <div className="hidden sm:block">Check In</div>
-      </button>
-    );
-  }
+  const deleteMarker = useCallback(
+    async (id: string) => {
+      await deleteCheckIn(id);
+      onClose();
+    },
+    [onClose],
+  );
 
   return (
     <form
@@ -166,7 +92,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
           await checkIn(v.longitude, v.latitude, v.city, v.country, v.date);
         }
 
-        close();
+        onClose();
       })}
     >
       <Input
@@ -208,9 +134,92 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
           {t('Delete')}
         </button>
       )}
-      <button className="button" onClick={close} type="button">
+      <button className="button" onClick={onClose} type="button">
         {t('Cancel')}
       </button>
     </form>
+  );
+};
+
+export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
+  const { t } = useTranslation();
+  const { markerDetails, markerToEdit, setMarkerToEdit } = useMap();
+  const [lngLat, setLngLat] = useState<LngLat | null>(null);
+
+  const close = useCallback(() => {
+    setMarkerToEdit(null);
+    setLngLat(null);
+  }, [setMarkerToEdit]);
+
+  const mapClickHandler = useCallback(
+    (event: MapMouseEvent & EventData) => {
+      if (markerDetails) return;
+
+      setMarkerToEdit(null);
+      setLngLat(new LngLat(event.lngLat.lng, event.lngLat.lat));
+    },
+    [markerDetails, setMarkerToEdit],
+  );
+
+  useEffect(() => {
+    if (map) {
+      map.on('click', mapClickHandler);
+    }
+
+    return () => {
+      if (map) {
+        map.off('click', mapClickHandler);
+      }
+    };
+  }, [map, mapClickHandler]);
+
+  useEffect(() => {
+    const m = new Marker({ draggable: true });
+
+    if (map && lngLat?.lng && lngLat?.lat) {
+      const coords = new LngLat(lngLat?.lng, lngLat?.lat);
+
+      m.setLngLat(coords)
+        .addTo(map)
+        .on('dragend', () => {
+          const l = m.getLngLat();
+          setLngLat(new LngLat(l.lng, l.lat));
+        });
+
+      map.setCenter(coords).setZoom(13);
+    }
+
+    return () => {
+      m.remove();
+    };
+  }, [map, lngLat]);
+
+  const [gettingGPS, setGettingGPS] = useState(false);
+
+  return (
+    <>
+      <button
+        className="button action ml-auto flex items-center gap-1 p-2"
+        disabled={gettingGPS}
+        onClick={() => {
+          setGettingGPS(true);
+          navigator.geolocation.getCurrentPosition(
+            ({ coords }) => {
+              setGettingGPS(false);
+              setLngLat(new LngLat(coords.longitude, coords.latitude));
+            },
+            () => {
+              setGettingGPS(false);
+            },
+          );
+        }}
+      >
+        {gettingGPS ? <Spinner /> : <MapPin className="h-6" strokeWidth={1} />}
+        <div className="hidden sm:block">{t('Check In')}</div>
+      </button>
+      {(markerToEdit || lngLat) && (
+        <CheckInForm lngLat={lngLat} markerToEdit={markerToEdit} onClose={close} />
+      )}
+    </>
   );
 };
