@@ -1,5 +1,6 @@
+import { useForm } from '@mantine/form';
 import { EventData, LngLat, MapMouseEvent, Map as Mapbox, Marker } from 'mapbox-gl';
-import { FC, FormEvent, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { MapPin } from 'react-feather';
 import { checkIn, deleteCheckIn, updateCheckIn } from './actions';
 import { useMap } from './context';
@@ -7,62 +8,55 @@ import { Input } from '@components/Input';
 import { openConfirmModal } from '@components/ModalManager';
 import { Spinner } from '@components/Spinner';
 import { geocode } from '@lib/geocode';
-import { toLocalString } from '@utils/date';
 import { useTranslation } from '@utils/translation';
+
+const defaultValues = {
+  city: '',
+  country: '',
+  date: new Date(),
+  latitude: 0,
+  longitude: 0,
+};
 
 export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   const { t } = useTranslation();
   const [loadingGeo, setLoadingGeo] = useState(false);
-  const [city, setCity] = useState('');
-  const [country, setCountry] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [lngLat, setLngLat] = useState<LngLat>();
   const { markerDetails, markerToEdit, setMarkerToEdit } = useMap();
+  const { getInputProps, onSubmit, setInitialValues, setValues, values } = useForm({
+    initialValues: defaultValues,
+    validate: {
+      latitude: (value) => {
+        if (!value) return t('Latitude is required.');
+      },
+      longitude: (value) => {
+        if (!value) return t('Longitude is required.');
+      },
+    },
+  });
 
   useEffect(() => {
     if (markerToEdit) {
-      setCity(markerToEdit.city);
-      setCountry(markerToEdit.country);
-      setDate(new Date(markerToEdit.date));
-      setLngLat(new LngLat(markerToEdit.longitude, markerToEdit.latitude));
+      setInitialValues(markerToEdit);
     }
-  }, [markerToEdit]);
+  }, [setInitialValues, markerToEdit]);
 
   const close = useCallback(() => {
-    setCity('');
-    setCountry('');
-    setDate(new Date());
-    setLngLat(undefined);
+    setInitialValues({ ...defaultValues, date: new Date() });
+    setValues({ ...defaultValues, date: new Date() });
     setMarkerToEdit(null);
-  }, [setMarkerToEdit]);
-
-  const save = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault();
-
-      if (!lngLat) {
-        return;
-      }
-
-      if (markerToEdit) {
-        await updateCheckIn(markerToEdit.id, lngLat.lng, lngLat.lat, city, country, date);
-      } else {
-        await checkIn(lngLat.lng, lngLat.lat, city, country, date);
-      }
-
-      close();
-    },
-    [city, close, country, date, lngLat, markerToEdit],
-  );
+  }, [setInitialValues, setMarkerToEdit, setValues]);
 
   const mapClickHandler = useCallback(
     (event: MapMouseEvent & EventData) => {
       if (markerDetails) return;
 
       setMarkerToEdit(null);
-      setLngLat(event.lngLat);
+      setValues({
+        latitude: event.lngLat.lat,
+        longitude: event.lngLat.lng,
+      });
     },
-    [markerDetails, setMarkerToEdit],
+    [markerDetails, setMarkerToEdit, setValues],
   );
 
   useEffect(() => {
@@ -80,16 +74,18 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   useEffect(() => {
     const m = new Marker({ draggable: true });
 
-    if (map && lngLat) {
-      const { lng, lat } = lngLat;
-
-      if (!Number.isNaN(lng) && !Number.isNaN(lat)) {
-        const coords = new LngLat(lng, lat);
+    if (map && values.longitude && values.latitude) {
+      if (!Number.isNaN(values.longitude) && !Number.isNaN(values.latitude)) {
+        const coords = new LngLat(values.longitude, values.latitude);
 
         m.setLngLat(coords)
           .addTo(map)
           .on('dragend', () => {
-            setLngLat(m.getLngLat());
+            const lngLat = m.getLngLat();
+            setValues({
+              latitude: lngLat.lng,
+              longitude: lngLat.lng,
+            });
           });
 
         map.setCenter(coords).setZoom(13);
@@ -99,7 +95,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
     return () => {
       m.remove();
     };
-  }, [map, lngLat]);
+  }, [map, setValues, values.latitude, values.longitude]);
 
   const deleteMarker = useCallback(
     async (id: string) => {
@@ -110,26 +106,30 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   );
 
   useEffect(() => {
-    if (lngLat) {
+    if (values.longitude && values.latitude) {
       setLoadingGeo(true);
-      geocode(lngLat.lng.toString(), lngLat.lat.toString())
+      geocode(values.longitude.toString(), values.latitude.toString())
         .then((data) => {
-          setCity(data.city || '');
-          setCountry(data.country_code || '');
+          setValues({
+            city: data.city || '',
+            country: data.country_code || '',
+          });
         })
         .catch(() => {
-          setCity('');
-          setCountry('');
+          setValues({
+            city: '',
+            country: '',
+          });
         })
         .finally(() => {
           setLoadingGeo(false);
         });
     }
-  }, [lngLat, map]);
+  }, [map, setValues, values.latitude, values.longitude]);
 
   const [gettingGPS, setGettingGPS] = useState(false);
 
-  if (!lngLat) {
+  if (!values.latitude || !values.longitude) {
     return (
       <button
         className="button action ml-auto flex items-center gap-1 p-2"
@@ -139,7 +139,10 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
           navigator.geolocation.getCurrentPosition(
             ({ coords }) => {
               setGettingGPS(false);
-              setLngLat(new LngLat(coords.longitude, coords.latitude));
+              setValues({
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+              });
             },
             () => {
               setGettingGPS(false);
@@ -156,39 +159,35 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   return (
     <form
       className="fixed bottom-8 right-8 z-10 flex max-h-[40vh] flex-col gap-2 overflow-auto rounded-lg p-4 backdrop-blur-sm dark:bg-zinc-900/50"
-      onSubmit={save}
+      onSubmit={onSubmit(async (v) => {
+        if (markerToEdit) {
+          await updateCheckIn(markerToEdit.id, v.longitude, v.latitude, v.city, v.country, v.date);
+        } else {
+          await checkIn(v.longitude, v.latitude, v.city, v.country, v.date);
+        }
+
+        close();
+      })}
     >
       <Input
         label={t('Longitude')}
-        onChange={(e) => setLngLat(new LngLat(parseFloat(e.currentTarget.value), lngLat.lat))}
         step={0.0000001}
         type="number"
-        value={lngLat?.lng.toString()}
+        {...getInputProps('longitude')}
       />
-      <Input
-        label={t('Latitude')}
-        onChange={(e) => setLngLat(new LngLat(lngLat.lng, parseFloat(e.currentTarget.value)))}
-        step={0.0000001}
-        type="number"
-        value={lngLat?.lat.toString()}
-      />
-      <Input
-        disabled={loadingGeo}
-        label={t('City')}
-        onChange={(e) => setCity(e.currentTarget.value)}
-        value={city}
-      />
-      <Input
-        disabled={loadingGeo}
-        label={t('Country')}
-        onChange={(e) => setCountry(e.currentTarget.value)}
-        value={country}
-      />
+      <Input label={t('Latitude')} step={0.0000001} type="number" {...getInputProps('latitude')} />
+      <Input disabled={loadingGeo} label={t('City')} {...getInputProps('city')} />
+      <Input disabled={loadingGeo} label={t('Country')} {...getInputProps('country')} />
       <Input
         label={t('Date')}
-        onChange={(e) => setDate(new Date(e.currentTarget.value))}
         type="datetime-local"
-        value={toLocalString(date)}
+        {...getInputProps('date')}
+        onChange={(e) => setValues({ date: new Date(e.currentTarget.value) })}
+        value={(() => {
+          const d = new Date(values.date);
+          d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+          return d.toISOString().replace('Z', '');
+        })()}
       />
       <button className="button green" type="submit">
         {t('Save')}
