@@ -8,7 +8,9 @@ import { useMap } from './context';
 import { CheckBox } from '@components/CheckBox';
 import { Input } from '@components/Input';
 import { openConfirmModal } from '@components/ModalManager';
+import { Select } from '@components/Select';
 import { Spinner } from '@components/Spinner';
+import { CountryCodes } from '@lib/countryCodes';
 import { geocode } from '@lib/geocode';
 import { useTranslation } from '@utils/translation';
 
@@ -113,7 +115,13 @@ const CheckInForm: FC<{
       />
       <Input label={t('Latitude')} step={0.0000001} type="number" {...getInputProps('latitude')} />
       <Input disabled={loadingGeo} label={t('City')} {...getInputProps('city')} />
-      <Input disabled={loadingGeo} label={t('Country')} {...getInputProps('country')} />
+      <Select
+        disabled={loadingGeo}
+        label={t('Country')}
+        options={Object.entries(CountryCodes).map(([code, name]) => ({ label: name, value: code }))}
+        {...getInputProps('country')}
+        onChange={(v) => setValues({ country: v })}
+      />
       <Input
         label={t('Date')}
         type="datetime-local"
