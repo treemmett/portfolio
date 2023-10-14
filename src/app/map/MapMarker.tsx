@@ -1,13 +1,15 @@
-import { GpsMarker } from '@prisma/client';
 import cx from 'classnames';
 import { FC } from 'react';
 import { Edit, MapPin } from 'react-feather';
 import { useMap } from './context';
 import { AuthorizationScopes } from '@app/scopes';
+import type { getGpsMarkers } from '@lib/getGpsMarkers';
 import { useUser } from '@lib/user';
 import { formatDate } from '@utils/date';
 
-export const MapMarker: FC<{ marker: GpsMarker }> = ({ marker }) => {
+export const MapMarker: FC<{ marker: Awaited<ReturnType<typeof getGpsMarkers>>[0] }> = ({
+  marker,
+}) => {
   const { hasPermission } = useUser();
   const { markerDetails, markerToEdit, setMarkerDetails, setMarkerToEdit } = useMap();
 
@@ -17,7 +19,7 @@ export const MapMarker: FC<{ marker: GpsMarker }> = ({ marker }) => {
         <div className="glass absolute flex gap-2 whitespace-nowrap rounded-md p-1 text-xs">
           <div>
             <div>
-              {marker.city}, {marker.country}
+              {marker.city}, {marker.countryName}
             </div>
             <div>{formatDate(marker.date)}</div>
           </div>

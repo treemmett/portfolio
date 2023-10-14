@@ -1,6 +1,6 @@
 /* eslint-disable sort-keys */
 // cspell:disable
-export const CountryCodes = {
+export const CountryCodes: Record<string, string> = {
   AS: 'American Samoa',
   AI: 'Anguilla',
   AQ: 'Antarctica',

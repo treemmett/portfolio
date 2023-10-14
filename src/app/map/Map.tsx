@@ -1,7 +1,6 @@
 'use client';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { GpsMarker } from '@prisma/client';
 import cx from 'classnames';
 import { LngLat, LngLatBounds, Map as Mapbox, Marker } from 'mapbox-gl';
 import dynamic from 'next/dynamic';
@@ -11,6 +10,7 @@ import { GitBranch, Map as MapIcon } from 'react-feather';
 import { MapMarker } from './MapMarker';
 import { MapProvider } from './context';
 import { AuthorizationScopes } from '@app/scopes';
+import type { getGpsMarkers } from '@lib/getGpsMarkers';
 import { useUser } from '@lib/user';
 import { Config } from '@utils/config';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
@@ -18,7 +18,7 @@ import { useTranslation } from '@utils/translation';
 
 const DynamicCheckIn = dynamic(() => import('./GPSCheckIn').then((m) => m.GPSCheckIn));
 
-const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
+const Map: FC<{ markers: Awaited<ReturnType<typeof getGpsMarkers>> }> = ({ markers }) => {
   const { t } = useTranslation();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<Mapbox>();
@@ -57,7 +57,9 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
     [showSatellite],
   );
 
-  const [placedMarkers, setPlacedMarkers] = useState<{ marker: Marker; checkIn: GpsMarker }[]>([]);
+  const [placedMarkers, setPlacedMarkers] = useState<
+    { marker: Marker; checkIn: Awaited<ReturnType<typeof getGpsMarkers>>[0] }[]
+  >([]);
   useEffect(() => {
     const markersToAdd: typeof placedMarkers = [];
 

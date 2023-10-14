@@ -1,3 +1,4 @@
+import { CountryCodes } from './countryCodes';
 import { Config } from '@utils/config';
 import { prisma } from '@utils/prisma';
 
@@ -9,5 +10,5 @@ export async function getGpsMarkers() {
     where: { sites: { users: { username: Config.DEFAULT_USER } } },
   });
 
-  return markers;
+  return markers.map((m) => ({ ...m, countryName: CountryCodes[m.country] || m.country }));
 }
