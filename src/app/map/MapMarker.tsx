@@ -1,4 +1,5 @@
 import { GpsMarker } from '@prisma/client';
+import cx from 'classnames';
 import { FC } from 'react';
 import { Edit, MapPin } from 'react-feather';
 import { useMap } from './context';
@@ -8,7 +9,7 @@ import { formatDate } from '@utils/date';
 
 export const MapMarker: FC<{ marker: GpsMarker }> = ({ marker }) => {
   const { hasPermission } = useUser();
-  const { markerDetails, setMarkerDetails, setMarkerToEdit } = useMap();
+  const { markerDetails, markerToEdit, setMarkerDetails, setMarkerToEdit } = useMap();
 
   return (
     <>
@@ -35,7 +36,11 @@ export const MapMarker: FC<{ marker: GpsMarker }> = ({ marker }) => {
         </div>
       )}
       <MapPin
-        className="[&>circle]:fill-white [&>circle]:dark:fill-zinc-800 [&>path]:fill-gray-200/90 [&>path]:dark:fill-zinc-800/90"
+        className={cx({
+          '[&>circle]:fill-white [&>circle]:dark:fill-zinc-800 [&>path]:fill-gray-200/90 [&>path]:dark:fill-zinc-800/90':
+            markerToEdit?.id !== marker.id,
+          '[&>circle]:stroke-green-400 [&>path]:stroke-green-400': markerToEdit?.id === marker.id,
+        })}
         onClick={setMarkerDetails(marker.id)}
         strokeWidth={1}
       />
