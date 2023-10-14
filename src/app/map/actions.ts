@@ -6,7 +6,14 @@ import { NoSiteError } from '@utils/errors';
 import { prisma } from '@utils/prisma';
 import {} from 'next/headers';
 
-export async function checkIn(lng: number, lat: number, city: string, country: string, date: Date) {
+export async function checkIn(
+  lng: number,
+  lat: number,
+  city: string,
+  country: string,
+  date: Date,
+  crossAntiMeridian: boolean,
+) {
   const user = await getUser();
 
   if (!user.sites) {
@@ -17,6 +24,7 @@ export async function checkIn(lng: number, lat: number, city: string, country: s
     data: {
       city,
       country,
+      crossAntiMeridian,
       date,
       latitude: parseFloat(lat.toFixed(15)),
       longitude: parseFloat(lng.toFixed(15)),
@@ -38,6 +46,7 @@ export async function updateCheckIn(
   city: string,
   country: string,
   date: Date,
+  crossAntiMeridian: boolean,
 ) {
   const user = await getUser();
 
@@ -49,6 +58,7 @@ export async function updateCheckIn(
     data: {
       city,
       country,
+      crossAntiMeridian,
       date,
       latitude: parseFloat(lat.toFixed(15)),
       longitude: parseFloat(lng.toFixed(15)),

@@ -14,7 +14,6 @@ export const MapMarker: FC<{ marker: GpsMarker }> = ({ marker }) => {
   return (
     <>
       {markerDetails === marker.id && (
-        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
         <div className="glass absolute flex gap-2 whitespace-nowrap rounded-md p-1 text-xs">
           <div>
             <div>

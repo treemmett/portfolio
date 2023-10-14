@@ -5,6 +5,7 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { MapPin } from 'react-feather';
 import { checkIn, deleteCheckIn, updateCheckIn } from './actions';
 import { useMap } from './context';
+import { CheckBox } from '@components/CheckBox';
 import { Input } from '@components/Input';
 import { openConfirmModal } from '@components/ModalManager';
 import { Spinner } from '@components/Spinner';
@@ -22,6 +23,7 @@ const CheckInForm: FC<{
     initialValues: markerToEdit || {
       city: '',
       country: '',
+      crossAntiMeridian: false,
       date: new Date(),
       latitude: lngLat?.lat || 0,
       longitude: lngLat?.lng || 0,
@@ -87,9 +89,17 @@ const CheckInForm: FC<{
       className="fixed bottom-8 right-8 z-10 flex max-h-[40vh] flex-col gap-2 overflow-auto rounded-lg p-4 backdrop-blur-sm dark:bg-zinc-900/50"
       onSubmit={onSubmit(async (v) => {
         if (markerToEdit) {
-          await updateCheckIn(markerToEdit.id, v.longitude, v.latitude, v.city, v.country, v.date);
+          await updateCheckIn(
+            markerToEdit.id,
+            v.longitude,
+            v.latitude,
+            v.city,
+            v.country,
+            v.date,
+            v.crossAntiMeridian,
+          );
         } else {
-          await checkIn(v.longitude, v.latitude, v.city, v.country, v.date);
+          await checkIn(v.longitude, v.latitude, v.city, v.country, v.date, v.crossAntiMeridian);
         }
 
         onClose();
@@ -114,6 +124,10 @@ const CheckInForm: FC<{
           d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
           return d.toISOString().replace('Z', '');
         })()}
+      />
+      <CheckBox
+        label={t('Crosses Anti-meridian')}
+        {...getInputProps('crossAntiMeridian', { type: 'checkbox' })}
       />
       <button className="button green" type="submit">
         {t('Save')}

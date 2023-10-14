@@ -11,16 +11,17 @@ datasource db {
 }
 
 model GpsMarker {
-  id        String   @id(map: "PK_c244f86d053d66d22ed6d19f7cd") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created   DateTime @default(now()) @db.Timestamp(6)
-  updated   DateTime @default(now()) @db.Timestamp(6)
-  date      DateTime @db.Timestamp(6)
-  latitude  Float
-  longitude Float
-  country   String   @db.VarChar(2)
-  city      String   @db.VarChar
-  ownerId   String   @db.Uuid
-  sites     Site     @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7cce4c3c533871d1a20010213be")
+  id                String   @id(map: "PK_c244f86d053d66d22ed6d19f7cd") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created           DateTime @default(now()) @db.Timestamp(6)
+  updated           DateTime @default(now()) @db.Timestamp(6)
+  date              DateTime @db.Timestamp(6)
+  latitude          Float
+  longitude         Float
+  country           String   @db.VarChar(2)
+  city              String   @db.VarChar
+  ownerId           String   @db.Uuid
+  crossAntiMeridian Boolean  @default(false)
+  sites             Site     @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7cce4c3c533871d1a20010213be")
 
   @@map("gps_markers")
 }

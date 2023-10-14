@@ -53,9 +53,23 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
     if (map.current && markers) {
       const { current } = map;
       const coordinates: [number, number][] = [];
+      let lngModifier = 0;
       markersToAdd.push(
-        ...markers.map((marker) => {
-          coordinates.push([marker.longitude, marker.latitude]);
+        ...markers.map((marker, i) => {
+          if (marker.crossAntiMeridian) {
+            const startLng = markers[i].longitude;
+            const endLng = markers[i + 1]?.longitude;
+
+            if (typeof endLng === 'number') {
+              if (endLng - startLng >= 180) {
+                lngModifier += 360;
+              } else if (endLng - startLng < 180) {
+                lngModifier -= 360;
+              }
+            }
+          }
+
+          coordinates.push([marker.longitude + lngModifier, marker.latitude]);
 
           return {
             checkIn: marker,
