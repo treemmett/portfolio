@@ -2,11 +2,12 @@
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GpsMarker } from '@prisma/client';
+import cx from 'classnames';
 import { LngLat, LngLatBounds, Map as Mapbox, Marker } from 'mapbox-gl';
 import dynamic from 'next/dynamic';
 import { FC, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { GitBranch } from 'react-feather';
+import { GitBranch, Map as MapIcon } from 'react-feather';
 import { MapMarker } from './MapMarker';
 import { MapProvider } from './context';
 import { AuthorizationScopes } from '@app/scopes';
@@ -34,16 +35,26 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
     });
   }, []);
 
+  const [showSatellite, setShowSatellite] = useState(false);
+  useEffect(() => {
+    if (map.current?.loaded && map.current?.isStyleLoaded()) {
+      const mapStyle = isDarkMode()
+        ? 'mapbox://styles/mapbox/dark-v11'
+        : 'mapbox://styles/mapbox/light-v11';
+      map.current.setStyle(showSatellite ? 'mapbox://styles/mapbox/satellite-v9' : mapStyle);
+    }
+  }, [showSatellite]);
+
   useEffect(
     () =>
       listenForDarkModeChange((darkMode) => {
-        if (!map.current) return;
+        if (!map.current || showSatellite) return;
 
         map.current?.setStyle(
           darkMode ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11',
         );
       }),
-    [],
+    [showSatellite],
   );
 
   const [placedMarkers, setPlacedMarkers] = useState<{ marker: Marker; checkIn: GpsMarker }[]>([]);
@@ -136,7 +147,7 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
   const [showRoute, setShowRoute] = useState(false);
   useEffect(() => {
     if (map.current?.loaded && map.current?.isStyleLoaded()) {
-      map.current?.setLayoutProperty('route', 'visibility', showRoute ? 'visible' : 'none');
+      map.current.setLayoutProperty('route', 'visibility', showRoute ? 'visible' : 'none');
     }
   }, [showRoute]);
 
@@ -146,15 +157,28 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
         createPortal(<MapMarker marker={checkIn} />, marker.getElement()),
       )}
       <div className="h-screen" ref={mapContainer} />
-      <div className="fixed bottom-4 right-4 z-10 flex flex-col gap-2 p-2">
+      <div
+        className={cx('fixed bottom-2 right-2 z-10 flex flex-col gap-2 p-2', {
+          'text-white': showSatellite,
+        })}
+      >
+        {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn map={map.current} />}
         <button
-          className="button action flex items-center gap-1 p-2"
+          className="button action ml-auto flex items-center gap-1 p-2 text-current"
+          onClick={() => setShowSatellite(!showSatellite)}
+        >
+          <MapIcon strokeWidth={1} />
+          <div className="hidden sm:block">
+            {showSatellite ? t('Show map view') : t('Show satellite view')}
+          </div>
+        </button>
+        <button
+          className="button action ml-auto flex items-center gap-1 p-2 text-current"
           onClick={() => setShowRoute(!showRoute)}
         >
           <GitBranch strokeWidth={1} />
           <div className="hidden sm:block">{showRoute ? t('Hide route') : t('Show route')}</div>
         </button>
-        {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn map={map.current} />}
       </div>
     </MapProvider>
   );

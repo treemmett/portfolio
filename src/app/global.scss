@@ -12,7 +12,7 @@
   }
 
   .button {
-    @apply glass active rounded-md p-1 text-center text-white;
+    @apply glass active rounded-md p-1 text-center text-black dark:text-white;
 
     &.green {
       @apply bg-green-700/50;
