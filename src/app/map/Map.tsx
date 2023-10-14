@@ -6,16 +6,19 @@ import { LngLat, LngLatBounds, Map as Mapbox, Marker } from 'mapbox-gl';
 import dynamic from 'next/dynamic';
 import { FC, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { GitBranch } from 'react-feather';
 import { MapMarker } from './MapMarker';
 import { MapProvider } from './context';
 import { AuthorizationScopes } from '@app/scopes';
 import { useUser } from '@lib/user';
 import { Config } from '@utils/config';
 import { isDarkMode, listenForDarkModeChange } from '@utils/pixels';
+import { useTranslation } from '@utils/translation';
 
 const DynamicCheckIn = dynamic(() => import('./GPSCheckIn').then((m) => m.GPSCheckIn));
 
 const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
+  const { t } = useTranslation();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<Mapbox>();
   const { hasPermission } = useUser();
@@ -49,13 +52,18 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
 
     if (map.current && markers) {
       const { current } = map;
+      const coordinates: [number, number][] = [];
       markersToAdd.push(
-        ...markers.map((marker) => ({
-          checkIn: marker,
-          marker: new Marker({ anchor: 'bottom', element: document.createElement('div') })
-            .setLngLat([marker.longitude, marker.latitude])
-            .addTo(current),
-        })),
+        ...markers.map((marker) => {
+          coordinates.push([marker.longitude, marker.latitude]);
+
+          return {
+            checkIn: marker,
+            marker: new Marker({ anchor: 'bottom', element: document.createElement('div') })
+              .setLngLat([marker.longitude, marker.latitude])
+              .addTo(current),
+          };
+        }),
       );
 
       const lastFourMarkers = markers.slice(0, 4);
@@ -73,6 +81,37 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
       }
 
       setPlacedMarkers(markersToAdd);
+
+      map.current.on('load', ({ target }) => {
+        if (target.getSource('route')) {
+          return;
+        }
+
+        target.addSource('route', {
+          data: {
+            geometry: {
+              coordinates,
+              type: 'LineString',
+            },
+            properties: {},
+            type: 'Feature',
+          },
+          type: 'geojson',
+        });
+        target.addLayer({
+          id: 'route',
+          layout: {
+            'line-cap': 'round',
+            'line-join': 'round',
+            visibility: 'none',
+          },
+          paint: {
+            'line-color': '#fff',
+          },
+          source: 'route',
+          type: 'line',
+        });
+      });
     }
 
     return () => {
@@ -80,13 +119,29 @@ const Map: FC<{ markers: GpsMarker[] }> = ({ markers }) => {
     };
   }, [markers]);
 
+  const [showRoute, setShowRoute] = useState(false);
+  useEffect(() => {
+    if (map.current?.loaded && map.current?.isStyleLoaded()) {
+      map.current?.setLayoutProperty('route', 'visibility', showRoute ? 'visible' : 'none');
+    }
+  }, [showRoute]);
+
   return (
     <MapProvider>
-      {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn map={map.current} />}
       {placedMarkers.map(({ checkIn, marker }) =>
         createPortal(<MapMarker marker={checkIn} />, marker.getElement()),
       )}
       <div className="h-screen" ref={mapContainer} />
+      <div className="fixed bottom-4 right-4 z-10 flex flex-col gap-2 p-2">
+        <button
+          className="button action flex items-center gap-1 p-2"
+          onClick={() => setShowRoute(!showRoute)}
+        >
+          <GitBranch strokeWidth={1} />
+          <div className="hidden sm:block">{showRoute ? t('Hide route') : t('Show route')}</div>
+        </button>
+        {hasPermission(AuthorizationScopes.post) && <DynamicCheckIn map={map.current} />}
+      </div>
     </MapProvider>
   );
 };

@@ -132,7 +132,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
   if (!lngLat) {
     return (
       <button
-        className="button action fixed bottom-4 right-4 z-10 p-2"
+        className="button action ml-auto flex items-center gap-1 p-2"
         disabled={gettingGPS}
         onClick={() => {
           setGettingGPS(true);
@@ -148,6 +148,7 @@ export const GPSCheckIn: FC<{ map?: Mapbox }> = ({ map }) => {
         }}
       >
         {gettingGPS ? <Spinner /> : <MapPin className="h-6" strokeWidth={1} />}
+        <div className="hidden sm:block">Check In</div>
       </button>
     );
   }
