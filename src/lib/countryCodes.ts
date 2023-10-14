@@ -14,6 +14,7 @@ export const CountryCodes: Record<string, string> = {
   AM: 'Armenia',
   AW: 'Aruba',
   'SH-AC': 'Ascension Island',
+  AU: 'Australia',
   AT: 'Austria',
   AZ: 'Azerbaijan',
   BS: 'Bahamas',
