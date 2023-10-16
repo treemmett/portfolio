@@ -9,7 +9,7 @@ import { JWTPayload, SignJWT, jwtVerify } from 'jose';
 import { revalidatePath } from 'next/cache';
 import sharp from 'sharp';
 import { v4 } from 'uuid';
-import { PhotoType } from '@app/(gallery)/PhotoType';
+import { PhotoType } from './PhotoType';
 import { getUser } from '@app/getUser';
 import { AuthorizationScopes } from '@app/scopes';
 import { geocode } from '@lib/geocode';

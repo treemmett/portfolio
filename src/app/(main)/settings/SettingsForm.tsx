@@ -6,8 +6,8 @@ import classNames from 'classnames';
 import { ChangeEvent, FC, useState } from 'react';
 import { RefreshCw } from 'react-feather';
 import styles from './Settings.module.scss';
-import { WatermarkPosition } from '@app/(settings)/WatermarkPosition';
-import { revalidateResume, updateSettings } from '@app/(settings)/actions';
+import { WatermarkPosition } from './WatermarkPosition';
+import { revalidateResume, updateSettings } from './actions';
 import { Input } from '@components/Input';
 import { formatBytes } from '@utils/bytes';
 import { useTranslation } from '@utils/translation';
@@ -37,7 +37,7 @@ export const SettingsForm: FC<{ count: number | null; site: Site; size: number |
   });
 
   return (
-    <>
+    <div className="pt-12">
       <nav className={styles.nav}>
         <a href="#site-information">Site Information</a>
         <a href="#social-media">Social Media</a>
@@ -148,6 +148,6 @@ export const SettingsForm: FC<{ count: number | null; site: Site; size: number |
           {isSaving ? `${t('Saving')}...` : t('Save')}
         </button>
       </form>
-    </>
+    </div>
   );
 };
