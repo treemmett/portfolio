@@ -1,9 +1,10 @@
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import validator from 'validator';
 import { Config } from '@utils/config';
 import { prisma } from '@utils/prisma';
 
-export async function getPost(id: string) {
+export const getPost = cache(async (id: string) => {
   if (!validator.isUUID(id)) return notFound();
 
   const post = await prisma.post.findFirst({
@@ -22,4 +23,4 @@ export async function getPost(id: string) {
         : `${Config.S3_URL}/${Config.S3_BUCKET}/${post.photo?.id}`,
     },
   };
-}
+});

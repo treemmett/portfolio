@@ -1,7 +1,8 @@
+import { cache } from 'react';
 import { Config } from '@utils/config';
 import { prisma } from '@utils/prisma';
 
-export async function getPosts() {
+export const getPosts = cache(async () => {
   const posts = await prisma.post.findMany({
     include: { photo: true, user: true },
     orderBy: {
@@ -19,4 +20,4 @@ export async function getPosts() {
         : `${Config.S3_URL}/${Config.S3_BUCKET}/${post.photo?.id}`,
     },
   }));
-}
+});
