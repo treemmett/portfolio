@@ -27,7 +27,7 @@
     "@prisma/client": "^5.5.2",
     "@types/mapbox-gl": "^2.7.15",
     "@types/ms": "^0.7.32",
-    "@types/react": "^18.2.27",
+    "@types/react": "^18.2.35",
     "@types/react-dom": "^18.2.13",
     "@types/sharp": "^0.32.0",
     "@types/uuid": "^9.0.5",
