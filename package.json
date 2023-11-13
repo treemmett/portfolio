@@ -55,7 +55,7 @@
     "validator": "^13.11.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.7.2",
+    "@commitlint/cli": "^18.4.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@types/node": "^20.8.4",
     "autoprefixer": "^10.4.16",
