@@ -93,7 +93,7 @@ const Map: FC<{ markers: Awaited<ReturnType<typeof getGpsMarkers>> }> = ({ marke
         }),
       );
 
-      const lastFourMarkers = markers.slice(0, 4);
+      const lastFourMarkers = markers.slice(-4);
 
       if (lastFourMarkers.length >= 2) {
         const lng = lastFourMarkers.map((m) => m.longitude);
