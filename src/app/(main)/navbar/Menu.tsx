@@ -62,6 +62,7 @@ export const Menu: FC<{ className?: string; site: Site }> = ({ className, site }
             <X strokeWidth={1} />
           </button>
         </div>
+        <Link href="/map">Map</Link>
         {site.resumeUrl && <Link href="/resume">{t('Resume')}</Link>}
         {site.facebook && (
           <Anchor href={`https://facebook.com/${encodeURIComponent(site.facebook)}`}>
