@@ -2,7 +2,8 @@
 
 import classNames from 'classnames';
 import Image from 'next/image';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'react-feather';
 import { getPosts } from '@lib/getPosts';
 import { Config } from '@utils/config';
 
@@ -16,6 +17,16 @@ export function Gallery({ posts }: { posts: Awaited<ReturnType<typeof getPosts>>
   const prev = useCallback(() => {
     setCurrentPost(currentPost === 0 ? posts.length - 1 : currentPost - 1);
   }, [currentPost, posts]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    };
+
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [next, prev]);
 
   return (
     <div className="relative h-screen w-screen overflow-hidden shadow-xl">
@@ -57,10 +68,14 @@ export function Gallery({ posts }: { posts: Awaited<ReturnType<typeof getPosts>>
         );
       })}
 
-      <div className="absolute">
-        <button onClick={prev}>Previous</button>
+      <div className="glass  -transform-x-1/2 absolute bottom-36 left-1/2 flex gap-4 rounded-md bg-black/10 p-4 shadow-md">
+        <button aria-label="Previous photo" className="button" onClick={prev}>
+          <ChevronLeft />
+        </button>
 
-        <button onClick={next}>Next</button>
+        <button aria-label="Next Photo" className="button" onClick={next}>
+          <ChevronRight />
+        </button>
       </div>
     </div>
   );
