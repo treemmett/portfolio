@@ -38,13 +38,16 @@ export function Gallery({ posts }: { posts: Awaited<ReturnType<typeof getPosts>>
         const label = [post.title, post.location].filter((a) => !!a).join(', ');
 
         return (
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
           <div
             className={classNames('absolute inline-block rounded-md bg-cover bg-center shadow-md', {
               '!left-0 top-0 h-full w-full transform-none': i <= currentPost,
-              'top-1/2 h-96 w-[280px] -translate-y-1/2': i > currentPost,
-              'transform-gpu transition-all': Math.abs(currentPost - i) <= 2,
+              'top-1/2 h-96 w-[280px] -translate-y-1/2 cursor-pointer': i > currentPost,
+              'transform-gpu transition-all duration-[250ms]': Math.abs(currentPost - i) <= 2,
             })}
             key={post.id}
+            onClick={() => setCurrentPost(i)}
+            role={currentPost === i ? 'presentation' : 'button'}
             style={{
               left: `calc(60% - 140px + ${
                 ((i - currentPost) % posts.length) * (280 + 16 * 2.5)
