@@ -39,13 +39,11 @@ export function Gallery({ posts }: { posts: Awaited<ReturnType<typeof getPosts>>
 
         return (
           <div
-            className={classNames(
-              'absolute inline-block transform-gpu rounded-md bg-cover bg-center shadow-md transition-all',
-              {
-                '!left-0 top-0 h-full w-full transform-none': i <= currentPost,
-                'top-1/2 h-96 w-[280px] -translate-y-1/2': i > currentPost,
-              },
-            )}
+            className={classNames('absolute inline-block rounded-md bg-cover bg-center shadow-md', {
+              '!left-0 top-0 h-full w-full transform-none': i <= currentPost,
+              'top-1/2 h-96 w-[280px] -translate-y-1/2': i > currentPost,
+              'transform-gpu transition-all': Math.abs(currentPost - i) <= 2,
+            })}
             key={post.id}
             style={{
               left: `calc(60% - 140px + ${
