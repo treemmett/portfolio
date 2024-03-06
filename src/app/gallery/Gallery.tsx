@@ -41,7 +41,7 @@ export function Gallery({ posts }: { posts: Awaited<ReturnType<typeof getPosts>>
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
           <div
             className={classNames('absolute inline-block rounded-md bg-cover bg-center shadow-md', {
-              '!left-0 top-0 h-full w-full transform-none': i <= currentPost,
+              '!left-0 top-0 h-full w-full transform-none rounded-none': i <= currentPost,
               'top-1/2 h-96 w-[280px] -translate-y-1/2 cursor-pointer': i > currentPost,
               'transform-gpu transition-all duration-[250ms]': Math.abs(currentPost - i) <= 2,
             })}
@@ -54,11 +54,20 @@ export function Gallery({ posts }: { posts: Awaited<ReturnType<typeof getPosts>>
               }px)`,
             }}
           >
-            <h1>{label}</h1>
+            <div
+              className={classNames('absolute top-72 z-10 ml-32 transform-none', {
+                'opacity-0': i > currentPost,
+                'opacity-1': i <= currentPost,
+                'transform-gpu transition-all duration-[250ms]': Math.abs(currentPost - i) <= 2,
+              })}
+            >
+              {post.title && <h1 className="text-xl font-bold drop-shadow-sm">{post.title}</h1>}
+              {post.location && <h2 className="drop-shadow-sm">{post.location}</h2>}
+            </div>
             <Image
               alt={label}
               blurDataURL={post.photo.thumbnailURL}
-              className="absolute left-0 top-0 mb-4 block h-auto h-full w-full w-full select-none rounded-md object-cover"
+              className="absolute left-0 top-0 mb-4 block h-auto h-full w-full w-full select-none rounded-[inherit] object-cover"
               height={post.photo.height}
               placeholder="blur"
               priority={i < 2}
