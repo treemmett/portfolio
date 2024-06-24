@@ -4227,10 +4227,10 @@ jmespath@0.16.0:
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.16.0.tgz#b15b0a85dfd4d930d43e69ed605943c802785076"
   integrity sha512-9FzQjJ7MATs1tSpnco1K6ayiYE3figslrXA72G2HQ/n76RzvYlofyi5QM+iX4YRs/pu3yzxlVQSST23+dMDknw==
 
-jose@^4.15.2:
-  version "4.15.2"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-4.15.2.tgz#61f97383f0b433d45da26d35094155a30a672d92"
-  integrity sha512-IY73F228OXRl9ar3jJagh7Vnuhj/GzBunPiZP13K0lOl7Am9SoWW3kEzq3MCllJMTtZqHTiDXQvoRd4U95aU6A==
+jose@^5.4.1:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-5.4.1.tgz#b471ee3963920ba5452fd1b1398c8ba72a7b2fcf"
+  integrity sha512-U6QajmpV/nhL9SyfAewo000fkiRQ+Yd2H0lBxJJ9apjpOgkOcBQJWOrMo917lxLptdS/n/o/xPzMkXhF46K8hQ==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
