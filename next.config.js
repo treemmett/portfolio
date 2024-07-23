@@ -1,4 +1,5 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer');
+const withMDX = require('@next/mdx')();
 
 const IS_VERCEL = typeof process.env.VERCEL !== 'undefined';
 
@@ -20,6 +21,7 @@ const nextConfig = {
       },
     ].filter(Boolean),
   },
+  pageExtensions: ['ts', 'tsx', 'js', 'md'],
   productionBrowserSourceMaps: true,
   rewrites: async () => [
     {
@@ -32,4 +34,6 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(nextConfig);
+module.exports = withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(
+  withMDX(nextConfig),
+);

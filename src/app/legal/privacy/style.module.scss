@@ -1,0 +1,29 @@
+.markdown {
+  ul {
+    @apply list-inside list-disc;
+  }
+
+  ol {
+    @apply list-inside list-decimal;
+  }
+
+  li {
+    @apply mb-2;
+  }
+
+  a {
+    @apply text-blue-500 underline;
+  }
+
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  h3 {
+    @apply text-lg;
+  }
+}
